@@ -8,5 +8,10 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="org.unimelb.itime.test.paul.PaulActivity">
+    <org.unimelb.itime.vendor.weekview.WeekViewBody
+        android:id="@+id/week_view_body"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </org.unimelb.itime.vendor.weekview.WeekViewBody>
 
 </RelativeLayout>

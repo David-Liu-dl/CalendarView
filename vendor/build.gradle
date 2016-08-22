@@ -9,8 +9,8 @@ android {
     defaultConfig {
         minSdkVersion 17
         targetSdkVersion 24
-        versionCode 1
-        versionName "1.0.0"
+        versionName project.VERSION_NAME
+        versionCode Integer.parseInt(project.VERSION_CODE)
     }
     buildTypes {
         release {

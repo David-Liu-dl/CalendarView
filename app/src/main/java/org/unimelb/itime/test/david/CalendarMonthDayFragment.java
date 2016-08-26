@@ -33,6 +33,7 @@ import java.util.Locale;
  */
 public class CalendarMonthDayFragment extends Fragment {
     private final String TAG = "MyAPP";
+
     private Handler handler=new Handler();
 
     private RecyclerView recyclerView;
@@ -75,7 +76,7 @@ public class CalendarMonthDayFragment extends Fragment {
         recyclerView.setAdapter(recyclerAdapter);
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLinearLayoutManager);
-        recyclerView.addItemDecoration(new DayViewHeaderRecyclerDivider(getContext()));
+        recyclerView.addItemDecoration(new DayViewHeaderRecyclerDivider(getActivity().getApplicationContext()));
         final DisplayMetrics dm = getResources().getDisplayMetrics();
         init_height = (dm.widthPixels / 7) * 2;
         scroll_height = (dm.widthPixels / 7) * 4;
@@ -195,7 +196,7 @@ public class CalendarMonthDayFragment extends Fragment {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         for (int i = 0; i < size; i++) {
-            DayViewBody bodyView = (DayViewBody) LayoutInflater.from(this.getContext()).inflate(R.layout.itime_day_view_body_view,null);
+            DayViewBody bodyView = (DayViewBody) LayoutInflater.from(this.getActivity().getApplicationContext()).inflate(R.layout.itime_day_view_body_view,null);
             bodyView.setCalendar(new MyCalendar(calendar));
             bodyView.dayViewController.scrollContainerView.setOnTouchListener(new bodyOnTouchListener());
             lists.add(bodyView);

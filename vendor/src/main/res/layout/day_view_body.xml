@@ -9,7 +9,35 @@
         android:id="@+id/body_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        >
+        <LinearLayout
+            android:id="@+id/allDayContainer"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:orientation="horizontal"
+            android:padding="5dp"
+            android:background="@color/allday_container_bg">
+            <TextView
+                android:id="@+id/allDayContainerTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="10dp"
+                android:textColor="@color/text_enable"
+                android:gravity="center_vertical"
+                android:text="All Day"
+                android:padding="3dp"/>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/allDayContainerDivider"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:paddingBottom="5dp"
+            android:background="@drawable/itime_header_divider_line"
+            android:layout_below="@id/allDayContainer"
+            />
+
         <RelativeLayout
             android:id="@+id/timeReLayout"
             android:layout_width="wrap_content"
@@ -17,13 +45,16 @@
             android:paddingRight="10dp"
             android:layout_height="match_parent"
             android:background="@android:color/transparent"
+            android:layout_below="@id/allDayContainerDivider"
             >
         </RelativeLayout>
+
         <RelativeLayout
             android:id="@+id/eventRelativeLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_toRightOf="@id/timeReLayout"
+            android:layout_below="@id/allDayContainerDivider"
             android:background="@android:color/transparent"
             >
         </RelativeLayout>

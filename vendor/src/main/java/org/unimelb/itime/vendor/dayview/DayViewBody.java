@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 
@@ -22,6 +23,7 @@ public class DayViewBody extends RelativeLayout {
     private static final String TAG = "MyAPP";
 
     public final LayoutInflater mInflater;
+    public LinearLayout allDayContainer;
     public RelativeLayout body_container;
     public RelativeLayout timeRLayout;
     public RelativeLayout dividerRLayout;
@@ -74,8 +76,14 @@ public class DayViewBody extends RelativeLayout {
         body_container = (RelativeLayout) findViewById(R.id.body_container);
         timeRLayout = (RelativeLayout) findViewById(R.id.timeReLayout);
         dividerRLayout = (RelativeLayout) findViewById(R.id.eventRelativeLayout);
+        allDayContainer = (LinearLayout) findViewById(R.id.allDayContainer);
 
-        dayViewController.onFinishInflate(scrollContainerView,timeRLayout, dividerRLayout, body_container);
+        dayViewController.onFinishInflate(
+                scrollContainerView,
+                timeRLayout,
+                dividerRLayout,
+                body_container,
+                allDayContainer);
     }
       
 
@@ -115,13 +123,13 @@ public class DayViewBody extends RelativeLayout {
         Date dt = new Date();
         dt.setTime(Calendar.getInstance().getTimeInMillis());
         long interval = 3600 * 1000;
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 3; i++) {
             Event event = new Event();
             event.setTitle(titles[i]);
             event.setStatus(statuses[i]);
             event.setEventType(types[i]);
             event.setStartTime(dt.getTime());
-            event.setEndTime(dt.getTime() + (int)(interval));
+            event.setEndTime(dt.getTime() + (int)(interval*(i+1)));
             events.add(event);
         }
 

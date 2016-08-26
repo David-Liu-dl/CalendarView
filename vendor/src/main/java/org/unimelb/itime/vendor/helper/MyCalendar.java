@@ -9,7 +9,9 @@ public class MyCalendar {
     int year;
     int month;
     int day;
+    
     private String TAG="MyAPPCalendar";
+
     public MyCalendar(Calendar calendar) {
         this.cloneFromCalendar(calendar);
     }

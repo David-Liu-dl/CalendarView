@@ -339,6 +339,29 @@ public class WeekTimeSlotViewBody extends LinearLayout{
                     timeSlotParams.setMargins(leftOffSet, topOffset, 0, 0);
                     timeSlotView.setLayoutParams(timeSlotParams);
                     eventRelativeLayout.addView(timeSlotView);
+
+                    // add time line and time *****************************
+                    ImageView timeLine = new ImageView(getContext());
+                    timeLine.setImageResource(R.drawable.itime_dotted_line);
+                    timeLine.setBackgroundColor(getResources().getColor(R.color.deeppink));
+                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 5);
+
+                    params.setMargins(hourWidth, topOffset, 0, 0);
+                    timeLine.setLayoutParams(params);
+                    backGroundRelativeLayout.addView(timeLine);
+
+                    // set the showing time
+                    currentTimeView = new TextView(getContext());
+                    String stringCurrentHour = timeSlotStartHour < 10? "0" +String.valueOf(timeSlotStartHour) : String.valueOf(timeSlotStartHour);
+                    String stringCurrentMinute = timeSlotStartMinute < 10? "0"+String.valueOf(timeSlotStartMinute) : String.valueOf(timeSlotStartMinute);
+                    String AMPM = timeSlotStartHour> 12 ? "PM" :"AM";
+                    currentTimeView.setText(String.format("%s:%s %s", stringCurrentHour, stringCurrentMinute, AMPM));
+                    currentTimeView.setTextSize(8);
+                    currentTimeView.setTextColor(Color.RED);
+                    RelativeLayout.LayoutParams showCurrentTimeLayout = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    showCurrentTimeLayout.topMargin = topOffset - hourHeight/3 ;
+                    currentTimeView.setLayoutParams(showCurrentTimeLayout);
+                    backGroundRelativeLayout.addView(currentTimeView);
                 }
             }
         }

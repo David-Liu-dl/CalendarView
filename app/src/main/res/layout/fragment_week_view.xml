@@ -8,7 +8,7 @@
         android:layout_height="wrap_content"
         android:text="change fragment"/>
     <org.unimelb.itime.vendor.weekview.WeekView
-        android:id="@+id/week_view_pager"
+        android:id="@+id/week_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     </org.unimelb.itime.vendor.weekview.WeekView>

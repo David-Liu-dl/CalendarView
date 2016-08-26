@@ -15,10 +15,9 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 import org.unimelb.itime.vendor.R;
-import org.unimelb.itime.vendor.helper.MessageTimeSlot;
+import org.unimelb.itime.vendor.eventview.Event;
+import org.unimelb.itime.vendor.eventview.WeekDraggableEventView;
 import org.unimelb.itime.vendor.helper.MyCalendar;
 import org.unimelb.itime.vendor.timeslot.TimeSlotView;
 
@@ -45,6 +44,7 @@ public class WeekTimeSlotViewBody extends LinearLayout{
 
     private ArrayList<Long> timeSlots;
     private int duration;
+    private ArrayList<Event> eventArrayList;
 
     private TreeMap<Integer,String> timeSlotTreeMap = new TreeMap<>();
     private TreeMap<Integer, String> daySlotTreeMap = new TreeMap<>();
@@ -64,15 +64,15 @@ public class WeekTimeSlotViewBody extends LinearLayout{
     public WeekTimeSlotViewBody(Context context) {
         super(context);
         this.setOrientation(HORIZONTAL);
-        if (!EventBus.getDefault().isRegistered(this))
-            EventBus.getDefault().register(this);
+//        if (!EventBus.getDefault().isRegistered(this))
+//            EventBus.getDefault().register(this);
     }
 
     public WeekTimeSlotViewBody(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.setOrientation(HORIZONTAL);
-        if (!EventBus.getDefault().isRegistered(this))
-            EventBus.getDefault().register(this);
+//        if (!EventBus.getDefault().isRegistered(this))
+//            EventBus.getDefault().register(this);
 
     }
 
@@ -96,8 +96,8 @@ public class WeekTimeSlotViewBody extends LinearLayout{
 
     public void initAll(){
 //        EventBus.getDefault().register(this);
-        if (!EventBus.getDefault().isRegistered(this))
-            EventBus.getDefault().register(this);
+//        if (!EventBus.getDefault().isRegistered(this))
+//            EventBus.getDefault().register(this);
         initWidgets();
         cleanView();
         this.requestLayout();
@@ -109,7 +109,7 @@ public class WeekTimeSlotViewBody extends LinearLayout{
         initDaySlot();
         initCurrentTimeLine(myCalendar);
         initMsgWindow();
-//        if (timeSlots!=null){
+        initEvents();
         initSuggestTimeSlot();
 //        }
         eventWidgetsRelativeLayout.invalidate();
@@ -288,17 +288,44 @@ public class WeekTimeSlotViewBody extends LinearLayout{
         }
     }
 
+    public void initEvents(){
+        if (this.eventArrayList!=null){
+            for (Event event:eventArrayList){
+                Date eventDate = new Date(event.getStartTime());
+                Calendar eventCalendar = Calendar.getInstance();
+                eventCalendar.setTime(eventDate);
+                if (isInCurrentWeek(eventCalendar,myCalendar)){
+
+                    WeekDraggableEventView eventView = new WeekDraggableEventView(getContext(),event);
+                    int eventDayOfWeek = eventCalendar.get(Calendar.DAY_OF_WEEK);
+                    int eventStartHour = eventCalendar.get(Calendar.HOUR_OF_DAY);
+                    int eventStartMinute = eventCalendar.get(Calendar.MINUTE);
+
+                    int leftOffset = dayWidth * (eventDayOfWeek -1);
+                    int topOffSet = (int)((float)hourHeight/2 + ((float)hourHeight/4) *
+                            (eventStartHour * 4 + (float)eventStartMinute / 15));
+                    int eventHeight = (int)(event.getDurationInMinute() * hourHeight / 60);
+                    RelativeLayout.LayoutParams eventViewParams = new RelativeLayout.LayoutParams(
+                            dayWidth,eventHeight);
+                    eventViewParams.setMargins(leftOffset,topOffSet , 0, 0);
+                    eventView.setLayoutParams(eventViewParams);
+                    eventRelativeLayout.addView(eventView);
+                }
+            }
+        }
+    }
+
     public void initSuggestTimeSlot(){
         if (timeSlots!=null) {
             for (Long startTime : timeSlots) {
                 Date timeSlotDate = new Date(startTime);
                 Calendar timeSlotCalendar = Calendar.getInstance();
                 timeSlotCalendar.setTime(timeSlotDate);
-                if (isCurrentWeekTimeBlock(timeSlotCalendar, myCalendar)) {
+                if (isInCurrentWeek(timeSlotCalendar, myCalendar)) {
                     TimeSlotView timeSlotView = new TimeSlotView(
                             getContext(), startTime, duration);
                     int timeSlotDayOfWeek = timeSlotCalendar.get(Calendar.DAY_OF_WEEK);
-                    int timeSlotStartHour = timeSlotCalendar.get(Calendar.HOUR);
+                    int timeSlotStartHour = timeSlotCalendar.get(Calendar.HOUR_OF_DAY);
                     int timeSlotStartMinute = timeSlotCalendar.get(Calendar.MINUTE);
 
                     int leftOffSet = dayWidth * (timeSlotDayOfWeek - 1);
@@ -312,12 +339,35 @@ public class WeekTimeSlotViewBody extends LinearLayout{
                     timeSlotParams.setMargins(leftOffSet, topOffset, 0, 0);
                     timeSlotView.setLayoutParams(timeSlotParams);
                     eventRelativeLayout.addView(timeSlotView);
+
+                    // add time line and time *****************************
+                    ImageView timeLine = new ImageView(getContext());
+                    timeLine.setImageResource(R.drawable.itime_dotted_line);
+                    timeLine.setBackgroundColor(getResources().getColor(R.color.deeppink));
+                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 5);
+
+                    params.setMargins(hourWidth, topOffset, 0, 0);
+                    timeLine.setLayoutParams(params);
+                    backGroundRelativeLayout.addView(timeLine);
+
+                    // set the showing time
+                    currentTimeView = new TextView(getContext());
+                    String stringCurrentHour = timeSlotStartHour < 10? "0" +String.valueOf(timeSlotStartHour) : String.valueOf(timeSlotStartHour);
+                    String stringCurrentMinute = timeSlotStartMinute < 10? "0"+String.valueOf(timeSlotStartMinute) : String.valueOf(timeSlotStartMinute);
+                    String AMPM = timeSlotStartHour> 12 ? "PM" :"AM";
+                    currentTimeView.setText(String.format("%s:%s %s", stringCurrentHour, stringCurrentMinute, AMPM));
+                    currentTimeView.setTextSize(8);
+                    currentTimeView.setTextColor(Color.RED);
+                    RelativeLayout.LayoutParams showCurrentTimeLayout = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    showCurrentTimeLayout.topMargin = topOffset - hourHeight/3 ;
+                    currentTimeView.setLayoutParams(showCurrentTimeLayout);
+                    backGroundRelativeLayout.addView(currentTimeView);
                 }
             }
         }
     }
 
-    public boolean isCurrentWeekTimeBlock(Calendar timeSlotCalendar,MyCalendar myCalendar){
+    public boolean isInCurrentWeek(Calendar timeSlotCalendar,MyCalendar myCalendar){
         Calendar firstSundayCalendar = Calendar.getInstance();
         firstSundayCalendar.set(Calendar.YEAR, myCalendar.getYear());
         firstSundayCalendar.set(Calendar.MONTH, myCalendar.getMonth());
@@ -326,11 +376,14 @@ public class WeekTimeSlotViewBody extends LinearLayout{
                 && timeSlotCalendar.get(Calendar.YEAR) == firstSundayCalendar.get(Calendar.YEAR));
     }
 
-    @Subscribe
-    public void receiveTimeSlots(MessageTimeSlot messageTimeSlot){
-        this.timeSlots = messageTimeSlot.timeSlotArraylist;
-        this.duration = messageTimeSlot.duration;
-        Log.i("duration", String.valueOf(duration));
+
+    public void setTimeSlots(ArrayList<Long> timeSlots, int duration){
+        this.timeSlots = timeSlots;
+        this.duration = duration;
+    }
+
+    public void setEvents(ArrayList<Event> eventArrayList){
+        this.eventArrayList = eventArrayList;
     }
 
     private String[] getHours(){
@@ -549,7 +602,7 @@ public class WeekTimeSlotViewBody extends LinearLayout{
         //msgWindow.setVisibility(View.VISIBLE);
     }
 
-    public void setTimeSlot(ArrayList<Long> timeSlots){
-        this.timeSlots = timeSlots;
-    }
+//    public void setTimeSlot(ArrayList<Long> timeSlots){
+//        this.timeSlots = timeSlots;
+//    }
 }

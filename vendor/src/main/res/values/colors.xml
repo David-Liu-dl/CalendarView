@@ -292,6 +292,12 @@
     <color name="Navy">#000080</color>
     <color name="Black">#000000</color>
 
+    <color name="text_enable">#0b0b0b</color>
+    <color name="page_bg">#ffff</color>
+
+    <color name="text_disable">#a2a2a2</color>
+
+
     <!--for dayView-->
     <color name="private_et">#05447e</color>
     <color name="group_et">#63adf2</color>
@@ -306,10 +312,6 @@
     <color name="allday_container_bg">#ebebeb</color>
 
     <!--for contact-->
-    <color name="text_enable">#0b0b0b</color>
-    <color name="text_disable">#a2a2a2</color>
-
-    <color name="page_bg">#ffff</color>
     <color name="sidebar_text_color">#888888</color>
 
     <color name="whites">#ffffff</color>

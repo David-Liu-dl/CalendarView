@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import org.unimelb.itime.vendor.R;
+import org.unimelb.itime.vendor.eventview.Event;
 import org.unimelb.itime.vendor.helper.MyCalendar;
 import org.unimelb.itime.vendor.helper.MyPagerAdapter;
 
@@ -36,6 +37,7 @@ public class WeekView extends RelativeLayout{
     private int bodyHeight;
 
     private OnWeekViewChangeListener onWeekViewChangeListener;
+    private ArrayList<Event> eventArrayList;
 
     public WeekView(Context context){
         super(context);
@@ -74,6 +76,7 @@ public class WeekView extends RelativeLayout{
             WeekViewBody weekViewBody = (WeekViewBody) linearLayout.getChildAt(1);
             weekViewBody.setMyCalendar(new MyCalendar(calendar1));
             weekViewBody.updateWidthHeight(totalWidth,bodyHeight);
+            weekViewBody.setEvents(this.eventArrayList);
             weekViewBody.initAll();
             views.add(linearLayout);
         }
@@ -102,8 +105,6 @@ public class WeekView extends RelativeLayout{
                 if(onWeekViewChangeListener != null){
                     calendar.add(Calendar.DATE,(deltaPosition)*7);
                     onWeekViewChangeListener.onWeekChanged(calendar);
-//                    Log.i("deltaPosition", String.valueOf(deltaPosition));
-//                    Log.i("calendar day", String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
                 }
                 lastPosition=position;
             }
@@ -127,7 +128,7 @@ public class WeekView extends RelativeLayout{
                     WeekViewHeader preWeekViewHeader = (WeekViewHeader) preView.getChildAt(0);
                     preWeekViewHeader.getMyCalendar().cloneFromMyCalendar(currentWeekViewMyCalendar);
 
-                    preWeekViewHeader.getMyCalendar().setOffset(-7);
+                    preWeekViewHeader.getMyCalendar().setOffsetByDate(-7);
                     Log.i("preWeekView", String.valueOf(preWeekViewHeader.getMyCalendar().getMonth()));
 
                     Log.i("preWeekViewHeader", String.valueOf(preWeekViewHeader.getMyCalendar().getDay()));
@@ -135,19 +136,21 @@ public class WeekView extends RelativeLayout{
                     // init?
                     WeekViewBody preWeekViewBody = (WeekViewBody) preView.getChildAt(1);
                     preWeekViewBody.getMyCalendar().cloneFromMyCalendar(currentWeekViewMyCalendar);
-                    preWeekViewBody.getMyCalendar().setOffset(-7);
+                    preWeekViewBody.getMyCalendar().setOffsetByDate(-7);
+                    preWeekViewBody.setEvents(eventArrayList);
                     preWeekViewBody.initAll();
                     // init?
 
 //                    pagerAdapter.changeView(nextView,(currentPosition + 1) % size);
                     WeekViewHeader nextWeekViewHeader = (WeekViewHeader) nextView.getChildAt(0);
                     nextWeekViewHeader.getMyCalendar().cloneFromMyCalendar(currentWeekViewMyCalendar);
-                    nextWeekViewHeader.getMyCalendar().setOffset(+7);
+                    nextWeekViewHeader.getMyCalendar().setOffsetByDate(+7);
                     nextWeekViewHeader.initCurrentWeekHeaders();
                     // init?
                     WeekViewBody nextWeekViewBody = (WeekViewBody) nextView.getChildAt(1);
                     nextWeekViewBody.getMyCalendar().cloneFromMyCalendar(currentWeekViewMyCalendar);
-                    nextWeekViewBody.getMyCalendar().setOffset(+7);
+                    nextWeekViewBody.getMyCalendar().setOffsetByDate(+7);
+                    nextWeekViewBody.setEvents(eventArrayList);
                     nextWeekViewBody.initAll();
                     // init?
                     pagerAdapter.changeView(preView, (currentPosition-1)%size);
@@ -157,6 +160,12 @@ public class WeekView extends RelativeLayout{
             }
         });
     }
+
+    //    set events
+    public void setEvent(ArrayList<Event> eventArrayList){
+        this.eventArrayList = eventArrayList;
+    }
+//    end of setting events
 
 //    **********************************************************************************
     @Override

@@ -10,8 +10,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import org.unimelb.itime.test.R;
+import org.unimelb.itime.vendor.eventview.Event;
 import org.unimelb.itime.vendor.weekview.WeekView;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
@@ -26,13 +28,27 @@ public class WeekViewFragment extends Fragment implements WeekView.OnWeekViewCha
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (root == null)
             root= inflater.inflate(R.layout.fragment_week_view,container,false);
+        WeekView weekView = (WeekView) root.findViewById(R.id.week_view);
+        // simulate Events
+        ArrayList<Event> eventArrayList = new ArrayList<>();
+        Calendar calendar1 = Calendar.getInstance();
+        calendar1.set(Calendar.DAY_OF_MONTH,26);
+        calendar1.set(Calendar.HOUR_OF_DAY, 13);
+        calendar1.set(Calendar.MINUTE,0);
+        Event event = new Event();
+        event.setTitle("itime meeting");
+        event.setStartTime(calendar1.getTimeInMillis());
+        event.setEndTime(calendar1.getTimeInMillis() + 3600000*2);
+        event.setEventType(Event.Type.GROUP);
+        event.setStatus(Event.Status.COMFIRM);
+        eventArrayList.add(event);
+        weekView.setEvent(eventArrayList);
         return root;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-//        Log.i("onStart","here here");
     }
 
     @Override

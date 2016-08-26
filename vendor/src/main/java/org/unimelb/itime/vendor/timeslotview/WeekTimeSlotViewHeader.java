@@ -1,14 +1,10 @@
-package org.unimelb.itime.vendor.weekview;
+package org.unimelb.itime.vendor.timeslotview;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.text.Layout;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -16,14 +12,15 @@ import android.widget.TextView;
 
 import org.unimelb.itime.vendor.R;
 import org.unimelb.itime.vendor.helper.MyCalendar;
+import org.unimelb.itime.vendor.weekview.WeekViewHeader;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
- * Created by yinchuandong on 22/08/2016.
+ * Created by Paul on 25/08/2016.
  */
-public class WeekViewHeader extends LinearLayout{
+public class WeekTimeSlotViewHeader extends LinearLayout {
     private int totalHeight;
     private int totalWidth;
     private int paddingTop = 0;
@@ -35,17 +32,17 @@ public class WeekViewHeader extends LinearLayout{
 
     private MyCalendar myCalendar;
     private LinearLayout dateLayout;
-//    private RelativeLayout titleLayout;
+    //    private RelativeLayout titleLayout;
     private ArrayList<TextView> textViews = new ArrayList<>();
     ImageView newEventCreateImageView;
     private String[] titles= {"SUN","MON","TUE","WED","TUR","FRI","SAT"};
 
-    public WeekViewHeader(Context context) {
+    public WeekTimeSlotViewHeader(Context context) {
         super(context);
         this.setOrientation(VERTICAL);
     }
 
-    public WeekViewHeader(Context context, AttributeSet attrs) {
+    public WeekTimeSlotViewHeader(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.setOrientation(VERTICAL);
     }
@@ -70,29 +67,6 @@ public class WeekViewHeader extends LinearLayout{
         calendar.set(Calendar.YEAR, myCalendar.getYear());
         calendar.set(Calendar.MONTH, myCalendar.getMonth());
         calendar.set(Calendar.DATE, myCalendar.getDay());
-
-        //****************************************************
-//        TextView calendarTitleText = new TextView(getContext());
-//        RelativeLayout.LayoutParams calendarTitleTextParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-//        calendarTitleTextParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-//        calendarTitleText.setLayoutParams(calendarTitleTextParams);
-//        calendarTitleText.setText(new StringBuilder().append(getMonthName(calendar.get(Calendar.MONTH))).append("  ").append(calendar.get(Calendar.YEAR)).toString());
-//        calendarTitleText.setGravity(Gravity.CENTER);
-//        calendarTitleText.setTextSize(titleTextSize);
-//        titleLayout.addView(calendarTitleText);
-//
-//
-//
-//        newEventCreateImageView = new ImageView(getContext());
-//        newEventCreateImageView.setImageResource(R.drawable.image_create_new_event);
-//        RelativeLayout.LayoutParams newEventCreateImageViewParams = new RelativeLayout.LayoutParams(totalHeight/4, totalHeight/4);
-//        newEventCreateImageViewParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-//        newEventCreateImageViewParams.addRule(RelativeLayout.CENTER_VERTICAL);
-//        newEventCreateImageViewParams.setMarginEnd(totalHeight/10);
-//        newEventCreateImageView.setLayoutParams(newEventCreateImageViewParams);
-//        titleLayout.addView(newEventCreateImageView);
-
-        //*************************************************
 
         TextView blankView = new TextView(getContext());
         RelativeLayout.LayoutParams blankParams = new RelativeLayout.LayoutParams(paddingLeft, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -203,6 +177,4 @@ public class WeekViewHeader extends LinearLayout{
         this.paddingTop = (int)(width * 0.05);
         this.viewWidth = (width - paddingLeft)/7;
     }
-
-
 }

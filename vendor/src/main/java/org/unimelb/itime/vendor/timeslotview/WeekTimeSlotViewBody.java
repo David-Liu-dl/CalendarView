@@ -1,4 +1,4 @@
-package org.unimelb.itime.vendor.weekview;
+package org.unimelb.itime.vendor.timeslotview;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -15,9 +15,14 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import org.unimelb.itime.vendor.R;
+import org.unimelb.itime.vendor.helper.MessageTimeSlot;
 import org.unimelb.itime.vendor.helper.MyCalendar;
+import org.unimelb.itime.vendor.timeslot.TimeSlotView;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -25,9 +30,9 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * Created by yinchuandong on 22/08/2016.
+ * Created by Paul on 25/08/2016.
  */
-public class WeekViewBody extends LinearLayout{
+public class WeekTimeSlotViewBody extends LinearLayout{
     private int totalHeight;
     private int totalWidth;
     private int hourHeight;
@@ -36,6 +41,10 @@ public class WeekViewBody extends LinearLayout{
     private int dayWidth;
     private int numOfHourShowInScreen = 8;
     private int leftTimeBarPortion = 10;
+
+
+    private ArrayList<Long> timeSlots;
+    private int duration;
 
     private TreeMap<Integer,String> timeSlotTreeMap = new TreeMap<>();
     private TreeMap<Integer, String> daySlotTreeMap = new TreeMap<>();
@@ -52,16 +61,19 @@ public class WeekViewBody extends LinearLayout{
     private MyCalendar myCalendar;
     Calendar calendar = Calendar.getInstance();
 
-    public WeekViewBody(Context context) {
+    public WeekTimeSlotViewBody(Context context) {
         super(context);
         this.setOrientation(HORIZONTAL);
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
     }
 
-    public WeekViewBody(Context context, AttributeSet attrs) {
+    public WeekTimeSlotViewBody(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.setOrientation(HORIZONTAL);
-//        inflate(context, R.layout.week_view_body, this);
-//        initWidgets();
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
+
     }
 
     private void initWidgets(){
@@ -83,6 +95,9 @@ public class WeekViewBody extends LinearLayout{
     }
 
     public void initAll(){
+//        EventBus.getDefault().register(this);
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
         initWidgets();
         cleanView();
         this.requestLayout();
@@ -94,6 +109,9 @@ public class WeekViewBody extends LinearLayout{
         initDaySlot();
         initCurrentTimeLine(myCalendar);
         initMsgWindow();
+//        if (timeSlots!=null){
+        initSuggestTimeSlot();
+//        }
         eventWidgetsRelativeLayout.invalidate();
     }
 
@@ -270,6 +288,51 @@ public class WeekViewBody extends LinearLayout{
         }
     }
 
+    public void initSuggestTimeSlot(){
+        if (timeSlots!=null) {
+            for (Long startTime : timeSlots) {
+                Date timeSlotDate = new Date(startTime);
+                Calendar timeSlotCalendar = Calendar.getInstance();
+                timeSlotCalendar.setTime(timeSlotDate);
+                if (isCurrentWeekTimeBlock(timeSlotCalendar, myCalendar)) {
+                    TimeSlotView timeSlotView = new TimeSlotView(
+                            getContext(), startTime, duration);
+                    int timeSlotDayOfWeek = timeSlotCalendar.get(Calendar.DAY_OF_WEEK);
+                    int timeSlotStartHour = timeSlotCalendar.get(Calendar.HOUR);
+                    int timeSlotStartMinute = timeSlotCalendar.get(Calendar.MINUTE);
+
+                    int leftOffSet = dayWidth * (timeSlotDayOfWeek - 1);
+                    int topOffset = (int) ((float) hourHeight / 2 + ((float) hourHeight / 4) *
+                            (timeSlotStartHour * 4 + (float) timeSlotStartMinute / 15));
+                    int timeSlotHeight = (int) ((float) hourHeight / 60) * duration;
+
+                    RelativeLayout.LayoutParams timeSlotParams = new RelativeLayout.LayoutParams(
+                            dayWidth, timeSlotHeight
+                    );
+                    timeSlotParams.setMargins(leftOffSet, topOffset, 0, 0);
+                    timeSlotView.setLayoutParams(timeSlotParams);
+                    eventRelativeLayout.addView(timeSlotView);
+                }
+            }
+        }
+    }
+
+    public boolean isCurrentWeekTimeBlock(Calendar timeSlotCalendar,MyCalendar myCalendar){
+        Calendar firstSundayCalendar = Calendar.getInstance();
+        firstSundayCalendar.set(Calendar.YEAR, myCalendar.getYear());
+        firstSundayCalendar.set(Calendar.MONTH, myCalendar.getMonth());
+        firstSundayCalendar.set(Calendar.DAY_OF_MONTH, myCalendar.getDay());
+        return (timeSlotCalendar.get(Calendar.WEEK_OF_YEAR) == firstSundayCalendar.get(Calendar.WEEK_OF_YEAR)
+                && timeSlotCalendar.get(Calendar.YEAR) == firstSundayCalendar.get(Calendar.YEAR));
+    }
+
+    @Subscribe
+    public void receiveTimeSlots(MessageTimeSlot messageTimeSlot){
+        this.timeSlots = messageTimeSlot.timeSlotArraylist;
+        this.duration = messageTimeSlot.duration;
+        Log.i("duration", String.valueOf(duration));
+    }
+
     private String[] getHours(){
         String[] HOURS = new String[]{
                 "00:00","01:00","02:00","03:00","04:00","05:00","06:00","07:00",
@@ -289,8 +352,8 @@ public class WeekViewBody extends LinearLayout{
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        this.totalWidth = MeasureSpec.getSize(widthMeasureSpec);
-        this.totalHeight = MeasureSpec.getSize(heightMeasureSpec);
+        this.totalWidth = View.MeasureSpec.getSize(widthMeasureSpec);
+        this.totalHeight = View.MeasureSpec.getSize(heightMeasureSpec);
         updateWidthHeight(totalWidth,totalHeight);
     }
 
@@ -486,4 +549,7 @@ public class WeekViewBody extends LinearLayout{
         //msgWindow.setVisibility(View.VISIBLE);
     }
 
+    public void setTimeSlot(ArrayList<Long> timeSlots){
+        this.timeSlots = timeSlots;
+    }
 }

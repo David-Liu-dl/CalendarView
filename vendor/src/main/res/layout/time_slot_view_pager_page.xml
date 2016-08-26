@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <org.unimelb.itime.vendor.timeslotview.WeekTimeSlotViewHeader
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="5">
+    </org.unimelb.itime.vendor.timeslotview.WeekTimeSlotViewHeader>
+    <org.unimelb.itime.vendor.timeslotview.WeekTimeSlotViewBody
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+    </org.unimelb.itime.vendor.timeslotview.WeekTimeSlotViewBody>
+
+    <!--<org.unimelb.itime.vendor.weekview.WeekViewHeader-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_weight="5">-->
+    <!--</org.unimelb.itime.vendor.weekview.WeekViewHeader>-->
+    <!--<org.unimelb.itime.vendor.weekview.WeekViewBody-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_weight="1">-->
+    <!--</org.unimelb.itime.vendor.weekview.WeekViewBody>-->
+
+</LinearLayout>

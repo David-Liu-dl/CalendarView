@@ -27,15 +27,15 @@ public class TestFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Button button = (Button)root.findViewById(R.id.button2);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((PaulActivity)getActivity()).goToFragment1();
-            }
-        });
-
+//        Button button = (Button)root.findViewById(R.id.button2);
+//        button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                ((PaulActivity)getActivity()).goToFragment1();
+//            }
+//        });
+//
+//    }
     }
-
 
 }

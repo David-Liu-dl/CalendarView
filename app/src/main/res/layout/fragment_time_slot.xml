@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <Button
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="change fragment"/>
+    <org.unimelb.itime.vendor.timeslotview.WeekTimeSlotView
+        android:id="@+id/week_timeslot_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </org.unimelb.itime.vendor.timeslotview.WeekTimeSlotView>
+    <!--<WeekTimeSlotViewBodyBody-->
+        <!--android:id="@+id/timeslot_view_body"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content">-->
+    <!--</WeekTimeSlotViewBodyBody>-->
+
+</LinearLayout>

@@ -21,6 +21,7 @@ import org.unimelb.itime.vendor.R;
 import org.unimelb.itime.vendor.eventview.DayDraggableEventView;
 import org.unimelb.itime.vendor.eventview.Event;
 import org.unimelb.itime.vendor.helper.CalendarEventOverlapHelper;
+import org.unimelb.itime.vendor.helper.DensityUtil;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -91,10 +92,6 @@ public class DayViewBodyController {
         this.timeRLayout = timelineRL;
         this.dividerRLayout = dividerRL;
 
-//        RelativeLayout.LayoutParams timeParams = (RelativeLayout.LayoutParams) this.timeRLayout.getLayoutParams();
-//        timeParams.addRule(RelativeLayout.LEFT_OF, this.dividerRLayout.getId());
-//        this.timeRLayout.setLayoutParams(timeParams);
-
         this.scrollContainerView = scrollContainerView;
         dividerRLayout.setOnDragListener(new MyDragListener());
     }
@@ -113,6 +110,12 @@ public class DayViewBodyController {
         if (this.dividerRLayout != null){
             dividerRLayout.removeAllViews();
         }
+
+        if (this.parent != null){
+            parent.removeView(nowTime);
+            parent.removeView(nowTimeLine);
+        }
+
     }
 
     public void addEvent(Event event){
@@ -128,9 +131,9 @@ public class DayViewBodyController {
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) new_dgEvent.getLayoutParams();
         params.topMargin = margin_top;
 
-        int id = event_view_map.size();
-        new_dgEvent.setId(id);
-        this.event_view_map.put(event,id);
+//        int id = event_view_map.size();
+        new_dgEvent.setId(View.generateViewId());
+        this.event_view_map.put(event,new_dgEvent.getId());
         this.dividerRLayout.addView(new_dgEvent, params);
     }
 
@@ -197,16 +200,20 @@ public class DayViewBodyController {
     }
 
     public void addNowTimeLine(){
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams params =
+                new RelativeLayout.LayoutParams(
+                        dividerRLayout.getWidth() + DensityUtil.dip2px(context, 5)
+                        , ViewGroup.LayoutParams.WRAP_CONTENT);
         int lineMarin_top = getNowTimeLinePst();
 
         nowTimeLine = new ImageView(context);
         nowTimeLine.setImageResource(R.drawable.itime_now_time_full_line);
         params.setMargins(0, lineMarin_top, 0, 0);
+        params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
         nowTimeLine.setLayoutParams(params);
-        nowTimeLine.setLayerType(nowTimeLine.LAYER_TYPE_SOFTWARE,null);
+//        nowTimeLine.setLayerType(nowTimeLine.LAYER_TYPE_SOFTWARE,null);
         nowTimeLine.setPadding(0,0,0,0);
-        dividerRLayout.addView(nowTimeLine);
+        parent.addView(nowTimeLine);
 
         Calendar cal = Calendar.getInstance(Locale.getDefault());
         Date currentLocalTime = cal.getTime();
@@ -214,12 +221,13 @@ public class DayViewBodyController {
         String localTime = date.format(currentLocalTime);
         nowTime = new TextView(context);
         nowTime.setText(localTime);
+        nowTime.setTextSize(DensityUtil.sp2px(context, 4));
         RelativeLayout.LayoutParams paramsText = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         paramsText.setMargins(0, lineMarin_top - nowTime.getLineHeight(), 0, 0);
         nowTime.setLayoutParams(paramsText);
         nowTime.setTextColor(context.getResources().getColor(R.color.text_today_color));
-        nowTimeLine.setPadding(0,0,0,0);
-//        this.parent.addView(nowTime);
+        nowTime.setBackgroundColor(context.getResources().getColor(R.color.whites));
+        this.parent.addView(nowTime);
 
 
         this.parent.invalidate();

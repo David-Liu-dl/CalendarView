@@ -2,6 +2,7 @@
 <resources>
 
     <attr name="page_text_size" format="dimension"></attr>
+
     <declare-styleable name="WeekView">
         <attr name="onWeekViewChange" format="string" />
     </declare-styleable>

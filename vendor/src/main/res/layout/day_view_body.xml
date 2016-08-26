@@ -6,7 +6,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     >
     <RelativeLayout
-        android:id="@+id/linearLayout"
+        android:id="@+id/body_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal">
@@ -16,13 +16,16 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:layout_height="match_parent"
+            android:background="@android:color/transparent"
             >
         </RelativeLayout>
         <RelativeLayout
             android:id="@+id/eventRelativeLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_toRightOf="@id/timeReLayout">
+            android:layout_toRightOf="@id/timeReLayout"
+            android:background="@android:color/transparent"
+            >
         </RelativeLayout>
     </RelativeLayout>
 </org.unimelb.itime.vendor.dayview.ScrollContainerView>

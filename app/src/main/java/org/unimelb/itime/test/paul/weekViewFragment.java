@@ -13,7 +13,7 @@ import org.unimelb.itime.test.R;
 /**
  * Created by Paul on 23/08/2016.
  */
-public  class WeekViewFragment extends Fragment {
+public class WeekViewFragment extends Fragment {
     private View root;
     private LayoutInflater inflater;
     private ViewGroup container;

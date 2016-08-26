@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <attr name="page_text_size" format="dimension"></attr>
+
+    <declare-styleable name="dayStyle">
+        <attr name="state_current" format="boolean" />
+        <attr name="lineHeight" format="dimension" />
+        <attr name="timeTextSize" format="dimension" />
+        <attr name="headerNormalTextColorOdd" format="color" />
+        <attr name="headerNormalTextColorEven" format="color" />
+        <attr name="headerTodayTextColor" format="color" />
+        <!--<attr name="headerNormalTextColor" format="color" />-->
+        <attr name="headerSelectedTextColor" format="color" />
+        <attr name="todaySelectedCircleBgColor" format="color" />
+        <attr name="otherSelectedCircleBgColor" format="color" />
+    </declare-styleable>
+
+    <attr name="calendarViewStyle" format="reference" />
+
+</resources>

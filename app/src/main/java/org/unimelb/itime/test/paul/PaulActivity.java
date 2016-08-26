@@ -1,17 +1,9 @@
 package org.unimelb.itime.test.paul;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import org.unimelb.itime.test.R;
-import org.unimelb.itime.vendor.helper.MyCalendar;
-import org.unimelb.itime.vendor.weekview.WeekViewBody;
-import org.unimelb.itime.vendor.weekview.WeekViewHeader;
-
-import java.util.Calendar;
-import java.util.Date;
 
 public class PaulActivity extends AppCompatActivity {
 

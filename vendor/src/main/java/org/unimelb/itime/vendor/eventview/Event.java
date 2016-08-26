@@ -68,4 +68,8 @@ public class Event implements Comparable<Event> {
     public void setStatus(Status status) {
         this.status = status;
     }
+
+    public int getDurationInMinute(){
+        return (int)((endTime - startTime) /(1000*60));
+    }
 }

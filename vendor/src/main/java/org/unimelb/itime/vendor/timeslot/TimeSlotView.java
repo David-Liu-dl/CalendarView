@@ -53,7 +53,6 @@ public class TimeSlotView extends ViewGroup {
     @Override
     protected void onLayout(boolean b, int i, int i1, int i2, int i3) {
         int iconWidth = this.width/3;
-//        RelativeLayout.LayoutParams iconParams = (RelativeLayout.LayoutParams) icon.getLayoutParams();
         TimeSlotViewLayoutParams iconParams = (TimeSlotViewLayoutParams) icon.getLayoutParams();
         iconParams.top = this.width/10;
         iconParams.left = this.width/3*2-this.width/10;

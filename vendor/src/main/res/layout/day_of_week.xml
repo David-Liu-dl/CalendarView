@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="10dp">
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="SUN"
+        android:gravity="center"
+        android:id="@+id/dayOfWeek_1"
+        android:layout_weight="1"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="MON"
+        android:gravity="center"
+        android:id="@+id/dayOfWeek_2"
+        android:layout_weight="1"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="TUE"
+        android:gravity="center"
+        android:id="@+id/dayOfWeek_3"
+        android:layout_weight="1"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="WED"
+        android:gravity="center"
+        android:id="@+id/dayOfWeek_4"
+        android:layout_weight="1"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="TUR"
+        android:gravity="center"
+        android:id="@+id/dayOfWeek_5"
+        android:layout_weight="1"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="FRI"
+        android:gravity="center"
+        android:id="@+id/dayOfWeek_6"
+        android:layout_weight="1"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="SAT"
+        android:gravity="center"
+        android:id="@+id/dayOfWeek_7"
+        android:layout_weight="1"/>
+
+</LinearLayout>

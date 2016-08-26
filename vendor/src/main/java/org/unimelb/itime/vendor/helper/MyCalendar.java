@@ -3,15 +3,13 @@ package org.unimelb.itime.vendor.helper;
 import java.util.Calendar;
 
 /**
- * Created by Paul on 22/08/2016.
+ * Created by yuhaoliu on 6/08/16.
  */
 public class MyCalendar {
-    private int year;
+    int year;
     int month;
     int day;
-    int hour;
-    int minute;
-
+    private String TAG="MyAPPCalendar";
     public MyCalendar(Calendar calendar) {
         this.cloneFromCalendar(calendar);
     }
@@ -44,73 +42,39 @@ public class MyCalendar {
         this.day = day;
     }
 
-    public int getHour(){
-        return this.hour;
-    }
-
-    public void setHour(int hour){
-        this.hour = hour;
-    }
-
-    public int getMinute(){
-        return this.minute;
-    }
-
-    public void setMinute(int minute){
-        this.minute = minute;
-    }
-
-
     public void cloneFromCalendar(Calendar calendar){
         this.year = calendar.get(Calendar.YEAR);
         this.month = calendar.get(Calendar.MONTH);
-        this.day = calendar.get(Calendar.DATE);
-        this.hour = calendar.get(Calendar.HOUR_OF_DAY);
-        this.minute = calendar.get(Calendar.MINUTE);
+        this.day = calendar.get(Calendar.DAY_OF_MONTH);
     }
 
     public void cloneFromMyCalendar(MyCalendar myCalendar){
         this.year = myCalendar.getYear();
         this.month = myCalendar.getMonth();
         this.day = myCalendar.getDay();
-        this.hour = myCalendar.getHour();
-        this.minute = myCalendar.getMinute();
     }
 
     public void setOffset(int offset){
-        Calendar calendar = this.getCalendar();
-        calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) + offset);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH) + offset);
         cloneFromCalendar(calendar);
     }
 
-    private Calendar getCalendar(){
+    public Calendar getCalendar(){
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR,this.getYear());
         calendar.set(Calendar.MONTH,this.getMonth());
-        calendar.set(Calendar.DATE,this.getDay());
-        calendar.set(Calendar.HOUR_OF_DAY,this.getHour());
-        calendar.set(Calendar.MINUTE, this.getMinute());
+        calendar.set(Calendar.DAY_OF_MONTH,this.getDay());
 
         return calendar;
     }
 
-    public int getDayOfWeek(){
+    public boolean isToday(){
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR,this.getYear());
-        calendar.set(Calendar.MONTH,this.getMonth());
-        calendar.set(Calendar.DATE,this.getDay());
+        boolean year = (this.getYear() == calendar.get(Calendar.YEAR));
+        boolean month = (this.getMonth() == calendar.get(Calendar.MONTH));
+        boolean day = (this.getDay() == calendar.get(Calendar.DAY_OF_MONTH));
 
-        return calendar.get(Calendar.DAY_OF_WEEK);
-    }
-
-    @Override
-    public String toString() {
-        return "MyCalendar{" +
-                "year=" + year +
-                ", month=" + month +
-                ", day=" + day +
-                ", hour=" + hour +
-                ", minute=" + minute +
-                '}';
+        return  year && month && day;
     }
 }

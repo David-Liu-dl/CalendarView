@@ -43,7 +43,6 @@ public class MyPagerAdapter extends PagerAdapter {
         if (parent != null)
             parent.removeView(view);
         container.addView(view);
-//        Log.i("instantiateItem", String.valueOf(position));
         doNotifyDataSetChangedOnce = true;
         return views.get(position % views.size());
     }
@@ -51,7 +50,6 @@ public class MyPagerAdapter extends PagerAdapter {
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
         doNotifyDataSetChangedOnce = true;
-//        Log.d("destroyItem", String.valueOf(position));
         container.removeView(views.get(position % views.size()));
     }
 

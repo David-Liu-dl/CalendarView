@@ -17,7 +17,7 @@ import java.util.Calendar;
 /**
  * Created by Paul on 23/08/2016.
  */
-public  class WeekViewFragment extends Fragment implements WeekView.OnWeekViewChangeListener {
+public class WeekViewFragment extends Fragment implements WeekView.OnWeekViewChangeListener {
     private View root;
     private LayoutInflater inflater;
     private ViewGroup container;

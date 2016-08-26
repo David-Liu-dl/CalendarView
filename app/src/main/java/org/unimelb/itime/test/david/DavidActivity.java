@@ -11,5 +11,10 @@ public class DavidActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_david);
+
+        ContactsPageFragment pageF = new ContactsPageFragment();
+//        CalendarMonthDayFragment monthDayFragment = new CalendarMonthDayFragment();
+        getFragmentManager().beginTransaction().add(R.id.david_fragment, pageF).commit();
+
     }
 }

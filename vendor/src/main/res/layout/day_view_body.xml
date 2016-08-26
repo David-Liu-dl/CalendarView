@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<org.unimelb.itime.vendor.dayview.ScrollContainerView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/customer_day_view"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+    <RelativeLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+        <RelativeLayout
+            android:id="@+id/timeReLayout"
+            android:layout_width="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_height="match_parent"
+            >
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/eventRelativeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@id/timeReLayout">
+        </RelativeLayout>
+    </RelativeLayout>
+</org.unimelb.itime.vendor.dayview.ScrollContainerView>
+

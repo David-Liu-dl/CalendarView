@@ -2,6 +2,7 @@ package org.unimelb.itime.vendor.dayview;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.RelativeLayout;
 
@@ -21,6 +22,7 @@ public class DayViewBody extends RelativeLayout {
     private static final String TAG = "MyAPP";
 
     public final LayoutInflater mInflater;
+    public RelativeLayout body_container;
     public RelativeLayout timeRLayout;
     public RelativeLayout dividerRLayout;
     public ScrollContainerView scrollContainerView;
@@ -69,16 +71,18 @@ public class DayViewBody extends RelativeLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         scrollContainerView = (ScrollContainerView) findViewById(R.id.customer_day_view);
+        body_container = (RelativeLayout) findViewById(R.id.body_container);
         timeRLayout = (RelativeLayout) findViewById(R.id.timeReLayout);
         dividerRLayout = (RelativeLayout) findViewById(R.id.eventRelativeLayout);
 
-        dayViewController.onFinishInflate(scrollContainerView,timeRLayout, dividerRLayout, this);
+        dayViewController.onFinishInflate(scrollContainerView,timeRLayout, dividerRLayout, body_container);
     }
       
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+        Log.i(TAG, "onAttachedToWindow: ");
         dayViewController.resetViews();
 
         dayViewController.initBackgroundView();

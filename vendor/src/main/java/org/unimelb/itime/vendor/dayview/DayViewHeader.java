@@ -135,15 +135,21 @@ public class DayViewHeader extends LinearLayout {
         tv.setTextColor(headerSelectedTextColor);
         ((GradientDrawable)tv.getBackground()).setColor(color);
     }
+
+    private void setFstDayOfMonthText(TextView tv){
+        if (tv.getLineCount() > 1){
+            tv.setText(tv.getText().subSequence(0,1));
+        }
+    }
+
     private void resetParameters(){
-//        dateLayout.removeAllViews();
-//        textViews.clear();
         todayPst = -1;
     }
     /************************public methods*****************************/
     public void setOnCalendarHeaderDayClickListener(OnCalendarHeaderDayClickListener onCalendarHeaderDayClickListner){
         this.onCalendarHeaderDayClickListener = onCalendarHeaderDayClickListner;
     }
+
     public int getCurrentSelectedIndex(){
         return this.currentSelectedPst;
     }
@@ -259,13 +265,14 @@ public class DayViewHeader extends LinearLayout {
                 onCalendarHeaderDayClickListener.setCurrentSelectPst(rowPst);
                 onCalendarHeaderDayClickListener.onClick(view);
                 TextView tv = (TextView) view;
-                setCircleColor(tv,textViews.indexOf(tv) == todayPst);
+                boolean isToday = textViews.indexOf(tv) == todayPst;
+                setFstDayOfMonthText(tv);
+                setCircleColor(tv,isToday);
                 currentSelectedPst = textViews.indexOf(tv);
                 onCalendarHeaderDayClickListener.setCurrentSelectIndexInRow(currentSelectedPst);
 
                 //synchronize body part
                 onCalendarHeaderDayClickListener.synBodyPart(rowPst, currentSelectedPst);
-                Log.i(TAG, "rowPst: " + rowPst + " currentSelectedPst: " + currentSelectedPst);
             }
         }
     }
@@ -274,32 +281,6 @@ public class DayViewHeader extends LinearLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         this.initCurrentWeekHeaders();
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-//        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-//        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-//        int width = MeasureSpec.getSize(widthMeasureSpec);
-//        int height = MeasureSpec.getSize(heightMeasureSpec);
-//
-//        calendarDayViewController.onMeasure(width,height);
-//        int cmpHeight = calendarDayViewController.computeHeightNeeded();
-//        int finalHeight =  cmpHeight < height ? height : cmpHeight;
-//        setMeasuredDimension(width,finalHeight);
-    }
-
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-//        if (first){
-//            resizeWeekHeader();
-//            first = false;
-//            this.requestLayout();
-//            this.invalidate();
-//        }
     }
 
     /**

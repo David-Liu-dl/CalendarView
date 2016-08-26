@@ -80,6 +80,7 @@ public class DayViewHeaderRecyclerAdapter extends RecyclerView.Adapter<DayViewHe
                     for (MyViewHolder holder:holds
                          ) {
                         holder.headerRow.clearAllBg();
+                        holder.headerRow.updateDate();
                     }
                 }
 
@@ -111,8 +112,6 @@ public class DayViewHeaderRecyclerAdapter extends RecyclerView.Adapter<DayViewHe
                         Log.i(TAG, "synBodyPart: " + "Fail, pager == null");
                     }
                 }
-
-
             });
         }
     }

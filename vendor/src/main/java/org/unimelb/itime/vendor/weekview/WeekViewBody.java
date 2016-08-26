@@ -16,8 +16,11 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import org.unimelb.itime.vendor.R;
+import org.unimelb.itime.vendor.eventview.Event;
+import org.unimelb.itime.vendor.eventview.WeekDraggableEventView;
 import org.unimelb.itime.vendor.helper.MyCalendar;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -51,6 +54,7 @@ public class WeekViewBody extends LinearLayout{
     private MyDragListener myDragListener;
     private MyCalendar myCalendar;
     Calendar calendar = Calendar.getInstance();
+    private ArrayList<Event> eventArrayList;
 
     public WeekViewBody(Context context) {
         super(context);
@@ -94,6 +98,7 @@ public class WeekViewBody extends LinearLayout{
         initDaySlot();
         initCurrentTimeLine(myCalendar);
         initMsgWindow();
+        initEvents();
         eventWidgetsRelativeLayout.invalidate();
     }
 
@@ -259,6 +264,45 @@ public class WeekViewBody extends LinearLayout{
             }
         }
         return false;
+    }
+
+    public void initEvents(){
+        if (this.eventArrayList!=null){
+            for (Event event:eventArrayList){
+                Date eventDate = new Date(event.getStartTime());
+                Calendar eventCalendar = Calendar.getInstance();
+                eventCalendar.setTime(eventDate);
+                if (isInCurrentWeek(eventCalendar,myCalendar)){
+
+                    WeekDraggableEventView eventView = new WeekDraggableEventView(getContext(),event);
+                    int eventDayOfWeek = eventCalendar.get(Calendar.DAY_OF_WEEK);
+                    int eventStartHour = eventCalendar.get(Calendar.HOUR_OF_DAY);
+                    int eventStartMinute = eventCalendar.get(Calendar.MINUTE);
+
+                    int leftOffset = dayWidth * (eventDayOfWeek -1);
+                    int topOffSet = (int)((float)hourHeight/2 + ((float)hourHeight/4) *
+                            (eventStartHour * 4 + (float)eventStartMinute / 15));
+                    int eventHeight = (int)(event.getDurationInMinute() * hourHeight / 60);
+                    RelativeLayout.LayoutParams eventViewParams = new RelativeLayout.LayoutParams(
+                            dayWidth,eventHeight);
+                    eventViewParams.setMargins(leftOffset,topOffSet , 0, 0);
+                    eventView.setLayoutParams(eventViewParams);
+                    eventRelativeLayout.addView(eventView);
+                }
+            }
+        }
+    }
+    public boolean isInCurrentWeek(Calendar timeSlotCalendar,MyCalendar myCalendar){
+        Calendar firstSundayCalendar = Calendar.getInstance();
+        firstSundayCalendar.set(Calendar.YEAR, myCalendar.getYear());
+        firstSundayCalendar.set(Calendar.MONTH, myCalendar.getMonth());
+        firstSundayCalendar.set(Calendar.DAY_OF_MONTH, myCalendar.getDay());
+        return (timeSlotCalendar.get(Calendar.WEEK_OF_YEAR) == firstSundayCalendar.get(Calendar.WEEK_OF_YEAR)
+                && timeSlotCalendar.get(Calendar.YEAR) == firstSundayCalendar.get(Calendar.YEAR));
+    }
+
+    public void setEvents(ArrayList<Event> eventArrayList){
+        this.eventArrayList = eventArrayList;
     }
 
     public void initDragListener(){

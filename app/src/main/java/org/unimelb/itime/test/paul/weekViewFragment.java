@@ -32,7 +32,6 @@ public class WeekViewFragment extends Fragment implements WeekView.OnWeekViewCha
     @Override
     public void onStart() {
         super.onStart();
-//        Log.i("onStart","here here");
     }
 
     @Override

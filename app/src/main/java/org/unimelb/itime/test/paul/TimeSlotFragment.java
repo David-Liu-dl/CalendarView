@@ -15,6 +15,7 @@ import org.unimelb.itime.vendor.weekview.WeekView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by Paul on 26/08/2016.
@@ -28,6 +29,8 @@ public class TimeSlotFragment extends Fragment implements WeekView.OnWeekViewCha
         WeekTimeSlotView weekTimeSlotView = (WeekTimeSlotView) root.findViewById(R.id.week_timeslot_view);
         ArrayList<Long> simulateTimeSlots = new ArrayList<>();
         simulateTimeSlots.add(Long.parseLong("1472274935901"));
+//        Date date = new Date(Long.parseLong("1472274935901"));
+//        Log.i("date is ",date.toString());
         Log.i("already added"," simlulatetimeslots");
         weekTimeSlotView.setTimeSlots(simulateTimeSlots,60);
         return root;

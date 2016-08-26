@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<<<<<<< HEAD
+
+    <attr name="page_text_size" format="dimension"></attr>
     <declare-styleable name="WeekView">
         <attr name="onWeekViewChange" format="string" />
     </declare-styleable>
-</resources>
-=======
-
-    <attr name="page_text_size" format="dimension"></attr>
 
     <declare-styleable name="dayStyle">
         <attr name="state_current" format="boolean" />
@@ -23,6 +20,4 @@
     </declare-styleable>
 
     <attr name="calendarViewStyle" format="reference" />
-
 </resources>
->>>>>>> 80f144d7c6c2442074b6e27e699efa939992ddbc

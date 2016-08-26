@@ -94,6 +94,7 @@ public class WeekView extends RelativeLayout{
             @Override
             public void onPageSelected(int position) {
                 currentPosition = position;
+                Log.i("current position", String.valueOf(position));
                 int deltaPosition;
                 if (currentPosition - lastPosition>0)
                     deltaPosition=1;
@@ -127,7 +128,7 @@ public class WeekView extends RelativeLayout{
                     WeekViewHeader preWeekViewHeader = (WeekViewHeader) preView.getChildAt(0);
                     preWeekViewHeader.getMyCalendar().cloneFromMyCalendar(currentWeekViewMyCalendar);
 
-                    preWeekViewHeader.getMyCalendar().setOffset(-7);
+                    preWeekViewHeader.getMyCalendar().setOffsetByDate(-7);
                     Log.i("preWeekView", String.valueOf(preWeekViewHeader.getMyCalendar().getMonth()));
 
                     Log.i("preWeekViewHeader", String.valueOf(preWeekViewHeader.getMyCalendar().getDay()));
@@ -135,19 +136,19 @@ public class WeekView extends RelativeLayout{
                     // init?
                     WeekViewBody preWeekViewBody = (WeekViewBody) preView.getChildAt(1);
                     preWeekViewBody.getMyCalendar().cloneFromMyCalendar(currentWeekViewMyCalendar);
-                    preWeekViewBody.getMyCalendar().setOffset(-7);
+                    preWeekViewBody.getMyCalendar().setOffsetByDate(-7);
                     preWeekViewBody.initAll();
                     // init?
 
 //                    pagerAdapter.changeView(nextView,(currentPosition + 1) % size);
                     WeekViewHeader nextWeekViewHeader = (WeekViewHeader) nextView.getChildAt(0);
                     nextWeekViewHeader.getMyCalendar().cloneFromMyCalendar(currentWeekViewMyCalendar);
-                    nextWeekViewHeader.getMyCalendar().setOffset(+7);
+                    nextWeekViewHeader.getMyCalendar().setOffsetByDate(+7);
                     nextWeekViewHeader.initCurrentWeekHeaders();
                     // init?
                     WeekViewBody nextWeekViewBody = (WeekViewBody) nextView.getChildAt(1);
                     nextWeekViewBody.getMyCalendar().cloneFromMyCalendar(currentWeekViewMyCalendar);
-                    nextWeekViewBody.getMyCalendar().setOffset(+7);
+                    nextWeekViewBody.getMyCalendar().setOffsetByDate(+7);
                     nextWeekViewBody.initAll();
                     // init?
                     pagerAdapter.changeView(preView, (currentPosition-1)%size);

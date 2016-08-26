@@ -3,7 +3,6 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-<<<<<<< HEAD
     <color name="white">#FFFFFF</color><!--白色 -->
     <color name="ivory">#FFFFF0</color><!--象牙色 -->
     <color name="lightyellow">#FFFFE0</color><!--亮黄色-->
@@ -303,7 +302,6 @@
     <color name="bg_sort_color">#EDEDED</color>
     <color name="page_bg_color">#efeef5</color>
 
-=======
     <!--for dayView-->
     <color name="private_et">#05447e</color>
     <color name="group_et">#63adf2</color>
@@ -317,17 +315,6 @@
     <color name="divider_color">#cccccc</color>
 
     <!--for contact-->
-    <color name="text_enable">#0b0b0b</color>
-    <color name="text_disable">#a2a2a2</color>
-
-    <color name="page_bg">#ffff</color>
     <color name="sidebar_text_color">#888888</color>
 
-    <color name="whites">#ffffff</color>
-    <color name="gray">#AFAFAF</color>
-    <color name="yellow">#F99503</color>
-    <color name="gray_color">#AFAFAF</color>
-    <color name="bg_sort_color">#EDEDED</color>
-    <color name="page_bg_color">#efeef5</color>
->>>>>>> 80f144d7c6c2442074b6e27e699efa939992ddbc
 </resources>

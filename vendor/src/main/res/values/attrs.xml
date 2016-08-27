@@ -6,6 +6,9 @@
     <declare-styleable name="WeekView">
         <attr name="onWeekViewChange" format="string" />
     </declare-styleable>
+    <declare-styleable name="WeekTimeSlotView">
+        <attr name="onTimeSlotWeekViewChange" format="string"/>
+    </declare-styleable>
 
     <declare-styleable name="dayStyle">
         <attr name="state_current" format="boolean" />

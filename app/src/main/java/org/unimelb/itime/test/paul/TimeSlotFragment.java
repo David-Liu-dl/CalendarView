@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import org.unimelb.itime.test.R;
 import org.unimelb.itime.vendor.eventview.Event;
+import org.unimelb.itime.vendor.timeslot.TimeSlotView;
 import org.unimelb.itime.vendor.timeslotview.WeekTimeSlotView;
 import org.unimelb.itime.vendor.weekview.WeekView;
 
@@ -21,7 +22,7 @@ import java.util.Date;
 /**
  * Created by Paul on 26/08/2016.
  */
-public class TimeSlotFragment extends Fragment implements WeekView.OnWeekViewChangeListener{
+public class TimeSlotFragment extends Fragment implements WeekTimeSlotView.OnTimeSlotWeekViewChangeListener{
     private View root;
     @Nullable
     @Override
@@ -64,9 +65,14 @@ public class TimeSlotFragment extends Fragment implements WeekView.OnWeekViewCha
 
     }
 
-
     @Override
     public void onWeekChanged(Calendar calendar) {
-        Log.d("day", String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
+        Log.i("onWeekChanged", String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
     }
+
+
+//    @Override
+//    public void onWeekChanged(Calendar calendar) {
+//        Log.d("day", String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
+//    }
 }

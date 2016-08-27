@@ -95,4 +95,6 @@ public class TimeSlotView extends ViewGroup {
     public void setDuration(int duration) {
         this.duration = duration;
     }
+
+
 }

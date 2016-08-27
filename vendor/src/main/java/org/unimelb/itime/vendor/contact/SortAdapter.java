@@ -208,14 +208,12 @@ public class SortAdapter extends BaseAdapter implements SectionIndexer{
 		@Override
 		public void onClick(View view) {
 			ImageView circle_view = (ImageView) view;
-			GradientDrawable db = (GradientDrawable)circle_view.getDrawable();
 			checked = checked ? false : true;
 			if (checked){
-				db.setColor(Color.YELLOW);
+				circle_view.setImageDrawable(mContext.getResources().getDrawable(R.drawable.contact_event_attendee_selected));
 			}else {
-				db.setColor(Color.WHITE);
+				circle_view.setImageDrawable(mContext.getResources().getDrawable(R.drawable.contact_event_attendee_unselected));
 			}
-			circle_view.setImageDrawable(db);
 			//syn check list
 			circleCheckOnClickListener.synCheckedContactsList(contact, checked);
 		}
@@ -227,13 +225,13 @@ public class SortAdapter extends BaseAdapter implements SectionIndexer{
 
 		public void updateCircleBg(ImageView img_v){
 			ImageView circle_view = img_v;
-			GradientDrawable db = (GradientDrawable)circle_view.getDrawable();
+//			GradientDrawable db = (GradientDrawable)circle_view.getDrawable();
 			if (checked){
-				db.setColor(Color.YELLOW);
+				circle_view.setImageDrawable(mContext.getResources().getDrawable(R.drawable.contact_event_attendee_selected));
 			}else {
-				db.setColor(Color.WHITE);
+				circle_view.setImageDrawable(mContext.getResources().getDrawable(R.drawable.contact_event_attendee_unselected));
 			}
-			circle_view.setImageDrawable(db);
+//			circle_view.setImageDrawable(db);
 		}
 	}
 

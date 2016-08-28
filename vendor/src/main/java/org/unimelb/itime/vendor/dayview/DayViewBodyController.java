@@ -56,7 +56,7 @@ public class DayViewBodyController {
 
     private ArrayList<ITimeEventInterface> regularEventModules = new ArrayList<>();
     private ArrayList<ITimeEventInterface> allDayEventModules = new ArrayList<>();
-    private ArrayList<DayDraggableEventView> allDayDgEventModules = new ArrayList<>();
+    private ArrayList<DayDraggableEventView> allDayDgEventViews = new ArrayList<>();
 
     private TextView msgWindow;
     private ImageView nowTimeLine;
@@ -119,7 +119,14 @@ public class DayViewBodyController {
         this.regularEventModules.clear();
         this.regular_event_view_map.clear();
         this.allDayEventModules.clear();
-        this.allDayDgEventModules.clear();
+
+        if(this.allDayContainer != null){
+            for (DayDraggableEventView dgEventView: this.allDayDgEventViews
+                 ) {
+                allDayContainer.removeView(dgEventView);
+            }
+            this.allDayDgEventViews.clear();
+        }
 
         if (this.dividerRLayout != null){
             dividerRLayout.removeAllViews();
@@ -156,15 +163,15 @@ public class DayViewBodyController {
 //        new_dgEvent.
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) new_dgEvent.getLayoutParams();
         params.leftMargin = marginLeft;
-        allDayDgEventModules.add(new_dgEvent);
+        allDayDgEventViews.add(new_dgEvent);
         allDayContainer.addView(new_dgEvent, params);
         //resize all day events width
         resizeAllDayEvents(eventsContainerWidth, marginLeft);
     }
 
     private void resizeAllDayEvents(int totalWidth, int marginLeft){
-        int singleEventWidth = (totalWidth - this.allDayDgEventModules.size() * marginLeft)/this.allDayDgEventModules.size();
-        for (DayDraggableEventView dgEvent:this.allDayDgEventModules
+        int singleEventWidth = (totalWidth - this.allDayDgEventViews.size() * marginLeft)/this.allDayDgEventViews.size();
+        for (DayDraggableEventView dgEvent:this.allDayDgEventViews
              ) {
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) dgEvent.getLayoutParams();
             params.width = singleEventWidth;

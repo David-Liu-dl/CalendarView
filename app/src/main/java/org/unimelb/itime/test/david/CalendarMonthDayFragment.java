@@ -128,12 +128,10 @@ public class CalendarMonthDayFragment extends Fragment {
             private boolean slideByUser = false;
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                Log.i(TAG, "onPageScrolled: ");
             }
 
             @Override
             public void onPageSelected(int position) {
-                Log.i(TAG, "onPageSelected: ");
                 try{
 
                     if (slideByUser) {
@@ -193,7 +191,6 @@ public class CalendarMonthDayFragment extends Fragment {
 
             @Override
             public void onPageScrollStateChanged(int state) {
-                Log.i(TAG, "onPageScrollStateChanged: " + state);
                 if (state == 1){
                     //because 1->2->selected->0
                     slideByUser = true;

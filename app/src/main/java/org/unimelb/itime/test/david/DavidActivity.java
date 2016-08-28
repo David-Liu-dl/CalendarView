@@ -26,8 +26,8 @@ public class DavidActivity extends AppCompatActivity {
 
         dbManager = DBManager.getInstance(this.getApplicationContext());
         //init DB
-        initData();
-//        doThings();
+//        initData();
+        doThings();
 
 
     }

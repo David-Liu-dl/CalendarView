@@ -222,9 +222,10 @@ public class DayViewBodyController {
     private DayDraggableEventView createDayDraggableEventView(ITimeEventInterface event, boolean isAllDayEvent){
         DayDraggableEventView event_view = new DayDraggableEventView(context);
         if (isAllDayEvent){
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(0, DensityUtil.dip2px(context, 30));
+            int allDayHeight = allDayContainer.getWidth() - allDayContainer.getPaddingBottom() - allDayContainer.getPaddingTop();
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(0, allDayHeight);
             event_view.setSummary(event.getTitle());
-            event_view.setTypeAndStatus(event.getEventType(),event.getStatus());
+            event_view.setTypeAndStatus(event.getEventType(),event.getStatus(), true);
             event_view.setTag(event);
             event_view.setLayoutParams(params);
         }else{
@@ -241,7 +242,7 @@ public class DayViewBodyController {
             event_view.setTop(getStartY);
             event_view.setOnLongClickListener(new MyTouchListener());
             event_view.setSummary(event.getTitle());
-            event_view.setTypeAndStatus(event.getEventType(),event.getStatus());
+            event_view.setTypeAndStatus(event.getEventType(),event.getStatus(), duration <= (15 * 60 * 1000));
             event_view.setTag(event);
             event_view.setLayoutParams(params);
         }

@@ -109,6 +109,7 @@ public class SortAdapter extends BaseAdapter implements SectionIndexer{
 		viewHolder.contact = contactsMap.get(nameKey);
 		viewHolder.check_circle.setOnClickListener(
 				new CircleClickListener(viewHolder.contact, viewHolder.check_circle));
+		Log.i(TAG, "bind here: ");
 		LoadImgHelper.getInstance().bindUrlWithImageView(mContext, viewHolder.contact, viewHolder.icon);
 		return view;
 	}

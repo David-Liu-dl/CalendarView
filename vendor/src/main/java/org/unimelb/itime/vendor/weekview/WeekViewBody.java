@@ -283,7 +283,7 @@ public class WeekViewBody extends LinearLayout{
                 eventCalendar.setTime(eventDate);
                 if (isInCurrentWeek(eventCalendar,myCalendar)){
 
-                    WeekDraggableEventView eventView = new WeekDraggableEventView(getContext(),event);
+                    final WeekDraggableEventView eventView = new WeekDraggableEventView(getContext(),event);
                     int eventDayOfWeek = eventCalendar.get(Calendar.DAY_OF_WEEK);
                     int eventStartHour = eventCalendar.get(Calendar.HOUR_OF_DAY);
                     int eventStartMinute = eventCalendar.get(Calendar.MINUTE);
@@ -304,7 +304,7 @@ public class WeekViewBody extends LinearLayout{
                     eventView.setOnClickListener(new OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            ITimeEventInterface iTimeEventInterface = ((WeekDraggableEventView)view).getEvent();
+                            ITimeEventInterface iTimeEventInterface = eventView.getEvent();
                             onClickEventInterface.editEvent(iTimeEventInterface);
                         }
                     });

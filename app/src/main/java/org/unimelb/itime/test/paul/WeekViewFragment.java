@@ -30,33 +30,31 @@ public class WeekViewFragment extends Fragment implements WeekView.OnWeekViewCha
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (root == null)
-            root= inflater.inflate(R.layout.fragment_week_view,container,false);
-        WeekView weekView = (WeekView) root.findViewById(R.id.week_view);
-        // simulate Events
+        if (root == null) {
+            root = inflater.inflate(R.layout.fragment_week_view, container, false);
+            WeekView weekView = (WeekView) root.findViewById(R.id.week_view);
+            // simulate Events
 
-        Calendar calendar1 = Calendar.getInstance();
-        calendar1.set(Calendar.DAY_OF_MONTH,31);
-        calendar1.set(Calendar.HOUR_OF_DAY, 5);
-        calendar1.set(Calendar.MINUTE,0);
+            Calendar calendar1 = Calendar.getInstance();
+            calendar1.set(Calendar.DAY_OF_MONTH, 31);
+            calendar1.set(Calendar.HOUR_OF_DAY, 3);
+            calendar1.set(Calendar.MINUTE, 0);
 
-        TestEvent testEvent = new TestEvent();
-        testEvent.setTitle("itime meeting");
-        testEvent.setStartTime(calendar1.getTimeInMillis());
-        testEvent.setEndTime(calendar1.getTimeInMillis() + 3600000*2);
-        testEvent.setEventType(1);
-        testEvent.setStatus(5);
-        weekView.setEvent(testEvent);
+            TestEvent testEvent = new TestEvent();
+            testEvent.setTitle("itime meeting");
+            testEvent.setStartTime(calendar1.getTimeInMillis());
+            testEvent.setEndTime(calendar1.getTimeInMillis() + 3600000 * 2);
+            testEvent.setEventType(1);
+            testEvent.setStatus(5);
+            weekView.addEvent(testEvent);
 
-
-
-        weekView.setOnClickEventInterface(new WeekView.OnClickEventInterface() {
-            @Override
-            public void editEvent(ITimeEventInterface iTimeEventInterface) {
-                Log.i("title",iTimeEventInterface.getTitle());
-            }
-        });
-
+            weekView.setOnClickEventInterface(new WeekView.OnClickEventInterface() {
+                @Override
+                public void editEvent(ITimeEventInterface iTimeEventInterface) {
+                    Log.i("title", iTimeEventInterface.getTitle());
+                }
+            });
+        }
         return root;
     }
 

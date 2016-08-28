@@ -42,9 +42,8 @@ public class WeekView extends RelativeLayout{
     private int bodyHeight;
 
     private OnWeekViewChangeListener onWeekViewChangeListener;
-    private ArrayList<ITimeEventInterface> eventArrayList;
+    private ArrayList<ITimeEventInterface> eventArrayList = new ArrayList<>();
     private OnClickEventInterface onClickEventInterface;
-    private ITimeEventInterface event;
 
     public WeekView(Context context){
         super(context);
@@ -176,16 +175,14 @@ public class WeekView extends RelativeLayout{
         this.eventArrayList = eventArrayList;
     }
 
-    public void setEvent(ITimeEventInterface iTimeEventInterface){
-        if (eventArrayList == null){
-            eventArrayList = new ArrayList<>();
-        }
-        eventArrayList.add(iTimeEventInterface);
+    public void addEvent(ITimeEventInterface iTimeEventInterface){
+        this.eventArrayList.add(iTimeEventInterface);
     }
 
-    public ITimeEventInterface getEvent(){
-        return this.event;
+    public ArrayList<ITimeEventInterface> getEventArrayList(){
+        return this.eventArrayList;
     }
+
 //    end of setting events
 
 //    **********************************************************************************

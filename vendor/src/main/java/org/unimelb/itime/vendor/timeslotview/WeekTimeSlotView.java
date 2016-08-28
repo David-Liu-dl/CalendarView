@@ -24,7 +24,7 @@ import java.util.Calendar;
  * Created by Paul on 22/08/2016.
  */
 @BindingMethods(
-        @BindingMethod(type = WeekTimeSlotView.class, attribute = "app:onWeekViewChange", method="setOnWeekViewChangeListener")
+        @BindingMethod(type = WeekTimeSlotView.class, attribute = "app:onTimeSlotWeekViewChange", method="setOnTimeSlotWeekViewChangeListener")
 )
 public class WeekTimeSlotView extends RelativeLayout{
 
@@ -39,7 +39,7 @@ public class WeekTimeSlotView extends RelativeLayout{
     private int headerHeight;
     private int bodyHeight;
 
-    private OnWeekViewChangeListener onWeekViewChangeListener;
+    private OnTimeSlotWeekViewChangeListener onTimeSlotWeekViewChangeListener;
     private ArrayList<Long> timeSlots;
     private int duration;
     private ArrayList<Event> eventArrayList;
@@ -57,12 +57,12 @@ public class WeekTimeSlotView extends RelativeLayout{
 //            EventBus.getDefault().register(this);
     }
 
-    public OnWeekViewChangeListener getOnWeekViewChangeListener() {
-        return onWeekViewChangeListener;
+    public OnTimeSlotWeekViewChangeListener getOnWeekViewChangeListener() {
+        return onTimeSlotWeekViewChangeListener;
     }
 
-    public void setOnWeekViewChangeListener(OnWeekViewChangeListener onWeekViewChangeListener) {
-        this.onWeekViewChangeListener = onWeekViewChangeListener;
+    public void setOnTimeSlotWeekViewChangeListener(OnTimeSlotWeekViewChangeListener onWeekViewChangeListener) {
+        this.onTimeSlotWeekViewChangeListener = onWeekViewChangeListener;
     }
 
 //    set time slots
@@ -132,9 +132,9 @@ public class WeekTimeSlotView extends RelativeLayout{
                     deltaPosition=1;
                 else
                     deltaPosition=-1;
-                if(onWeekViewChangeListener != null){
+                if(onTimeSlotWeekViewChangeListener != null){
                     calendar.add(Calendar.DATE,(deltaPosition)*7);
-                    onWeekViewChangeListener.onWeekChanged(calendar);
+                    onTimeSlotWeekViewChangeListener.onWeekChanged(calendar);
 //                    Log.i("deltaPosition", String.valueOf(deltaPosition));
                     Log.i("calendar day", String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
                 }
@@ -235,7 +235,7 @@ public class WeekTimeSlotView extends RelativeLayout{
         super.onDraw(canvas);
     }
 
-    public interface OnWeekViewChangeListener{
+    public interface OnTimeSlotWeekViewChangeListener{
         void onWeekChanged(Calendar calendar);
     }
 }

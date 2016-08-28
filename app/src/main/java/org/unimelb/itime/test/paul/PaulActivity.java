@@ -41,28 +41,4 @@ public class PaulActivity extends AppCompatActivity {
         getFragmentManager().beginTransaction().add(R.id.fragment,timeSlotFragment).commit();
     }
 
-
-//    public void goToFragment2(){
-//
-////        getFragmentManager().beginTransaction().replace(R.id.fragment, testFragment).commit();
-//        getFragmentManager().beginTransaction().hide(timeSlotFragment).commit();
-//        if (testFragment == null || !testFragment.isAdded()){
-//            testFragment = new TestFragment();
-//            getFragmentManager().beginTransaction().add(R.id.fragment,testFragment).commit();
-//        }
-//        getFragmentManager().beginTransaction().show(testFragment).commit();
-////        getFragmentManager().beginTransaction().remove(weekViewFragment).commit();
-//    }
-
-//    public void goToFragment1(){
-//        if(testFragment != null && testFragment.isAdded()){
-//            getFragmentManager().beginTransaction().hide(testFragment).commit();
-//        }
-//        if (timeSlotFragment == null || !timeSlotFragment.isAdded()){
-//            timeSlotFragment = new TimeSlotFragment();
-//            getFragmentManager().beginTransaction().add(R.id.fragment,timeSlotFragment).commit();
-//        }
-//        getFragmentManager().beginTransaction().show(timeSlotFragment).commit();
-//
-//    }
 }

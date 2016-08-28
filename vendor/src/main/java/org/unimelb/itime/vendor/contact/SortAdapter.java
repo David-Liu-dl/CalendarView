@@ -1,8 +1,6 @@
 package org.unimelb.itime.vendor.contact;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -210,9 +208,9 @@ public class SortAdapter extends BaseAdapter implements SectionIndexer{
 			ImageView circle_view = (ImageView) view;
 			checked = checked ? false : true;
 			if (checked){
-				circle_view.setImageDrawable(mContext.getResources().getDrawable(R.drawable.contact_event_attendee_selected));
+				circle_view.setImageDrawable(mContext.getResources().getDrawable(R.drawable.attendee_selected_event_attendee_selected));
 			}else {
-				circle_view.setImageDrawable(mContext.getResources().getDrawable(R.drawable.contact_event_attendee_unselected));
+				circle_view.setImageDrawable(mContext.getResources().getDrawable(R.drawable.attendee_selected_event_attendee_unselected));
 			}
 			//syn check list
 			circleCheckOnClickListener.synCheckedContactsList(contact, checked);
@@ -227,9 +225,9 @@ public class SortAdapter extends BaseAdapter implements SectionIndexer{
 			ImageView circle_view = img_v;
 //			GradientDrawable db = (GradientDrawable)circle_view.getDrawable();
 			if (checked){
-				circle_view.setImageDrawable(mContext.getResources().getDrawable(R.drawable.contact_event_attendee_selected));
+				circle_view.setImageDrawable(mContext.getResources().getDrawable(R.drawable.attendee_selected_event_attendee_selected));
 			}else {
-				circle_view.setImageDrawable(mContext.getResources().getDrawable(R.drawable.contact_event_attendee_unselected));
+				circle_view.setImageDrawable(mContext.getResources().getDrawable(R.drawable.attendee_selected_event_attendee_unselected));
 			}
 //			circle_view.setImageDrawable(db);
 		}

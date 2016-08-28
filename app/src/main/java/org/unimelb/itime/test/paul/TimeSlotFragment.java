@@ -52,6 +52,15 @@ public class TimeSlotFragment extends Fragment implements WeekTimeSlotView.OnTim
         event.setStatus(Event.Status.COMFIRM);
         eventArrayList.add(event);
         weekTimeSlotView.setEvent(eventArrayList);
+
+
+        weekTimeSlotView.setOnTimeSlotWeekViewChangeListener(new WeekTimeSlotView.OnTimeSlotWeekViewChangeListener() {
+            @Override
+            public void onWeekChanged(Calendar calendar) {
+                Log.i("onWeekChanged", String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
+            }
+        });
+
         return root;
     }
 

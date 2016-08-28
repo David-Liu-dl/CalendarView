@@ -1,6 +1,8 @@
 package org.unimelb.itime.vendor.weekview;
 
 import android.content.Context;
+import android.databinding.BindingMethod;
+import android.databinding.BindingMethods;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -30,6 +32,7 @@ import java.util.TreeMap;
 /**
  * Created by yinchuandong on 22/08/2016.
  */
+
 public class WeekViewBody extends LinearLayout{
     private int totalHeight;
     private int totalWidth;
@@ -55,6 +58,8 @@ public class WeekViewBody extends LinearLayout{
     private MyCalendar myCalendar;
     Calendar calendar = Calendar.getInstance();
     private ArrayList<Event> eventArrayList;
+    private ArrayList<WeekDraggableEventView> eventViewArrayList = new ArrayList<>();
+    private WeekView.OnClickEventInterface onClickEventInterface;
 
     public WeekViewBody(Context context) {
         super(context);
@@ -117,6 +122,8 @@ public class WeekViewBody extends LinearLayout{
         eventWidgetsRelativeLayout.removeAllViews();
 
         eventRelativeLayout.removeAllViews();
+
+        eventViewArrayList.clear();
     }
 
     private void initLayoutParams(){
@@ -288,6 +295,15 @@ public class WeekViewBody extends LinearLayout{
                     eventViewParams.setMargins(leftOffset,topOffSet , 0, 0);
                     eventView.setLayoutParams(eventViewParams);
                     eventRelativeLayout.addView(eventView);
+
+
+                    eventViewArrayList.add(eventView);
+                    eventView.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            onClickEventInterface.editEvent(view);
+                        }
+                    });
                 }
             }
         }
@@ -301,6 +317,8 @@ public class WeekViewBody extends LinearLayout{
                 && timeSlotCalendar.get(Calendar.YEAR) == firstSundayCalendar.get(Calendar.YEAR));
     }
 
+
+
     public void setEvents(ArrayList<Event> eventArrayList){
         this.eventArrayList = eventArrayList;
     }
@@ -312,6 +330,10 @@ public class WeekViewBody extends LinearLayout{
         }else{
             eventRelativeLayout.setOnDragListener(myDragListener);
         }
+    }
+
+    public void setOnClickEventInterface(WeekView.OnClickEventInterface onClickEventInterface){
+        this.onClickEventInterface = onClickEventInterface;
     }
 
     private String[] getHours(){
@@ -372,6 +394,11 @@ public class WeekViewBody extends LinearLayout{
     public void setMyCalendar(MyCalendar myCalendar) {
         this.myCalendar = myCalendar;
     }
+
+    public WeekView.OnClickEventInterface getOnCLickEventInterface() {
+        return onClickEventInterface;
+    }
+
 //    ********************************************************************
 
     private final class MyDragListener implements View.OnDragListener{
@@ -529,5 +556,6 @@ public class WeekViewBody extends LinearLayout{
         msgWindow.setLayoutParams(params);
         //msgWindow.setVisibility(View.VISIBLE);
     }
+
 
 }

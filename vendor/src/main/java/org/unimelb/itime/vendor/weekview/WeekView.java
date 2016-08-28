@@ -8,6 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -23,8 +24,10 @@ import java.util.Calendar;
  * Created by Paul on 22/08/2016.
  */
 @BindingMethods(
-        @BindingMethod(type = WeekView.class, attribute = "app:onWeekViewChange", method="setOnWeekViewChangeListener")
+        {@BindingMethod(type = WeekView.class, attribute = "app:onWeekViewChange", method="setOnWeekViewChangeListener"),
+        @BindingMethod(type = WeekView.class, attribute = "app:editEvent", method="setOnClickEventInterface")}
 )
+
 public class WeekView extends RelativeLayout{
     private MyPagerAdapter pagerAdapter;
     private ArrayList<LinearLayout> views = new ArrayList<LinearLayout>();
@@ -38,6 +41,7 @@ public class WeekView extends RelativeLayout{
 
     private OnWeekViewChangeListener onWeekViewChangeListener;
     private ArrayList<Event> eventArrayList;
+    private OnClickEventInterface onClickEventInterface;
 
     public WeekView(Context context){
         super(context);
@@ -77,6 +81,7 @@ public class WeekView extends RelativeLayout{
             weekViewBody.setMyCalendar(new MyCalendar(calendar1));
             weekViewBody.updateWidthHeight(totalWidth,bodyHeight);
             weekViewBody.setEvents(this.eventArrayList);
+            weekViewBody.setOnClickEventInterface(onClickEventInterface);
             weekViewBody.initAll();
             views.add(linearLayout);
         }
@@ -138,6 +143,7 @@ public class WeekView extends RelativeLayout{
                     preWeekViewBody.getMyCalendar().cloneFromMyCalendar(currentWeekViewMyCalendar);
                     preWeekViewBody.getMyCalendar().setOffsetByDate(-7);
                     preWeekViewBody.setEvents(eventArrayList);
+                    preWeekViewBody.setOnClickEventInterface(onClickEventInterface);
                     preWeekViewBody.initAll();
                     // init?
 
@@ -151,6 +157,7 @@ public class WeekView extends RelativeLayout{
                     nextWeekViewBody.getMyCalendar().cloneFromMyCalendar(currentWeekViewMyCalendar);
                     nextWeekViewBody.getMyCalendar().setOffsetByDate(+7);
                     nextWeekViewBody.setEvents(eventArrayList);
+                    nextWeekViewBody.setOnClickEventInterface(onClickEventInterface);
                     nextWeekViewBody.initAll();
                     // init?
                     pagerAdapter.changeView(preView, (currentPosition-1)%size);
@@ -215,8 +222,20 @@ public class WeekView extends RelativeLayout{
         super.onDraw(canvas);
     }
 
+    public OnClickEventInterface getOnClickEventInterface() {
+        return onClickEventInterface;
+    }
+
+    public void setOnClickEventInterface(OnClickEventInterface onClickEventInterface) {
+        this.onClickEventInterface = onClickEventInterface;
+    }
+
     public interface OnWeekViewChangeListener{
         void onWeekChanged(Calendar calendar);
+    }
+
+    public interface OnClickEventInterface{
+        void editEvent(View eventView);
     }
 
 }

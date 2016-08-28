@@ -16,7 +16,6 @@ import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -39,7 +38,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class ContactsPageFragment extends Fragment {
+public class AttendeeFragment extends Fragment {
 	public Map<Contact, ImageView> contacts_list = new HashMap<Contact, ImageView>();
 
 	private static final String TAG = "MyAPP";
@@ -57,7 +56,7 @@ public class ContactsPageFragment extends Fragment {
 	private View root;
 	private Context context;
 
-	private ContactsPageFragment self = this;
+	private AttendeeFragment self = this;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {

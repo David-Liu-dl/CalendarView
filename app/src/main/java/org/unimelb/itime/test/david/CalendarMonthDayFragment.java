@@ -2,6 +2,7 @@ package org.unimelb.itime.test.david;
 
 import android.animation.ValueAnimator;
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.unimelb.itime.test.R;
+import org.unimelb.itime.test.bean.Event;
 import org.unimelb.itime.vendor.dayview.DayViewBody;
 import org.unimelb.itime.vendor.dayview.DayViewBodyPagerAdapter;
 import org.unimelb.itime.vendor.dayview.DayViewHeader;
@@ -26,6 +28,7 @@ import org.unimelb.itime.vendor.helper.MyCalendar;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -42,15 +45,24 @@ public class CalendarMonthDayFragment extends Fragment {
 
     private int init_height;
     private int scroll_height;
+
     private LinearLayoutManager mLinearLayoutManager;
+
     DayViewBodyPagerAdapter bodyPagerAdapter;
     ViewPager bodyPager;
+
     int bodyCurrentPosition;
+
+    private Context context;
+
+    private DayViewBodyPagerAdapter.OnBodyPageChanged onBodyPageChanged;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater,container,savedInstanceState);
         View v =inflater.inflate(R.layout.itime_month_day_fragment,null,false);
+        context = this.getActivity().getApplicationContext();
+
         recyclerView = (RecyclerView) v.findViewById(R.id.headerRowList);
         bodyPager = (ViewPager) v.findViewById(R.id.pager);
         return v;
@@ -70,13 +82,20 @@ public class CalendarMonthDayFragment extends Fragment {
         this.setUpBody();
     }
 
+    public void setOnBodyPageChanged(DayViewBodyPagerAdapter.OnBodyPageChanged onBodyPageChanged){
+        this.onBodyPageChanged = onBodyPageChanged;
+        if (bodyPagerAdapter != null){
+            bodyPagerAdapter.setOnBodyPageChanged(this.onBodyPageChanged);
+        }
+    }
+
     private void setUpHeader(){
         recyclerAdapter = new DayViewHeaderRecyclerAdapter(getActivity(), upperBoundsOffset);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(recyclerAdapter);
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLinearLayoutManager);
-        recyclerView.addItemDecoration(new DayViewHeaderRecyclerDivider(getActivity().getApplicationContext()));
+        recyclerView.addItemDecoration(new DayViewHeaderRecyclerDivider(context));
         final DisplayMetrics dm = getResources().getDisplayMetrics();
         init_height = (dm.widthPixels / 7) * 2;
         scroll_height = (dm.widthPixels / 7) * 4;
@@ -98,21 +117,23 @@ public class CalendarMonthDayFragment extends Fragment {
 
     private void setUpBody(){
         bodyPagerAdapter = new DayViewBodyPagerAdapter(initBody(), upperBoundsOffset);
+        setOnBodyPageChanged(this.onBodyPageChanged);
         bodyPagerAdapter.notifyDataSetChanged();
         recyclerAdapter.setBodyPager(bodyPager);
         bodyPager.setAdapter(bodyPagerAdapter);
         bodyPager.setOffscreenPageLimit(1);
-        bodyPager.setCurrentItem(upperBoundsOffset);
 
         bodyCurrentPosition = upperBoundsOffset;
         bodyPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             private boolean slideByUser = false;
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                Log.i(TAG, "onPageScrolled: ");
             }
 
             @Override
             public void onPageSelected(int position) {
+                Log.i(TAG, "onPageSelected: ");
                 try{
 
                     if (slideByUser) {
@@ -172,6 +193,7 @@ public class CalendarMonthDayFragment extends Fragment {
 
             @Override
             public void onPageScrollStateChanged(int state) {
+                Log.i(TAG, "onPageScrollStateChanged: " + state);
                 if (state == 1){
                     //because 1->2->selected->0
                     slideByUser = true;
@@ -182,6 +204,9 @@ public class CalendarMonthDayFragment extends Fragment {
                 }
             }
         });
+
+        bodyPager.setCurrentItem(upperBoundsOffset);
+
     }
 
     private ArrayList<View> initBody(){
@@ -196,7 +221,7 @@ public class CalendarMonthDayFragment extends Fragment {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         for (int i = 0; i < size; i++) {
-            DayViewBody bodyView = (DayViewBody) LayoutInflater.from(this.getActivity().getApplicationContext()).inflate(R.layout.itime_day_view_body_view,null);
+            DayViewBody bodyView = (DayViewBody) LayoutInflater.from(this.context).inflate(R.layout.itime_day_view_body_view,null);
             bodyView.setCalendar(new MyCalendar(calendar));
             bodyView.dayViewController.scrollContainerView.setOnTouchListener(new bodyOnTouchListener());
             lists.add(bodyView);
@@ -266,5 +291,8 @@ public class CalendarMonthDayFragment extends Fragment {
         }
     }
 
+//    public interface OnBodyPageChanged{
+//        List<Event> updateEvent(long timeStart);
+//    }
 
 }

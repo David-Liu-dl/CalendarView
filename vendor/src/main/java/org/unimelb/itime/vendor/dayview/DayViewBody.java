@@ -9,18 +9,16 @@ import android.widget.RelativeLayout;
 
 
 import org.unimelb.itime.vendor.R;
-import org.unimelb.itime.vendor.eventview.Event;
 import org.unimelb.itime.vendor.helper.MyCalendar;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 
 /**
  * Created by yuhaoliu on 3/08/16.
  */
 public class DayViewBody extends RelativeLayout {
     private static final String TAG = "MyAPP";
+
+
 
     public final LayoutInflater mInflater;
     public LinearLayout allDayContainer;
@@ -57,16 +55,26 @@ public class DayViewBody extends RelativeLayout {
         this.myCalendar = myCalendar;
     }
 
-    public void addEvent(Event new_event){
-        dayViewController.addEvent(new_event);
+    public void addEvent(final ITimeEventInterface new_event){
+        dividerRLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                dayViewController.addEvent(new_event);
+                invalidateEvents();
+            }
+        });
     }
 
-    public void removeEvent(Event delete_event){
+    public void removeEvent(ITimeEventInterface delete_event){
         dayViewController.removeEvent(delete_event);
     }
 
-    public void updateEvent(Event old_event, Event new_event){
+    public void updateEvent(ITimeEventInterface old_event, ITimeEventInterface new_event){
         dayViewController.updateEvent(old_event, new_event);
+    }
+
+    public void invalidateEvents(){
+        dayViewController.reDrawEvents();
     }
 
     @Override
@@ -95,18 +103,7 @@ public class DayViewBody extends RelativeLayout {
 
         dayViewController.initBackgroundView();
 
-        dividerRLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                ArrayList<Event> events = simulateEvent();
-                for (Event event: events
-                     ) {
-                    dayViewController.addEvent(event);
-                }
 
-                dayViewController.reDrawEvents();
-            }
-        });
 
         if (myCalendar.isToday()){
             dayViewController.addNowTimeLine();
@@ -115,24 +112,24 @@ public class DayViewBody extends RelativeLayout {
         dividerRLayout.invalidate();
     }
 
-    private ArrayList<Event> simulateEvent(){
-        String[] titles = {"This is test", "I'm an event","What's Up?","Hello?","What's Up?","What's Up?","What's Up?"};
-        Event.Type[] types = {Event.Type.PRIVATE,Event.Type.GROUP,Event.Type.PUBLIC,Event.Type.PUBLIC,Event.Type.PUBLIC,Event.Type.PUBLIC,Event.Type.PUBLIC};
-        Event.Status[] statuses = { Event.Status.COMFIRM, Event.Status.PENDING, Event.Status.PENDING, Event.Status.PENDING, Event.Status.PENDING, Event.Status.PENDING, Event.Status.PENDING};
-        ArrayList<Event> events = new ArrayList<>();
-        Date dt = new Date();
-        dt.setTime(Calendar.getInstance().getTimeInMillis());
-        long interval = 3600 * 1000;
-        for (int i = 0; i < 3; i++) {
-            Event event = new Event();
-            event.setTitle(titles[i]);
-            event.setStatus(statuses[i]);
-            event.setEventType(types[i]);
-            event.setStartTime(dt.getTime());
-            event.setEndTime(dt.getTime() + (int)(interval*(i+1)));
-            events.add(event);
-        }
-
-        return events;
-    }
+//    private ArrayList<ITimeEventInterface> simulateEvent(){
+//        String[] titles = {"This is test", "I'm an event","What's Up?","Hello?","What's Up?","What's Up?","What's Up?"};
+//        Event.Type[] types = {Event.Type.PRIVATE,Event.Type.GROUP,Event.Type.PUBLIC,Event.Type.PUBLIC,Event.Type.PUBLIC,Event.Type.PUBLIC,Event.Type.PUBLIC};
+//        Event.Status[] statuses = { Event.Status.COMFIRM, Event.Status.PENDING, Event.Status.PENDING, Event.Status.PENDING, Event.Status.PENDING, Event.Status.PENDING, Event.Status.PENDING};
+//        ArrayList<ITimeEventInterface> events = new ArrayList<>();
+//        Date dt = new Date();
+//        dt.setTime(Calendar.getInstance().getTimeInMillis());
+//        long interval = 3600 * 1000;
+//        for (int i = 0; i < 3; i++) {
+//            ITimeEventInterface event = new Event();
+//            event.setTitle(titles[i]);
+//            event.setStatus(statuses[i]);
+//            event.setEventType(types[i]);
+//            event.setStartTime(dt.getTime());
+//            event.setEndTime(dt.getTime() + (int)(interval*(i+1)));
+//            events.add(event);
+//        }
+//
+//        return events;
+//    }
 }

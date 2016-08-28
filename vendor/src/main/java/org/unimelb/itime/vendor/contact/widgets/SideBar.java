@@ -107,7 +107,7 @@ public class SideBar extends View {
 			break;
 
 		default:
-			setBackgroundResource(R.drawable.contact_sidebar_background);
+			setBackgroundResource(R.drawable.attendee_selected_sidebar_background);
 			setAlpha((float) 0.7);
 			if (oldChoose != c) {
 				if (c >= 0 && c < b.length) {

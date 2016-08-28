@@ -20,8 +20,8 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:gravity="center_vertical|left"
-            android:background="@drawable/contact_acm_inputbox"
-            android:drawableLeft="@drawable/contact_search"
+            android:background="@drawable/attendee_selected_acm_inputbox"
+            android:drawableLeft="@drawable/attendee_selected_search"
             android:hint="@string/search"
             android:singleLine="true"
             android:textSize="15.0dip" />
@@ -41,7 +41,7 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="3dp"
-            android:src="@drawable/contact_shadow_line_90"/>
+            android:src="@drawable/attendee_selected_shadow_line_90"/>
 
         <FrameLayout
             android:layout_width="fill_parent"
@@ -52,7 +52,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:background="@color/whites"
-                android:listSelector="@drawable/contact_comm_btn_selector"
+                android:listSelector="@drawable/attendee_selected_comm_btn_selector"
                 android:layout_gravity="center" />
 
             <TextView
@@ -60,7 +60,7 @@
                 android:layout_width="80.0dip"
                 android:layout_height="80.0dip"
                 android:layout_gravity="center"
-                android:background="@drawable/contact_number_base"
+                android:background="@drawable/attendee_selected_number_base"
                 android:gravity="center"
                 android:textColor="#ffffffff"
                 android:textSize="30.0dip"

@@ -14,23 +14,30 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.unimelb.itime.vendor.R;
+import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 import org.unimelb.itime.vendor.timeslot.TimeSlotViewLayoutParams;
 
 /**
  * Created by Paul on 26/08/2016.
  */
 public class WeekDraggableEventView extends RelativeLayout{
-    private Event event;
+    private ITimeEventInterface event;
     private TextView title;
     private ImageView icon;
     private ImageView leftBar;
-    private Event.Type type;
-    private Event.Status status;
+    private final int PRIVATE =0;
+    private final int GROUP =1;
+    private final int PUBLIC = 2;
+
+    private final int PENDING = 5;
+    private final int CONFIRM = 6;
+//    private Event.Type type;
+//    private Event.Status status;
 
     private int width;
     private int height;
 
-    public WeekDraggableEventView(Context context, Event event) {
+    public WeekDraggableEventView(Context context, ITimeEventInterface event) {
         super(context);
         this.event = event;
         init();
@@ -68,10 +75,10 @@ public class WeekDraggableEventView extends RelativeLayout{
     }
 
     public void update(){
-        this.type = event.getEventType();
-        this.status = event.getStatus();
+        int type = event.getEventType();
+        int status = event.getStatus();
         int color = Color.RED;
-        switch (this.type){
+        switch (type){
             case PRIVATE:
                 color = getContext().getResources().getColor(R.color.private_et);
                 break;
@@ -91,33 +98,33 @@ public class WeekDraggableEventView extends RelativeLayout{
 
 
 
-    public void setTypeAndStatus(Event.Type type, Event.Status status){
-        this.type = type;
-        this.status = status;
-        int color = Color.RED;
-        switch (this.type){
-            case PRIVATE:
-                color = getContext().getResources().getColor(R.color.private_et);
-                break;
-            case GROUP:
-                color = getContext().getResources().getColor(R.color.group_et);
-                break;
-            case PUBLIC:
-                color = getContext().getResources().getColor(R.color.public_et);
-                break;
-        }
-        this.setBackground(getResources().getDrawable(R.drawable.itime_draggable_event_bg));
-        ((GradientDrawable)this.getBackground()).setColor(color);
-        this.getBackground().setAlpha(128);
-        updateLeftBar(getResources().getDrawable(R.drawable.itime_draggable_event_bg), color);
-        this.resetIcon(getStatusIcon(status));
-    }
+//    public void setTypeAndStatus(int type, int status){
+//        this.type = type;
+//        this.status = status;
+//        int color = Color.RED;
+//        switch (this.type){
+//            case PRIVATE:
+//                color = getContext().getResources().getColor(R.color.private_et);
+//                break;
+//            case GROUP:
+//                color = getContext().getResources().getColor(R.color.group_et);
+//                break;
+//            case PUBLIC:
+//                color = getContext().getResources().getColor(R.color.public_et);
+//                break;
+//        }
+//        this.setBackground(getResources().getDrawable(R.drawable.itime_draggable_event_bg));
+//        ((GradientDrawable)this.getBackground()).setColor(color);
+//        this.getBackground().setAlpha(128);
+//        updateLeftBar(getResources().getDrawable(R.drawable.itime_draggable_event_bg), color);
+//        this.resetIcon(getStatusIcon(status));
+//    }
 
-    private int getStatusIcon(Event.Status status){
+    private int getStatusIcon(int status){
         switch (status){
             case PENDING:
                 return R.drawable.itime_question_mark;
-            case COMFIRM:
+            case CONFIRM:
                 return R.drawable.icon_tick;
             default:
                 return -1;
@@ -172,6 +179,15 @@ public class WeekDraggableEventView extends RelativeLayout{
         this.height = (MeasureSpec.getSize(heightMeasureSpec));
         setMeasuredDimension(width,height);
     }
+
+    public ITimeEventInterface getEvent(){
+        return this.event;
+    }
+
+    public void setEvent(ITimeEventInterface event){
+        this.event = event;
+    }
+
 
 
 

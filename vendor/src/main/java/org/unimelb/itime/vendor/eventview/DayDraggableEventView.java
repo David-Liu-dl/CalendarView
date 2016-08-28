@@ -23,8 +23,9 @@ import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 public class DayDraggableEventView extends RelativeLayout {
     private final String TAG = "MyAPP";
     private String summary = "pre";
-    private String type;
-    private String status;
+
+    private int type;
+    private int status;
     private int width = 0;
     private int height = 0;
 
@@ -61,18 +62,18 @@ public class DayDraggableEventView extends RelativeLayout {
         title.setText(summary);
     }
 
-    public void setTypeAndStatus(String type, String status){
+    public void setTypeAndStatus(int type, int status){
         this.type = type;
         this.status = status;
         int color = Color.RED;
         switch (this.type){
-            case "PRIVATE":
+            case 0:
                 color = getContext().getResources().getColor(R.color.private_et);
                 break;
-            case "GROUP":
+            case 1:
                 color = getContext().getResources().getColor(R.color.group_et);
                 break;
-            case "PUBLIC":
+            case 2:
                 color = getContext().getResources().getColor(R.color.public_et);
                 break;
 
@@ -94,9 +95,9 @@ public class DayDraggableEventView extends RelativeLayout {
         this.resetIcon(getStatusIcon(status));
     }
 
-    private int getStatusIcon(String status){
+    private int getStatusIcon(int status){
         switch (status){
-            case "PENDING":
+            case 0:
                 return R.drawable.itime_question_mark;
             default:
                 return -1;

@@ -28,28 +28,23 @@ public class Event implements ITimeEventInterface<Event>{
 //    private ITimeEventInterface.Status status;
     @Property
     @NotNull
-    private String eventType;
+    private int eventType;
     @Property
     @NotNull
-    private String status;
+    private int status;
 
     public Event() {
     }
 
-    @Generated(hash = 409080067)
+    @Generated(hash = 101606351)
     public Event(Long id, String title, long startTime, long endTime,
-            String eventType, String status) {
+            int eventType, int status) {
         this.id = id;
         this.title = title;
         this.startTime = startTime;
         this.endTime = endTime;
         this.eventType = eventType;
         this.status = status;
-    }
-
-    @Override
-    public String getEventId() {
-        return null;
     }
 
     @Override
@@ -60,216 +55,6 @@ public class Event implements ITimeEventInterface<Event>{
     @Override
     public String getTitle() {
         return this.title;
-    }
-
-    @Override
-    public void setNote(String note) {
-
-    }
-
-    @Override
-    public String getNote() {
-        return null;
-    }
-
-    @Override
-    public void setLocationAddress(String adress) {
-
-    }
-
-    @Override
-    public String getLocationAddress() {
-        return null;
-    }
-
-    @Override
-    public void setLocationNote(String locationNote) {
-
-    }
-
-    @Override
-    public String getLocationNote() {
-        return null;
-    }
-
-    @Override
-    public void setLocationLatitude(double latitude) {
-
-    }
-
-    @Override
-    public Double getLocationLatitude() {
-        return null;
-    }
-
-    @Override
-    public void setLocationLongitude(double longitude) {
-
-    }
-
-    @Override
-    public Double getLocationLongitude() {
-        return null;
-    }
-
-    @Override
-    public void setRepeatTypeId(int repeatTypeId) {
-
-    }
-
-    @Override
-    public int getRepeatTypeId() {
-        return 0;
-    }
-
-    @Override
-    public void setUserId(String userId) {
-
-    }
-
-    @Override
-    public String getUserId() {
-        return null;
-    }
-
-    @Override
-    public void setAlertTimeId(int alertTimeId) {
-
-    }
-
-    @Override
-    public int getAlertTimeId() {
-        return 0;
-    }
-
-    @Override
-    public void setEventTypeId(int eventTypeId) {
-
-    }
-
-    @Override
-    public int getEventTypeId() {
-        return 0;
-    }
-
-    @Override
-    public void setVisibilityTypeId(int visibilityTypeId) {
-
-    }
-
-    @Override
-    public int getVisibilityTypeId() {
-        return 0;
-    }
-
-    @Override
-    public void setEventSourceId(int eventSourceId) {
-
-    }
-
-    @Override
-    public int getEventSourceId() {
-        return 0;
-    }
-
-    @Override
-    public void setCalendarTypeId(String calendarTypeId) {
-
-    }
-
-    @Override
-    public String getCalendarTypeId() {
-        return null;
-    }
-
-    @Override
-    public void setIsInfiniteRepeat(Boolean isInfiniteRepeat) {
-
-    }
-
-    @Override
-    public Boolean getIsInfiniteRepeat() {
-        return null;
-    }
-
-    @Override
-    public void setIsDeleted(Boolean isDeleted) {
-
-    }
-
-    @Override
-    public Boolean getIsDeleted() {
-        return null;
-    }
-
-    @Override
-    public void setRepeatEndsTime(Integer repeatEndsTime) {
-
-    }
-
-    @Override
-    public Integer getRepeatEndsTime() {
-        return null;
-    }
-
-    @Override
-    public void setHostEventId(String hostEventId) {
-
-    }
-
-    @Override
-    public String getHostEventId() {
-        return null;
-    }
-
-    @Override
-    public void setUserStatusId(int userStatusId) {
-
-    }
-
-    @Override
-    public int getUserStatusId() {
-        return 0;
-    }
-
-    @Override
-    public void setEventPhotos(ArrayList<String> urls) {
-
-    }
-
-    @Override
-    public ArrayList<String> getEventPhotos() {
-        return null;
-    }
-
-    @Override
-    public void setUrl(String url) {
-
-    }
-
-    @Override
-    public String getUrl() {
-        return null;
-    }
-
-    @Override
-    public void setDuration(int duration) {
-
-    }
-
-    @Override
-    public int getDuration() {
-        return 0;
-    }
-
-    @Override
-    public void setAttendees(ArrayList<String> userId) {
-
-    }
-
-    @Override
-    public ArrayList<String> getAttendees() {
-        return null;
     }
 
     @Override
@@ -294,19 +79,19 @@ public class Event implements ITimeEventInterface<Event>{
 
     public long getEndTime(){return endTime;}
 
-    public void setEventType(String eventType) {
+    public void setEventType(int eventType) {
         this.eventType = eventType;
     }
 
-    public String getEventType() {
+    public int getEventType() {
         return eventType;
     }
 
-    public String getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 

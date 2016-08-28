@@ -15,6 +15,7 @@ import org.unimelb.itime.vendor.R;
 import org.unimelb.itime.vendor.eventview.Event;
 import org.unimelb.itime.vendor.helper.MyCalendar;
 import org.unimelb.itime.vendor.helper.MyPagerAdapter;
+import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 
 
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class WeekTimeSlotView extends RelativeLayout{
     private OnTimeSlotWeekViewChangeListener onTimeSlotWeekViewChangeListener;
     private ArrayList<Long> timeSlots;
     private int duration;
-    private ArrayList<Event> eventArrayList;
+    private ArrayList<ITimeEventInterface> eventArrayList;
 
 
     public WeekTimeSlotView(Context context) {
@@ -77,7 +78,7 @@ public class WeekTimeSlotView extends RelativeLayout{
 
 
 //    set events
-    public void setEvent(ArrayList<Event> eventArrayList){
+    public void setEvent(ArrayList<ITimeEventInterface> eventArrayList){
         this.eventArrayList = eventArrayList;
     }
 //    end of setting events

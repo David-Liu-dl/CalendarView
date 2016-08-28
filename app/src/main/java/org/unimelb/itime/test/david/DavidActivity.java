@@ -26,8 +26,8 @@ public class DavidActivity extends AppCompatActivity {
 
         dbManager = DBManager.getInstance(this.getApplicationContext());
         //init DB
-//        initData();
-        doThings();
+        initData();
+//        doThings();
 
 
     }
@@ -71,8 +71,8 @@ public class DavidActivity extends AppCompatActivity {
             Log.i(TAG, "endTime: " + endTime);
             Event event = new Event();
             event.setTitle("" + i);
-            event.setEventType("PUBLIC");
-            event.setStatus("PENDING");
+            event.setEventType(0);
+            event.setStatus(0);
             event.setStartTime(startTime);
             event.setEndTime(endTime);
             events.add(event);
@@ -83,24 +83,4 @@ public class DavidActivity extends AppCompatActivity {
         dbManager.insertEventList(events);
     }
 
-    private ArrayList<Event> simulateEvent(){
-        String[] titles = {"This is test", "I'm an event","What's Up?","Hello?","What's Up?","What's Up?","What's Up?"};
-        String[] types = {"PUBLIC","PUBLIC","PUBLIC","PUBLIC","PUBLIC","PUBLIC","PUBLIC","PUBLIC","PUBLIC","PUBLIC","PUBLIC","PUBLIC","PUBLIC",};
-        String[] statuses = {"PENDING","PENDING","PENDING","PENDING","PENDING","PENDING","PENDING","PENDING","PENDING","PENDING","PENDING","PENDING",};
-        ArrayList<Event> events = new ArrayList<>();
-        Date dt = new Date();
-        dt.setTime(Calendar.getInstance().getTimeInMillis());
-        long interval = 3600 * 1000;
-        for (int i = 0; i < 3; i++) {
-            Event event = new Event();
-            event.setTitle(titles[i]);
-            event.setStatus(statuses[i]);
-            event.setEventType(types[i]);
-            event.setStartTime(dt.getTime());
-            event.setEndTime(dt.getTime() + (int)(interval*(i+1)));
-            events.add(event);
-        }
-
-        return events;
-    }
 }

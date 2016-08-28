@@ -1,6 +1,7 @@
 package org.unimelb.itime.vendor.weekview;
 
 import android.content.Context;
+import android.content.Intent;
 import android.databinding.BindingMethod;
 import android.databinding.BindingMethods;
 import android.graphics.Canvas;
@@ -8,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -15,6 +17,7 @@ import org.unimelb.itime.vendor.R;
 import org.unimelb.itime.vendor.eventview.Event;
 import org.unimelb.itime.vendor.helper.MyCalendar;
 import org.unimelb.itime.vendor.helper.MyPagerAdapter;
+import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -23,8 +26,10 @@ import java.util.Calendar;
  * Created by Paul on 22/08/2016.
  */
 @BindingMethods(
-        @BindingMethod(type = WeekView.class, attribute = "app:onWeekViewChange", method="setOnWeekViewChangeListener")
+        {@BindingMethod(type = WeekView.class, attribute = "app:onWeekViewChange", method="setOnWeekViewChangeListener"),
+        @BindingMethod(type = WeekView.class, attribute = "app:editEvent", method="setOnClickEventInterface")}
 )
+
 public class WeekView extends RelativeLayout{
     private MyPagerAdapter pagerAdapter;
     private ArrayList<LinearLayout> views = new ArrayList<LinearLayout>();
@@ -37,7 +42,8 @@ public class WeekView extends RelativeLayout{
     private int bodyHeight;
 
     private OnWeekViewChangeListener onWeekViewChangeListener;
-    private ArrayList<Event> eventArrayList;
+    private ArrayList<ITimeEventInterface> eventArrayList;
+    private OnClickEventInterface onClickEventInterface;
 
     public WeekView(Context context){
         super(context);
@@ -77,6 +83,7 @@ public class WeekView extends RelativeLayout{
             weekViewBody.setMyCalendar(new MyCalendar(calendar1));
             weekViewBody.updateWidthHeight(totalWidth,bodyHeight);
             weekViewBody.setEvents(this.eventArrayList);
+            weekViewBody.setOnClickEventInterface(onClickEventInterface);
             weekViewBody.initAll();
             views.add(linearLayout);
         }
@@ -138,6 +145,7 @@ public class WeekView extends RelativeLayout{
                     preWeekViewBody.getMyCalendar().cloneFromMyCalendar(currentWeekViewMyCalendar);
                     preWeekViewBody.getMyCalendar().setOffsetByDate(-7);
                     preWeekViewBody.setEvents(eventArrayList);
+                    preWeekViewBody.setOnClickEventInterface(onClickEventInterface);
                     preWeekViewBody.initAll();
                     // init?
 
@@ -151,6 +159,7 @@ public class WeekView extends RelativeLayout{
                     nextWeekViewBody.getMyCalendar().cloneFromMyCalendar(currentWeekViewMyCalendar);
                     nextWeekViewBody.getMyCalendar().setOffsetByDate(+7);
                     nextWeekViewBody.setEvents(eventArrayList);
+                    nextWeekViewBody.setOnClickEventInterface(onClickEventInterface);
                     nextWeekViewBody.initAll();
                     // init?
                     pagerAdapter.changeView(preView, (currentPosition-1)%size);
@@ -162,7 +171,7 @@ public class WeekView extends RelativeLayout{
     }
 
     //    set events
-    public void setEvent(ArrayList<Event> eventArrayList){
+    public void setEvent(ArrayList<ITimeEventInterface> eventArrayList){
         this.eventArrayList = eventArrayList;
     }
 //    end of setting events
@@ -215,8 +224,20 @@ public class WeekView extends RelativeLayout{
         super.onDraw(canvas);
     }
 
+    public OnClickEventInterface getOnClickEventInterface() {
+        return onClickEventInterface;
+    }
+
+    public void setOnClickEventInterface(OnClickEventInterface onClickEventInterface) {
+        this.onClickEventInterface = onClickEventInterface;
+    }
+
     public interface OnWeekViewChangeListener{
         void onWeekChanged(Calendar calendar);
+    }
+
+    public interface OnClickEventInterface{
+        void editEvent(ITimeEventInterface iTimeEventInterface);
     }
 
 }

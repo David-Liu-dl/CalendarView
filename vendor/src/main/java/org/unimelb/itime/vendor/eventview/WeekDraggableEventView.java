@@ -173,6 +173,15 @@ public class WeekDraggableEventView extends RelativeLayout{
         setMeasuredDimension(width,height);
     }
 
+    public Event getEvent(){
+        return this.event;
+    }
+
+    public void setEvent(Event event){
+        this.event = event;
+    }
+
+
 
 
 }

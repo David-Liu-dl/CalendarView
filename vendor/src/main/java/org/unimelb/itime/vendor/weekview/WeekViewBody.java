@@ -301,7 +301,7 @@ public class WeekViewBody extends LinearLayout{
                     eventView.setOnClickListener(new OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            onClickEventInterface.editEvent(view);
+                            onClickEventInterface.editEvent(((WeekDraggableEventView)view).getEvent());
                         }
                     });
                 }

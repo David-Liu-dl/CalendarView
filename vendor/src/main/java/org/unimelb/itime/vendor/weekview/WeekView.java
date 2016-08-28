@@ -235,7 +235,7 @@ public class WeekView extends RelativeLayout{
     }
 
     public interface OnClickEventInterface{
-        void editEvent(View eventView);
+        void editEvent(Event event);
     }
 
 }

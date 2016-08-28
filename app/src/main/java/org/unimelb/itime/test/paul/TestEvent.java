@@ -2,6 +2,8 @@ package org.unimelb.itime.test.paul;
 
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 
+import java.util.ArrayList;
+
 /**
  * Created by Paul on 28/08/2016.
  */
@@ -12,10 +14,8 @@ public class TestEvent implements ITimeEventInterface {
     private int eventType;
     private int eventStatus;
 
-
     public TestEvent() {
     }
-
 
     @Override
     public void setTitle(String title) {
@@ -65,5 +65,20 @@ public class TestEvent implements ITimeEventInterface {
     @Override
     public int getStatus() {
         return eventStatus;
+    }
+
+    @Override
+    public void setProposedTimeSlots(ArrayList proposedTimeSlots) {
+
+    }
+
+    @Override
+    public ArrayList<Long> getProposedTimeSlots() {
+        return null;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return 0;
     }
 }

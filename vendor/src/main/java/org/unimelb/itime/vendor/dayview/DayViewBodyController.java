@@ -20,9 +20,9 @@ import android.widget.TextView;
 
 import org.unimelb.itime.vendor.R;
 import org.unimelb.itime.vendor.eventview.DayDraggableEventView;
-import org.unimelb.itime.vendor.eventview.Event;
 import org.unimelb.itime.vendor.helper.CalendarEventOverlapHelper;
 import org.unimelb.itime.vendor.helper.DensityUtil;
+import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -54,9 +54,9 @@ public class DayViewBodyController {
 
     private Context context;
 
-    private ArrayList<Event> regularEventModules = new ArrayList<>();
-    private ArrayList<Event> allDayEventModules = new ArrayList<>();
-    private ArrayList<DayDraggableEventView> allDayDgEventModules = new ArrayList<>();
+    private ArrayList<ITimeEventInterface> regularEventModules = new ArrayList<>();
+    private ArrayList<ITimeEventInterface> allDayEventModules = new ArrayList<>();
+    private ArrayList<DayDraggableEventView> allDayDgEventViews = new ArrayList<>();
 
     private TextView msgWindow;
     private ImageView nowTimeLine;
@@ -64,7 +64,7 @@ public class DayViewBodyController {
 
     private TreeMap< Integer, String> positionToTimeTreeMap = new TreeMap<>();
     private TreeMap<Float, Integer> timeToPositionTreeMap = new TreeMap<>();
-    private Map<Event, Integer> regular_event_view_map = new HashMap<>();
+    private Map<ITimeEventInterface, Integer> regular_event_view_map = new HashMap<>();
 
     private CalendarEventOverlapHelper xHelper = new CalendarEventOverlapHelper();
 
@@ -119,7 +119,14 @@ public class DayViewBodyController {
         this.regularEventModules.clear();
         this.regular_event_view_map.clear();
         this.allDayEventModules.clear();
-        this.allDayDgEventModules.clear();
+
+        if(this.allDayContainer != null){
+            for (DayDraggableEventView dgEventView: this.allDayDgEventViews
+                 ) {
+                allDayContainer.removeView(dgEventView);
+            }
+            this.allDayDgEventViews.clear();
+        }
 
         if (this.dividerRLayout != null){
             dividerRLayout.removeAllViews();
@@ -132,10 +139,12 @@ public class DayViewBodyController {
 
     }
 
-    public void addEvent(Event event){
+    public void addEvent(ITimeEventInterface event){
         boolean isAllDayEvent = isAllDayEvent(event);
         if (isAllDayEvent){
+            Log.i(TAG, "allday add: ");
             allDayEventModules.add(event);
+            Log.i(TAG, "allDayEventModules: " + allDayEventModules.size());
             addAllDayEvent(event);
         }else {
             Log.i(TAG, "regular add: ");
@@ -144,7 +153,7 @@ public class DayViewBodyController {
         }
     }
 
-    private void addAllDayEvent(Event event){
+    private void addAllDayEvent(ITimeEventInterface event){
         int eventsContainerWidth =
                 allDayContainer.getWidth()
                         - allDayContainer.findViewById(R.id.allDayContainerTitle).getWidth()
@@ -154,15 +163,15 @@ public class DayViewBodyController {
 //        new_dgEvent.
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) new_dgEvent.getLayoutParams();
         params.leftMargin = marginLeft;
-        allDayDgEventModules.add(new_dgEvent);
+        allDayDgEventViews.add(new_dgEvent);
         allDayContainer.addView(new_dgEvent, params);
         //resize all day events width
         resizeAllDayEvents(eventsContainerWidth, marginLeft);
     }
 
     private void resizeAllDayEvents(int totalWidth, int marginLeft){
-        int singleEventWidth = (totalWidth - this.allDayDgEventModules.size() * marginLeft)/this.allDayDgEventModules.size();
-        for (DayDraggableEventView dgEvent:this.allDayDgEventModules
+        int singleEventWidth = (totalWidth - this.allDayDgEventViews.size() * marginLeft)/this.allDayDgEventViews.size();
+        for (DayDraggableEventView dgEvent:this.allDayDgEventViews
              ) {
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) dgEvent.getLayoutParams();
             params.width = singleEventWidth;
@@ -172,7 +181,7 @@ public class DayViewBodyController {
         allDayContainer.invalidate();
     }
 
-    private void addRegularEvent(Event event){
+    private void addRegularEvent(ITimeEventInterface event){
         SimpleDateFormat sdf= new SimpleDateFormat("HH:mm");
         String hourWithMinutes = sdf.format(new Date(event.getStartTime()));
         String[] components = hourWithMinutes.split(":");
@@ -188,20 +197,20 @@ public class DayViewBodyController {
         this.dividerRLayout.addView(new_dgEvent, params);
     }
 
-    private boolean isAllDayEvent(Event event){
+    private boolean isAllDayEvent(ITimeEventInterface event){
         long duration = event.getEndTime() - event.getStartTime();
         boolean isAllDay = duration >= allDayMilliseconds;
 
         return isAllDay;
     }
 
-    public void removeEvent(Event event){
+    public void removeEvent(ITimeEventInterface event){
         this.regular_event_view_map.remove(event);
         this.regularEventModules.remove(event);
         this.dividerRLayout.removeView(dividerRLayout.findViewById(regular_event_view_map.get(event)));
     }
 
-    public void updateEvent(Event old_event, Event new_event){
+    public void updateEvent(ITimeEventInterface old_event, ITimeEventInterface new_event){
         int index = this.regularEventModules.indexOf(old_event);
         this.regularEventModules.add(index, new_event);
 
@@ -210,7 +219,7 @@ public class DayViewBodyController {
         this.regular_event_view_map.put(new_event, tag);
     }
 
-    private DayDraggableEventView createDayDraggableEventView(Event event, boolean isAllDayEvent){
+    private DayDraggableEventView createDayDraggableEventView(ITimeEventInterface event, boolean isAllDayEvent){
         DayDraggableEventView event_view = new DayDraggableEventView(context);
         if (isAllDayEvent){
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(0, DensityUtil.dip2px(context, 30));
@@ -242,7 +251,7 @@ public class DayViewBodyController {
 
     public void reDrawEvents(){
         int layoutWidth = dividerRLayout.getWidth();
-        ArrayList<Pair<Pair<Integer,Integer>,Event>> param_events
+        ArrayList<Pair<Pair<Integer,Integer>,ITimeEventInterface>> param_events
                 = xHelper.computeOverlapXForEvents(this.regularEventModules);
 
         for (int i = 0; i < param_events.size(); i++) {
@@ -436,7 +445,7 @@ public class DayViewBodyController {
                     String[] time_parts = new_time.split(":");
                     int hour = Integer.valueOf(time_parts[0]);
                     int minutes = Integer.valueOf(time_parts[1]);
-                    Event dragging_event = (Event) view.getTag();
+                    ITimeEventInterface dragging_event = (ITimeEventInterface) view.getTag();
                     long[] new_date = changeDateFromString(dragging_event, hour, minutes);
                     dragging_event.setStartTime(new_date[0]);
                     dragging_event.setEndTime(new_date[1]);
@@ -551,7 +560,7 @@ public class DayViewBodyController {
         msgWindow.setLayoutParams(params);
     }
 
-    private long[ ] changeDateFromString(Event event, int hour, int minute){
+    private long[ ] changeDateFromString(ITimeEventInterface event, int hour, int minute){
         long startTime = event.getStartTime();
         long endTime = event.getEndTime();
         long duration = endTime - startTime;
@@ -572,7 +581,7 @@ public class DayViewBodyController {
     /****************************************************************************************/
 
     private void printAllEventViewInfo(){
-        for(Map.Entry<Event, Integer> entry : regular_event_view_map.entrySet()){
+        for(Map.Entry<ITimeEventInterface, Integer> entry : regular_event_view_map.entrySet()){
             int id = entry.getValue();
             DayDraggableEventView view = (DayDraggableEventView) dividerRLayout.findViewById(id);
             Log.i(TAG, "\n Event Info: ");

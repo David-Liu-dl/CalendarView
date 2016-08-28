@@ -5,12 +5,19 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.unimelb.itime.vendor.listener.ITimeEventInterface;
+
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.EventListener;
+import java.util.List;
 
 public class DayViewBodyPagerAdapter extends PagerAdapter {
     public String TAG = "MyAPP";
+
     private Calendar calendar = Calendar.getInstance();
+    private OnBodyPageChanged onBodyPageChanged;
+
     ArrayList<View> vLists;
     int upperBounds;
 
@@ -19,12 +26,6 @@ public class DayViewBodyPagerAdapter extends PagerAdapter {
         this.upperBounds = upperBounds;
     }
 
-    public ArrayList<View> getLists(){
-        return vLists;
-    }
-    public int getRealCount() {
-        return getLists().size();
-    }
     @Override
     public int getCount() {
         return upperBounds*2+1;
@@ -43,8 +44,25 @@ public class DayViewBodyPagerAdapter extends PagerAdapter {
             parent.removeView(v);
         }
         v.getCalendar().setOffset(position - upperBounds - (calendar.get(Calendar.DAY_OF_WEEK)-1));
+        if (this.onBodyPageChanged != null){
+            Calendar calendar = v.getCalendar().getCalendar();
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            long beginOfDayMilliseconds = calendar.getTimeInMillis();
+            calendar.set(Calendar.HOUR_OF_DAY, 23);
+            calendar.set(Calendar.MINUTE, 59);
+            calendar.set(Calendar.SECOND, 59);
+            long endOfDayMilliseconds = calendar.getTimeInMillis();
+
+            List<ITimeEventInterface> events = this.onBodyPageChanged.updateEvent(beginOfDayMilliseconds, endOfDayMilliseconds);
+            for (ITimeEventInterface event: events
+                 ) {
+                v.addEvent(event);
+            }
+        }else{
+            Log.i(TAG, "instantiateItem: null listenner");
+        }
         container.addView(v);
-        Log.i(TAG, "instantiateItem: " + position);
         return v;
     }
 
@@ -58,5 +76,11 @@ public class DayViewBodyPagerAdapter extends PagerAdapter {
 //        container.removeView(vLists.get(position % vLists.size()));
     }
 
+    public void setOnBodyPageChanged(OnBodyPageChanged onBodyPageChanged){
+        this.onBodyPageChanged = onBodyPageChanged;
+    }
 
+    public interface OnBodyPageChanged{
+        List<ITimeEventInterface> updateEvent(long timeStart, long timeEnd);
+    }
 }

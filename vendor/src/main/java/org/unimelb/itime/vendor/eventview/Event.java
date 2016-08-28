@@ -4,7 +4,6 @@ package org.unimelb.itime.vendor.eventview;
  * Created by Paul on 1/08/2016.
  */
 public class Event implements Comparable<Event> {
-
     private int id;
     private String title;
     private long startTime;

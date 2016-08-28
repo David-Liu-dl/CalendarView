@@ -6,7 +6,7 @@ import java.util.ArrayList;
 /**
  * Created by yinchuandong on 22/08/2016.
  */
-public interface ITimeEventInterface {
+public interface ITimeEventInterface<T> extends Comparable<T> {
 
     void setTitle(String title);
     String getTitle();
@@ -22,6 +22,10 @@ public interface ITimeEventInterface {
 
     void setStatus(int statusId);
     int getStatus();
+
+
+    void setProposedTimeSlots(ArrayList<Long> proposedTimeSlots);
+    ArrayList<Long> getProposedTimeSlots();
 
 
 }

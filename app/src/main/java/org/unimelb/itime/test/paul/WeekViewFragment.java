@@ -34,7 +34,7 @@ public class WeekViewFragment extends Fragment implements WeekView.OnWeekViewCha
             root= inflater.inflate(R.layout.fragment_week_view,container,false);
         WeekView weekView = (WeekView) root.findViewById(R.id.week_view);
         // simulate Events
-        ArrayList<ITimeEventInterface> eventArrayList = new ArrayList<>();
+
         Calendar calendar1 = Calendar.getInstance();
         calendar1.set(Calendar.DAY_OF_MONTH,31);
         calendar1.set(Calendar.HOUR_OF_DAY, 5);
@@ -46,8 +46,7 @@ public class WeekViewFragment extends Fragment implements WeekView.OnWeekViewCha
         testEvent.setEndTime(calendar1.getTimeInMillis() + 3600000*2);
         testEvent.setEventType(1);
         testEvent.setStatus(5);
-        eventArrayList.add(testEvent);
-        weekView.setEvent(eventArrayList);
+        weekView.setEvent(testEvent);
 
 
 

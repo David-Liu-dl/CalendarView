@@ -19,6 +19,7 @@ import org.unimelb.itime.vendor.R;
 import org.unimelb.itime.vendor.eventview.Event;
 import org.unimelb.itime.vendor.eventview.WeekDraggableEventView;
 import org.unimelb.itime.vendor.helper.MyCalendar;
+import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 import org.unimelb.itime.vendor.timeslot.TimeSlotView;
 
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ public class WeekTimeSlotViewBody extends LinearLayout{
 
     private ArrayList<Long> timeSlots;
     private int duration;
-    private ArrayList<Event> eventArrayList;
+    private ArrayList<ITimeEventInterface> eventArrayList;
 
     private TreeMap<Integer,String> timeSlotTreeMap = new TreeMap<>();
     private TreeMap<Integer, String> daySlotTreeMap = new TreeMap<>();
@@ -290,7 +291,7 @@ public class WeekTimeSlotViewBody extends LinearLayout{
 
     public void initEvents(){
         if (this.eventArrayList!=null){
-            for (Event event:eventArrayList){
+            for (ITimeEventInterface event:eventArrayList){
                 Date eventDate = new Date(event.getStartTime());
                 Calendar eventCalendar = Calendar.getInstance();
                 eventCalendar.setTime(eventDate);
@@ -304,7 +305,8 @@ public class WeekTimeSlotViewBody extends LinearLayout{
                     int leftOffset = dayWidth * (eventDayOfWeek -1);
                     int topOffSet = (int)((float)hourHeight/2 + ((float)hourHeight/4) *
                             (eventStartHour * 4 + (float)eventStartMinute / 15));
-                    int eventHeight = (int)(event.getDurationInMinute() * hourHeight / 60);
+                    long duration = (event.getEndTime() - event.getStartTime())/1000/60;
+                    int eventHeight = (int)(duration * hourHeight / 60);
                     RelativeLayout.LayoutParams eventViewParams = new RelativeLayout.LayoutParams(
                             dayWidth,eventHeight);
                     eventViewParams.setMargins(leftOffset,topOffSet , 0, 0);
@@ -382,7 +384,7 @@ public class WeekTimeSlotViewBody extends LinearLayout{
         this.duration = duration;
     }
 
-    public void setEvents(ArrayList<Event> eventArrayList){
+    public void setEvents(ArrayList<ITimeEventInterface> eventArrayList){
         this.eventArrayList = eventArrayList;
     }
 

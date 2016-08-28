@@ -8,8 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import junit.framework.Test;
+
 import org.unimelb.itime.test.R;
 import org.unimelb.itime.vendor.eventview.Event;
+import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 import org.unimelb.itime.vendor.weekview.WeekView;
 
 import java.util.ArrayList;
@@ -22,6 +25,8 @@ public class WeekViewFragment extends Fragment implements WeekView.OnWeekViewCha
     private View root;
     private LayoutInflater inflater;
     private ViewGroup container;
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -29,28 +34,28 @@ public class WeekViewFragment extends Fragment implements WeekView.OnWeekViewCha
             root= inflater.inflate(R.layout.fragment_week_view,container,false);
         WeekView weekView = (WeekView) root.findViewById(R.id.week_view);
         // simulate Events
-        ArrayList<Event> eventArrayList = new ArrayList<>();
+        ArrayList<ITimeEventInterface> eventArrayList = new ArrayList<>();
         Calendar calendar1 = Calendar.getInstance();
-        calendar1.set(Calendar.DAY_OF_MONTH,26);
-        calendar1.set(Calendar.HOUR_OF_DAY, 13);
+        calendar1.set(Calendar.DAY_OF_MONTH,31);
+        calendar1.set(Calendar.HOUR_OF_DAY, 5);
         calendar1.set(Calendar.MINUTE,0);
-        Event event = new Event();
-        event.setTitle("itime meeting");
-        event.setStartTime(calendar1.getTimeInMillis());
-        event.setEndTime(calendar1.getTimeInMillis() + 3600000*2);
-        event.setEventType(Event.Type.GROUP);
-        event.setStatus(Event.Status.COMFIRM);
-        eventArrayList.add(event);
+
+        TestEvent testEvent = new TestEvent();
+        testEvent.setTitle("itime meeting");
+        testEvent.setStartTime(calendar1.getTimeInMillis());
+        testEvent.setEndTime(calendar1.getTimeInMillis() + 3600000*2);
+        testEvent.setEventType(1);
+        testEvent.setStatus(5);
+        eventArrayList.add(testEvent);
         weekView.setEvent(eventArrayList);
 
 
 
         weekView.setOnClickEventInterface(new WeekView.OnClickEventInterface() {
             @Override
-            public void editEvent(Event event) {
-                Log.i("click event",event.getTitle());
+            public void editEvent(ITimeEventInterface iTimeEventInterface) {
+                Log.i("title",iTimeEventInterface.getTitle());
             }
-
         });
 
         return root;

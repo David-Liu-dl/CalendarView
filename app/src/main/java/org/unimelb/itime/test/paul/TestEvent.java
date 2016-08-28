@@ -1,62 +1,69 @@
-package org.unimelb.itime.test.bean;
+package org.unimelb.itime.test.paul;
 
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 
-import java.util.ArrayList;
-
 /**
- * Created by yinchuandong on 22/08/2016.
+ * Created by Paul on 28/08/2016.
  */
-public class Event implements ITimeEventInterface{
+public class TestEvent implements ITimeEventInterface {
+    private String title;
+    private long startTime;
+    private long endTime;
+    private int eventType;
+    private int eventStatus;
+
+
+    public TestEvent() {
+    }
 
 
     @Override
     public void setTitle(String title) {
-
+        this.title = title;
     }
 
     @Override
     public String getTitle() {
-        return null;
+        return title;
     }
 
     @Override
     public void setStartTime(long startTime) {
-
+        this.startTime = startTime;
     }
 
     @Override
     public long getStartTime() {
-        return 0;
+        return startTime;
     }
 
     @Override
     public void setEndTime(long endTime) {
-
+        this.endTime = endTime;
     }
 
     @Override
     public long getEndTime() {
-        return 0;
+        return endTime;
     }
 
     @Override
     public void setEventType(int typeId) {
-
+        this.eventType = typeId;
     }
 
     @Override
     public int getEventType() {
-        return 0;
+        return eventType;
     }
 
     @Override
     public void setStatus(int statusId) {
-
+        this.eventStatus = statusId;
     }
 
     @Override
     public int getStatus() {
-        return 0;
+        return eventStatus;
     }
 }

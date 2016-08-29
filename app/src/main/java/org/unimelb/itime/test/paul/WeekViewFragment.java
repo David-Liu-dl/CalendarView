@@ -50,7 +50,7 @@ public class WeekViewFragment extends Fragment implements WeekView.OnWeekViewCha
 
             weekView.setOnClickEventInterface(new WeekView.OnClickEventInterface() {
                 @Override
-                public void editEvent(ITimeEventInterface iTimeEventInterface) {
+                public void onClickEditEvent(ITimeEventInterface iTimeEventInterface) {
                     Log.i("title", iTimeEventInterface.getTitle());
                 }
             });

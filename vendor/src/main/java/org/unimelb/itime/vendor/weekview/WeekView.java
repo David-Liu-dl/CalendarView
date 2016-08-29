@@ -27,7 +27,7 @@ import java.util.Calendar;
  */
 @BindingMethods(
         {@BindingMethod(type = WeekView.class, attribute = "app:onWeekViewChange", method="setOnWeekViewChangeListener"),
-        @BindingMethod(type = WeekView.class, attribute = "app:editEvent", method="setOnClickEventInterface")}
+        @BindingMethod(type = WeekView.class, attribute = "app:onClickEditEvent", method="setOnClickEventInterface")}
 )
 
 public class WeekView extends RelativeLayout{
@@ -246,7 +246,7 @@ public class WeekView extends RelativeLayout{
     }
 
     public interface OnClickEventInterface{
-        void editEvent(ITimeEventInterface iTimeEventInterface);
+        void onClickEditEvent(ITimeEventInterface iTimeEventInterface);
     }
 
 }

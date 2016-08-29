@@ -382,6 +382,7 @@ public class WeekViewBody extends LinearLayout{
         initAll();
     }
 
+
     public void updateWidthHeight(int totalWidth, int totalHeight){
         this.totalHeight = totalHeight;
         this.totalWidth = totalWidth;

@@ -4,8 +4,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.support.v7.widget.RecyclerView;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.ViewGroup;
@@ -15,7 +13,6 @@ import android.widget.TextView;
 
 import org.unimelb.itime.vendor.R;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
-import org.unimelb.itime.vendor.timeslot.TimeSlotViewLayoutParams;
 
 /**
  * Created by Paul on 26/08/2016.
@@ -125,7 +122,7 @@ public class WeekDraggableEventView extends RelativeLayout{
             case PENDING:
                 return R.drawable.itime_question_mark;
             case CONFIRM:
-                return R.drawable.icon_tick;
+                return R.drawable.itime_icon_tick;
             default:
                 return -1;
         }

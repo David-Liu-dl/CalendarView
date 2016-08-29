@@ -84,7 +84,7 @@ public class WeekViewHeader extends LinearLayout{
 //
 //
 //        newEventCreateImageView = new ImageView(getContext());
-//        newEventCreateImageView.setImageResource(R.drawable.image_create_new_event);
+//        newEventCreateImageView.setImageResource(R.drawable.itime_create_new_event);
 //        RelativeLayout.LayoutParams newEventCreateImageViewParams = new RelativeLayout.LayoutParams(totalHeight/4, totalHeight/4);
 //        newEventCreateImageViewParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 //        newEventCreateImageViewParams.addRule(RelativeLayout.CENTER_VERTICAL);

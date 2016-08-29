@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import org.unimelb.itime.vendor.R;
 
@@ -37,7 +36,7 @@ public class TimeSlotView extends ViewGroup {
 
     public void initIcon(){
         icon = new ImageView(getContext());
-        icon.setImageResource(R.drawable.icon_tick);
+        icon.setImageResource(R.drawable.itime_icon_tick);
         this.addView(icon);
     }
 

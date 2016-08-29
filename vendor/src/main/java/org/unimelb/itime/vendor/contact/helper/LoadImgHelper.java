@@ -27,9 +27,9 @@ public class LoadImgHelper {
     public void bindUrlWithImageView(Context mContext, Contact contact, ImageView img_v){
         if (contact.getUrl() != null){
             Log.i(TAG, "url: " + contact.getUrl());
-            Picasso.with(mContext).load(contact.getUrl()).placeholder(R.drawable.attendee_selected_loading).into(img_v);
+            Picasso.with(mContext).load(contact.getUrl()).placeholder(R.drawable.invitee_selected_loading).into(img_v);
         }else {
-            Picasso.with(mContext).load(R.drawable.attendee_selected_default_picture).into(img_v);
+            Picasso.with(mContext).load(R.drawable.invitee_selected_default_picture).into(img_v);
         }
     }
 }

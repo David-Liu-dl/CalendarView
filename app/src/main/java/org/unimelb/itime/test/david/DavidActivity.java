@@ -53,7 +53,7 @@ public class DavidActivity extends AppCompatActivity {
         });
 
         AttendeeFragment pageF = new AttendeeFragment();
-        getFragmentManager().beginTransaction().add(R.id.david_fragment, pageF).commit();
+        getFragmentManager().beginTransaction().add(R.id.david_fragment, monthDayFragment).commit();
     }
 
     private void initDB(){
@@ -63,7 +63,7 @@ public class DavidActivity extends AppCompatActivity {
         int[] status = {0,1};
         long interval = 3600 * 1000;
         int alldayCount = 0;
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 100000; i++) {
 
             long startTime = calendar.getTimeInMillis();
             long endTime = startTime + interval * (i%30);

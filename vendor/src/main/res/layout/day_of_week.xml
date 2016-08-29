@@ -8,7 +8,7 @@
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="SUN"
+        android:text="@string/_1th_of_week"
         android:gravity="center"
         android:id="@+id/dayOfWeek_1"
         android:layout_weight="1"/>
@@ -16,7 +16,7 @@
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="MON"
+        android:text="@string/_2th_of_week"
         android:gravity="center"
         android:id="@+id/dayOfWeek_2"
         android:layout_weight="1"/>
@@ -24,7 +24,7 @@
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="TUE"
+        android:text="@string/_3th_of_week"
         android:gravity="center"
         android:id="@+id/dayOfWeek_3"
         android:layout_weight="1"/>
@@ -32,7 +32,7 @@
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="WED"
+        android:text="@string/_4th_of_week"
         android:gravity="center"
         android:id="@+id/dayOfWeek_4"
         android:layout_weight="1"/>
@@ -40,7 +40,7 @@
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="TUR"
+        android:text="@string/_5th_of_week"
         android:gravity="center"
         android:id="@+id/dayOfWeek_5"
         android:layout_weight="1"/>
@@ -48,7 +48,7 @@
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="FRI"
+        android:text="@string/_6th_of_week"
         android:gravity="center"
         android:id="@+id/dayOfWeek_6"
         android:layout_weight="1"/>
@@ -56,7 +56,7 @@
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="SAT"
+        android:text="@string/_7th_of_week"
         android:gravity="center"
         android:id="@+id/dayOfWeek_7"
         android:layout_weight="1"/>

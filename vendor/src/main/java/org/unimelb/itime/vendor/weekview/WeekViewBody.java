@@ -305,7 +305,7 @@ public class WeekViewBody extends LinearLayout{
                         @Override
                         public void onClick(View view) {
                             ITimeEventInterface iTimeEventInterface = eventView.getEvent();
-                            onClickEventInterface.editEvent(iTimeEventInterface);
+                            onClickEventInterface.onClickEditEvent(iTimeEventInterface);
                         }
                     });
                 }

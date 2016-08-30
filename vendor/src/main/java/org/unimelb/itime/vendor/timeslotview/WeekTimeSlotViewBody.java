@@ -1,6 +1,7 @@
 package org.unimelb.itime.vendor.timeslotview;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -43,7 +44,7 @@ public class WeekTimeSlotViewBody extends LinearLayout{
     private int leftTimeBarPortion = 10;
 
 
-    private ArrayList<Long> timeSlots;
+    private Map<Long,Boolean> timeSlots;
     private int duration;
     private ArrayList<ITimeEventInterface> eventArrayList;
 
@@ -62,20 +63,46 @@ public class WeekTimeSlotViewBody extends LinearLayout{
     private MyCalendar myCalendar;
     Calendar calendar = Calendar.getInstance();
 
+
+    private TextView[] hourTextViewArr;
+    private TextView[] timeLineTextViewArr;
+    private TextView currentTimeLineTextView;
+    private TextView currentTimeTextView;
+
+
+
+    private WeekTimeSlotView.OnTimeSlotClickListener onTimeSlotClickListener;
+
     public WeekTimeSlotViewBody(Context context) {
         super(context);
-        this.setOrientation(HORIZONTAL);
-//        if (!EventBus.getDefault().isRegistered(this))
-//            EventBus.getDefault().register(this);
+        init();
     }
 
     public WeekTimeSlotViewBody(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.setOrientation(HORIZONTAL);
-//        if (!EventBus.getDefault().isRegistered(this))
-//            EventBus.getDefault().register(this);
+        init();
 
     }
+
+    public void init(){
+        this.setOrientation(HORIZONTAL);
+        initWidgets();
+//        initHourTextViews();
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
 
     private void initWidgets(){
         // init scrollView
@@ -95,178 +122,178 @@ public class WeekTimeSlotViewBody extends LinearLayout{
         eventRelativeLayout = new RelativeLayout(getContext());
     }
 
-    public void initAll(){
-//        EventBus.getDefault().register(this);
-//        if (!EventBus.getDefault().isRegistered(this))
-//            EventBus.getDefault().register(this);
-        initWidgets();
-        cleanView();
-        this.requestLayout();
-        eventWidgetsRelativeLayout.requestLayout();
-        initLayoutParams();
-        initTimeText(getHours());
-        initDottedLineDivider(getHours());
-        initTimeSlot(getHours());
-        initDaySlot();
-        initCurrentTimeLine(myCalendar);
-        initMsgWindow();
-        initEvents();
-        initSuggestTimeSlot();
+//    public void initAll(){
+////        EventBus.getDefault().register(this);
+////        if (!EventBus.getDefault().isRegistered(this))
+////            EventBus.getDefault().register(this);
+//        initWidgets();
+//        cleanView();
+//        this.requestLayout();
+//        eventWidgetsRelativeLayout.requestLayout();
+//        initLayoutParams();
+//        initTimeText(getHours());
+//        initDottedLineDivider(getHours());
+//        initTimeSlot(getHours());
+//        initDaySlot();
+//        initCurrentTimeLine(myCalendar);
+//        initMsgWindow();
+//        initEvents();
+//        initSuggestTimeSlot();
+////        }
+//        eventWidgetsRelativeLayout.invalidate();
+//    }
+//
+//    public void cleanView(){
+////        Log.i("weekViewBody", String.valueOf(this.getChildCount()));
+//        this.removeAllViews();
+////        Log.i("scrollView", String.valueOf(scrollView.getChildCount()));
+//        scrollView.removeAllViews();
+////        Log.i("backGroundRelativeLayout", String.valueOf(backGroundRelativeLayout.getChildCount()));
+//        backGroundRelativeLayout.removeAllViews();
+////        Log.i("weekBody", String.valueOf(weekBodyLinearLayout.getChildCount()));
+//        weekBodyLinearLayout.removeAllViews();
+////        Log.i("timeRL", String.valueOf(timeRelativeLayout.getChildCount()));
+//        timeRelativeLayout.removeAllViews();
+////        Log.i("eventRL", String.valueOf(eventRelativeLayout.getChildCount()));
+//        eventWidgetsRelativeLayout.removeAllViews();
+//
+//        eventRelativeLayout.removeAllViews();
+//    }
+//
+//    private void initLayoutParams(){
+//        ScrollView.LayoutParams scrollViewParams = new ScrollView.LayoutParams(
+//                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//        scrollView.setLayoutParams(scrollViewParams);
+//
+//        RelativeLayout.LayoutParams backGroundParams = new RelativeLayout.LayoutParams(
+//                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//        backGroundRelativeLayout.setLayoutParams(backGroundParams);
+//
+//        LinearLayout.LayoutParams weekBodyLinearLayoutParams = new LinearLayout.LayoutParams(
+//                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//        weekBodyLinearLayout.setLayoutParams(weekBodyLinearLayoutParams);
+//
+//        RelativeLayout.LayoutParams timeRelativeLayoutParams = new RelativeLayout.LayoutParams(
+//                hourWidth, ViewGroup.LayoutParams.MATCH_PARENT);
+//        timeRelativeLayout.setLayoutParams(timeRelativeLayoutParams);
+//
+//        RelativeLayout.LayoutParams eventBackgroundRelativeLayoutParams = new RelativeLayout.LayoutParams(
+//                totalWidth - hourWidth, ViewGroup.LayoutParams.MATCH_PARENT);
+//        eventWidgetsRelativeLayout.setLayoutParams(eventBackgroundRelativeLayoutParams);
+//
+//        RelativeLayout.LayoutParams eventRelativeLayoutParams = new RelativeLayout.LayoutParams(
+//                totalWidth - hourWidth, ViewGroup.LayoutParams.MATCH_PARENT);
+//        eventRelativeLayout.setLayoutParams(eventRelativeLayoutParams);
+//
+//        eventRelativeLayout.addView(eventWidgetsRelativeLayout);
+//        weekBodyLinearLayout.addView(timeRelativeLayout);
+//        weekBodyLinearLayout.addView(eventRelativeLayout);
+//        backGroundRelativeLayout.addView(weekBodyLinearLayout);
+//        scrollView.addView(backGroundRelativeLayout);
+//        this.addView(scrollView);
+//
+//    }
+//
+//    private void initTimeText(String[] hours){
+//        for (int time = 0; time< hours.length; time++){
+//            TextView timeView = new TextView(getContext());
+//            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+//                    ViewGroup.LayoutParams.MATCH_PARENT,hourHeight);
+//            params.setMargins(0, hourHeight * time , 0, 0);
+//            timeView.setLayoutParams(params);
+//            timeView.setText(hours[time].substring(0,2));
+//            timeView.setTextSize(12);
+//            timeView.setGravity(Gravity.CENTER);
+//            timeRelativeLayout.addView(timeView);
 //        }
-        eventWidgetsRelativeLayout.invalidate();
-    }
-
-    public void cleanView(){
-//        Log.i("weekViewBody", String.valueOf(this.getChildCount()));
-        this.removeAllViews();
-//        Log.i("scrollView", String.valueOf(scrollView.getChildCount()));
-        scrollView.removeAllViews();
-//        Log.i("backGroundRelativeLayout", String.valueOf(backGroundRelativeLayout.getChildCount()));
-        backGroundRelativeLayout.removeAllViews();
-//        Log.i("weekBody", String.valueOf(weekBodyLinearLayout.getChildCount()));
-        weekBodyLinearLayout.removeAllViews();
-//        Log.i("timeRL", String.valueOf(timeRelativeLayout.getChildCount()));
-        timeRelativeLayout.removeAllViews();
-//        Log.i("eventRL", String.valueOf(eventRelativeLayout.getChildCount()));
-        eventWidgetsRelativeLayout.removeAllViews();
-
-        eventRelativeLayout.removeAllViews();
-    }
-
-    private void initLayoutParams(){
-        ScrollView.LayoutParams scrollViewParams = new ScrollView.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        scrollView.setLayoutParams(scrollViewParams);
-
-        RelativeLayout.LayoutParams backGroundParams = new RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        backGroundRelativeLayout.setLayoutParams(backGroundParams);
-
-        LinearLayout.LayoutParams weekBodyLinearLayoutParams = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        weekBodyLinearLayout.setLayoutParams(weekBodyLinearLayoutParams);
-
-        RelativeLayout.LayoutParams timeRelativeLayoutParams = new RelativeLayout.LayoutParams(
-                hourWidth, ViewGroup.LayoutParams.MATCH_PARENT);
-        timeRelativeLayout.setLayoutParams(timeRelativeLayoutParams);
-
-        RelativeLayout.LayoutParams eventBackgroundRelativeLayoutParams = new RelativeLayout.LayoutParams(
-                totalWidth - hourWidth, ViewGroup.LayoutParams.MATCH_PARENT);
-        eventWidgetsRelativeLayout.setLayoutParams(eventBackgroundRelativeLayoutParams);
-
-        RelativeLayout.LayoutParams eventRelativeLayoutParams = new RelativeLayout.LayoutParams(
-                totalWidth - hourWidth, ViewGroup.LayoutParams.MATCH_PARENT);
-        eventRelativeLayout.setLayoutParams(eventRelativeLayoutParams);
-
-        eventRelativeLayout.addView(eventWidgetsRelativeLayout);
-        weekBodyLinearLayout.addView(timeRelativeLayout);
-        weekBodyLinearLayout.addView(eventRelativeLayout);
-        backGroundRelativeLayout.addView(weekBodyLinearLayout);
-        scrollView.addView(backGroundRelativeLayout);
-        this.addView(scrollView);
-
-    }
-
-    private void initTimeText(String[] hours){
-        for (int time = 0; time< hours.length; time++){
-            TextView timeView = new TextView(getContext());
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,hourHeight);
-            params.setMargins(0, hourHeight * time , 0, 0);
-            timeView.setLayoutParams(params);
-            timeView.setText(hours[time].substring(0,2));
-            timeView.setTextSize(12);
-            timeView.setGravity(Gravity.CENTER);
-            timeRelativeLayout.addView(timeView);
-        }
-    }
-
-    private void initDottedLineDivider(String[] hours){
-        for (int time = 0; time < hours.length; time++ ){
-            TextView dottedLine = new TextView(getContext());
-            dottedLine.setBackgroundDrawable(getResources().getDrawable(R.drawable.itime_dotted_line));
-            RelativeLayout.LayoutParams params= new RelativeLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, hourHeight / 10);
-            params.setMargins(0, hourHeight * time + (int)(0.5 * hourHeight)
-                    - (int)(hourHeight /20), 0, 0);
-            dottedLine.setLayerType(dottedLine.LAYER_TYPE_SOFTWARE, null);
-            dottedLine.setLayoutParams(params);
-            eventWidgetsRelativeLayout.addView(dottedLine);
-        }
-    }
-
-    private void initTimeSlot(String[] hours){
-        timeSlotTreeMap.clear();
-        double startPoint = hourHeight /2;
-        double timeSlotHeight = hourHeight /4;
-        for(int time = 0; time < hours.length; time++){
-            timeSlotTreeMap.put((int)startPoint + hourHeight * time, hours[time]);
-            String hourPart = hours[time].substring(0,2);
-            for (int quarterSlot = 0 ; quarterSlot < 3; quarterSlot ++){
-                String minute = String.valueOf((quarterSlot+1)*15);
-                String thisTime = hourPart + ":" + minute;
-                int PositionY = (int)(startPoint + hourHeight * time + timeSlotHeight * (quarterSlot +1));
-                timeSlotTreeMap.put(PositionY,thisTime);
-            }
-        }
-    }
-
-    private void initDaySlot(){
-        double startPoint =0;
-        double daySlotWidth = dayWidth;
-        String[] days = {"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
-        for (int slot = 0; slot <7; slot++ ){
-            int positionX = (int)startPoint + (int)daySlotWidth * slot;
-            daySlotTreeMap.put( positionX ,days[slot]);
-        }
-    }
-
-    private void initMsgWindow(){
-        msgWindow = new TextView(getContext());
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        msgWindow.setLayoutParams(params);
-        msgWindow.setPadding(0,0,0,0);
-        msgWindow.setTextSize(20);
-        msgWindow.setText("msgWindow");
-        msgWindow.setVisibility(View.INVISIBLE);
-        eventWidgetsRelativeLayout.addView(msgWindow);
-    }
-
-    public void initCurrentTimeLine(MyCalendar myCalendar){
-        Calendar todayCalendar = Calendar.getInstance(Locale.getDefault());
-        todayCalendar.setTime(new Date());
-        if (isShowingToday(myCalendar, todayCalendar)) {
-            // set the current time line
-            ImageView timeLine = new ImageView(getContext());
-            timeLine.setImageResource(R.drawable.itime_dotted_line);
-            timeLine.setBackgroundColor(Color.RED);
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 5);
-
-            int currentHour = todayCalendar.get(Calendar.HOUR_OF_DAY);
-            int currentMinute = todayCalendar.get(Calendar.MINUTE);
-            int currentTimePaddingTop = (int)(currentHour* hourHeight) + (int)(currentMinute * hourHeight / 60) + (int)hourHeight/2 ;
-
-            params.setMargins(hourWidth, currentTimePaddingTop, 0, 0);
-            timeLine.setLayoutParams(params);
-            backGroundRelativeLayout.addView(timeLine);
-
-            // set the showing time
-            currentTimeView = new TextView(getContext());
-            String stringCurrentHour = currentHour < 10? "0" +String.valueOf(currentHour) : String.valueOf(currentHour);
-            String stringCurrentMinute = currentMinute < 10? "0"+String.valueOf(currentMinute) : String.valueOf(currentMinute);
-            String AMPM = currentHour> 12 ? "PM" :"AM";
-            currentTimeView.setText(String.format("%s:%s %s", stringCurrentHour, stringCurrentMinute, AMPM));
-            currentTimeView.setTextSize(8);
-            currentTimeView.setTextColor(Color.RED);
-            RelativeLayout.LayoutParams showCurrentTimeLayout = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            showCurrentTimeLayout.topMargin = currentTimePaddingTop - hourHeight/3 ;
-            currentTimeView.setLayoutParams(showCurrentTimeLayout);
-            backGroundRelativeLayout.addView(currentTimeView);
-        }
-//        eventRL.invalidate();
-    }
-
+//    }
+//
+//    private void initDottedLineDivider(String[] hours){
+//        for (int time = 0; time < hours.length; time++ ){
+//            TextView dottedLine = new TextView(getContext());
+//            dottedLine.setBackgroundDrawable(getResources().getDrawable(R.drawable.itime_dotted_line));
+//            RelativeLayout.LayoutParams params= new RelativeLayout.LayoutParams(
+//                    ViewGroup.LayoutParams.MATCH_PARENT, hourHeight / 10);
+//            params.setMargins(0, hourHeight * time + (int)(0.5 * hourHeight)
+//                    - (int)(hourHeight /20), 0, 0);
+//            dottedLine.setLayerType(dottedLine.LAYER_TYPE_SOFTWARE, null);
+//            dottedLine.setLayoutParams(params);
+//            eventWidgetsRelativeLayout.addView(dottedLine);
+//        }
+//    }
+//
+//    private void initTimeSlot(String[] hours){
+//        timeSlotTreeMap.clear();
+//        double startPoint = hourHeight /2;
+//        double timeSlotHeight = hourHeight /4;
+//        for(int time = 0; time < hours.length; time++){
+//            timeSlotTreeMap.put((int)startPoint + hourHeight * time, hours[time]);
+//            String hourPart = hours[time].substring(0,2);
+//            for (int quarterSlot = 0 ; quarterSlot < 3; quarterSlot ++){
+//                String minute = String.valueOf((quarterSlot+1)*15);
+//                String thisTime = hourPart + ":" + minute;
+//                int PositionY = (int)(startPoint + hourHeight * time + timeSlotHeight * (quarterSlot +1));
+//                timeSlotTreeMap.put(PositionY,thisTime);
+//            }
+//        }
+//    }
+//
+//    private void initDaySlot(){
+//        double startPoint =0;
+//        double daySlotWidth = dayWidth;
+//        String[] days = {"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
+//        for (int slot = 0; slot <7; slot++ ){
+//            int positionX = (int)startPoint + (int)daySlotWidth * slot;
+//            daySlotTreeMap.put( positionX ,days[slot]);
+//        }
+//    }
+//
+//    private void initMsgWindow(){
+//        msgWindow = new TextView(getContext());
+//        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+//                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//        msgWindow.setLayoutParams(params);
+//        msgWindow.setPadding(0,0,0,0);
+//        msgWindow.setTextSize(20);
+//        msgWindow.setText("msgWindow");
+//        msgWindow.setVisibility(View.INVISIBLE);
+//        eventWidgetsRelativeLayout.addView(msgWindow);
+//    }
+//
+//    public void initCurrentTimeLine(MyCalendar myCalendar){
+//        Calendar todayCalendar = Calendar.getInstance(Locale.getDefault());
+//        todayCalendar.setTime(new Date());
+//        if (isShowingToday(myCalendar, todayCalendar)) {
+//            // set the current time line
+//            ImageView timeLine = new ImageView(getContext());
+//            timeLine.setImageResource(R.drawable.itime_dotted_line);
+//            timeLine.setBackgroundColor(Color.RED);
+//            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 5);
+//
+//            int currentHour = todayCalendar.get(Calendar.HOUR_OF_DAY);
+//            int currentMinute = todayCalendar.get(Calendar.MINUTE);
+//            int currentTimePaddingTop = (int)(currentHour* hourHeight) + (int)(currentMinute * hourHeight / 60) + (int)hourHeight/2 ;
+//
+//            params.setMargins(hourWidth, currentTimePaddingTop, 0, 0);
+//            timeLine.setLayoutParams(params);
+//            backGroundRelativeLayout.addView(timeLine);
+//
+//            // set the showing time
+//            currentTimeView = new TextView(getContext());
+//            String stringCurrentHour = currentHour < 10? "0" +String.valueOf(currentHour) : String.valueOf(currentHour);
+//            String stringCurrentMinute = currentMinute < 10? "0"+String.valueOf(currentMinute) : String.valueOf(currentMinute);
+//            String AMPM = currentHour> 12 ? "PM" :"AM";
+//            currentTimeView.setText(String.format("%s:%s %s", stringCurrentHour, stringCurrentMinute, AMPM));
+//            currentTimeView.setTextSize(8);
+//            currentTimeView.setTextColor(Color.RED);
+//            RelativeLayout.LayoutParams showCurrentTimeLayout = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//            showCurrentTimeLayout.topMargin = currentTimePaddingTop - hourHeight/3 ;
+//            currentTimeView.setLayoutParams(showCurrentTimeLayout);
+//            backGroundRelativeLayout.addView(currentTimeView);
+//        }
+////        eventRL.invalidate();
+//    }
+//
     public boolean isShowingToday(MyCalendar myCalendar, Calendar todayCalendar){
         for (int i = 0 ; i < 7 ; i ++){
             if (myCalendar.getDay() == todayCalendar.get(Calendar.DATE) &&
@@ -279,96 +306,111 @@ public class WeekTimeSlotViewBody extends LinearLayout{
         }
         return false;
     }
-
-    public void initDragListener(){
-        if (myDragListener == null){
-            myDragListener = new MyDragListener();
-            eventRelativeLayout.setOnDragListener(myDragListener);
-        }else{
-            eventRelativeLayout.setOnDragListener(myDragListener);
-        }
-    }
-
-    public void initEvents(){
-        if (this.eventArrayList!=null){
-            for (ITimeEventInterface event:eventArrayList){
-                Date eventDate = new Date(event.getStartTime());
-                Calendar eventCalendar = Calendar.getInstance();
-                eventCalendar.setTime(eventDate);
-                if (isInCurrentWeek(eventCalendar,myCalendar)){
-
-                    WeekDraggableEventView eventView = new WeekDraggableEventView(getContext(),event);
-                    int eventDayOfWeek = eventCalendar.get(Calendar.DAY_OF_WEEK);
-                    int eventStartHour = eventCalendar.get(Calendar.HOUR_OF_DAY);
-                    int eventStartMinute = eventCalendar.get(Calendar.MINUTE);
-
-                    int leftOffset = dayWidth * (eventDayOfWeek -1);
-                    int topOffSet = (int)((float)hourHeight/2 + ((float)hourHeight/4) *
-                            (eventStartHour * 4 + (float)eventStartMinute / 15));
-                    long duration = (event.getEndTime() - event.getStartTime())/1000/60;
-                    int eventHeight = (int)(duration * hourHeight / 60);
-                    RelativeLayout.LayoutParams eventViewParams = new RelativeLayout.LayoutParams(
-                            dayWidth,eventHeight);
-                    eventViewParams.setMargins(leftOffset,topOffSet , 0, 0);
-                    eventView.setLayoutParams(eventViewParams);
-                    eventRelativeLayout.addView(eventView);
-                }
-            }
-        }
-    }
-
-    public void initSuggestTimeSlot(){
-        if (timeSlots!=null) {
-            for (Long startTime : timeSlots) {
-                Date timeSlotDate = new Date(startTime);
-                Calendar timeSlotCalendar = Calendar.getInstance();
-                timeSlotCalendar.setTime(timeSlotDate);
-                if (isInCurrentWeek(timeSlotCalendar, myCalendar)) {
-                    TimeSlotView timeSlotView = new TimeSlotView(
-                            getContext(), startTime, duration);
-                    int timeSlotDayOfWeek = timeSlotCalendar.get(Calendar.DAY_OF_WEEK);
-                    int timeSlotStartHour = timeSlotCalendar.get(Calendar.HOUR_OF_DAY);
-                    int timeSlotStartMinute = timeSlotCalendar.get(Calendar.MINUTE);
-
-                    int leftOffSet = dayWidth * (timeSlotDayOfWeek - 1);
-                    int topOffset = (int) ((float) hourHeight / 2 + ((float) hourHeight / 4) *
-                            (timeSlotStartHour * 4 + (float) timeSlotStartMinute / 15));
-                    int timeSlotHeight = (int) ((float) hourHeight / 60) * duration;
-
-                    RelativeLayout.LayoutParams timeSlotParams = new RelativeLayout.LayoutParams(
-                            dayWidth, timeSlotHeight
-                    );
-                    timeSlotParams.setMargins(leftOffSet, topOffset, 0, 0);
-                    timeSlotView.setLayoutParams(timeSlotParams);
-                    eventRelativeLayout.addView(timeSlotView);
-
-                    // add time line and time *****************************
-                    ImageView timeLine = new ImageView(getContext());
-                    timeLine.setImageResource(R.drawable.itime_dotted_line);
-                    timeLine.setBackgroundColor(getResources().getColor(R.color.deeppink));
-                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 5);
-
-                    params.setMargins(hourWidth, topOffset, 0, 0);
-                    timeLine.setLayoutParams(params);
-                    backGroundRelativeLayout.addView(timeLine);
-
-                    // set the showing time
-                    currentTimeView = new TextView(getContext());
-                    String stringCurrentHour = timeSlotStartHour < 10? "0" +String.valueOf(timeSlotStartHour) : String.valueOf(timeSlotStartHour);
-                    String stringCurrentMinute = timeSlotStartMinute < 10? "0"+String.valueOf(timeSlotStartMinute) : String.valueOf(timeSlotStartMinute);
-                    String AMPM = timeSlotStartHour> 12 ? "PM" :"AM";
-                    currentTimeView.setText(String.format("%s:%s %s", stringCurrentHour, stringCurrentMinute, AMPM));
-                    currentTimeView.setTextSize(8);
-                    currentTimeView.setTextColor(Color.RED);
-                    RelativeLayout.LayoutParams showCurrentTimeLayout = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    showCurrentTimeLayout.topMargin = topOffset - hourHeight/3 ;
-                    currentTimeView.setLayoutParams(showCurrentTimeLayout);
-                    backGroundRelativeLayout.addView(currentTimeView);
-                }
-            }
-        }
-    }
-
+//
+//    public void initDragListener(){
+//        if (myDragListener == null){
+//            myDragListener = new MyDragListener();
+//            eventRelativeLayout.setOnDragListener(myDragListener);
+//        }else{
+//            eventRelativeLayout.setOnDragListener(myDragListener);
+//        }
+//    }
+//
+//    private void initEvents(){
+//        if (this.eventArrayList!=null){
+//            for (ITimeEventInterface event:eventArrayList){
+//                Date eventDate = new Date(event.getStartTime());
+//                Calendar eventCalendar = Calendar.getInstance();
+//                eventCalendar.setTime(eventDate);
+//                if (isInCurrentWeek(eventCalendar,myCalendar)){
+//
+//                    WeekDraggableEventView eventView = new WeekDraggableEventView(getContext(),event);
+//                    int eventDayOfWeek = eventCalendar.get(Calendar.DAY_OF_WEEK);
+//                    int eventStartHour = eventCalendar.get(Calendar.HOUR_OF_DAY);
+//                    int eventStartMinute = eventCalendar.get(Calendar.MINUTE);
+//
+//                    int leftOffset = dayWidth * (eventDayOfWeek -1);
+//                    int topOffSet = (int)((float)hourHeight/2 + ((float)hourHeight/4) *
+//                            (eventStartHour * 4 + (float)eventStartMinute / 15));
+//                    long duration = (event.getEndTime() - event.getStartTime())/1000/60;
+//                    int eventHeight = (int)(duration * hourHeight / 60);
+//                    RelativeLayout.LayoutParams eventViewParams = new RelativeLayout.LayoutParams(
+//                            dayWidth,eventHeight);
+//                    eventViewParams.setMargins(leftOffset,topOffSet , 0, 0);
+//                    eventView.setLayoutParams(eventViewParams);
+//                    eventRelativeLayout.addView(eventView);
+//                }
+//            }
+//        }
+//    }
+//
+//    public void initSuggestTimeSlot(){
+//        if (timeSlots!=null) {
+//            for (final Long startTime : timeSlots.keySet()) {
+//                boolean isChoose = timeSlots.get(startTime);
+//                Date timeSlotDate = new Date(startTime);
+//                Calendar timeSlotCalendar = Calendar.getInstance();
+//                timeSlotCalendar.setTime(timeSlotDate);
+//                if (isInCurrentWeek(timeSlotCalendar, myCalendar)) {
+//                    TimeSlotView timeSlotView = new TimeSlotView(
+//                            getContext(), startTime, duration,isChoose);
+//                    int timeSlotDayOfWeek = timeSlotCalendar.get(Calendar.DAY_OF_WEEK);
+//                    int timeSlotStartHour = timeSlotCalendar.get(Calendar.HOUR_OF_DAY);
+//                    int timeSlotStartMinute = timeSlotCalendar.get(Calendar.MINUTE);
+//
+//                    int leftOffSet = dayWidth * (timeSlotDayOfWeek - 1);
+//                    int topOffset = (int) ((float) hourHeight / 2 + ((float) hourHeight / 4) *
+//                            (timeSlotStartHour * 4 + (float) timeSlotStartMinute / 15));
+//                    int timeSlotHeight = (int) ((float) hourHeight / 60) * duration;
+//
+//                    RelativeLayout.LayoutParams timeSlotParams = new RelativeLayout.LayoutParams(
+//                            dayWidth, timeSlotHeight
+//                    );
+//                    timeSlotParams.setMargins(leftOffSet, topOffset, 0, 0);
+//                    timeSlotView.setLayoutParams(timeSlotParams);
+//
+//                    // add click listener
+//                    timeSlotView.setOnClickListener(new OnClickListener() {
+//                        @Override
+//                        public void onClick(View view) {
+//                            // view change
+//                            if ( ((TimeSlotView)view).isSelect())
+//                                ((TimeSlotView)view).setSelect(false);
+//                            else
+//                                ((TimeSlotView)view).setSelect(true);
+//                            onTimeSlotClickListener.onTimeSlotClick(((TimeSlotView)view).getStartTime());
+//                        }
+//                    });
+//                    eventRelativeLayout.addView(timeSlotView);
+//
+//                    // add time line and time *****************************
+//                    ImageView timeLine = new ImageView(getContext());
+//                    timeLine.setImageResource(R.drawable.itime_dotted_line);
+//                    timeLine.setBackgroundColor(getResources().getColor(R.color.deeppink));
+//                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 5);
+//
+//                    params.setMargins(hourWidth, topOffset, 0, 0);
+//                    timeLine.setLayoutParams(params);
+//                    backGroundRelativeLayout.addView(timeLine);
+//
+//                    // set the showing time
+//                    currentTimeView = new TextView(getContext());
+//                    String stringCurrentHour = timeSlotStartHour < 10? "0" +String.valueOf(timeSlotStartHour) : String.valueOf(timeSlotStartHour);
+//                    String stringCurrentMinute = timeSlotStartMinute < 10? "0"+String.valueOf(timeSlotStartMinute) : String.valueOf(timeSlotStartMinute);
+//                    String AMPM = timeSlotStartHour> 12 ? "PM" :"AM";
+//                    currentTimeView.setText(String.format("%s:%s %s", stringCurrentHour, stringCurrentMinute, AMPM));
+//                    currentTimeView.setTextSize(8);
+//                    currentTimeView.setTextColor(Color.RED);
+//                    RelativeLayout.LayoutParams showCurrentTimeLayout = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                    showCurrentTimeLayout.topMargin = topOffset - hourHeight/3 ;
+//                    currentTimeView.setLayoutParams(showCurrentTimeLayout);
+//                    backGroundRelativeLayout.addView(currentTimeView);
+//
+//                }
+//            }
+//        }
+//    }
+//
     public boolean isInCurrentWeek(Calendar timeSlotCalendar,MyCalendar myCalendar){
         Calendar firstSundayCalendar = Calendar.getInstance();
         firstSundayCalendar.set(Calendar.YEAR, myCalendar.getYear());
@@ -377,17 +419,25 @@ public class WeekTimeSlotViewBody extends LinearLayout{
         return (timeSlotCalendar.get(Calendar.WEEK_OF_YEAR) == firstSundayCalendar.get(Calendar.WEEK_OF_YEAR)
                 && timeSlotCalendar.get(Calendar.YEAR) == firstSundayCalendar.get(Calendar.YEAR));
     }
-
-
-    public void setTimeSlots(ArrayList<Long> timeSlots, int duration){
-        this.timeSlots = timeSlots;
-        this.duration = duration;
-    }
-
-    public void setEvents(ArrayList<ITimeEventInterface> eventArrayList){
-        this.eventArrayList = eventArrayList;
-    }
-
+//
+//
+//    public void setTimeSlots(Map<Long,Boolean> timeSlots, int duration){
+//        this.timeSlots = timeSlots;
+//        this.duration = duration;
+//
+//    }
+//
+//    public void addTimeSlots(Long time, boolean select){
+//        this.timeSlots.put(time,select);
+//
+//    }
+//
+//
+//    public void setEvents(ArrayList<ITimeEventInterface> eventArrayList){
+//        this.eventArrayList = eventArrayList;
+//        initAll();
+//    }
+//
     private String[] getHours(){
         String[] HOURS = new String[]{
                 "00:00","01:00","02:00","03:00","04:00","05:00","06:00","07:00",
@@ -397,10 +447,10 @@ public class WeekTimeSlotViewBody extends LinearLayout{
         };
         return  HOURS;
     }
-
-    public void setNumOfHourShowInScreen(int number){
-        this.numOfHourShowInScreen = number;
-    }
+//
+//    public void setNumOfHourShowInScreen(int number){
+//        this.numOfHourShowInScreen = number;
+//    }
 
 //    *******************************************************************
 
@@ -411,6 +461,7 @@ public class WeekTimeSlotViewBody extends LinearLayout{
         this.totalHeight = View.MeasureSpec.getSize(heightMeasureSpec);
         updateWidthHeight(totalWidth,totalHeight);
     }
+
 
     @Override
     protected void onFinishInflate() {
@@ -445,6 +496,14 @@ public class WeekTimeSlotViewBody extends LinearLayout{
 
     public void setMyCalendar(MyCalendar myCalendar) {
         this.myCalendar = myCalendar;
+    }
+
+    public WeekTimeSlotView.OnTimeSlotClickListener getOnTimeSlotClickListener() {
+        return onTimeSlotClickListener;
+    }
+
+    public void setOnTimeSlotClickListener(WeekTimeSlotView.OnTimeSlotClickListener onTimeSlotClickListener) {
+        this.onTimeSlotClickListener = onTimeSlotClickListener;
     }
 //    ********************************************************************
 

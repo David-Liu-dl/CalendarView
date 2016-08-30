@@ -62,7 +62,6 @@ public class WeekViewBody extends LinearLayout{
     Calendar calendar = Calendar.getInstance();
     private ArrayList<ITimeEventInterface> eventArrayList;
 
-//    private ArrayList<WeekDraggableEventView> eventViewArrayList = new ArrayList<>();
     private WeekView.OnClickEventInterface onClickEventInterface;
 
     public WeekViewBody(Context context) {

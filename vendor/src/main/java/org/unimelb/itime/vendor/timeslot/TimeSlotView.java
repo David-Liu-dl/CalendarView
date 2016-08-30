@@ -19,10 +19,13 @@ public class TimeSlotView extends ViewGroup {
 
     private ImageView icon;
 
-    public TimeSlotView(Context context, Long startTime, int duration) {
+    private boolean isSelect;
+
+    public TimeSlotView(Context context, Long startTime, int duration, boolean isSelect) {
         super(context);
         this.startTime = startTime;
         this.duration = duration;
+        this.isSelect = isSelect;
         init();
     }
 
@@ -37,7 +40,10 @@ public class TimeSlotView extends ViewGroup {
 
     public void initIcon(){
         icon = new ImageView(getContext());
-        icon.setImageResource(R.drawable.icon_tick);
+        if (!isSelect)
+            icon.setImageResource(R.drawable.icon_event_timeslot_unselected);
+        else
+            icon.setImageResource(R.drawable.icon_event_timeslot_selected);
         this.addView(icon);
     }
 
@@ -97,4 +103,20 @@ public class TimeSlotView extends ViewGroup {
     }
 
 
+    public boolean isSelect() {
+        return isSelect;
+    }
+
+    public void setSelect(boolean select) {
+        isSelect = select;
+        updateIcon();
+    }
+
+    private void updateIcon(){
+        if (isSelect)
+            icon.setImageResource(R.drawable.icon_event_timeslot_selected);
+        else
+            icon.setImageResource(R.drawable.icon_event_timeslot_unselected);
+        icon.invalidate();
+    }
 }

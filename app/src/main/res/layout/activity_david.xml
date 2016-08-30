@@ -6,9 +6,10 @@
     tools:context="org.unimelb.itime.test.david.DavidActivity"
     android:orientation="vertical">
 
-    <FrameLayout
-        android:id="@+id/david_fragment"
+    <org.unimelb.itime.vendor.dayview.MonthDayView
+        android:id="@+id/monthDayView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></FrameLayout>
+        android:layout_height="match_parent">
+    </org.unimelb.itime.vendor.dayview.MonthDayView>
 
 </LinearLayout>

@@ -18,8 +18,6 @@ import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 public class DayViewBody extends RelativeLayout {
     private static final String TAG = "MyAPP";
 
-
-
     public final LayoutInflater mInflater;
     public LinearLayout allDayContainer;
     public RelativeLayout body_container;

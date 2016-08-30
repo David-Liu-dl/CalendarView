@@ -6,12 +6,12 @@ import android.util.Log;
 
 import org.unimelb.itime.test.R;
 import org.unimelb.itime.test.bean.Event;
+import org.unimelb.itime.vendor.dayview.MonthDayView;
 import org.unimelb.itime.vendor.dayview.DayViewBodyPagerAdapter;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 public class DavidActivity extends AppCompatActivity {
@@ -38,46 +38,72 @@ public class DavidActivity extends AppCompatActivity {
     }
 
     private void doThings(){
-        CalendarMonthDayFragment monthDayFragment = new CalendarMonthDayFragment();
+        MonthDayView monthDayFragment = (MonthDayView) findViewById(R.id.monthDayView);
         monthDayFragment.setOnBodyPageChanged(new DayViewBodyPagerAdapter.OnBodyPageChanged() {
             @Override
             public List<ITimeEventInterface> updateEvent(long timeStart, long endTime) {
                 List<ITimeEventInterface> events = new ArrayList<>();
-                Log.i(TAG, "timeStart: " + timeStart );
-                Log.i(TAG, "endTime: " + endTime );
                 events.addAll(dbManager.queryEventList(timeStart,endTime));
-                Log.i(TAG, "events size: " + events.size());
                 if (events.size() > 50){
-                    Log.i(TAG, "real size: " + events.size());
                     events.clear();
                     return events;
                 }
                 return events;
             }
         });
-        getFragmentManager().beginTransaction().add(R.id.david_fragment, monthDayFragment).commit();
+        Log.i(TAG, "doThings: ");
+//        InviteeFragment pageF = new InviteeFragment();
+//        getFragmentManager().beginTransaction().add(R.id.david_fragment, monthDayFragment).commit();
     }
 
     private void initDB(){
         Calendar calendar = Calendar.getInstance();
         List<Event> events = new ArrayList<>();
+        int[] type = {0,1,2};
+        int[] status = {0,1};
         long interval = 3600 * 1000;
-
-        for (int i = 0; i < 10000; i++) {
+        int alldayCount = 0;
+        for (int i = 0; i < 100000; i++) {
 
             long startTime = calendar.getTimeInMillis();
             long endTime = startTime + interval * (i%30);
+            long duration = (endTime - startTime);
+
             Log.i(TAG, "startTime: " + startTime);
             Log.i(TAG, "endTime: " + endTime);
             Event event = new Event();
             event.setTitle("" + i);
-            event.setEventType(0);
-            event.setStatus(0);
+            event.setEventType(i%type.length);
+            event.setStatus(i%status.length);
             event.setStartTime(startTime);
-            event.setEndTime(endTime);
+
+            long realEnd = endTime;
+            long temp = duration;
+            while (temp > 3 * 60 * 60 * 1000 ){
+                temp = temp/2;
+                realEnd -= temp;
+            }
+
+            event.setEndTime(realEnd);
             events.add(event);
 
+            if (duration >= 24 * 3600 * 1000 && alldayCount < 3){
+                String title = "All day";
+                for (int j = 0; j < 4; j++) {
+                    Event event_clone = new Event();
+                    event_clone.setTitle(title);
+                    event_clone.setEventType(0);
+                    event_clone.setStatus(0);
+                    event_clone.setStartTime(startTime);
+                    event_clone.setEndTime(endTime);
+                    events.add(event_clone);
+                    title = title + " all day";
+                }
+                alldayCount = 0;
+            }
+
             calendar.setTimeInMillis(endTime);
+
         }
 
         dbManager.insertEventList(events);

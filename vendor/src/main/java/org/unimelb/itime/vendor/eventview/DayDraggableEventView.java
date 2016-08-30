@@ -6,7 +6,9 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -62,7 +64,7 @@ public class DayDraggableEventView extends RelativeLayout {
         title.setText(summary);
     }
 
-    public void setTypeAndStatus(int type, int status){
+    public void setTypeAndStatus(int type, int status, boolean useSmallIcon){
         this.type = type;
         this.status = status;
         int color = Color.RED;
@@ -83,22 +85,21 @@ public class DayDraggableEventView extends RelativeLayout {
         ((GradientDrawable)this.getBackground()).setColor(color);
         this.getBackground().setAlpha(128);
 
-//        leftBar = initDarkLeftBorder(getResources().getDrawable(R.drawable.itime_draggable_event_bg));
-//        RelativeLayout.LayoutParams leftBar_params = new RelativeLayout.LayoutParams(DensityUtil.dip2px(getContext(), 3), ViewGroup.LayoutParams.MATCH_PARENT);
-//        leftBar_params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-//        leftBar.setLayoutParams(leftBar_params);
-//        ((GradientDrawable)leftBar.getDrawable()).setColor(color);
-//        this.addView(leftBar);
         updateLeftBar(getResources().getDrawable(R.drawable.itime_draggable_event_bg), color);
 
         //add right top icon
-        this.resetIcon(getStatusIcon(status));
+        this.resetIcon(getStatusIcon(status, useSmallIcon));
     }
 
-    private int getStatusIcon(int status){
+    private int getStatusIcon(int status, boolean useSmallIcon){
         switch (status){
             case 0:
-                return R.drawable.itime_question_mark;
+                if (useSmallIcon){
+                    Log.i(TAG, "getStatusIcon: small used");
+                    return R.drawable.itime_question_mark_small;
+                }else {
+                    return R.drawable.itime_question_mark;
+                }
             default:
                 return -1;
         }
@@ -113,7 +114,7 @@ public class DayDraggableEventView extends RelativeLayout {
 
     private void initIcon(){
         icon = new ImageView(getContext());
-        icon.setImageResource(R.drawable.itime_question_mark);
+        icon.setImageResource(R.drawable.itime_question_mark_small);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(DensityUtil.dip2px(getContext(), 20), DensityUtil.dip2px(getContext(), 20));
         params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         icon.setId(1001);
@@ -122,12 +123,18 @@ public class DayDraggableEventView extends RelativeLayout {
     }
 
     private void resetIcon(int iconDrawable){
-        icon.setImageResource(iconDrawable);
+        if (iconDrawable != -1){
+            icon.setImageResource(iconDrawable);
+        }else{
+            icon.setImageResource(0);
+        }
     }
 
     private void initEventTitle(){
         title = new TextView(getContext());
         title.setText(summary);
+        title.setMaxLines(1);
+        title.setEllipsize(TextUtils.TruncateAt.END);
         title.setGravity(Gravity.CENTER_VERTICAL);
         title.setTextColor(Color.WHITE);
         title.setIncludeFontPadding(false);

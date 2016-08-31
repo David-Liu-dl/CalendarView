@@ -94,29 +94,6 @@ public class WeekDraggableEventView extends RelativeLayout{
     }
 
 
-
-//    public void setTypeAndStatus(int type, int status){
-//        this.type = type;
-//        this.status = status;
-//        int color = Color.RED;
-//        switch (this.type){
-//            case PRIVATE:
-//                color = getContext().getResources().getColor(R.color.private_et);
-//                break;
-//            case GROUP:
-//                color = getContext().getResources().getColor(R.color.group_et);
-//                break;
-//            case PUBLIC:
-//                color = getContext().getResources().getColor(R.color.public_et);
-//                break;
-//        }
-//        this.setBackground(getResources().getDrawable(R.drawable.itime_draggable_event_bg));
-//        ((GradientDrawable)this.getBackground()).setColor(color);
-//        this.getBackground().setAlpha(128);
-//        updateLeftBar(getResources().getDrawable(R.drawable.itime_draggable_event_bg), color);
-//        this.resetIcon(getStatusIcon(status));
-//    }
-
     private int getStatusIcon(int status){
         switch (status){
             case PENDING:
@@ -148,7 +125,9 @@ public class WeekDraggableEventView extends RelativeLayout{
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
 //        super.onLayout(changed, l, t, r, b);
+        this.width = r-l;
         int leftBarWidth = this.width/10;
+        this.height = b-t;
         RelativeLayout.LayoutParams leftBarParams = (RelativeLayout.LayoutParams)leftBar.getLayoutParams();
         leftBar.layout(0,0,leftBarWidth,height);
 

@@ -45,7 +45,8 @@ public class WeekTimeSlotViewBody extends LinearLayout {
 
     private Map<Long, Boolean> timeSlots;
     private int duration;
-    private ArrayList<ITimeEventInterface> eventArrayList;
+    private ArrayList<ITimeEventInterface> eventArrayList = new ArrayList<>();
+    private ArrayList<WeekDraggableEventView> eventViewArrayList = new ArrayList<>();
 
     private TreeMap<Integer, String> timeSlotTreeMap = new TreeMap<>();
     private TreeMap<Integer, String> daySlotTreeMap = new TreeMap<>();
@@ -56,6 +57,7 @@ public class WeekTimeSlotViewBody extends LinearLayout {
     private RelativeLayout timeRelativeLayout;
     private RelativeLayout eventWidgetsRelativeLayout;
     private RelativeLayout eventRelativeLayout;
+    private RelativeLayout timeSlotRelativeLayout;
     private RelativeLayout eventAndWidgetsRelativeLayout;
     private TextView msgWindow;
     private TextView timeSlotTextView;
@@ -96,8 +98,10 @@ public class WeekTimeSlotViewBody extends LinearLayout {
     }
 
 
+
     private void initWidgets() {
         // init scrollView
+        this.removeAllViews();
         scrollView = new ScrollView(getContext());
         // init background relativeLayout
         backGroundRelativeLayout = new RelativeLayout(getContext());
@@ -112,10 +116,11 @@ public class WeekTimeSlotViewBody extends LinearLayout {
         eventWidgetsRelativeLayout.setPadding(20,0,0,0);
 
         eventRelativeLayout = new RelativeLayout(getContext());
+        timeSlotRelativeLayout = new RelativeLayout(getContext());
 
         eventAndWidgetsRelativeLayout = new RelativeLayout(getContext());
 
-
+        eventAndWidgetsRelativeLayout.addView(timeSlotRelativeLayout);
         eventAndWidgetsRelativeLayout.addView(eventRelativeLayout);
         eventAndWidgetsRelativeLayout.addView(eventWidgetsRelativeLayout);
         weekBodyLinearLayout.addView(timeRelativeLayout);
@@ -257,8 +262,47 @@ public class WeekTimeSlotViewBody extends LinearLayout {
 //    }
 ////
 
+    public void initEvents(){
+        if (eventArrayList!=null){
+            //first remove contains
+            eventRelativeLayout.removeAllViews();
+            for (ITimeEventInterface event: eventArrayList){
+                Date eventDate = new Date(event.getStartTime());
+                Calendar eventCalendar = Calendar.getInstance();
+                eventCalendar.setTime(eventDate);
+                if (isInCurrentWeek(eventCalendar,myCalendar)) {
+                    WeekDraggableEventView eventView = new WeekDraggableEventView(getContext(),event);
+                    eventViewArrayList.add(eventView);
+                    eventRelativeLayout.addView(eventView);
+                }
+            }
+        }
+    }
+
+    public void updateEvents(){
+        if (eventViewArrayList!=null){
+            for (WeekDraggableEventView eventView:eventViewArrayList){
+                long startTime = eventView.getEvent().getStartTime();
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(startTime);
+                int day = calendar.get(Calendar.DAY_OF_WEEK);
+                int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                int minute = calendar.get(Calendar.MINUTE);
+                int topOffset = hourHeight * hour + hourHeight * minute/60 + dottedLineHeight/2;
+                int leftOffSet = dayWidth * (day-1);
+                int duration = (int) ((eventView.getEvent().getEndTime() - eventView.getEvent().getStartTime())/1000/60);
+                int eventHeight = duration *hourHeight / 60;
+                eventView.layout(leftOffSet, topOffset, leftOffSet + dayWidth, topOffset + eventHeight);
+            }
+        }
+    }
+
+
+
+
     public void initTimeSlots(){
         if (timeSlots!=null){
+            timeSlotRelativeLayout.removeAllViews();
             for (Long startTime: timeSlots.keySet()){
                 boolean isChoose = timeSlots.get(startTime);
                 Date timeSlotDate = new Date(startTime);
@@ -270,7 +314,7 @@ public class WeekTimeSlotViewBody extends LinearLayout {
                 if (isInCurrentWeek(timeSlotCalendar, myCalendar)) {
                     TimeSlotView timeSlotView = new TimeSlotView(
                             getContext(), startTime, duration,isChoose);
-                    eventRelativeLayout.addView(timeSlotView);
+                    timeSlotRelativeLayout.addView(timeSlotView);
 
                     // add time line
                     ImageView timeSlotTimeLine = new ImageView(getContext());
@@ -400,6 +444,10 @@ public class WeekTimeSlotViewBody extends LinearLayout {
 
     public void setEvents(ArrayList<ITimeEventInterface> eventArrayList){
         this.eventArrayList = eventArrayList;
+        initEvents();
+        updateEvents();
+        requestLayout();
+        invalidate();
     }
 
     private String[] getHours() {
@@ -436,7 +484,8 @@ public class WeekTimeSlotViewBody extends LinearLayout {
         timeRelativeLayout.layout(0, 0, hourWidth, hourHeight * getHours().length);
         eventWidgetsRelativeLayout.layout(0, 0, hourWidth + oneWeekWidth, hourHeight * getHours().length);
         eventRelativeLayout.layout(0, 0, hourWidth + oneWeekWidth, hourHeight * getHours().length);
-
+        timeSlotRelativeLayout.layout(0, 0, hourWidth + oneWeekWidth, hourHeight * getHours().length);
+        // set 00:00, 01:00 ...
         for (int hour = 0; hour < getHours().length; hour++) {
             int hourLeft = 0;
             int hourTop = hourHeight * hour ;
@@ -444,7 +493,7 @@ public class WeekTimeSlotViewBody extends LinearLayout {
             int hourBottom = (int) (hourHeight * hour +  hourHeight );
             hourTextViewArr[hour].layout( hourLeft, hourTop, hourRight, hourBottom);
         }
-
+        // set dotted line
         for (int hour = 0; hour < getHours().length; hour++) {
             timeLineTextViewArr[hour].layout(0, dayHeight * hour, oneWeekWidth, (int) (dayHeight * hour + dottedLineHeight));
         }
@@ -455,10 +504,10 @@ public class WeekTimeSlotViewBody extends LinearLayout {
             int minute = todayCalendar.get(Calendar.MINUTE);
             int currentTimePaddingTop = (int) (hour * hourHeight + (int) (minute * hourHeight / 60) + dottedLineHeight/2);
             currentTimeLineTextView.layout(hourWidth + 20, currentTimePaddingTop, totalWidth, currentTimePaddingTop + 2);
-
             currentTimeTextView.layout(0, currentTimePaddingTop, hourWidth,currentTimePaddingTop+ hourHeight);
         }
 
+//         init timeslots
         if (timeSlots!=null){
             for (final TimeSlotView timeSlotView:timeSlotViewArrayList){
                 int index = timeSlotViewArrayList.indexOf(timeSlotView);
@@ -487,6 +536,22 @@ public class WeekTimeSlotViewBody extends LinearLayout {
                     }
                 });
 
+            }
+        }
+         // init events
+        if (eventViewArrayList!=null){
+            for (WeekDraggableEventView eventView:eventViewArrayList){
+                long startTime = eventView.getEvent().getStartTime();
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(startTime);
+                int day = calendar.get(Calendar.DAY_OF_WEEK);
+                int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                int minute = calendar.get(Calendar.MINUTE);
+                int topOffset = hourHeight * hour + hourHeight * minute/60 + dottedLineHeight/2;
+                int leftOffSet = dayWidth * (day-1);
+                int duration = (int) ((eventView.getEvent().getEndTime() - eventView.getEvent().getStartTime())/1000/60);
+                int eventHeight = duration *hourHeight / 60;
+                eventView.layout(leftOffSet, topOffset, leftOffSet + dayWidth, topOffset + eventHeight);
             }
         }
 
@@ -541,6 +606,10 @@ public class WeekTimeSlotViewBody extends LinearLayout {
 
     public void setMyCalendar(MyCalendar myCalendar) {
         this.myCalendar = myCalendar;
+        if (backGroundRelativeLayout.getChildCount()>1){
+            backGroundRelativeLayout.removeAllViews();
+            backGroundRelativeLayout.addView(weekBodyLinearLayout);
+        }
         initCurrentTimeLine();
     }
 

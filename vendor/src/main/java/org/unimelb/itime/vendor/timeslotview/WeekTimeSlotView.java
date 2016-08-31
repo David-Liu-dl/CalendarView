@@ -97,6 +97,8 @@ public class WeekTimeSlotView extends RelativeLayout{
 
     public void addEvent(ITimeEventInterface event){
         this.eventArrayList.add(event);
+        currentPageWeekViewBody.setEvents(this.eventArrayList);
+        requestLayout();
 //        initAll();
     }
 
@@ -162,6 +164,7 @@ public class WeekTimeSlotView extends RelativeLayout{
                     int size = pagerAdapter.getViews().size();
                     int currentPositionInViews = currentPosition % size;
                     LinearLayout curView = (LinearLayout)pagerAdapter.getViews().get(currentPositionInViews);
+
                     currentPageWeekViewBody = (WeekTimeSlotViewBody) curView.getChildAt(1);
                     LinearLayout preView = (LinearLayout)pagerAdapter.getViews().get((currentPosition - 1) % size);
                     LinearLayout nextView = (LinearLayout)pagerAdapter.getViews().get((currentPosition + 1) % size);

@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
@@ -70,10 +71,12 @@ public class DayViewBodyController {
 
     private int lineHeight = 50;
     private int timeTextSize = 20;
+    private int overlapGapHeight;
 
     public DayViewBodyController(AttributeSet attrs,
                                  Context context) {
         this.context = context;
+        this.overlapGapHeight = DensityUtil.dip2px(context, 1);
         loadAttributes(attrs, context);
 //        this.regularEventModules = regularEventModules;
     }
@@ -142,12 +145,9 @@ public class DayViewBodyController {
     public void addEvent(ITimeEventInterface event){
         boolean isAllDayEvent = isAllDayEvent(event);
         if (isAllDayEvent){
-            Log.i(TAG, "allday add: ");
             allDayEventModules.add(event);
-            Log.i(TAG, "allDayEventModules: " + allDayEventModules.size());
             addAllDayEvent(event);
         }else {
-            Log.i(TAG, "regular add: ");
             regularEventModules.add(event);
             addRegularEvent(event);
         }
@@ -229,15 +229,10 @@ public class DayViewBodyController {
             event_view.setTag(event);
             event_view.setLayoutParams(params);
         }else{
-            SimpleDateFormat sdf= new SimpleDateFormat("HH:mm");
-            String hourWithMinutes = sdf.format(new Date(event.getStartTime()));
-
             long duration = event.getEndTime()-event.getStartTime();
-            int eventHeight = (int) (duration/(3600*1000))*lineHeight;
+            int eventHeight = (int) (((float)duration/(3600*1000))*lineHeight);
+            int getStartY = getEventY(event);
 
-            String[] components = hourWithMinutes.split(":");
-            float trickTime = Integer.valueOf(components[0]) + Integer.valueOf(components[1])/(float)100;
-            int getStartY = nearestTimeSlotValue(trickTime);
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(0, eventHeight);
             event_view.setTop(getStartY);
             event_view.setOnLongClickListener(new MyTouchListener());
@@ -250,27 +245,45 @@ public class DayViewBodyController {
         return event_view;
     }
 
+    private int getEventY(ITimeEventInterface event){
+        SimpleDateFormat sdf= new SimpleDateFormat("HH:mm");
+        String hourWithMinutes = sdf.format(new Date(event.getStartTime()));
+
+        String[] components = hourWithMinutes.split(":");
+        float trickTime = Integer.valueOf(components[0]) + Integer.valueOf(components[1])/(float)100;
+        int getStartY = nearestTimeSlotValue(trickTime);
+
+        return  getStartY;
+    }
+
     public void reDrawEvents(){
         int layoutWidth = dividerRLayout.getWidth();
-        ArrayList<Pair<Pair<Integer,Integer>,ITimeEventInterface>> param_events
+        List<ArrayList<Pair<Pair<Integer,Integer>,ITimeEventInterface>>> overlapGroups
                 = xHelper.computeOverlapXForEvents(this.regularEventModules);
 
-        for (int i = 0; i < param_events.size(); i++) {
-            int width_factor = param_events.get(i).first.first;
-            int x_pst = param_events.get(i).first.second;
-            int eventWidth = layoutWidth/width_factor;
-            int margin_left = eventWidth * x_pst;
+        int previousGroupExtraY = 0;
 
-            DayDraggableEventView event_view =
-                    (DayDraggableEventView) dividerRLayout.findViewById(regular_event_view_map.get(param_events.get(i).second));// find by tag
+        for (ArrayList<Pair<Pair<Integer,Integer>,ITimeEventInterface>> overlapGroup : overlapGroups
+             ) {
+            for (int i = 0; i < overlapGroup.size(); i++) {
+                int getStartY = getEventY(overlapGroup.get(i).second);
+                int width_factor = overlapGroup.get(i).first.first;
+                int x_pst = overlapGroup.get(i).first.second;
+                int eventWidth = layoutWidth/width_factor;
+                int margin_left = eventWidth * x_pst;
 
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) event_view.getLayoutParams();
-            params.width = eventWidth;
-            params.leftMargin = margin_left + 5 * x_pst;
-            event_view.setLayoutParams(params);
-            event_view.invalidate();
+                DayDraggableEventView event_view =
+                        (DayDraggableEventView) dividerRLayout.findViewById(regular_event_view_map.get(overlapGroup.get(i).second));// find by tag
+
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) event_view.getLayoutParams();
+                params.width = eventWidth;
+                params.leftMargin = margin_left + 5 * x_pst;
+                params.topMargin = getStartY + overlapGapHeight * i + previousGroupExtraY;
+                event_view.setLayoutParams(params);
+                event_view.invalidate();
+            }
+            previousGroupExtraY += overlapGapHeight * overlapGroup.size();
         }
-
         dividerRLayout.requestLayout();
     }
 
@@ -570,6 +583,7 @@ public class DayViewBodyController {
         calendar.setTimeInMillis(startTime);
         calendar.set(Calendar.HOUR_OF_DAY, hour);
         calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.MILLISECOND, 0);
 
         long new_start = calendar.getTimeInMillis();
         calendar.setTimeInMillis(new_start + duration);

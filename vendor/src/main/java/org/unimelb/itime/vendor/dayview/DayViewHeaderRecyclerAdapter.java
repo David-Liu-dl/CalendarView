@@ -20,6 +20,8 @@ public class DayViewHeaderRecyclerAdapter extends RecyclerView.Adapter<DayViewHe
     private int upperBoundsOffset;
     private int startPosition;
     private ArrayList<MyViewHolder> holds = new ArrayList<>();
+    private DayViewHeader.OnCheckIfHasEvent onCheckIfHasEvent;
+
     public int rowPst;
     public int todayOfWeek;
     public int indexInRow = 0;
@@ -40,6 +42,10 @@ public class DayViewHeaderRecyclerAdapter extends RecyclerView.Adapter<DayViewHe
 
     public int getCurrentSelectPst(){
         return this.rowPst;
+    }
+
+    public void setOnCheckIfHasEvent(DayViewHeader.OnCheckIfHasEvent onCheckIfHasEvent){
+        this.onCheckIfHasEvent = onCheckIfHasEvent;
     }
 
     @Override
@@ -113,6 +119,7 @@ public class DayViewHeaderRecyclerAdapter extends RecyclerView.Adapter<DayViewHe
                     }
                 }
             });
+            headerRow.setOnCheckIfHasEvent(onCheckIfHasEvent);
         }
     }
 }

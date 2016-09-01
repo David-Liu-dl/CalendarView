@@ -96,7 +96,6 @@ public class DayViewBody extends RelativeLayout {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        Log.i(TAG, "onAttachedToWindow: ");
         dayViewController.resetViews();
 
         dayViewController.initBackgroundView();

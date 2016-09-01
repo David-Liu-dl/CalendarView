@@ -12,7 +12,7 @@ import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 import org.unimelb.itime.vendor.R;
-import org.unimelb.itime.vendor.contact.helper.LoadImgHelper;
+import org.unimelb.itime.vendor.helper.LoadImgHelper;
 import org.unimelb.itime.vendor.contact.widgets.Contact;
 import org.unimelb.itime.vendor.contact.widgets.SortModel;
 
@@ -110,7 +110,7 @@ public class SortAdapter extends BaseAdapter implements SectionIndexer{
 		viewHolder.check_circle.setOnClickListener(
 				new CircleClickListener(viewHolder.contact, viewHolder.check_circle));
 		Log.i(TAG, "bind here: ");
-		LoadImgHelper.getInstance().bindUrlWithImageView(mContext, viewHolder.contact, viewHolder.icon);
+		LoadImgHelper.getInstance().bindContactWithImageView(mContext, viewHolder.contact, viewHolder.icon);
 		return view;
 	}
 

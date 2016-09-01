@@ -95,7 +95,6 @@ public class DayDraggableEventView extends RelativeLayout {
         switch (status){
             case 0:
                 if (useSmallIcon){
-                    Log.i(TAG, "getStatusIcon: small used");
                     return R.drawable.itime_question_mark_small;
                 }else {
                     return R.drawable.itime_question_mark;

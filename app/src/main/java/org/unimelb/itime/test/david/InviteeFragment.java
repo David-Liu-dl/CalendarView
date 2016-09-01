@@ -25,7 +25,7 @@ import org.unimelb.itime.test.R;
 import org.unimelb.itime.vendor.contact.SortAdapter;
 import org.unimelb.itime.vendor.contact.helper.CharacterParser;
 import org.unimelb.itime.vendor.contact.helper.ClearEditText;
-import org.unimelb.itime.vendor.contact.helper.LoadImgHelper;
+import org.unimelb.itime.vendor.helper.LoadImgHelper;
 import org.unimelb.itime.vendor.contact.helper.PinyinComparator;
 import org.unimelb.itime.vendor.contact.widgets.Contact;
 import org.unimelb.itime.vendor.contact.widgets.SideBar;
@@ -61,7 +61,7 @@ public class InviteeFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {
 		context = getActivity().getApplicationContext();
-		root = inflater.inflate(R.layout.itime_contact_fragment, container, false);
+		root = inflater.inflate(R.layout.itime_invitee_fragment, container, false);
 		// Inflate the layout for this fragment
 		initView();
 		initData();
@@ -186,7 +186,7 @@ public class InviteeFragment extends Fragment {
 							params.setMargins(margin, margin/2, 0, margin/2);
 							img_v.setLayoutParams(params);
 							contacts_list.put(contact, img_v);
-							LoadImgHelper.getInstance().bindUrlWithImageView(
+							LoadImgHelper.getInstance().bindContactWithImageView(
 									context, contact, img_v);
 							ll_checkedList.addView(img_v);
 							ll_checkedList.invalidate();

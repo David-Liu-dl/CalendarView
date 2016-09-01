@@ -6,7 +6,9 @@ import android.util.Pair;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by yuhaoliu on 18/08/16.
@@ -14,12 +16,12 @@ import java.util.Collections;
 public class CalendarEventOverlapHelper {
     private static final String TAG = "Helper";
     private ArrayList<ITimeEventInterface> eventModules = new ArrayList<>();
-    private ArrayList<Pair<Pair<Integer,Integer>,ITimeEventInterface>> param_events = new ArrayList<>();
+    private List<ArrayList<Pair<Pair<Integer,Integer>,ITimeEventInterface>>> param_events = new ArrayList<>();
 
     public CalendarEventOverlapHelper() {
     }
 
-    public ArrayList<Pair<Pair<Integer,Integer>,ITimeEventInterface>> computeOverlapXForEvents(ArrayList<ITimeEventInterface> eventModules){
+    public List<ArrayList<Pair<Pair<Integer,Integer>,ITimeEventInterface>>> computeOverlapXForEvents(ArrayList<ITimeEventInterface> eventModules){
         this.eventModules = eventModules;
         param_events.clear();
 //        printDateInfo();
@@ -33,11 +35,14 @@ public class CalendarEventOverlapHelper {
                 ) {
             Log.i(TAG, "For new group: ");
             if (list.size() > 1){
-                param_events.addAll(this.computeEventXPstInGroup(list));
+                param_events.add(this.computeEventXPstInGroup(list));
             }else {
+//                Log.i(TAG, "title: " + list.get(0).getTitle());
                 Pair<Integer,Integer> param = new Pair<>(1, 0);
                 Pair<Pair<Integer,Integer>,ITimeEventInterface> param_event = new Pair<>(param, list.get(0));
-                param_events.add(param_event);
+                ArrayList<Pair<Pair<Integer,Integer>,ITimeEventInterface>> single_list = new ArrayList<>();
+                single_list.add(param_event);
+                param_events.add(single_list);
             }
         }
 
@@ -60,7 +65,7 @@ public class CalendarEventOverlapHelper {
             long startTime = event.getStartTime();
             long endTime = event.getEndTime();
 
-            if (startTime > endFlag){
+            if (startTime >= endFlag){
                 //means no overlap with previous group, then create new group
                 ArrayList<ITimeEventInterface> new_group = new ArrayList<>();
                 new_group.add(event);
@@ -97,7 +102,7 @@ public class CalendarEventOverlapHelper {
             for (Pair<Integer, ArrayList<EventSlot>> columnEvent:columnEvents
                  ) {
                 //compare with last event in column event
-                if (currentEventStartTime > columnEvent.second.get(columnEvent.second.size() -1).event.getEndTime()){
+                if (currentEventStartTime >= columnEvent.second.get(columnEvent.second.size() -1).event.getEndTime()){
                     EventSlot childSlot = new EventSlot();
                     childSlot.event = group.get(i);
                     childSlot.row = columnEvent.second.size();
@@ -125,6 +130,13 @@ public class CalendarEventOverlapHelper {
             Pair<Integer,Integer> param = new Pair<>(column_now, columnEvent.first);
             for (EventSlot event:columnEvent.second
                  ) {
+//                Log.i(TAG, "title: " + event.event.getTitle());
+//                Calendar calendar = Calendar.getInstance();
+//                calendar.setTimeInMillis(event.event.getStartTime());
+//                Log.i(TAG, "start time: " + calendar.getTime());
+//                calendar.setTimeInMillis(event.event.getEndTime());
+//                Log.i(TAG, "end time: " + calendar.getTime());
+
                 Pair<Pair<Integer,Integer>, ITimeEventInterface> param_event = new Pair<>(param, event.event);
                 param_event_list.add(param_event);
             }

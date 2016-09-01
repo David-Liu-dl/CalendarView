@@ -20,6 +20,11 @@ android {
     }
 }
 
+greendao {
+    schemaVersion 3
+    daoPackage "org.unimelb.itime.test.bean"
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':vendor')

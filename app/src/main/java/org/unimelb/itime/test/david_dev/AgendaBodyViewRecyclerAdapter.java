@@ -8,14 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.unimelb.itime.test.R;
-import org.unimelb.itime.vendor.dayview.DayViewHeader;
 import org.unimelb.itime.vendor.helper.MyCalendar;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class AgendaViewRecyclerAdapter extends RecyclerView.Adapter<AgendaViewRecyclerAdapter.MyViewHolder> {
-    public String TAG = "MyAPP";
+public class AgendaBodyViewRecyclerAdapter extends RecyclerView.Adapter<AgendaBodyViewRecyclerAdapter.MyViewHolder> {
+    public String TAG = "AgendaBodyViewRecyclerAdapter";
     private LayoutInflater inflater;
     private int upperBoundsOffset;
     private int startPosition;
@@ -26,7 +25,7 @@ public class AgendaViewRecyclerAdapter extends RecyclerView.Adapter<AgendaViewRe
     public int todayOfWeek;
     public int indexInRow = 0;
 
-    public AgendaViewRecyclerAdapter(Context context, int upperBoundsOffset) {
+    public AgendaBodyViewRecyclerAdapter(Context context, int upperBoundsOffset) {
         inflater = LayoutInflater.from(context);
         this.upperBoundsOffset = upperBoundsOffset;
         startPosition = upperBoundsOffset;
@@ -44,7 +43,7 @@ public class AgendaViewRecyclerAdapter extends RecyclerView.Adapter<AgendaViewRe
     }
 
     @Override
-    public AgendaViewRecyclerAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public AgendaBodyViewRecyclerAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = inflater.inflate( R.layout.itime_agenda_view_body_view, parent, false);
         MyViewHolder holder = new MyViewHolder(view);
         holds.add(holder);
@@ -53,11 +52,11 @@ public class AgendaViewRecyclerAdapter extends RecyclerView.Adapter<AgendaViewRe
     }
 
     @Override
-    public void onBindViewHolder(AgendaViewRecyclerAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(AgendaBodyViewRecyclerAdapter.MyViewHolder holder, int position) {
         holder.bodyRow.getCalendar().setOffset(position-startPosition);
         holder.bodyRow.updateHeaderView();
         holder.bodyRow.loadEvents();
-
+        holder.bodyRow.postInvalidate();
         Log.i(TAG, "onBindViewHolder: " + position);
     }
 
@@ -70,6 +69,7 @@ public class AgendaViewRecyclerAdapter extends RecyclerView.Adapter<AgendaViewRe
         AgendaViewBody bodyRow;
         public MyViewHolder(View itemView) {
             super(itemView);
+            Log.i(TAG, "MyViewHolder: ");
             bodyRow = (AgendaViewBody) itemView.findViewById(R.id.agendaViewBody);
             bodyRow.setCalendar(new MyCalendar(Calendar.getInstance()));
             if (onLoadEvents != null){

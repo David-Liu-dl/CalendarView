@@ -14,12 +14,12 @@ import org.unimelb.itime.vendor.R;
 /**
  * Created by yuhaoliu on 12/08/16.
  */
-public class AgendaViewRecyclerDivider extends RecyclerView.ItemDecoration {
+public class AgendaBodyViewRecyclerDivider extends RecyclerView.ItemDecoration {
     private int mOrientation = LinearLayoutManager.VERTICAL ;
     private int mItemSize = 1 ;
     private Paint mPaint ;
 
-    public AgendaViewRecyclerDivider(Context context) {
+    public AgendaBodyViewRecyclerDivider(Context context) {
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG) ;
         mPaint.setColor(context.getResources().getColor(R.color.divider_color));
         mPaint.setStyle(Paint.Style.FILL);

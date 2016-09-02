@@ -2,7 +2,6 @@ package org.unimelb.itime.test.david_dev;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.media.Image;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -162,7 +161,7 @@ public class AgendaViewBody extends LinearLayout{
 
         if (events.size() != 0){
             for (int i = 0; i < events.size(); i++) {
-                AgendaInnerBody rowBody = new AgendaInnerBody(context, events.get(i), this.currentDayType);
+                AgendaViewInnerBody rowBody = new AgendaViewInnerBody(context, events.get(i), this.currentDayType);
                 LinearLayout.LayoutParams rowBodyParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
                 this.rowBody.addView(rowBody, rowBodyParams);
                 if (i != events.size() -1){

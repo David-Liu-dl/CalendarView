@@ -8,7 +8,9 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -28,8 +30,8 @@ import java.util.List;
 /**
  * Created by yuhaoliu on 31/08/16.
  */
-public class AgendaInnerBody extends RelativeLayout{
-    private final String TAG = "MyAPP";
+public class AgendaViewInnerBody extends RelativeLayout{
+    private final String TAG = "AgendaViewInnerBody";
 
     private RelativeLayout self = this;
 
@@ -78,7 +80,7 @@ public class AgendaInnerBody extends RelativeLayout{
 
     DateFormat date = new SimpleDateFormat("HH:mm a");
 
-    public AgendaInnerBody(Context context, ITimeEventInterface event, int currentDayType){
+    public AgendaViewInnerBody(Context context, ITimeEventInterface event, int currentDayType){
         super(context);
         this.context = context;
         this.currentDayType = currentDayType;
@@ -92,7 +94,7 @@ public class AgendaInnerBody extends RelativeLayout{
         initAllViews();
     }
 
-    public AgendaInnerBody(Context context, AttributeSet attrs, ITimeEventInterface event, int currentDayType) {
+    public AgendaViewInnerBody(Context context, AttributeSet attrs, ITimeEventInterface event, int currentDayType) {
         super(context, attrs);
         this.context = context;
         this.currentDayType = currentDayType;
@@ -117,12 +119,16 @@ public class AgendaInnerBody extends RelativeLayout{
         this.addView(leftInfo, leftInfoParams);
 
         leftTimeTv = new TextView(context);
-        leftTimeTv.setPadding(0,paddingUpDown,0,0);
-        leftTimeTv.setText(startTime);
-        leftTimeTv.setTextSize(textSmallSize);
-        leftTimeTv.setTextColor(titleColor);
-        leftTimeTv.setGravity(Gravity.CENTER);
-        leftInfo.addView(leftTimeTv);
+        if (duration.equals("All Day")){
+
+        }else {
+            leftTimeTv.setPadding(0,paddingUpDown,0,0);
+            leftTimeTv.setText(duration.equals("All Day")?"":startTime);
+            leftTimeTv.setTextSize(textSmallSize);
+            leftTimeTv.setTextColor(titleColor);
+            leftTimeTv.setGravity(Gravity.CENTER);
+            leftInfo.addView(leftTimeTv);
+        }
 
         durationTv = new TextView(context);
         durationTv.setText(duration);
@@ -138,10 +144,12 @@ public class AgendaInnerBody extends RelativeLayout{
         this.post(new Runnable() {
             @Override
             public void run() {
+                Log.i(TAG, "run: " + event.getTitle());
                 RelativeLayout.LayoutParams eventTypeViewParams = new RelativeLayout.LayoutParams(DensityUtil.dip2px(context, 3), self.getHeight());
                 updateLeftBar(getResources().getDrawable(org.unimelb.itime.vendor.R.drawable.itime_draggable_event_bg), getEventColor(type));
                 eventTypeViewParams.addRule(RIGHT_OF, leftInfo.getId());
                 self.addView(eventTypeView, eventTypeViewParams);
+
             }
         });
 
@@ -204,7 +212,6 @@ public class AgendaInnerBody extends RelativeLayout{
         eventStatusViewParams.addRule(ALIGN_TOP, rightInfo.getId());
         eventStatusViewParams.addRule(ALIGN_PARENT_RIGHT);
         this.addView(eventStatusView, eventStatusViewParams);
-        requestLayout();
     }
 
     private void setTimeLeftTv(TextView timeLeftTv){
@@ -222,7 +229,7 @@ public class AgendaInnerBody extends RelativeLayout{
         long eventEndM = event.getEndTime();
 
         if((nowM + 60 * 1000 ) >=  eventEndM){
-            return "End";
+            return "Ended";
         }else if ((nowM + 60 * 1000 ) >=  eventStartM){
             return "Now";
         }else {
@@ -258,7 +265,6 @@ public class AgendaInnerBody extends RelativeLayout{
     }
 
     private ImageView addImage(String url){
-        Log.i(TAG, "url: " + url);
         ImageView img = new ImageView(context);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(pic_height_width,pic_height_width);
         img.setPadding(5,5,5,5);
@@ -280,6 +286,7 @@ public class AgendaInnerBody extends RelativeLayout{
         int hours = (int)duration_m/(3600*1000);
         int minutes =(int) ((duration_m/(60*1000))%60);
         duration =
+                hours >= 24 ? "All Day":
                 hours == 0 ? minutes + "min":
                 minutes == 0 ?  hours + "hrs ":
                 hours + "hrs " + minutes + "min";
@@ -287,12 +294,10 @@ public class AgendaInnerBody extends RelativeLayout{
         location = event.getLocation();
 
         String allUrls = event.getInvitees_urls();
-        Log.i(TAG, "allUrls: " + allUrls);
         if (allUrls.contains("|")){
             String[] urls = allUrls.split("\\|");
             for (int i = 0; i < urls.length; i++) {
                 this.urls.add(urls[i]);
-                Log.i(TAG, "urls[i]:" + urls[i]);
             }
         }
     }
@@ -321,4 +326,9 @@ public class AgendaInnerBody extends RelativeLayout{
 
         return color;
     }
+
+//        RelativeLayout.LayoutParams eventTypeViewParams = new RelativeLayout.LayoutParams(DensityUtil.dip2px(context, 3), self.getHeight());
+//        updateLeftBar(getResources().getDrawable(org.unimelb.itime.vendor.R.drawable.itime_draggable_event_bg), getEventColor(type));
+//        eventTypeViewParams.addRule(RIGHT_OF, leftInfo.getId());
+//        self.addView(eventTypeView, eventTypeViewParams);
 }

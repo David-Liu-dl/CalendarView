@@ -30,70 +30,41 @@ public class WeekViewFragment extends Fragment implements WeekView.OnWeekViewCha
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (root == null)
-            root= inflater.inflate(R.layout.fragment_week_view,container,false);
-        WeekView weekView = (WeekView) root.findViewById(R.id.week_view);
-        // simulate Events
+        if (root == null) {
+            root = inflater.inflate(R.layout.fragment_week_view, container, false);
+            WeekView weekView = (WeekView) root.findViewById(R.id.week_view);
+            // simulate Events
+            ArrayList<ITimeEventInterface> testEventArrayList = new ArrayList<>();
+            Calendar calendar1 = Calendar.getInstance();
+            calendar1.set(Calendar.DAY_OF_MONTH, 31);
+            calendar1.set(Calendar.HOUR_OF_DAY, 3);
+            calendar1.set(Calendar.MINUTE, 0);
 
-        Calendar calendar1 = Calendar.getInstance();
-        calendar1.set(Calendar.DAY_OF_MONTH,31);
-        calendar1.set(Calendar.HOUR_OF_DAY, 5);
-        calendar1.set(Calendar.MINUTE,0);
+            TestEvent testEvent = new TestEvent();
+            testEvent.setTitle("itime meeting");
+            testEvent.setStartTime(calendar1.getTimeInMillis());
+            testEvent.setEndTime(calendar1.getTimeInMillis() + 3600000 * 2);
+            testEvent.setEventType(1);
+            testEvent.setStatus(5);
+            testEventArrayList.add(testEvent);
 
-        TestEvent testEvent = new TestEvent();
-        testEvent.setTitle("itime meeting");
-        testEvent.setStartTime(calendar1.getTimeInMillis());
-        testEvent.setEndTime(calendar1.getTimeInMillis() + 3600000*2);
-        testEvent.setEventType(1);
-        testEvent.setStatus(5);
-        weekView.setEvent(testEvent);
+            weekView.setEvent(testEventArrayList);
 
-
-
-        weekView.setOnClickEventInterface(new WeekView.OnClickEventInterface() {
-            @Override
-            public void editEvent(ITimeEventInterface iTimeEventInterface) {
-                Log.i("title",iTimeEventInterface.getTitle());
-            }
-        });
-
+            weekView.setOnClickEventInterface(new WeekView.OnClickEventInterface() {
+                @Override
+                public void onClickEditEvent(ITimeEventInterface iTimeEventInterface) {
+                    Log.i("title", iTimeEventInterface.getTitle());
+                }
+            });
+        }
         return root;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-//        Log.i("onStop","here here");
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-//        Log.i("onDestroy","here here");
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-//        Log.i("onResume","here here");
-    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-//        weekViewPager.initAll();
-//        Button button = (Button)root.findViewById(R.id.button);
-//        button.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                ((PaulActivity)getActivity()).goToFragment2();
-//            }
-//        });
+
     }
 
 

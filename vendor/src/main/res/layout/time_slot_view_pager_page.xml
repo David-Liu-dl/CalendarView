@@ -5,7 +5,7 @@
     <org.unimelb.itime.vendor.timeslotview.WeekTimeSlotViewHeader
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="5">
+        android:layout_weight="7">
     </org.unimelb.itime.vendor.timeslotview.WeekTimeSlotViewHeader>
     <org.unimelb.itime.vendor.timeslotview.WeekTimeSlotViewBody
         android:layout_width="match_parent"

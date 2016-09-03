@@ -51,6 +51,7 @@ public class WeekTimeSlotView extends RelativeLayout{
     private OnTimeSlotClickListener onTimeSlotClickListener;
     private WeekTimeSlotViewBody currentPageWeekViewBody;
     private WeekTimeSlotViewHeader currentPageWeekViewHeader;
+    Calendar firstSundayCalendar;
 
 
     public WeekTimeSlotView(Context context) {
@@ -113,6 +114,11 @@ public class WeekTimeSlotView extends RelativeLayout{
         int todayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
         calendar.add(Calendar.DATE, -(todayOfWeek - 1));
 
+        // copy this calendar to pass to itime_main_program
+        firstSundayCalendar = Calendar.getInstance();
+        firstSundayCalendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
+                calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+
         for (int i = 0 ; i < 4 ; i ++){
             LinearLayout linearLayout = (LinearLayout) LayoutInflater.from(getContext()).inflate(R.layout.time_slot_view_pager_page,null);
             calendar.set(Calendar.DAY_OF_MONTH,calendar.get(Calendar.DAY_OF_MONTH) + i*7);
@@ -152,8 +158,8 @@ public class WeekTimeSlotView extends RelativeLayout{
                 else
                     deltaPosition=-1;
                 if(onTimeSlotWeekViewChangeListener != null){
-                    calendar.add(Calendar.DATE,(deltaPosition)*7);
-                    onTimeSlotWeekViewChangeListener.onWeekChanged(calendar);
+                    firstSundayCalendar.add(Calendar.DATE,(deltaPosition)*7);
+                    onTimeSlotWeekViewChangeListener.onWeekChanged(firstSundayCalendar);
                 }
                 lastPosition=position;
             }

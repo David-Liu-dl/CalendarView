@@ -36,6 +36,9 @@ public class WeekTimeSlotViewHeader extends LinearLayout {
 
     private RelativeLayout dateLayout;
     private TextView blankLeftTextView;
+    /**
+     * sdfs
+     */
     private ArrayList<RelativeLayout> dayBackgroundRelativeLayoutArrayList = new ArrayList<>();
     private ArrayList<RelativeLayout> dayRelativeLayoutArrayList = new ArrayList<>();
     private ArrayList<TextView> dayOfWeekArrayList = new ArrayList<>();
@@ -64,17 +67,11 @@ public class WeekTimeSlotViewHeader extends LinearLayout {
             dayBackgroundRelativeLayoutArrayList.get(i).layout(backGroundLeft, backGroundTop, backGroundRight, backGroundBottom);
             dayRelativeLayoutArrayList.get(i).layout(0, 0, viewWidth, viewWidth); // same size as background
 
-            int dayOfWeekLeft = viewWidth/4-5; // for align in parent center, need to change from 0 to viewWidth/4
-            int dayOfWeekTop = 0;
-            int dayOfWeekRight =  viewWidth;
-            int dayOfWeekBottom = viewWidth/2;
-            dayOfWeekArrayList.get(i).layout(dayOfWeekLeft, dayOfWeekTop, dayOfWeekRight, dayOfWeekBottom);
+            MLayoutParams dayOfWeekParams = (MLayoutParams) dayOfWeekArrayList.get(i).getLayoutParams();
+            dayOfWeekArrayList.get(i).layout(dayOfWeekParams.left, dayOfWeekParams.top, dayOfWeekParams.left + dayOfWeekParams.width, dayOfWeekParams.top + dayOfWeekParams.height);
 
-            int dayOfMonthLeft = viewWidth*2/5-5;
-            int dayOfMonthTop = viewWidth/2;
-            int dayOfMonthRight = viewWidth;
-            int dayOfMonthBottom = viewWidth;
-            dayOfMonthArrayList.get(i).layout(dayOfMonthLeft, dayOfMonthTop, dayOfMonthRight, dayOfMonthBottom);
+            MLayoutParams dayOfMonthParams = (MLayoutParams) dayOfMonthArrayList.get(i).getLayoutParams();
+            dayOfMonthArrayList.get(i).layout(dayOfMonthParams.left, dayOfMonthParams.top, dayOfMonthParams.left + dayOfMonthParams.width, dayOfMonthParams.top + dayOfMonthParams.height);
         }
     }
 
@@ -184,6 +181,20 @@ public class WeekTimeSlotViewHeader extends LinearLayout {
         totalWidth = MeasureSpec.getSize(widthMeasureSpec);
         setMeasuredDimension(totalWidth,totalHeight);
         updateWidthHeight(totalWidth,totalHeight);
+
+        for (int i = 0; i<7;i++) {
+            MLayoutParams dayOfWeekParams = new MLayoutParams(viewWidth, viewWidth/2);
+            dayOfWeekParams.left = 0;
+            dayOfWeekParams.top = 0;
+            dayOfWeekArrayList.get(i).setGravity(Gravity.CENTER_HORIZONTAL);
+            dayOfWeekArrayList.get(i).setLayoutParams(dayOfWeekParams);
+
+            MLayoutParams dayOfMonthParams = new MLayoutParams(viewWidth, viewWidth/2);
+            dayOfMonthParams.left = 0;
+            dayOfMonthParams.top = viewWidth/2;
+            dayOfMonthArrayList.get(i).setGravity(Gravity.CENTER_HORIZONTAL);
+            dayOfMonthArrayList.get(i).setLayoutParams(dayOfMonthParams);
+        }
     }
 
 
@@ -192,6 +203,27 @@ public class WeekTimeSlotViewHeader extends LinearLayout {
         this.paddingLeft = (int)(width * 0.1); // this is for blank?.
         this.paddingTop = (int)(width * 0.05);
         this.viewWidth = (width - paddingLeft)/7;
+    }
+
+    /**
+     * Class of layoutParams for NinePhotoView
+     */
+    public static class MLayoutParams extends RelativeLayout.LayoutParams {
+
+        public int left = 0;
+        public int top = 0;
+
+        public MLayoutParams(Context c, AttributeSet attrs) {
+            super(c, attrs);
+        }
+
+        public MLayoutParams(ViewGroup.LayoutParams source) {
+            super(source);
+        }
+
+        public MLayoutParams(int width, int height) {
+            super(width, height);
+        }
     }
 
 }

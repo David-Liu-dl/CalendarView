@@ -274,15 +274,14 @@ public class WeekTimeSlotViewBody extends LinearLayout {
 
     public void initTimeSlots(){
         if (timeSlots!=null){
+            Log.i("number of timeSlots", String.valueOf(timeSlotRelativeLayout.getChildCount()));
             timeSlotRelativeLayout.removeAllViews();
             for (Long startTime: timeSlots.keySet()){
                 boolean isChoose = timeSlots.get(startTime);
                 Date timeSlotDate = new Date(startTime);
                 Calendar timeSlotCalendar = Calendar.getInstance();
                 timeSlotCalendar.setTime(timeSlotDate);
-                Log.i("myCalendar",myCalendar.toString());
                 String str = String.valueOf(timeSlotCalendar.get(Calendar.DAY_OF_MONTH)) +" " +  String.valueOf(timeSlotCalendar.get(Calendar.MONTH));
-                Log.i("timeSlotCalendar",str);
                 if (isInCurrentWeek(timeSlotCalendar, myCalendar)) {
                     TimeSlotView timeSlotView = new TimeSlotView(
                             getContext(), startTime, duration,isChoose);

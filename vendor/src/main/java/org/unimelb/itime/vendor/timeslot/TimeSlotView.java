@@ -44,7 +44,7 @@ public class TimeSlotView extends RelativeLayout {
         if (!isSelect)
             icon.setImageResource(R.drawable.icon_event_timeslot_unselected);
         else
-            icon.setImageResource(R.drawable.icon_event_timeslot_selected);
+            icon.setImageResource(R.drawable.icon_event_attendee_selected);
         this.addView(icon);
     }
 
@@ -97,7 +97,7 @@ public class TimeSlotView extends RelativeLayout {
 
     private void updateIcon(){
         if (isSelect)
-            icon.setImageResource(R.drawable.icon_event_timeslot_selected);
+            icon.setImageResource(R.drawable.icon_event_attendee_selected);
         else
             icon.setImageResource(R.drawable.icon_event_timeslot_unselected);
         icon.invalidate();

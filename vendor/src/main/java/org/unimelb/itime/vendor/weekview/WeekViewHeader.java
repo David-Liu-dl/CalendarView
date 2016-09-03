@@ -161,13 +161,13 @@ public class WeekViewHeader extends LinearLayout{
             MLayoutParams dayOfWeekParams = new MLayoutParams(viewWidth, viewWidth/2);
             dayOfWeekParams.left = 0;
             dayOfWeekParams.top = 0;
-            dayOfWeekArrayList.get(i).setGravity(Gravity.CENTER_HORIZONTAL);
+            dayOfWeekArrayList.get(i).setGravity(Gravity.CENTER);
             dayOfWeekArrayList.get(i).setLayoutParams(dayOfWeekParams);
 
             MLayoutParams dayOfMonthParams = new MLayoutParams(viewWidth, viewWidth/2);
             dayOfMonthParams.left = 0;
             dayOfMonthParams.top = viewWidth/2;
-            dayOfMonthArrayList.get(i).setGravity(Gravity.CENTER_HORIZONTAL);
+            dayOfMonthArrayList.get(i).setGravity(Gravity.CENTER);
             dayOfMonthArrayList.get(i).setLayoutParams(dayOfMonthParams);
         }
     }

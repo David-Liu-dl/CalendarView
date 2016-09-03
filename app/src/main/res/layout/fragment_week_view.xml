@@ -2,11 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <Button
-        android:id="@+id/button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="change fragment"/>
     <org.unimelb.itime.vendor.weekview.WeekView
         android:id="@+id/week_view"
         android:layout_width="match_parent"

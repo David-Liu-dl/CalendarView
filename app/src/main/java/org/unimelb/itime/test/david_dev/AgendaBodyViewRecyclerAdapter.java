@@ -57,7 +57,6 @@ public class AgendaBodyViewRecyclerAdapter extends RecyclerView.Adapter<AgendaBo
         holder.bodyRow.updateHeaderView();
         holder.bodyRow.loadEvents();
         holder.bodyRow.postInvalidate();
-        Log.i(TAG, "onBindViewHolder: " + position);
     }
 
     @Override
@@ -69,7 +68,6 @@ public class AgendaBodyViewRecyclerAdapter extends RecyclerView.Adapter<AgendaBo
         AgendaViewBody bodyRow;
         public MyViewHolder(View itemView) {
             super(itemView);
-            Log.i(TAG, "MyViewHolder: ");
             bodyRow = (AgendaViewBody) itemView.findViewById(R.id.agendaViewBody);
             bodyRow.setCalendar(new MyCalendar(Calendar.getInstance()));
             if (onLoadEvents != null){

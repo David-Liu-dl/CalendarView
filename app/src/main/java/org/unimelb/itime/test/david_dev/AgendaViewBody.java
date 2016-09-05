@@ -23,10 +23,13 @@ import java.util.Locale;
  * Created by yuhaoliu on 31/08/16.
  */
 public class AgendaViewBody extends LinearLayout{
-    private final String TAG = "MyAPP";
+    private final String TAG = "AgendaViewBody";
     private MyCalendar myCalendar;
     private LinearLayout rowHeader;
     private LinearLayout rowBody;
+
+    private int totalHeight;
+    private int totalWidth;
 
 //    private List<AgendaInnerBody> bodyRows = new ArrayList<>();
     private List<ITimeEventInterface> events = new ArrayList<>();

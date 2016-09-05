@@ -2,14 +2,11 @@ package org.unimelb.itime.test.david_dev;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.graphics.PointF;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +20,7 @@ import org.unimelb.itime.vendor.dayview.DayViewHeaderRecyclerDivider;
  * Created by yuhaoliu on 31/08/16.
  */
 public class MonthAgendaView extends LinearLayout{
-    private final String TAG = "MyAPP";
+    private final String TAG = "AgendaHeader";
 
     private LinearLayout parent;
     private LinearLayoutManager headerLinearLayoutManager;
@@ -40,6 +37,8 @@ public class MonthAgendaView extends LinearLayout{
     private int upperBoundsOffset = 1;
     private int init_height;
     private int scroll_height;
+
+    private int last_pst;
 
     private DayViewHeader.OnCheckIfHasEvent onCheckIfHasEvent;
     private AgendaViewBody.OnLoadEvents onLoadEvents;
@@ -69,6 +68,7 @@ public class MonthAgendaView extends LinearLayout{
         bodyRecyclerView = (AgendaBodyRecyclerView) parent.findViewById(R.id.bodyRowList);
 
         upperBoundsOffset = 10000;
+        last_pst = upperBoundsOffset;
 
         this.setUpHeader();
         this.setUpBody();
@@ -76,6 +76,13 @@ public class MonthAgendaView extends LinearLayout{
 
     private void setUpHeader(){
         headerRecyclerAdapter = new AgendaHeaderViewRecyclerAdapter(context, upperBoundsOffset);
+        headerRecyclerAdapter.setOnSynBodyListener(new AgendaHeaderViewRecyclerAdapter.OnSynBodyListener() {
+            @Override
+            public void synBody(int scrollTo) {
+                last_pst = scrollTo;
+                bodyLinearLayoutManager.scrollToPositionWithOffset(scrollTo, -5);
+            }
+        });
         setOnCheckIfHasEvent(this.onCheckIfHasEvent);
         headerRecyclerView.setHasFixedSize(true);
         headerRecyclerView.setAdapter(headerRecyclerAdapter);
@@ -103,41 +110,8 @@ public class MonthAgendaView extends LinearLayout{
         bodyRecyclerView.setHasFixedSize(false);
         bodyRecyclerView.setAdapter(bodyRecyclerAdapter);
         bodyLinearLayoutManager = new LinearLayoutManager(context);
-//        {
-//            @Override
-//            public void smoothScrollToPosition(RecyclerView recyclerView, RecyclerView.State state, int position) {
-//                // A good idea would be to create this instance in some initialization method, and just set the target position in this method.
-//                LinearSmoothScroller smoothScroller = new LinearSmoothScroller(getContext())
-//                {
-//                    @Override
-//                    public PointF computeScrollVectorForPosition(int targetPosition)
-//                    {
-//                        int yDelta = calculateCurrentDistanceToPosition(targetPosition);
-//                        return new PointF(0, yDelta);
-//                    }
-//
-//                    // This is the important method. This code will return the amount of time it takes to scroll 1 pixel.
-//                    // This code will request X milliseconds for every Y DP units.
-//                    @Override
-//                    protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics)
-//                    {
-//                        return X / TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, Y, displayMetrics);
-//                    }
-//
-//                    private int calculateCurrentDistanceToPosition(int targetPosition) {
-//                        int targetScrollY = targetPosition * itemHeight;
-//                        return targetScrollY - currentScrollY;
-//                    }
-//
-//                };
-//                smoothScroller.setTargetPosition(position);
-//
-//                startSmoothScroll(smoothScroller);
-//            }
-//        };
         headerRecyclerAdapter.setBodyRecyclerView(bodyRecyclerView);
         headerRecyclerAdapter.setBodyLayoutManager(bodyLinearLayoutManager);
-//        bodyLinearLayoutManager.
         bodyRecyclerView.setLayoutManager(bodyLinearLayoutManager);
         bodyRecyclerView.addItemDecoration(new AgendaBodyViewRecyclerDivider(context));
         bodyRecyclerView.addOnScrollListener(new BodyOnScrollListener());
@@ -188,7 +162,7 @@ public class MonthAgendaView extends LinearLayout{
 
     class BodyOnScrollListener extends RecyclerView.OnScrollListener{
         private boolean slideByUser = false;
-        private int last_pst = upperBoundsOffset;
+        private int error_skip = 0;
 
         @Override
         public void onScrolled(RecyclerView v, int dx, int dy) {
@@ -196,26 +170,25 @@ public class MonthAgendaView extends LinearLayout{
 
             //update header selected date
             int fst_visible_pst = bodyLinearLayoutManager.findFirstVisibleItemPosition();
-            Log.i(TAG, "outer: " + fst_visible_pst);
 
             if (slideByUser) {
-                Log.i(TAG, "fst_visible_pst: " + fst_visible_pst);
-                Log.i(TAG, "last_pst: " + last_pst);
-                if (fst_visible_pst != -1 && fst_visible_pst != last_pst) {
+                if (fst_visible_pst != -1 && fst_visible_pst != last_pst ) {
                     final boolean slideToNext = (fst_visible_pst > last_pst);
                     int skip = Math.abs(fst_visible_pst - last_pst);
+                    int need_slides = skip + error_skip;
+                    int current_turn_error = 0;
 
-                    //avoid skip by body
-//                    headerRecyclerAdapter.notifyDataSetChanged();
-                    for (int i = 0; i < skip; i++) {
-                        slide(slideToNext);
+                    for (int i = 0; i < need_slides; i++) {
+                        boolean noError = slide(slideToNext);
+                        current_turn_error += (noError ? 0 : (slideToNext ? 1 : -1));
                     }
+                    error_skip = current_turn_error;
+
+                    Log.i(TAG, "error_skip: " + error_skip);
                 }
+
             }else {
                 bodyRecyclerAdapter.notifyDataSetChanged();
-                Log.i(TAG, "by code: ");
-                Log.i(TAG, "fst_visible_pst: " + fst_visible_pst);
-                Log.i(TAG, "last_pst: " + last_pst);
             }
             //update last_pst
             last_pst = fst_visible_pst;
@@ -251,9 +224,14 @@ public class MonthAgendaView extends LinearLayout{
             }
         }
 
-        private void slide(boolean slideToNext){
+        private boolean slide(boolean slideToNext){
             DayViewHeader headerView =
                     (DayViewHeader) headerLinearLayoutManager.findViewByPosition(headerRecyclerAdapter.rowPst);
+
+            if (headerView == null){
+                headerLinearLayoutManager.scrollToPosition(headerRecyclerAdapter.rowPst);
+            }
+
             if (headerView != null){
                 if (slideToNext){
                     if (headerView.getCurrentSelectedIndex() == 6){
@@ -283,38 +261,12 @@ public class MonthAgendaView extends LinearLayout{
                         headerView.previousPerformClick();
                     }
                 }
+                return true;
             }else {
                 Log.i(TAG, "header none: " + "123" );
+                return false;
             }
-
         }
     }
 
-//    class BodyRecyclerViewManager extends LinearLayoutManager{
-//        private static final float MILLISECONDS_PER_INCH = 50f;
-//
-//        public BodyRecyclerViewManager(Context context) {
-//            super(context);
-//        }
-//
-//        @Override
-//        public void smoothScrollToPosition(RecyclerView recyclerView, RecyclerView.State state, int position) {
-//            super.smoothScrollToPosition(recyclerView, state, position);
-//            final LinearSmoothScroller linearSmoothScroller = new LinearSmoothScroller(recyclerView.getContext()) {
-//
-//                @Override
-//                public PointF computeScrollVectorForPosition(int targetPosition) {
-//                    return BodyRecyclerViewManager.this.computeScrollVectorForPosition(targetPosition);
-//                }
-//
-//                @Override
-//                protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics) {
-//                    return MILLISECONDS_PER_INCH / displayMetrics.densityDpi;
-//                }
-//            };
-//
-//            linearSmoothScroller.setTargetPosition(position);
-//            startSmoothScroll(linearSmoothScroller);
-//        }
-//    }
 }

@@ -138,23 +138,12 @@ public class AgendaViewInnerBody extends RelativeLayout{
         durationTv.setGravity(Gravity.CENTER);
         leftInfo.addView(durationTv);
 
-        //type bar
+        //type bar && right info, relation bet 2
         eventTypeView = new ImageView(context);
         eventTypeView.setId(generateViewId());
-        this.post(new Runnable() {
-            @Override
-            public void run() {
-                Log.i(TAG, "run: " + event.getTitle());
-                RelativeLayout.LayoutParams eventTypeViewParams = new RelativeLayout.LayoutParams(DensityUtil.dip2px(context, 3), self.getHeight());
-                updateLeftBar(getResources().getDrawable(org.unimelb.itime.vendor.R.drawable.itime_draggable_event_bg), getEventColor(type));
-                eventTypeViewParams.addRule(RIGHT_OF, leftInfo.getId());
-                self.addView(eventTypeView, eventTypeViewParams);
+        RelativeLayout.LayoutParams eventTypeViewParams = new RelativeLayout.LayoutParams(DensityUtil.dip2px(context, 3), ViewGroup.LayoutParams.WRAP_CONTENT);
+        updateLeftBar(getResources().getDrawable(org.unimelb.itime.vendor.R.drawable.itime_draggable_event_bg), getEventColor(type));
 
-            }
-        });
-
-
-        //right info
         rightInfo = new LinearLayout(context);
         rightInfo.setOrientation(LinearLayout.VERTICAL);
         RelativeLayout.LayoutParams rightInfoParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -162,6 +151,11 @@ public class AgendaViewInnerBody extends RelativeLayout{
         rightInfo.setPadding(DensityUtil.dip2px(context, 3),0,0,0);
         rightInfo.setId(generateViewId());
         this.addView(rightInfo, rightInfoParams);
+
+        eventTypeViewParams.addRule(RIGHT_OF, leftInfo.getId());
+        eventTypeViewParams.addRule(ALIGN_TOP, rightInfo.getId());
+        eventTypeViewParams.addRule(ALIGN_BOTTOM, rightInfo.getId());
+        self.addView(eventTypeView, eventTypeViewParams);
 
         eventNameTv = new TextView(context);
         eventNameTv.setText(eventName);

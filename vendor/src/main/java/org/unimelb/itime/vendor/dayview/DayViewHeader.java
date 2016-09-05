@@ -52,7 +52,7 @@ public class DayViewHeader extends LinearLayout {
     private int todaySelectedCircleBgColor = Color.RED;
     private int otherSelectedCircleBgColor = Color.BLUE;
 
-    private float textTitleRatio = 0.5f;
+    private float textTitleRatio = 1f;
 
     private Context context;
     private ViewGroup parent = this;
@@ -62,7 +62,7 @@ public class DayViewHeader extends LinearLayout {
     private OnCalendarHeaderDayClickListener onCalendarHeaderDayClickListener;
     private OnCheckIfHasEvent onCheckIfHasEvent;
     
-    private Paint monthTilePaint = new Paint();
+    private Paint monthTitlePaint = new Paint();
 
     MyCalendar currentCalendar;
 
@@ -79,9 +79,9 @@ public class DayViewHeader extends LinearLayout {
         parent.addView(dateLayout);
         loadAttributes(attrs,context);
 
-        monthTilePaint.setTextSize((DensityUtil.sp2px(context,textSize) * textTitleRatio));
-        monthTilePaint.setTextAlign(Paint.Align.LEFT);
-        monthTilePaint.setStyle(Paint.Style.FILL);
+        monthTitlePaint.setTextSize((DensityUtil.sp2px(context,textSize) * textTitleRatio));
+        monthTitlePaint.setTextAlign(Paint.Align.LEFT);
+        monthTitlePaint.setStyle(Paint.Style.FILL);
     }
 
     public DayViewHeader(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -94,9 +94,9 @@ public class DayViewHeader extends LinearLayout {
         loadAttributes(attrs,context);
 
         //init paint
-        monthTilePaint.setTextSize(DensityUtil.sp2px(context,textSize) * textTitleRatio);
-        monthTilePaint.setStyle(Paint.Style.FILL);
-        monthTilePaint.setTextAlign(Paint.Align.LEFT);
+        monthTitlePaint.setTextSize(DensityUtil.sp2px(context,textSize) * textTitleRatio);
+        monthTitlePaint.setStyle(Paint.Style.FILL);
+        monthTitlePaint.setTextAlign(Paint.Align.LEFT);
     }
 
     private void loadAttributes(AttributeSet attrs, Context context) {
@@ -212,7 +212,7 @@ public class DayViewHeader extends LinearLayout {
                 int month = calendar.get(calendar.MONTH);
                 int oddEvent = month%2;
                 //change month title paint color
-                monthTilePaint.setColor((oddEvent==0) ? headerNormalTextColorEven : headerNormalTextColorOdd);
+                monthTitlePaint.setColor((oddEvent==0) ? headerNormalTextColorEven : headerNormalTextColorOdd);
 
                 dateView.setTag(oddEvent);
                 if (checkEqualDay(todayCalendar, calendar)) {
@@ -228,7 +228,7 @@ public class DayViewHeader extends LinearLayout {
                 //add title
                 if (date.equals("1")){
                     String monthTitle = calendar.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault());
-                    monthTitleDrawable = new Text2Drawable(monthTilePaint, monthTitle);
+                    monthTitleDrawable = new Text2Drawable(monthTitlePaint, monthTitle);
                 }
                 //add dot
                 if (thisDayHasEvent){

@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -109,7 +110,6 @@ public class MonthAgendaView extends RelativeLayout{
 
     private void setUpBodyHeader(){
         bodyHeader = new AgendaBodyHeader(context);
-//        bodyHeader.getRLayoutParams().topMargin = -20;
         bodyHeader.updateHeaderView();
         bodyRl.addView(bodyHeader);
     }
@@ -185,6 +185,7 @@ public class MonthAgendaView extends RelativeLayout{
                 date_offset = date_offset > 0 ? -1 : 1;
             }
 
+
             int row_diff = date_offset/7;
             int day_diff = ((headerRecyclerAdapter.indexInRow+1) + date_offset%7);
 
@@ -196,10 +197,10 @@ public class MonthAgendaView extends RelativeLayout{
                 day_diff = day_diff <= 0 ? (7 + day_diff):day_diff;
             }
 
+
             if ((row_diff != 0 || day_diff != 0)){
                 if (row_diff != 0){
                     int newRowPst = row_diff + headerRecyclerAdapter.rowPst;
-                    headerRecyclerView.stopScroll();
                     headerRecyclerView.getLayoutManager().smoothScrollToPosition(headerRecyclerView,null,newRowPst);
                     headerRecyclerAdapter.rowPst = newRowPst;
                 }
@@ -217,6 +218,8 @@ public class MonthAgendaView extends RelativeLayout{
                     headerRecyclerAdapter.indexInRow = new_index;
                 }
             }
+        }else {
+            headerRecyclerView.getLayoutManager().scrollToPosition(headerRecyclerAdapter.rowPst);
         }
     }
 
@@ -250,7 +253,6 @@ public class MonthAgendaView extends RelativeLayout{
                 }else {
                     bodyHeader.setTranslationY(0);
                 }
-
                 last_pst = fst_visible_pst;
             }
 
@@ -286,6 +288,5 @@ public class MonthAgendaView extends RelativeLayout{
             }
         }
     }
-
 
 }

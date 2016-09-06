@@ -15,13 +15,14 @@ import org.unimelb.itime.vendor.helper.MyCalendar;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
  * Created by yuhaoliu on 31/08/16.
  */
 public class AgendaViewBody extends LinearLayout{
-    private final String TAG = "AgendaViewBody";
+    private final String TAG = "MyAPP2";
 
     private MyCalendar myCalendar;
     private AgendaBodyHeader rowHeader;
@@ -66,15 +67,22 @@ public class AgendaViewBody extends LinearLayout{
     }
 
     public void loadEvents(){
+        this.setCurrentDayType();
         if (this.onLoadEvents != null){
             this.events.clear();
             List<ITimeEventInterface> events = this.onLoadEvents.loadTodayEvents(myCalendar.getBeginOfDayMilliseconds());
             if (events != null){
                 this.events.addAll(events);
-                Log.i(TAG, "loadEvents: " + events.size());
             }
             displayEvents(this.events);
         }
+    }
+
+    private void setCurrentDayType(){
+        Calendar todayCal = Calendar.getInstance();
+        long current_day_milliseconds = this.myCalendar.getBeginOfDayMilliseconds();
+        long today_milliseconds = (new MyCalendar(todayCal)).getBeginOfDayMilliseconds();
+        this.currentDayType = getDatesRelationType(today_milliseconds, current_day_milliseconds);
     }
 
     public void updateHeaderView(){
@@ -85,9 +93,6 @@ public class AgendaViewBody extends LinearLayout{
         //header
         rowHeader = new AgendaBodyHeader(context);
         this.addView(rowHeader);
-
-        //add dividerLine
-//        this.addView(getDivider());
 
         //body
         rowBody = new LinearLayout(context);
@@ -136,6 +141,22 @@ public class AgendaViewBody extends LinearLayout{
 
     public interface OnLoadEvents{
         List<ITimeEventInterface> loadTodayEvents(long beginOfDayMilliseconds);
+    }
+
+    private int getDatesRelationType(long todayM, long currentDayM){
+        // -2 no relation, 1 tomorrow, 0 today, -1 yesterday
+        int type = -2;
+        int dayM = 24 * 60 * 60 * 1000;
+        long diff = (currentDayM - todayM);
+        if (diff >0 && diff <= dayM){
+            type = 1;
+        }else if(diff < 0 && diff >= -dayM){
+            type = -1;
+        }else if (diff == 0){
+            type = 0;
+        }
+
+        return type;
     }
 
 }

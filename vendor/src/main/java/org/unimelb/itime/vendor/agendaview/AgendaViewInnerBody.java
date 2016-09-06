@@ -27,7 +27,7 @@ import java.util.List;
  * Created by yuhaoliu on 31/08/16.
  */
 public class AgendaViewInnerBody extends RelativeLayout{
-    private final String TAG = "AgendaViewInnerBody";
+    private final String TAG = "MyAPP2";
 
     private RelativeLayout self = this;
 
@@ -316,9 +316,4 @@ public class AgendaViewInnerBody extends RelativeLayout{
 
         return color;
     }
-
-//        RelativeLayout.LayoutParams eventTypeViewParams = new RelativeLayout.LayoutParams(DensityUtil.dip2px(context, 3), self.getHeight());
-//        updateLeftBar(getResources().getDrawable(org.unimelb.itime.vendor.R.drawable.itime_draggable_event_bg), getEventColor(type));
-//        eventTypeViewParams.addRule(RIGHT_OF, leftInfo.getId());
-//        self.addView(eventTypeView, eventTypeViewParams);
 }

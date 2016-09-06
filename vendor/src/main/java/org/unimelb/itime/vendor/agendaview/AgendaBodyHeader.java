@@ -2,6 +2,7 @@ package org.unimelb.itime.vendor.agendaview;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -20,6 +21,7 @@ import java.util.Locale;
  */
 public class AgendaBodyHeader extends LinearLayout {
 
+    private static final String TAG = "MyAPP2";
     private LinearLayout contentLayout;
 
     private TextView mentionTv;
@@ -115,6 +117,7 @@ public class AgendaBodyHeader extends LinearLayout {
 
     private void initHeaderShowAttrs(){
         Calendar calendar = this.myCalendar.getCalendar();
+//        Log.i(TAG, "initHeaderShowAttrs: " + this.myCalendar.toString());
         int day_of_month = calendar.get(Calendar.DAY_OF_MONTH);
         nth =  day_of_month + "th";
         month = calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());

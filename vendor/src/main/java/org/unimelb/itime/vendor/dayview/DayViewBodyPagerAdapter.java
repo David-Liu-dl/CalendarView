@@ -48,17 +48,18 @@ public class DayViewBodyPagerAdapter extends PagerAdapter {
             Calendar calendar = v.getCalendar().getCalendar();
             calendar.set(Calendar.HOUR_OF_DAY, 0);
             calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
             long beginOfDayMilliseconds = calendar.getTimeInMillis();
-            calendar.set(Calendar.HOUR_OF_DAY, 23);
-            calendar.set(Calendar.MINUTE, 59);
-            calendar.set(Calendar.SECOND, 59);
-            long endOfDayMilliseconds = calendar.getTimeInMillis();
 
-            List<ITimeEventInterface> events = this.onBodyPageChanged.updateEvent(beginOfDayMilliseconds, endOfDayMilliseconds);
-            for (ITimeEventInterface event: events
-                 ) {
-                v.addEvent(event);
+            List<ITimeEventInterface> events = this.onBodyPageChanged.loadEvents(beginOfDayMilliseconds);
+            if (events != null){
+                for (ITimeEventInterface event: events
+                        ) {
+                    v.addEvent(event);
+                }
             }
+
         }else{
             Log.i(TAG, "instantiateItem: null listenner");
         }
@@ -81,6 +82,6 @@ public class DayViewBodyPagerAdapter extends PagerAdapter {
     }
 
     public interface OnBodyPageChanged{
-        List<ITimeEventInterface> updateEvent(long timeStart, long timeEnd);
+        List<ITimeEventInterface> loadEvents(long beginOfDayM);
     }
 }

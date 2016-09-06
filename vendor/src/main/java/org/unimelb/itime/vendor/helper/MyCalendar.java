@@ -130,4 +130,14 @@ public class MyCalendar {
 
         return  calendar.getTimeInMillis();
     }
+
+    public String toString(){
+        int year = this.getYear();
+        int month = this.getMonth();
+        int day = this.getDay();
+        int hour = this.getHour();
+        int minutes = this.getMinute();
+
+        return year + "  " + day + "/" + month + "  " + hour + " : " + minutes;
+    }
 }

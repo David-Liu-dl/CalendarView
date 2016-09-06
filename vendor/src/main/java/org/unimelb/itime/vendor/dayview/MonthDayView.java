@@ -2,8 +2,6 @@ package org.unimelb.itime.vendor.dayview;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.databinding.BindingMethod;
-import android.databinding.BindingMethods;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import org.unimelb.itime.vendor.R;
+
 import org.unimelb.itime.vendor.helper.MyCalendar;
 
 import java.util.ArrayList;

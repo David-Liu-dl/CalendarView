@@ -4,13 +4,13 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
-import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Pair;
 import android.util.TypedValue;
 import android.view.DragEvent;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -22,6 +22,7 @@ import org.unimelb.itime.vendor.R;
 import org.unimelb.itime.vendor.eventview.DayDraggableEventView;
 import org.unimelb.itime.vendor.helper.CalendarEventOverlapHelper;
 import org.unimelb.itime.vendor.helper.DensityUtil;
+import org.unimelb.itime.vendor.helper.MyCalendar;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 
 import java.text.DateFormat;
@@ -39,29 +40,22 @@ import java.util.TreeMap;
  * Created by yuhaoliu on 3/08/16.
  */
 public class DayViewBodyController {
-    public final String TAG = "MyAPP";
+    public final String TAG = "DayViewBodyController";
+
     private final long allDayMilliseconds = 24 * 60 * 60 * 1000;
 
     private RelativeLayout parent;
-
+    private RelativeLayout timeRLayout;
+    private RelativeLayout dividerRLayout;
     private LinearLayout allDayContainer;
 
-    @NonNull
-    private RelativeLayout timeRLayout;
-    @NonNull
-    private RelativeLayout dividerRLayout;
-
     public ScrollContainerView scrollContainerView;
-
+    public MyCalendar myCalendar;
     private Context context;
 
     private ArrayList<ITimeEventInterface> regularEventModules = new ArrayList<>();
     private ArrayList<ITimeEventInterface> allDayEventModules = new ArrayList<>();
     private ArrayList<DayDraggableEventView> allDayDgEventViews = new ArrayList<>();
-
-    private TextView msgWindow;
-    private ImageView nowTimeLine;
-    private TextView nowTime;
 
     private TreeMap< Integer, String> positionToTimeTreeMap = new TreeMap<>();
     private TreeMap<Float, Integer> timeToPositionTreeMap = new TreeMap<>();
@@ -69,16 +63,28 @@ public class DayViewBodyController {
 
     private CalendarEventOverlapHelper xHelper = new CalendarEventOverlapHelper();
 
+    private TextView msgWindow;
+    private TextView nowTime;
+    private ImageView nowTimeLine;
+    //tag: false-> moving, true, done
+    private DayDraggableEventView tempDragView = null;
+
     private int lineHeight = 50;
     private int timeTextSize = 20;
     private int overlapGapHeight;
+
+    private float nowTapX = 0;
+    private float nowTapY = 0;
+
+
+
+    private OnCreateNewEvent onCreateNewEvent;
 
     public DayViewBodyController(AttributeSet attrs,
                                  Context context) {
         this.context = context;
         this.overlapGapHeight = DensityUtil.dip2px(context, 1);
         loadAttributes(attrs, context);
-//        this.regularEventModules = regularEventModules;
     }
 
     private void loadAttributes(AttributeSet attrs, Context context) {
@@ -108,7 +114,17 @@ public class DayViewBodyController {
         this.allDayContainer = allDayContainer;
 
         this.scrollContainerView = scrollContainerView;
-        dividerRLayout.setOnDragListener(new MyDragListener());
+        dividerRLayout.setOnDragListener(new EventDragListener());
+        dividerRLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                nowTapX = event.getX();
+                nowTapY = event.getY();
+
+                return false;
+            }
+        });
+        dividerRLayout.setOnLongClickListener(new CreateEventListener());
     }
 
     public void initBackgroundView(){
@@ -116,6 +132,79 @@ public class DayViewBodyController {
         initMsgWindow();
         initTimeText(getHours());
         initDividerLine(getHours());
+    }
+
+    private void initTimeSlot(){
+        double startPoint = timeTextSize * 0.5;
+        double timeSlotHeight = lineHeight/4;
+        String[] hours = getHours();
+        for (int slot = 0; slot < hours.length; slot++) {
+            //add full clock
+            positionToTimeTreeMap.put((int)startPoint + lineHeight*slot, hours[slot] + ":00");
+            String hourPart = hours[slot].substring(0,2); // XX
+            timeToPositionTreeMap.put((float) Integer.valueOf(hourPart), (int)startPoint + lineHeight*slot);
+            for (int miniSlot = 0; miniSlot < 3; miniSlot++) {
+                String minutes = String.valueOf((miniSlot+1)*15);
+                String time = hourPart + ":" + minutes;
+                int positionY = (int) (startPoint + lineHeight*slot + timeSlotHeight*(miniSlot+1));
+                positionToTimeTreeMap.put(positionY, time);
+                timeToPositionTreeMap.put(Integer.valueOf(hourPart) + (float) Integer.valueOf(minutes)/100,positionY);
+            }
+        }
+    }
+
+    private void initMsgWindow(){
+        msgWindow = new TextView(context);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.setMargins(0, 0, 0, 0);
+        msgWindow.setLayoutParams(params);
+        msgWindow.setTextColor(context.getResources().getColor(R.color.text_enable));
+        msgWindow.setText("00");
+        msgWindow.setTextSize(20);
+        msgWindow.setVisibility(View.INVISIBLE);
+        dividerRLayout.addView(msgWindow);
+    }
+
+    private void initTimeText(String[] HOURS){
+        for (int time = 0; time < HOURS.length; time++){
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            TextView timeView = new TextView(context);
+            params.setMargins(0, lineHeight * time, 0, 0);
+            timeView.setLayoutParams(params);
+            timeView.setTextColor(context.getResources().getColor(R.color.text_enable));
+            timeView.setText(HOURS[time]);
+            timeView.setTextSize(12);
+            timeView.setGravity(Gravity.CENTER);
+            timeView.setIncludeFontPadding(false);
+            timeTextSize = (int) timeView.getTextSize() + timeView.getPaddingTop();
+            timeRLayout.addView(timeView);
+        }
+    }
+
+    private void initDividerLine(String[] HOURS){
+        int offsetY =  (int)(timeTextSize * 0.5);
+        for (int numOfDottedLine = 0 ; numOfDottedLine < HOURS.length ; numOfDottedLine ++){
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+            ImageView dividerImageView = new ImageView(context);
+            dividerImageView.setImageResource(R.drawable.itime_day_view_dotted);
+            params.setMargins(0 , lineHeight * numOfDottedLine + offsetY, 0, 0);
+            dividerImageView.setLayoutParams(params);
+            dividerImageView.setLayerType(dividerImageView.LAYER_TYPE_SOFTWARE,null);
+            dividerImageView.setPadding(0,0,0,0);
+            dividerRLayout.addView(dividerImageView);
+        }
+    }
+
+    private String[] getHours(){
+        String[] HOURS = new String[]{
+                "00","01","02","03","04","05","06","07",
+                "08","09","10","11","12","13","14","15",
+                "16","17","18","19","20","21","22","23",
+                "24"
+        };
+
+        return  HOURS;
     }
 
     public void resetViews(){
@@ -142,6 +231,58 @@ public class DayViewBodyController {
 
     }
 
+    public void addNowTimeLine(){
+        Calendar cal = Calendar.getInstance(Locale.getDefault());
+        Date currentLocalTime = cal.getTime();
+        DateFormat date = new SimpleDateFormat("HH:mm");
+        String localTime = date.format(currentLocalTime);
+
+        nowTime = new TextView(context);
+        nowTime.setId(View.generateViewId());
+        nowTimeLine = new ImageView(context);
+        nowTimeLine.setId(View.generateViewId());
+
+        int lineMarin_top = getNowTimeLinePst() + (int) context.getResources().getDimension(R.dimen.all_day_height);
+
+        nowTime.setText(localTime);
+        nowTime.setTextSize(10);
+        RelativeLayout.LayoutParams paramsText = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        paramsText.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        paramsText.addRule(RelativeLayout.ALIGN_BOTTOM, nowTimeLine.getId());
+        int textPadding = DensityUtil.dip2px(context, 5);
+        nowTime.setPadding(textPadding,0,textPadding,0);
+        nowTime.setLayoutParams(paramsText);
+        nowTime.setTextColor(context.getResources().getColor(R.color.text_today_color));
+        nowTime.setBackgroundColor(context.getResources().getColor(R.color.whites));
+        this.parent.addView(nowTime);
+
+        RelativeLayout.LayoutParams nowTimeLineParams =
+                new RelativeLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                        , ViewGroup.LayoutParams.WRAP_CONTENT);
+        nowTimeLine.setImageResource(R.drawable.itime_now_time_full_line);
+        nowTimeLineParams.topMargin = lineMarin_top;
+        nowTimeLineParams.addRule(RelativeLayout.ALIGN_RIGHT, dividerRLayout.getId());
+        nowTimeLineParams.addRule(RelativeLayout.RIGHT_OF, nowTime.getId());
+        nowTimeLine.setLayoutParams(nowTimeLineParams);
+        this.parent.addView(nowTimeLine);
+
+        this.parent.invalidate();
+    }
+
+    private int getNowTimeLinePst(){
+        Calendar cal = Calendar.getInstance(Locale.getDefault());
+        Date currentLocalTime = cal.getTime();
+        DateFormat date = new SimpleDateFormat("HH:mm");
+        String localTime = date.format(currentLocalTime);
+        String[] converted = localTime.split(":");
+        int hour = Integer.valueOf(converted[0]);
+        int minutes = Integer.valueOf(converted[1]);
+        int nearestPst = nearestTimeSlotValue(hour + (float)minutes/100); //
+        int correctPst = (minutes%15) * ((lineHeight/4)/15);
+        return nearestPst + correctPst;
+    }
+
     public void addEvent(ITimeEventInterface event){
         boolean isAllDayEvent = isAllDayEvent(event);
         if (isAllDayEvent){
@@ -151,6 +292,21 @@ public class DayViewBodyController {
             regularEventModules.add(event);
             addRegularEvent(event);
         }
+    }
+
+    public void removeEvent(ITimeEventInterface event){
+        this.regular_event_view_map.remove(event);
+        this.regularEventModules.remove(event);
+        this.dividerRLayout.removeView(dividerRLayout.findViewById(regular_event_view_map.get(event)));
+    }
+
+    public void updateEvent(ITimeEventInterface old_event, ITimeEventInterface new_event){
+        int index = this.regularEventModules.indexOf(old_event);
+        this.regularEventModules.add(index, new_event);
+
+        int tag = this.regular_event_view_map.get(old_event);
+        this.regular_event_view_map.remove(old_event);
+        this.regular_event_view_map.put(new_event, tag);
     }
 
     private void addAllDayEvent(ITimeEventInterface event){
@@ -169,18 +325,6 @@ public class DayViewBodyController {
         resizeAllDayEvents(eventsContainerWidth, marginLeft);
     }
 
-    private void resizeAllDayEvents(int totalWidth, int marginLeft){
-        int singleEventWidth = (totalWidth - this.allDayDgEventViews.size() * marginLeft)/this.allDayDgEventViews.size();
-        for (DayDraggableEventView dgEvent:this.allDayDgEventViews
-             ) {
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) dgEvent.getLayoutParams();
-            params.width = singleEventWidth;
-            params.leftMargin = marginLeft;
-        }
-
-        allDayContainer.invalidate();
-    }
-
     private void addRegularEvent(ITimeEventInterface event){
         SimpleDateFormat sdf= new SimpleDateFormat("HH:mm");
         String hourWithMinutes = sdf.format(new Date(event.getStartTime()));
@@ -197,52 +341,23 @@ public class DayViewBodyController {
         this.dividerRLayout.addView(new_dgEvent, params);
     }
 
+    private void resizeAllDayEvents(int totalWidth, int marginLeft){
+        int singleEventWidth = (totalWidth - this.allDayDgEventViews.size() * marginLeft)/this.allDayDgEventViews.size();
+        for (DayDraggableEventView dgEvent:this.allDayDgEventViews
+             ) {
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) dgEvent.getLayoutParams();
+            params.width = singleEventWidth;
+            params.leftMargin = marginLeft;
+        }
+
+        allDayContainer.invalidate();
+    }
+
     private boolean isAllDayEvent(ITimeEventInterface event){
         long duration = event.getEndTime() - event.getStartTime();
         boolean isAllDay = duration >= allDayMilliseconds;
 
         return isAllDay;
-    }
-
-    public void removeEvent(ITimeEventInterface event){
-        this.regular_event_view_map.remove(event);
-        this.regularEventModules.remove(event);
-        this.dividerRLayout.removeView(dividerRLayout.findViewById(regular_event_view_map.get(event)));
-    }
-
-    public void updateEvent(ITimeEventInterface old_event, ITimeEventInterface new_event){
-        int index = this.regularEventModules.indexOf(old_event);
-        this.regularEventModules.add(index, new_event);
-
-        int tag = this.regular_event_view_map.get(old_event);
-        this.regular_event_view_map.remove(old_event);
-        this.regular_event_view_map.put(new_event, tag);
-    }
-
-    private DayDraggableEventView createDayDraggableEventView(ITimeEventInterface event, boolean isAllDayEvent){
-        DayDraggableEventView event_view = new DayDraggableEventView(context);
-        if (isAllDayEvent){
-            int allDayHeight = allDayContainer.getWidth() - allDayContainer.getPaddingBottom() - allDayContainer.getPaddingTop();
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(0, allDayHeight);
-            event_view.setSummary(event.getTitle());
-            event_view.setTypeAndStatus(event.getEventType(),event.getStatus(), true);
-            event_view.setTag(event);
-            event_view.setLayoutParams(params);
-        }else{
-            long duration = event.getEndTime()-event.getStartTime();
-            int eventHeight = (int) (((float)duration/(3600*1000))*lineHeight);
-            int getStartY = getEventY(event);
-
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(0, eventHeight);
-            event_view.setTop(getStartY);
-            event_view.setOnLongClickListener(new MyTouchListener());
-            event_view.setSummary(event.getTitle());
-            event_view.setTypeAndStatus(event.getEventType(),event.getStatus(), duration <= (15 * 60 * 1000));
-            event_view.setTag(event);
-            event_view.setLayoutParams(params);
-        }
-
-        return event_view;
     }
 
     private int getEventY(ITimeEventInterface event){
@@ -287,145 +402,66 @@ public class DayViewBodyController {
         dividerRLayout.requestLayout();
     }
 
-    public void addNowTimeLine(){
-        RelativeLayout.LayoutParams params =
-                new RelativeLayout.LayoutParams(
-                        dividerRLayout.getWidth() + DensityUtil.dip2px(context, 5)
-                        , ViewGroup.LayoutParams.WRAP_CONTENT);
-        int lineMarin_top = getNowTimeLinePst() + (int) dividerRLayout.getY();
+    private DayDraggableEventView createDayDraggableEventView(ITimeEventInterface event, boolean isAllDayEvent){
+        DayDraggableEventView event_view = new DayDraggableEventView(context);
+        if (isAllDayEvent){
+            int allDayHeight = allDayContainer.getWidth() - allDayContainer.getPaddingBottom() - allDayContainer.getPaddingTop();
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(0, allDayHeight);
+            event_view.setSummary(event.getTitle());
+            event_view.setTypeAndStatus(event.getEventType(),event.getStatus(), true);
+            event_view.setTag(event);
+            event_view.setLayoutParams(params);
+        }else{
+            long duration = event.getEndTime()-event.getStartTime();
+            int eventHeight = (int) (((float)duration/(3600*1000))*lineHeight);
+            int getStartY = getEventY(event);
 
-        nowTimeLine = new ImageView(context);
-        nowTimeLine.setImageResource(R.drawable.itime_now_time_full_line);
-        params.setMargins(0, lineMarin_top, 0, 0);
-        params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
-        nowTimeLine.setLayoutParams(params);
-//        nowTimeLine.setLayerType(nowTimeLine.LAYER_TYPE_SOFTWARE,null);
-        nowTimeLine.setPadding(0,0,0,0);
-        parent.addView(nowTimeLine);
-
-        Calendar cal = Calendar.getInstance(Locale.getDefault());
-        Date currentLocalTime = cal.getTime();
-        DateFormat date = new SimpleDateFormat("HH:mm");
-        String localTime = date.format(currentLocalTime);
-        nowTime = new TextView(context);
-        nowTime.setText(localTime);
-        nowTime.setTextSize(12);
-        RelativeLayout.LayoutParams paramsText = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        paramsText.setMargins(0, lineMarin_top - nowTime.getLineHeight(), 0, 0);
-        nowTime.setLayoutParams(paramsText);
-        nowTime.setTextColor(context.getResources().getColor(R.color.text_today_color));
-        nowTime.setBackgroundColor(context.getResources().getColor(R.color.whites));
-        this.parent.addView(nowTime);
-
-
-        this.parent.invalidate();
-    }
-
-    private int getNowTimeLinePst(){
-        Calendar cal = Calendar.getInstance(Locale.getDefault());
-        Date currentLocalTime = cal.getTime();
-        DateFormat date = new SimpleDateFormat("HH:mm");
-        String localTime = date.format(currentLocalTime);
-        String[] converted = localTime.split(":");
-        int hour = Integer.valueOf(converted[0]);
-        int minutes = Integer.valueOf(converted[1]);
-        int nearestPst = nearestTimeSlotValue(hour + (float)minutes/100); //
-        int correctPst = (minutes%15) * ((lineHeight/4)/15);
-        return nearestPst + correctPst;
-    }
-
-    private void initMsgWindow(){
-        msgWindow = new TextView(context);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.setMargins(0, 0, 0, 0);
-        msgWindow.setLayoutParams(params);
-        msgWindow.setTextColor(context.getResources().getColor(R.color.text_enable));
-        msgWindow.setText("00");
-        msgWindow.setTextSize(20);
-        msgWindow.setVisibility(View.INVISIBLE);
-        dividerRLayout.addView(msgWindow);
-    }
-
-    private String[] getHours(){
-        String[] HOURS = new String[]{
-                "00","01","02","03","04","05","06","07",
-                "08","09","10","11","12","13","14","15",
-                "16","17","18","19","20","21","22","23",
-                "24"
-        };
-
-        return  HOURS;
-    }
-
-    private void initTimeText(String[] HOURS){
-        for (int time = 0; time < HOURS.length; time++){
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            TextView timeView = new TextView(context);
-            params.setMargins(0, lineHeight * time, 0, 0);
-            timeView.setLayoutParams(params);
-            timeView.setTextColor(context.getResources().getColor(R.color.text_enable));
-            timeView.setText(HOURS[time]);
-            timeView.setTextSize(12);
-            timeView.setGravity(Gravity.CENTER);
-            timeView.setIncludeFontPadding(false);
-            timeTextSize = (int) timeView.getTextSize() + timeView.getPaddingTop();
-            timeRLayout.addView(timeView);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(0, eventHeight);
+            event_view.setTop(getStartY);
+            event_view.setOnLongClickListener(new EventLongClickListener());
+            event_view.setSummary(event.getTitle());
+            event_view.setTypeAndStatus(event.getEventType(),event.getStatus(), duration <= (15 * 60 * 1000));
+            event_view.setTag(event);
+            event_view.setLayoutParams(params);
         }
+
+        return event_view;
     }
 
-    private void initTimeSlot(){
-        double startPoint = timeTextSize * 0.5;
-        double timeSlotHeight = lineHeight/4;
-        String[] hours = getHours();
-        for (int slot = 0; slot < hours.length; slot++) {
-            //add full clock
-            positionToTimeTreeMap.put((int)startPoint + lineHeight*slot, hours[slot] + ":00");
-            String hourPart = hours[slot].substring(0,2); // XX
-            timeToPositionTreeMap.put((float) Integer.valueOf(hourPart), (int)startPoint + lineHeight*slot);
-            for (int miniSlot = 0; miniSlot < 3; miniSlot++) {
-                String minutes = String.valueOf((miniSlot+1)*15);
-                String time = hourPart + ":" + minutes;
-                int positionY = (int) (startPoint + lineHeight*slot + timeSlotHeight*(miniSlot+1));
-                positionToTimeTreeMap.put(positionY, time);
-                timeToPositionTreeMap.put(Integer.valueOf(hourPart) + (float) Integer.valueOf(minutes)/100,positionY);
-            }
-        }
+    public DayDraggableEventView createTempDayDraggableEventView(float tapX, float tapY){
+        DayDraggableEventView event_view = new DayDraggableEventView(context);
+        int eventHeight = 1 * lineHeight;//one hour
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,eventHeight);
+        params.topMargin = (int)(tapY - eventHeight/2);
+        event_view.setOnLongClickListener(new EventLongClickListener());
+        event_view.setLayoutParams(params);
+
+        return event_view;
     }
-
-    private void initDividerLine(String[] HOURS){
-        int offsetY =  (int)(timeTextSize * 0.5);
-        for (int numOfDottedLine = 0 ; numOfDottedLine < HOURS.length ; numOfDottedLine ++){
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-            ImageView dividerImageView = new ImageView(context);
-            dividerImageView.setImageResource(R.drawable.itime_day_view_dotted);
-            params.setMargins(0 , lineHeight * numOfDottedLine + offsetY, 0, 0);
-            dividerImageView.setLayoutParams(params);
-            dividerImageView.setLayerType(dividerImageView.LAYER_TYPE_SOFTWARE,null);
-            dividerImageView.setPadding(0,0,0,0);
-            dividerRLayout.addView(dividerImageView);
-        }
-    }
-
     /****************************************************************************************/
-
-    private final class MyTouchListener implements View.OnLongClickListener {
+    private class EventLongClickListener implements View.OnLongClickListener {
         @Override
         public boolean onLongClick(View view) {
             ClipData data = ClipData.newPlainText("", "");
             View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(
                     view);
             view.startDrag(data, shadowBuilder, view, 0);
-            view.setVisibility(View.VISIBLE);
+            if (tempDragView != null){
+                view.setVisibility(View.INVISIBLE);
+            }else {
+                view.setVisibility(View.VISIBLE);
+            }
             view.getBackground().setAlpha(255);
             return false;
         }
     }
 
-    private final class MyDragListener implements View.OnDragListener {
+    private class EventDragListener implements View.OnDragListener {
 
         float actionStartX = 0;
         float actionStartY = 0;
+        int currentEventNewHour;
+        int currentEventNewMinutes;
 
         @Override
         public boolean onDrag(View v, DragEvent event) {
@@ -456,14 +492,19 @@ public class DayViewBodyController {
 
                     //update the event time
                     String new_time = positionToTimeTreeMap.get(reComputeResult[1]);
+                    //important! update event time after drag
                     String[] time_parts = new_time.split(":");
-                    int hour = Integer.valueOf(time_parts[0]);
-                    int minutes = Integer.valueOf(time_parts[1]);
-                    ITimeEventInterface dragging_event = (ITimeEventInterface) view.getTag();
-                    long[] new_date = changeDateFromString(dragging_event, hour, minutes);
-                    dragging_event.setStartTime(new_date[0]);
-                    dragging_event.setEndTime(new_date[1]);
-//                    params.leftMargin = reComputeResult[0];
+                    currentEventNewHour = Integer.valueOf(time_parts[0]);
+                    currentEventNewMinutes = Integer.valueOf(time_parts[1]);
+
+                    if (tempDragView == null){
+                        //if not the new drag event, then update event instance
+                        ITimeEventInterface dragging_event = (ITimeEventInterface) view.getTag();
+                        long[] new_date = changeDateFromString(dragging_event, currentEventNewHour, currentEventNewMinutes);
+                        dragging_event.setStartTime(new_date[0]);
+                        dragging_event.setEndTime(new_date[1]);
+                    }
+                    //update Y position
                     params.topMargin = reComputeResult[1];
 
                     view.setLayoutParams(params);
@@ -474,10 +515,43 @@ public class DayViewBodyController {
                 case DragEvent.ACTION_DRAG_ENDED:
                     View finalView = (View) event.getLocalState();
                     finalView.getBackground().setAlpha(128);
+                    finalView.setVisibility(View.VISIBLE);
                     msgWindow.setVisibility(View.INVISIBLE);
+                    if (tempDragView != null){
+                        ViewGroup parent = (ViewGroup)tempDragView.getParent();
+                        parent.removeView(tempDragView);
+                        //important! update event time after drag via listener
+                        if (onCreateNewEvent != null){
+                            MyCalendar newEventCalendar = new MyCalendar(myCalendar);
+                            newEventCalendar.setHour(currentEventNewHour);
+                            newEventCalendar.setMinute(currentEventNewMinutes);
+                            onCreateNewEvent.createNewEvent(newEventCalendar);
+                        }
+                        //finally reset tempDragView to NULL.
+                        tempDragView = null;
+                    }
                 default:
                     break;
             }
+            return true;
+        }
+    }
+
+    private class CreateEventListener implements View.OnLongClickListener{
+
+        @Override
+        public boolean onLongClick(View v) {
+            if (tempDragView == null){
+                tempDragView = createTempDayDraggableEventView(nowTapX, nowTapY);
+                dividerRLayout.addView(tempDragView);
+                tempDragView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        tempDragView.performLongClick();
+                    }
+                },100);
+            }
+
             return true;
         }
     }
@@ -593,6 +667,14 @@ public class DayViewBodyController {
         return param;
     }
 
+    /*************************** LISTENER ******************************************/
+    public interface OnCreateNewEvent{
+        ITimeEventInterface createNewEvent(MyCalendar newEventCalendar);
+    }
+
+    public void setOnCreateNewEvent(OnCreateNewEvent onCreateNewEvent) {
+        this.onCreateNewEvent = onCreateNewEvent;
+    }
     /****************************************************************************************/
 
     private void printAllEventViewInfo(){

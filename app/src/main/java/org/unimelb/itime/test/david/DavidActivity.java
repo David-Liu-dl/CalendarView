@@ -2,12 +2,15 @@ package org.unimelb.itime.test.david;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import org.unimelb.itime.test.R;
 import org.unimelb.itime.test.bean.Event;
 import org.unimelb.itime.vendor.agendaview.AgendaViewBody;
 import org.unimelb.itime.vendor.agendaview.MonthAgendaView;
+import org.unimelb.itime.vendor.dayview.DayViewBodyPagerAdapter;
 import org.unimelb.itime.vendor.dayview.DayViewHeader;
+import org.unimelb.itime.vendor.dayview.MonthDayView;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 
 import java.util.ArrayList;
@@ -44,6 +47,44 @@ public class DavidActivity extends AppCompatActivity {
             EventManager.getInstance().addEvent(event);
         }
     }
+
+    private void doMonthDayViewThings(){
+        MonthDayView monthDayFragment = (MonthDayView) findViewById(R.id.monthDayView);
+
+        monthDayFragment.setOnCheckIfHasEvent(new DayViewHeader.OnCheckIfHasEvent() {
+                @Override
+                public boolean todayHasEvent(long startOfDay) {
+                    Calendar calendar1 = Calendar.getInstance();
+                    calendar1.setTimeInMillis(startOfDay);
+                    return (EventManager.getInstance().getEventsMap().containsKey(startOfDay));
+                }
+        });
+
+        monthDayFragment.setOnBodyPageChanged(new DayViewBodyPagerAdapter.OnBodyPageChanged() {
+
+            @Override
+            public List<ITimeEventInterface> loadEvents(long beginOfDayM) {
+
+                if (EventManager.getInstance().getEventsMap().containsKey(beginOfDayM)){
+                    Log.i(TAG, "size: " + EventManager.getInstance().getEventsMap().get(beginOfDayM).size());
+                    return EventManager.getInstance().getEventsMap().get(beginOfDayM);
+                }
+
+                return null;
+            }
+        });
+
+//        monthDayFragment.set(new AgendaViewBody.OnLoadEvents() {
+//            @Override
+//            public List<ITimeEventInterface> loadTodayEvents(long beginOfDayMilliseconds) {
+//                if (EventManager.getInstance().getEventsMap().containsKey(beginOfDayMilliseconds)){
+//                    return EventManager.getInstance().getEventsMap().get(beginOfDayMilliseconds);
+//                }
+//                return null;
+//            }
+//        });
+    }
+
 
 //    private void doMonthAgendaViewThings(){
 //        MonthAgendaView monthDayFragment = (MonthAgendaView) findViewById(R.id.monthAgendaView);

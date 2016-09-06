@@ -2,7 +2,6 @@ package org.unimelb.itime.vendor.dayview;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -51,6 +50,7 @@ public class DayViewBody extends RelativeLayout {
 
     public void setCalendar(MyCalendar myCalendar) {
         this.myCalendar = myCalendar;
+        dayViewController.myCalendar = this.myCalendar;
     }
 
     public void addEvent(final ITimeEventInterface new_event){
@@ -91,7 +91,6 @@ public class DayViewBody extends RelativeLayout {
                 body_container,
                 allDayContainer);
     }
-      
 
     @Override
     protected void onAttachedToWindow() {
@@ -100,33 +99,10 @@ public class DayViewBody extends RelativeLayout {
 
         dayViewController.initBackgroundView();
 
-
-
         if (myCalendar.isToday()){
             dayViewController.addNowTimeLine();
         }
 
         dividerRLayout.invalidate();
     }
-
-//    private ArrayList<ITimeEventInterface> simulateEvent(){
-//        String[] titles = {"This is test", "I'm an event","What's Up?","Hello?","What's Up?","What's Up?","What's Up?"};
-//        Event.Type[] types = {Event.Type.PRIVATE,Event.Type.GROUP,Event.Type.PUBLIC,Event.Type.PUBLIC,Event.Type.PUBLIC,Event.Type.PUBLIC,Event.Type.PUBLIC};
-//        Event.Status[] statuses = { Event.Status.COMFIRM, Event.Status.PENDING, Event.Status.PENDING, Event.Status.PENDING, Event.Status.PENDING, Event.Status.PENDING, Event.Status.PENDING};
-//        ArrayList<ITimeEventInterface> events = new ArrayList<>();
-//        Date dt = new Date();
-//        dt.setTime(Calendar.getInstance().getTimeInMillis());
-//        long interval = 3600 * 1000;
-//        for (int i = 0; i < 3; i++) {
-//            ITimeEventInterface event = new Event();
-//            event.setTitle(titles[i]);
-//            event.setStatus(statuses[i]);
-//            event.setEventType(types[i]);
-//            event.setStartTime(dt.getTime());
-//            event.setEndTime(dt.getTime() + (int)(interval*(i+1)));
-//            events.add(event);
-//        }
-//
-//        return events;
-//    }
 }

@@ -59,6 +59,7 @@ public class WeekTimeSlotViewBody extends LinearLayout {
     private RelativeLayout eventRelativeLayout;
     private RelativeLayout timeSlotRelativeLayout;
     private RelativeLayout eventAndWidgetsRelativeLayout;
+    private RelativeLayout backgroundShowingWidgesRL;
     private TextView msgWindow;
     private TextView timeSlotTextView;
     private ArrayList<TimeSlotView> timeSlotViewArrayList = new ArrayList<>();
@@ -120,12 +121,15 @@ public class WeekTimeSlotViewBody extends LinearLayout {
 
         eventAndWidgetsRelativeLayout = new RelativeLayout(getContext());
 
+        backgroundShowingWidgesRL = new RelativeLayout(getContext()); // next add this to layout and change time lines in here
+
         eventAndWidgetsRelativeLayout.addView(timeSlotRelativeLayout); // timeslotRL for showing timeslots
         eventAndWidgetsRelativeLayout.addView(eventRelativeLayout); // eventRL for showing events
         eventAndWidgetsRelativeLayout.addView(eventWidgetsRelativeLayout); // eventWidgetsRL for showing lines
         weekBodyLinearLayout.addView(timeRelativeLayout); // time RL for showing time texts, like 00:00, 01:00
         weekBodyLinearLayout.addView(eventAndWidgetsRelativeLayout); //
         backGroundRelativeLayout.addView(weekBodyLinearLayout);
+        backGroundRelativeLayout.addView(backgroundShowingWidgesRL);
         scrollView.addView(backGroundRelativeLayout);
         this.addView(scrollView);
 
@@ -157,7 +161,7 @@ public class WeekTimeSlotViewBody extends LinearLayout {
             // set the current time line
             currentTimeLineTextView = new TextView(getContext());
             currentTimeLineTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.current_time_red_line));
-            backGroundRelativeLayout.addView(currentTimeLineTextView);
+            backgroundShowingWidgesRL.addView(currentTimeLineTextView);
 
             // set the showing time
             int currentHour = todayCalendar.get(Calendar.HOUR_OF_DAY);
@@ -169,7 +173,7 @@ public class WeekTimeSlotViewBody extends LinearLayout {
             currentTimeTextView.setText(String.format("%s:%s %s", stringCurrentHour, stringCurrentMinute, AMPM));
             currentTimeTextView.setTextSize(8);
             currentTimeTextView.setTextColor(Color.RED);
-            backGroundRelativeLayout.addView(currentTimeTextView);
+            backgroundShowingWidgesRL.addView(currentTimeTextView);
         }
     }
 
@@ -292,7 +296,7 @@ public class WeekTimeSlotViewBody extends LinearLayout {
                     ImageView timeSlotTimeLine = new ImageView(getContext());
                     timeSlotTimeLine.setImageResource(R.drawable.itime_dotted_line);
                     timeSlotTimeLine.setBackgroundColor(getResources().getColor(R.color.deeppink));
-                    backGroundRelativeLayout.addView(timeSlotTimeLine);
+                    backgroundShowingWidgesRL.addView(timeSlotTimeLine);
 
                     // show the time text
                     int timeSlotDayOfWeek = timeSlotCalendar.get(Calendar.DAY_OF_WEEK);
@@ -305,7 +309,7 @@ public class WeekTimeSlotViewBody extends LinearLayout {
                     timeSlotTextView.setText(String.format("%s:%s %s", stringCurrentHour, stringCurrentMinute, AMPM));
                     timeSlotTextView.setTextSize(8);
                     timeSlotTextView.setTextColor(Color.RED);
-                    backGroundRelativeLayout.addView(timeSlotTextView);
+                    backgroundShowingWidgesRL.addView(timeSlotTextView);
 
                     addTimeSlotAndTimeLineAndTimeText(timeSlotView, timeSlotTimeLine, timeSlotTextView);
                 }
@@ -420,6 +424,7 @@ public class WeekTimeSlotViewBody extends LinearLayout {
         updateWidthHeight(totalWidth, totalHeight);
         scrollView.layout(0, 0, totalWidth, totalHeight);
         backGroundRelativeLayout.layout(0, 0, totalWidth, hourHeight * getHours().length);
+        backgroundShowingWidgesRL.layout(0,0, totalWidth,totalHeight * getHours().length);
         weekBodyLinearLayout.layout(0, 0, totalWidth, hourHeight * getHours().length);
         eventAndWidgetsRelativeLayout.layout(hourWidth, 0, hourWidth + oneWeekWidth, hourHeight * getHours().length);
         timeRelativeLayout.layout(0, 0, hourWidth, hourHeight * getHours().length);
@@ -553,10 +558,11 @@ public class WeekTimeSlotViewBody extends LinearLayout {
 
     public void setMyCalendar(MyCalendar myCalendar) {
         this.myCalendar = myCalendar;
-        if (backGroundRelativeLayout.getChildCount()>1){
-            backGroundRelativeLayout.removeAllViews();
-            backGroundRelativeLayout.addView(weekBodyLinearLayout);
-        }
+//        if (backGroundRelativeLayout.getChildCount()>1){
+//            backGroundRelativeLayout.removeAllViews();
+//            backGroundRelativeLayout.addView(weekBodyLinearLayout);
+//        }
+        backgroundShowingWidgesRL.removeAllViews();
         initCurrentTimeLine();
     }
 

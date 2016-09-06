@@ -8,14 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import junit.framework.Test;
-
 import org.unimelb.itime.test.R;
-import org.unimelb.itime.vendor.eventview.Event;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 import org.unimelb.itime.vendor.weekview.WeekView;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 
 /**

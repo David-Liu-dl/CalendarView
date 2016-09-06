@@ -1,13 +1,12 @@
-package org.unimelb.itime.test.david_dev;
+package org.unimelb.itime.vendor.agendaview;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.unimelb.itime.test.R;
+import org.unimelb.itime.vendor.R;
 import org.unimelb.itime.vendor.helper.MyCalendar;
 
 import java.util.ArrayList;
@@ -44,7 +43,7 @@ public class AgendaBodyViewRecyclerAdapter extends RecyclerView.Adapter<AgendaBo
 
     @Override
     public AgendaBodyViewRecyclerAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate( R.layout.itime_agenda_view_body_view, parent, false);
+        View view = inflater.inflate(R.layout.itime_agenda_view_body_view, parent, false);
         MyViewHolder holder = new MyViewHolder(view);
         holds.add(holder);
 

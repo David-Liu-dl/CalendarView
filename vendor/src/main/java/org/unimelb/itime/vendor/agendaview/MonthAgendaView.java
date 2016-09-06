@@ -1,4 +1,4 @@
-package org.unimelb.itime.test.david_dev;
+package org.unimelb.itime.vendor.agendaview;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -6,14 +6,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import org.unimelb.itime.test.R;
+import org.unimelb.itime.vendor.R;
 import org.unimelb.itime.vendor.dayview.DayViewHeader;
 import org.unimelb.itime.vendor.dayview.DayViewHeaderRecyclerDivider;
 import org.unimelb.itime.vendor.helper.MyCalendar;

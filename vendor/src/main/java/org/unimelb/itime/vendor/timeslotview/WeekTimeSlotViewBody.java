@@ -90,7 +90,7 @@ public class WeekTimeSlotViewBody extends LinearLayout {
     }
 
     public void init() {
-        myCalendar = new MyCalendar(calendar);
+//        myCalendar = new MyCalendar(calendar);
         initWidgets();
         initHourTextViews();
         initTimeDottedLine();
@@ -120,11 +120,11 @@ public class WeekTimeSlotViewBody extends LinearLayout {
 
         eventAndWidgetsRelativeLayout = new RelativeLayout(getContext());
 
-        eventAndWidgetsRelativeLayout.addView(timeSlotRelativeLayout);
-        eventAndWidgetsRelativeLayout.addView(eventRelativeLayout);
-        eventAndWidgetsRelativeLayout.addView(eventWidgetsRelativeLayout);
-        weekBodyLinearLayout.addView(timeRelativeLayout);
-        weekBodyLinearLayout.addView(eventAndWidgetsRelativeLayout);
+        eventAndWidgetsRelativeLayout.addView(timeSlotRelativeLayout); // timeslotRL for showing timeslots
+        eventAndWidgetsRelativeLayout.addView(eventRelativeLayout); // eventRL for showing events
+        eventAndWidgetsRelativeLayout.addView(eventWidgetsRelativeLayout); // eventWidgetsRL for showing lines
+        weekBodyLinearLayout.addView(timeRelativeLayout); // time RL for showing time texts, like 00:00, 01:00
+        weekBodyLinearLayout.addView(eventAndWidgetsRelativeLayout); //
         backGroundRelativeLayout.addView(weekBodyLinearLayout);
         scrollView.addView(backGroundRelativeLayout);
         this.addView(scrollView);
@@ -156,8 +156,7 @@ public class WeekTimeSlotViewBody extends LinearLayout {
         if (isShowingToday(myCalendar, todayCalendar)) {
             // set the current time line
             currentTimeLineTextView = new TextView(getContext());
-            currentTimeLineTextView.setBackgroundResource(R.drawable.itime_dotted_line);
-            currentTimeLineTextView.setBackgroundColor(Color.RED);
+            currentTimeLineTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.current_time_red_line));
             backGroundRelativeLayout.addView(currentTimeLineTextView);
 
             // set the showing time
@@ -276,12 +275,14 @@ public class WeekTimeSlotViewBody extends LinearLayout {
         if (timeSlots!=null){
             Log.i("number of timeSlots", String.valueOf(timeSlotRelativeLayout.getChildCount()));
             timeSlotRelativeLayout.removeAllViews();
+            timeSlotViewArrayList.clear();
+            timeSlotTimeLineArrayList.clear();
+            timeSlotTimeTextViewArrayList.clear();
             for (Long startTime: timeSlots.keySet()){
                 boolean isChoose = timeSlots.get(startTime);
                 Date timeSlotDate = new Date(startTime);
                 Calendar timeSlotCalendar = Calendar.getInstance();
                 timeSlotCalendar.setTime(timeSlotDate);
-                String str = String.valueOf(timeSlotCalendar.get(Calendar.DAY_OF_MONTH)) +" " +  String.valueOf(timeSlotCalendar.get(Calendar.MONTH));
                 if (isInCurrentWeek(timeSlotCalendar, myCalendar)) {
                     TimeSlotView timeSlotView = new TimeSlotView(
                             getContext(), startTime, duration,isChoose);
@@ -376,6 +377,41 @@ public class WeekTimeSlotViewBody extends LinearLayout {
         this.totalHeight = View.MeasureSpec.getSize(heightMeasureSpec);
         setMeasuredDimension(totalWidth,totalHeight);
         updateWidthHeight(totalWidth,totalHeight);
+
+        for (int hour = 0;hour < getHours().length ; hour++){
+            // set hour view
+            MLayoutParams hourParams = new MLayoutParams(hourWidth,hourHeight);
+            hourParams.top = hourHeight * hour;
+            hourParams.left = 0;
+            hourTextViewArr[hour].setPadding(0,55,0,0); // gravity center has problem
+            hourTextViewArr[hour].setLayoutParams(hourParams);
+
+            // set dotted line
+            MLayoutParams dottedParams = new MLayoutParams(oneWeekWidth, dayHeight);
+            dottedParams.top = dayHeight * hour;
+            dottedParams.left = 0;
+            timeLineTextViewArr[hour].setGravity(Gravity.CENTER);
+            timeLineTextViewArr[hour].setLayoutParams(dottedParams);
+        }
+
+        Calendar todayCalendar = Calendar.getInstance(Locale.getDefault());
+        todayCalendar.setTime(new Date());
+        if (isShowingToday(myCalendar, todayCalendar)) {
+            int hour = todayCalendar.get(Calendar.HOUR_OF_DAY);
+            int minute = todayCalendar.get(Calendar.MINUTE);
+
+            MLayoutParams currentTimeLineParams = new MLayoutParams(oneWeekWidth,dayHeight);
+            currentTimeLineParams.top = hour * hourHeight + minute * hourHeight / 60;
+            currentTimeLineParams.left = hourWidth;
+            currentTimeLineTextView.setGravity(Gravity.CENTER);
+            currentTimeLineTextView.setLayoutParams(currentTimeLineParams);
+
+            MLayoutParams currentTimeTextParams = new MLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, hourHeight);
+            currentTimeTextParams.left =0;
+            currentTimeTextParams.top = hour * hourHeight + minute * hourHeight / 60;
+            currentTimeTextView.setPadding(0,55,0,0);
+            currentTimeTextView.setLayoutParams(currentTimeTextParams);
+        }
     }
 
 
@@ -387,29 +423,33 @@ public class WeekTimeSlotViewBody extends LinearLayout {
         weekBodyLinearLayout.layout(0, 0, totalWidth, hourHeight * getHours().length);
         eventAndWidgetsRelativeLayout.layout(hourWidth, 0, hourWidth + oneWeekWidth, hourHeight * getHours().length);
         timeRelativeLayout.layout(0, 0, hourWidth, hourHeight * getHours().length);
-        eventWidgetsRelativeLayout.layout(0, 0, hourWidth + oneWeekWidth, hourHeight * getHours().length);
-        eventRelativeLayout.layout(0, 0, hourWidth + oneWeekWidth, hourHeight * getHours().length);
-        timeSlotRelativeLayout.layout(0, 0, hourWidth + oneWeekWidth, hourHeight * getHours().length);
+        eventWidgetsRelativeLayout.layout(0, 0,  oneWeekWidth, hourHeight * getHours().length);
+        eventRelativeLayout.layout(0, 0,  oneWeekWidth, hourHeight * getHours().length);
+        timeSlotRelativeLayout.layout(0, 0, oneWeekWidth, hourHeight * getHours().length);
+        // set 00:00, 01:00 ...
         // set 00:00, 01:00 ...
         for (int hour = 0; hour < getHours().length; hour++) {
-            int hourLeft = 0;
-            int hourTop = hourHeight * hour ;
-            int hourRight = hourWidth;
-            int hourBottom = (int) (hourHeight * hour +  hourHeight );
-            hourTextViewArr[hour].layout( hourLeft, hourTop, hourRight, hourBottom);
+            MLayoutParams hourParams = (MLayoutParams) hourTextViewArr[hour].getLayoutParams();
+            hourTextViewArr[hour].layout(hourParams.left, hourParams.top, hourParams.left + hourWidth, hourParams.top + hourHeight );
         }
         // set dotted line
         for (int hour = 0; hour < getHours().length; hour++) {
-            timeLineTextViewArr[hour].layout(0, dayHeight * hour, oneWeekWidth, (int) (dayHeight * hour + dottedLineHeight));
+            MLayoutParams timeLineParams = (MLayoutParams) timeLineTextViewArr[hour].getLayoutParams();
+            timeLineTextViewArr[hour].layout(timeLineParams.left, timeLineParams.top, timeLineParams.left+oneWeekWidth, timeLineParams.top+ dayHeight);
         }
+
         Calendar todayCalendar = Calendar.getInstance(Locale.getDefault());
         todayCalendar.setTime(new Date());
+
         if (isShowingToday(myCalendar, todayCalendar)) {
-            int hour = todayCalendar.get(Calendar.HOUR_OF_DAY);
-            int minute = todayCalendar.get(Calendar.MINUTE);
-            int currentTimePaddingTop = (int) (hour * hourHeight + (int) (minute * hourHeight / 60) + dottedLineHeight/2);
-            currentTimeLineTextView.layout(hourWidth + 20, currentTimePaddingTop, totalWidth, currentTimePaddingTop + 2);
-            currentTimeTextView.layout(0, currentTimePaddingTop, hourWidth,currentTimePaddingTop+ hourHeight);
+            MLayoutParams currentTimeLineParams = (MLayoutParams) currentTimeLineTextView.getLayoutParams();
+            currentTimeLineTextView.layout(
+                    currentTimeLineParams.left, currentTimeLineParams.top, currentTimeLineParams.left +
+                            oneWeekWidth, currentTimeLineParams.top+ hourHeight);
+
+            MLayoutParams currentTimeTextParams = (MLayoutParams) currentTimeTextView.getLayoutParams();
+            currentTimeTextView.layout(currentTimeTextParams.left, currentTimeTextParams.top,
+                    currentTimeTextParams.left + hourWidth, currentTimeTextParams.top+hourHeight);
         }
 
 //         init timeslots
@@ -422,14 +462,14 @@ public class WeekTimeSlotViewBody extends LinearLayout {
                 int day = calendar.get(Calendar.DAY_OF_WEEK);
                 int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int minute = calendar.get(Calendar.MINUTE);
-                int topOffSet = hourHeight * hour + hourHeight*minute/60 + dottedLineHeight/2;
+                int topOffSet = hourHeight * hour + hourHeight*minute/60 + hourHeight/2;
                 int leftOffSet = dayWidth * (day-1);
                 int timeSlotHeight = timeSlotView.getDuration() * hourHeight/60;
                 timeSlotView.layout(leftOffSet, topOffSet, leftOffSet + dayWidth,topOffSet + timeSlotHeight); // set time slot layout
                 TextView timeSlotText = timeSlotTimeTextViewArrayList.get(index);
                 timeSlotText.layout(0, topOffSet,hourWidth, topOffSet + hourHeight); // set time text
                 ImageView timeLineImage = timeSlotTimeLineArrayList.get(index);
-                timeLineImage.layout( hourWidth + 20, topOffSet, hourWidth + oneWeekWidth, topOffSet + 3); // set time line
+                timeLineImage.layout( hourWidth, topOffSet, hourWidth + oneWeekWidth, topOffSet + 3); // set time line
                 timeSlotView.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -452,7 +492,7 @@ public class WeekTimeSlotViewBody extends LinearLayout {
                 int day = calendar.get(Calendar.DAY_OF_WEEK);
                 int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int minute = calendar.get(Calendar.MINUTE);
-                int topOffset = hourHeight * hour + hourHeight * minute/60 + dottedLineHeight/2;
+                int topOffset = hourHeight * hour + hourHeight * minute/60 + hourHeight/2;
                 int leftOffSet = dayWidth * (day-1);
                 int duration = (int) ((eventView.getEvent().getEndTime() - eventView.getEvent().getStartTime())/1000/60);
                 int eventHeight = duration *hourHeight / 60;
@@ -464,7 +504,9 @@ public class WeekTimeSlotViewBody extends LinearLayout {
 
     public void updateTimeSlot(){
         if (timeSlots!=null){
-            for (final TimeSlotView timeSlotView:timeSlotViewArrayList){
+//            for (final TimeSlotView timeSlotView:timeSlotViewArrayList){
+                for (int i = 0 ; i < timeSlotViewArrayList.size(); i++){
+                TimeSlotView timeSlotView = timeSlotViewArrayList.get(i);
                 int index = timeSlotViewArrayList.indexOf(timeSlotView);
                 long startTime = timeSlotView.getStartTime();
                 Calendar calendar = Calendar.getInstance();
@@ -472,7 +514,7 @@ public class WeekTimeSlotViewBody extends LinearLayout {
                 int day = calendar.get(Calendar.DAY_OF_WEEK);
                 int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int minute = calendar.get(Calendar.MINUTE);
-                int topOffSet = hourHeight * hour + hourHeight*minute/60 + dottedLineHeight/2;
+                int topOffSet = hourHeight * hour + hourHeight*minute/60 + hourHeight/2;
                 int leftOffSet = dayWidth * (day-1);
                 int timeSlotHeight = timeSlotView.getDuration() * hourHeight/60;
 
@@ -480,7 +522,7 @@ public class WeekTimeSlotViewBody extends LinearLayout {
                 TextView timeSlotText = timeSlotTimeTextViewArrayList.get(index);
                 timeSlotText.layout(0, topOffSet,hourWidth, topOffSet + hourHeight); // set time text
                 ImageView timeLineImage = timeSlotTimeLineArrayList.get(index);
-                timeLineImage.layout( hourWidth + 20, topOffSet, hourWidth + oneWeekWidth, topOffSet + 3); // set time line
+                timeLineImage.layout( hourWidth , topOffSet, hourWidth + oneWeekWidth, topOffSet + 3); // set time line
                 timeSlotView.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -488,7 +530,7 @@ public class WeekTimeSlotViewBody extends LinearLayout {
                                 ((TimeSlotView)view).setSelect(false);
                             else
                                 ((TimeSlotView)view).setSelect(true);
-                        onTimeSlotClickListener.onTimeSlotClick(timeSlotView.getStartTime());
+                        onTimeSlotClickListener.onTimeSlotClick(((TimeSlotView)view).getStartTime());
                     }
                 });
             }
@@ -524,6 +566,24 @@ public class WeekTimeSlotViewBody extends LinearLayout {
 
     public void setOnTimeSlotClickListener(WeekTimeSlotView.OnTimeSlotClickListener onTimeSlotClickListener) {
         this.onTimeSlotClickListener = onTimeSlotClickListener;
+    }
+
+    public static class MLayoutParams extends RelativeLayout.LayoutParams {
+
+        public int left = 0;
+        public int top = 0;
+
+        public MLayoutParams(Context c, AttributeSet attrs) {
+            super(c, attrs);
+        }
+
+        public MLayoutParams(ViewGroup.LayoutParams source) {
+            super(source);
+        }
+
+        public MLayoutParams(int width, int height) {
+            super(width, height);
+        }
     }
 //    ********************************************************************
 

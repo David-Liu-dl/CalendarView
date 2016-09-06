@@ -83,7 +83,7 @@ public class WeekViewBody extends LinearLayout{
     }
 
     public void init(){
-        myCalendar = new MyCalendar(calendar);
+//        myCalendar = new MyCalendar(calendar);
         initWidgets();
         initHourTextViews();
         initTimeDottedLine();
@@ -374,18 +374,11 @@ public class WeekViewBody extends LinearLayout{
 
         Calendar todayCalendar = Calendar.getInstance(Locale.getDefault());
         todayCalendar.setTime(new Date());
-//        if (isShowingToday(myCalendar, todayCalendar)) {
-//            int hour = todayCalendar.get(Calendar.HOUR_OF_DAY);
-//            int minute = todayCalendar.get(Calendar.MINUTE);
-//            int currentTimePaddingTop = (int) (hour * hourHeight + (int) (minute * hourHeight / 60) + dottedLineHeight/2);
-//            currentTimeLineTextView.layout(hourWidth + 20, currentTimePaddingTop, totalWidth, currentTimePaddingTop + 2);
-//            currentTimeTextView.layout(0, currentTimePaddingTop, hourWidth,currentTimePaddingTop+ hourHeight);
-//        }
 
         if (isShowingToday(myCalendar, todayCalendar)) {
             MLayoutParams currentTimeLineParams = (MLayoutParams) currentTimeLineTextView.getLayoutParams();
             currentTimeLineTextView.layout(
-                    currentTimeLineParams.left+20, currentTimeLineParams.top, currentTimeLineParams.left +
+                    currentTimeLineParams.left, currentTimeLineParams.top, currentTimeLineParams.left +
                             oneWeekWidth, currentTimeLineParams.top+ hourHeight);
 
             MLayoutParams currentTimeTextParams = (MLayoutParams) currentTimeTextView.getLayoutParams();

@@ -66,6 +66,43 @@ public class AgendaHeaderViewRecyclerAdapter extends RecyclerView.Adapter<Agenda
         this.onCheckIfHasEvent = onCheckIfHasEvent;
     }
 
+//    public void setToDate(Calendar body_fst_cal){
+//        DayViewHeader headerView =
+//                (DayViewHeader) this.get.findViewByPosition(headerRecyclerAdapter.rowPst);
+////        //update header selected date
+////        int fst_visible_pst = bodyLinearLayoutManager.findFirstVisibleItemPosition();
+////        Calendar body_fst_cal =
+////                ((AgendaViewBody) bodyLinearLayoutManager.findViewByPosition(fst_visible_pst)).getCalendar().getCalendar();
+//
+//        Calendar header_current_cal = headerView.getCalendar().getCalendar();
+//        int date_offset = body_fst_cal.get(Calendar.DAY_OF_YEAR)
+//                - (header_current_cal.get(Calendar.DAY_OF_YEAR) + headerRecyclerAdapter.indexInRow);
+//        Log.i(TAG, "date_offset: " + date_offset);
+//        int row_diff = date_offset/7;
+//        int day_diff = ((headerRecyclerAdapter.indexInRow+1) + date_offset%7)%7;
+//        Log.i(TAG, "day_diff: " + day_diff);
+//
+//        if (date_offset > 0){
+//            int current_row_left_days = (7 - (headerRecyclerAdapter.indexInRow + 1));
+//            row_diff = row_diff + ((date_offset%7 + current_row_left_days)>7 ? 1:0);
+//        }else if(date_offset < 0){
+//            int current_row_to_days = (headerRecyclerAdapter.indexInRow + 1);
+//            row_diff = row_diff + ((date_offset%7 + current_row_to_days)<=0 ? -1:0);
+//        }
+//        Log.i(TAG, "row_diff: " + row_diff);
+//        if ((row_diff != 0 || day_diff != 0)){
+//            if (row_diff != 0){
+//                int newRowPst = row_diff + headerRecyclerAdapter.rowPst;
+//                headerRecyclerView.scrollToPosition(newRowPst);
+//                headerRecyclerAdapter.rowPst = newRowPst;
+//            }
+//            if (day_diff != 0){
+//                ((DayViewHeader) headerLinearLayoutManager.findViewByPosition(headerRecyclerAdapter.rowPst)).performNthDayClick(day_diff - 1);
+//                headerRecyclerAdapter.indexInRow = day_diff - 1;
+//            }
+//        }
+//    }
+
     @Override
     public AgendaHeaderViewRecyclerAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.itime_day_view_header_view, parent, false);

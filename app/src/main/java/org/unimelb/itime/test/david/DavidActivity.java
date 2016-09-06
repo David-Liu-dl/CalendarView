@@ -50,64 +50,26 @@ public class DavidActivity extends AppCompatActivity {
     }
 
     private void doMonthAgendaViewThings(){
-        MonthAgendaView monthDayFragment = (MonthAgendaView) findViewById(R.id.monthAgendaView);
-
-        monthDayFragment.setOnCheckIfHasEvent(new DayViewHeader.OnCheckIfHasEvent() {
-                @Override
-                public boolean todayHasEvent(long startOfDay) {
-                    Calendar calendar1 = Calendar.getInstance();
-                    calendar1.setTimeInMillis(startOfDay);
-//                    Log.i(TAG, "startOfDay: " + calendar1.getTime());
-//                    Log.i(TAG, "startOfDay: " + startOfDay);
-                    return (EventManager.getInstance().getEventsMap().containsKey(startOfDay));
-                }
-        });
-
-        monthDayFragment.setOnLoadEvents(new AgendaViewBody.OnLoadEvents() {
-            @Override
-            public List<ITimeEventInterface> loadTodayEvents(long beginOfDayMilliseconds) {
-//                Calendar calendar = Calendar.getInstance();
-//                calendar.setTimeInMillis(beginOfDayMilliseconds);
-//                Log.i(TAG, "beginOfDayMilliseconds: " + calendar.getTime());
-                if (EventManager.getInstance().getEventsMap().containsKey(beginOfDayMilliseconds)){
-                    Log.i(TAG, "loadTodayEvents: " + EventManager.getInstance().getEventsMap().get(beginOfDayMilliseconds).size());
-                    return EventManager.getInstance().getEventsMap().get(beginOfDayMilliseconds);
-                }else {
-//                    Log.i(TAG, "loadTodayEvents: not key found" + beginOfDayMilliseconds);
-                }
-
-                return null;
-            }
-        });
-    }
-
-
-    private void doMonthDayViewThings(){
-        MonthDayView monthDayFragment = (MonthDayView) findViewById(R.id.monthDayView);
-
-        monthDayFragment.setOnBodyPageChanged(new DayViewBodyPagerAdapter.OnBodyPageChanged() {
-            @Override
-            public List<ITimeEventInterface> updateEvent(long timeStart, long endTime) {
-                List<ITimeEventInterface> events = new ArrayList<>();
-                events.addAll(dbManager.queryEventList(timeStart,endTime));
-                if (events.size() > 50){
-                    events.clear();
-                    return events;
-                }
-                return events;
-            }
-        });
-
-        monthDayFragment.setOnCheckIfHasEvent(new DayViewHeader.OnCheckIfHasEvent() {
-            @Override
-            public boolean todayHasEvent(long startOfDay) {
-//                Log.i(TAG, "startOfDay: " + startOfDay);
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTimeInMillis(startOfDay);
-//                Log.i(TAG, "todayHasEvent: " + (EventManager.getInstance().getEventsMap().containsKey(startOfDay)));
-                return (EventManager.getInstance().getEventsMap().containsKey(startOfDay));
-            }
-        });
+//        MonthAgendaView monthDayFragment = (MonthAgendaView) findViewById(R.id.monthAgendaView);
+//
+//        monthDayFragment.setOnCheckIfHasEvent(new DayViewHeader.OnCheckIfHasEvent() {
+//                @Override
+//                public boolean todayHasEvent(long startOfDay) {
+//                    Calendar calendar1 = Calendar.getInstance();
+//                    calendar1.setTimeInMillis(startOfDay);
+//                    return (EventManager.getInstance().getEventsMap().containsKey(startOfDay));
+//                }
+//        });
+//
+//        monthDayFragment.setOnLoadEvents(new AgendaViewBody.OnLoadEvents() {
+//            @Override
+//            public List<ITimeEventInterface> loadTodayEvents(long beginOfDayMilliseconds) {
+//                if (EventManager.getInstance().getEventsMap().containsKey(beginOfDayMilliseconds)){
+//                    return EventManager.getInstance().getEventsMap().get(beginOfDayMilliseconds);
+//                }
+//                return null;
+//            }
+//        });
     }
 
     private void initDB(){

@@ -24,32 +24,16 @@ import java.util.Locale;
  */
 public class AgendaViewBody extends LinearLayout{
     private final String TAG = "AgendaViewBody";
+
     private MyCalendar myCalendar;
-    private LinearLayout rowHeader;
+    private AgendaBodyHeader rowHeader;
     private LinearLayout rowBody;
 
-    private int totalHeight;
-    private int totalWidth;
-
-//    private List<AgendaInnerBody> bodyRows = new ArrayList<>();
     private List<ITimeEventInterface> events = new ArrayList<>();
-
-    private TextView mentionTv;
-    private TextView nthTv;
-    private TextView monthTv;
-    private TextView dayOfWeekTv;
-
-    private String mention = "";
-    private String nth;
-    private String month;
-    private String dayOfWeek;
 
     private TextView noEvent;
 
     private int titleSize = 12;
-    private int titleColor;
-    private int titleBgColor;
-    private int textPadding;
 
     private Context context;
     private OnLoadEvents onLoadEvents;
@@ -76,6 +60,7 @@ public class AgendaViewBody extends LinearLayout{
 
     public void setCalendar(MyCalendar myCalendar) {
         this.myCalendar = myCalendar;
+        this.rowHeader.setMyCalendar(this.myCalendar);
     }
 
     public void setOnLoadEvents(OnLoadEvents onLoadEvents){
@@ -95,68 +80,22 @@ public class AgendaViewBody extends LinearLayout{
     }
 
     public void updateHeaderView(){
-        initHeaderShowAttrs();
-
-        rowHeader.setBackgroundColor(titleBgColor);
-
-        mentionTv.setText(mention);
-        mentionTv.setTextColor(titleColor);
-        mentionTv.setTextSize(titleSize);
-
-        nthTv.setText(nth);
-        nthTv.setTextColor(titleColor);
-        nthTv.setTextSize(titleSize);
-
-        monthTv.setText(month);
-        monthTv.setTextColor(titleColor);
-        monthTv.setTextSize(titleSize);
-
-        dayOfWeekTv.setText(dayOfWeek);
-        dayOfWeekTv.setTextColor(titleColor);
-        dayOfWeekTv.setTextSize(titleSize);
-
-        rowHeader.invalidate();
+        this.rowHeader.updateHeaderView();
     }
 
     private void initLayouts(){
         //header
-        rowHeader = new LinearLayout(context);
-        rowHeader.setOrientation(LinearLayout.HORIZONTAL);
-        LinearLayout.LayoutParams rowHeaderParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
-        rowHeader.setPadding(DensityUtil.dip2px(context, 10),DensityUtil.dip2px(context, 5),DensityUtil.dip2px(context, 10),DensityUtil.dip2px(context, 5));
-        this.addView(rowHeader, rowHeaderParams);
-        //header subviews
-        initHeaderTvs();
+        rowHeader = new AgendaBodyHeader(context);
+        this.addView(rowHeader);
 
         //add dividerLine
-        this.addView(getDivider());
+//        this.addView(getDivider());
 
         //body
         rowBody = new LinearLayout(context);
         rowBody.setOrientation(LinearLayout.VERTICAL);
         LinearLayout.LayoutParams rowBodyParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
         this.addView(rowBody, rowBodyParams);
-    }
-
-    private void initHeaderTvs(){
-        textPadding = DensityUtil.dip2px(context, 10);
-
-        mentionTv = new TextView(context);
-        mentionTv.setTypeface(null, Typeface.BOLD);
-        mentionTv.setPadding(0,0,textPadding,0);
-        rowHeader.addView(mentionTv);
-
-        nthTv = new TextView(context);
-        nthTv.setPadding(0,0,textPadding,0);
-        rowHeader.addView(nthTv);
-
-        monthTv = new TextView(context);
-        monthTv.setPadding(0,0,textPadding,0);
-        rowHeader.addView(monthTv);
-
-        dayOfWeekTv = new TextView(context);
-        dayOfWeekTv.setPadding(0,0,textPadding,0);
-        rowHeader.addView(dayOfWeekTv);
     }
 
     private void displayEvents(List<ITimeEventInterface> events){
@@ -195,58 +134,6 @@ public class AgendaViewBody extends LinearLayout{
         dividerImgV.setPadding(DensityUtil.dip2px(context, 5),0,0,0);
 
         return  dividerImgV;
-    }
-
-    private void initHeaderShowAttrs(){
-        Calendar calendar = this.myCalendar.getCalendar();
-        int day_of_month = calendar.get(Calendar.DAY_OF_MONTH);
-        nth =  day_of_month + "th";
-        month = calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
-        dayOfWeek = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
-
-        mentionTv.setPadding(0,0,textPadding,0);
-        titleColor = getResources().getColor(org.unimelb.itime.vendor.R.color.title_text_color);
-        titleBgColor = getResources().getColor(org.unimelb.itime.vendor.R.color.title_bg_color);
-
-        Calendar todayCal = Calendar.getInstance();
-
-        long current_day_milliseconds = this.myCalendar.getBeginOfDayMilliseconds();
-        long today_milliseconds = (new MyCalendar(todayCal)).getBeginOfDayMilliseconds();
-        this.currentDayType = getDatesRelationType(today_milliseconds, current_day_milliseconds);
-
-        switch (currentDayType){
-            case 1:
-                mention = "Tomorrow";
-                break;
-            case 0:
-                mention = "Today";
-                titleColor = getResources().getColor(org.unimelb.itime.vendor.R.color.time_red);
-                titleBgColor = getResources().getColor(org.unimelb.itime.vendor.R.color.title_today_bg_color);
-                break;
-            case -1:
-                mention = "Yesterday";
-                break;
-            default:
-                mention = "";
-                mentionTv.setPadding(0,0,0,0);
-                break;
-        }
-    }
-
-    private int getDatesRelationType(long todayM, long currentDayM){
-        // -2 no relation, 1 tomorrow, 0 today, -1 yesterday
-        int type = -2;
-        int dayM = 24 * 60 * 60 * 1000;
-        long diff = (currentDayM - todayM);
-        if (diff >0 && diff <= dayM){
-            type = 1;
-        }else if(diff < 0 && diff >= -dayM){
-            type = -1;
-        }else if (diff == 0){
-            type = 0;
-        }
-
-        return type;
     }
 
     public interface OnLoadEvents{

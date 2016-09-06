@@ -6,17 +6,17 @@
     tools:context="org.unimelb.itime.test.david.DavidActivity"
     android:orientation="vertical">
 
-    <org.unimelb.itime.vendor.dayview.MonthDayView
-        android:id="@+id/monthDayView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp">
-    </org.unimelb.itime.vendor.dayview.MonthDayView>
+    <!--<org.unimelb.itime.vendor.dayview.MonthDayView-->
+        <!--android:id="@+id/monthDayView"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="0dp">-->
+    <!--</org.unimelb.itime.vendor.dayview.MonthDayView>-->
 
-    <org.unimelb.itime.test.david_dev.MonthAgendaView
-        android:id="@+id/monthAgendaView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <!--<org.unimelb.itime.test.david_dev.MonthAgendaView-->
+        <!--android:id="@+id/monthAgendaView"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent">-->
 
-    </org.unimelb.itime.test.david_dev.MonthAgendaView>
+    <!--</org.unimelb.itime.test.david_dev.MonthAgendaView>-->
 
 </LinearLayout>

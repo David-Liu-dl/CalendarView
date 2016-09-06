@@ -279,6 +279,7 @@ public class WeekTimeSlotViewBody extends LinearLayout {
         if (timeSlots!=null){
             Log.i("number of timeSlots", String.valueOf(timeSlotRelativeLayout.getChildCount()));
             timeSlotRelativeLayout.removeAllViews();
+            backgroundShowingWidgesRL.removeAllViews();
             timeSlotViewArrayList.clear();
             timeSlotTimeLineArrayList.clear();
             timeSlotTimeTextViewArrayList.clear();
@@ -558,10 +559,6 @@ public class WeekTimeSlotViewBody extends LinearLayout {
 
     public void setMyCalendar(MyCalendar myCalendar) {
         this.myCalendar = myCalendar;
-//        if (backGroundRelativeLayout.getChildCount()>1){
-//            backGroundRelativeLayout.removeAllViews();
-//            backGroundRelativeLayout.addView(weekBodyLinearLayout);
-//        }
         backgroundShowingWidgesRL.removeAllViews();
         initCurrentTimeLine();
     }

@@ -1,44 +1,38 @@
-package org.unimelb.itime.test.david;
+package org.unimelb.itime.vendor.dayview;
 
 import android.animation.ValueAnimator;
-import android.app.Fragment;
 import android.content.Context;
-import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
-import org.unimelb.itime.test.R;
-import org.unimelb.itime.test.bean.Event;
-import org.unimelb.itime.vendor.dayview.DayViewBody;
-import org.unimelb.itime.vendor.dayview.DayViewBodyPagerAdapter;
-import org.unimelb.itime.vendor.dayview.DayViewHeader;
-import org.unimelb.itime.vendor.dayview.DayViewHeaderRecyclerAdapter;
-import org.unimelb.itime.vendor.dayview.DayViewHeaderRecyclerDivider;
+import org.unimelb.itime.vendor.R;
 import org.unimelb.itime.vendor.helper.MyCalendar;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 /**
  * Created by yuhaoliu on 10/08/16.
  */
-public class CalendarMonthDayFragment extends Fragment {
+public class MonthDayView extends LinearLayout {
     private final String TAG = "MyAPP";
+
 
     private Handler handler=new Handler();
 
+    private LinearLayout parent;
     private RecyclerView recyclerView;
     private DayViewHeaderRecyclerAdapter recyclerAdapter;
     private int upperBoundsOffset = 1;
@@ -57,25 +51,30 @@ public class CalendarMonthDayFragment extends Fragment {
 
     private DayViewBodyPagerAdapter.OnBodyPageChanged onBodyPageChanged;
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        super.onCreateView(inflater,container,savedInstanceState);
-        View v =inflater.inflate(R.layout.itime_month_day_fragment,null,false);
-        context = this.getActivity().getApplicationContext();
-
-        recyclerView = (RecyclerView) v.findViewById(R.id.headerRowList);
-        bodyPager = (ViewPager) v.findViewById(R.id.pager);
-        return v;
+    public MonthDayView(Context context) {
+        super(context);
+        initView();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
+    public MonthDayView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        initView();
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public MonthDayView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        initView();
+    }
+
+    private void initView(){
+        this.context = getContext();
+
+        parent = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.itime_month_day_view, null);
+        this.addView(parent);
+
+        recyclerView = (RecyclerView) parent.findViewById(R.id.headerRowList);
+        bodyPager = (ViewPager) parent.findViewById(R.id.pager);
+
         upperBoundsOffset = 100000;
 
         this.setUpHeader();
@@ -90,10 +89,10 @@ public class CalendarMonthDayFragment extends Fragment {
     }
 
     private void setUpHeader(){
-        recyclerAdapter = new DayViewHeaderRecyclerAdapter(getActivity(), upperBoundsOffset);
+        recyclerAdapter = new DayViewHeaderRecyclerAdapter(context, upperBoundsOffset);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(recyclerAdapter);
-        mLinearLayoutManager = new LinearLayoutManager(getActivity());
+        mLinearLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(mLinearLayoutManager);
         recyclerView.addItemDecoration(new DayViewHeaderRecyclerDivider(context));
         final DisplayMetrics dm = getResources().getDisplayMetrics();

@@ -4,8 +4,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.support.v7.widget.RecyclerView;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.ViewGroup;
@@ -15,7 +13,6 @@ import android.widget.TextView;
 
 import org.unimelb.itime.vendor.R;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
-import org.unimelb.itime.vendor.timeslot.TimeSlotViewLayoutParams;
 
 /**
  * Created by Paul on 26/08/2016.
@@ -97,35 +94,12 @@ public class WeekDraggableEventView extends RelativeLayout{
     }
 
 
-
-//    public void setTypeAndStatus(int type, int status){
-//        this.type = type;
-//        this.status = status;
-//        int color = Color.RED;
-//        switch (this.type){
-//            case PRIVATE:
-//                color = getContext().getResources().getColor(R.color.private_et);
-//                break;
-//            case GROUP:
-//                color = getContext().getResources().getColor(R.color.group_et);
-//                break;
-//            case PUBLIC:
-//                color = getContext().getResources().getColor(R.color.public_et);
-//                break;
-//        }
-//        this.setBackground(getResources().getDrawable(R.drawable.itime_draggable_event_bg));
-//        ((GradientDrawable)this.getBackground()).setColor(color);
-//        this.getBackground().setAlpha(128);
-//        updateLeftBar(getResources().getDrawable(R.drawable.itime_draggable_event_bg), color);
-//        this.resetIcon(getStatusIcon(status));
-//    }
-
     private int getStatusIcon(int status){
         switch (status){
             case PENDING:
                 return R.drawable.itime_question_mark;
             case CONFIRM:
-                return R.drawable.icon_tick;
+                return R.drawable.itime_icon_tick;
             default:
                 return -1;
         }
@@ -151,7 +125,9 @@ public class WeekDraggableEventView extends RelativeLayout{
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
 //        super.onLayout(changed, l, t, r, b);
+        this.width = r-l;
         int leftBarWidth = this.width/10;
+        this.height = b-t;
         RelativeLayout.LayoutParams leftBarParams = (RelativeLayout.LayoutParams)leftBar.getLayoutParams();
         leftBar.layout(0,0,leftBarWidth,height);
 

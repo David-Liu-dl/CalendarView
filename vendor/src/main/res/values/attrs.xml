@@ -5,10 +5,11 @@
 
     <declare-styleable name="WeekView">
         <attr name="onWeekViewChange" format="string" />
-        <attr name="editEvent" format="string"/>
+        <attr name="onClickEditEvent" format="string"/>
     </declare-styleable>
     <declare-styleable name="WeekTimeSlotView">
         <attr name="onTimeSlotWeekViewChange" format="string"/>
+        <attr name="onTimeSlotClick" format="string"/>
     </declare-styleable>
 
     <declare-styleable name="dayStyle">

@@ -19,6 +19,8 @@ import org.unimelb.itime.vendor.weekview.WeekView;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Paul on 26/08/2016.
@@ -29,14 +31,31 @@ public class TimeSlotFragment extends Fragment implements WeekTimeSlotView.OnTim
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         root= inflater.inflate(R.layout.fragment_time_slot,container,false);
+        return root;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        initData();
+
+    }
+
+    @Override
+    public void onWeekChanged(Calendar calendar) {
+        Log.i("onWeekChanged", String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
+    }
+
+    private void initData()
+    {
         WeekTimeSlotView weekTimeSlotView = (WeekTimeSlotView) root.findViewById(R.id.week_timeslot_view);
-        // simulate timeSlots
-        ArrayList<Long> simulateTimeSlots = new ArrayList<>();
+//         simulate timeSlots
+        Map<Long,Boolean> simulateTimeSlots = new HashMap<>();
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_MONTH,27);
-        calendar.set(Calendar.HOUR_OF_DAY,10);
-        calendar.set(Calendar.MINUTE,30);
-        simulateTimeSlots.add(calendar.getTime().getTime());
+        calendar.set(Calendar.DAY_OF_MONTH,29);
+        calendar.set(Calendar.HOUR_OF_DAY,1);
+        calendar.set(Calendar.MINUTE,0);
+        simulateTimeSlots.put(calendar.getTime().getTime(),true);
         weekTimeSlotView.setTimeSlots(simulateTimeSlots,60);
 
         // simulate Events
@@ -63,27 +82,12 @@ public class TimeSlotFragment extends Fragment implements WeekTimeSlotView.OnTim
             }
         });
 
-        return root;
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-//        WeekTimeSlotView weekTimeSlotView = (WeekTimeSlotView) root.findViewById(R.id.week_timeslot_view);
-//        ArrayList<Long> simulateTimeSlots = new ArrayList<>();
-//        simulateTimeSlots.add(Long.parseLong("1472274935901"));
-//        weekTimeSlotView.setTimeSlots(simulateTimeSlots,60);
+        weekTimeSlotView.setOnTimeSlotClickListener(new WeekTimeSlotView.OnTimeSlotClickListener(){
+            @Override
+            public void onTimeSlotClick(long time) {
+                Log.i("onclick timeSlot","on click");
+            }
+        });
 
     }
-
-    @Override
-    public void onWeekChanged(Calendar calendar) {
-        Log.i("onWeekChanged", String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
-    }
-
-
-//    @Override
-//    public void onWeekChanged(Calendar calendar) {
-//        Log.d("day", String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
-//    }
 }

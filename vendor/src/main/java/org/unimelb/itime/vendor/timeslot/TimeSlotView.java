@@ -2,6 +2,7 @@ package org.unimelb.itime.vendor.timeslot;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -11,18 +12,21 @@ import org.unimelb.itime.vendor.R;
 /**
  * Created by Paul on 26/08/2016.
  */
-public class TimeSlotView extends ViewGroup {
+public class TimeSlotView extends RelativeLayout {
     private int duration;
     private Long startTime;
-    private int width;
-    private int height;
+    private int width =0;
+    private int height =0;
 
     private ImageView icon;
 
-    public TimeSlotView(Context context, Long startTime, int duration) {
+    private boolean isSelect;
+
+    public TimeSlotView(Context context, Long startTime, int duration, boolean isSelect) {
         super(context);
         this.startTime = startTime;
         this.duration = duration;
+        this.isSelect = isSelect;
         init();
     }
 
@@ -37,48 +41,33 @@ public class TimeSlotView extends ViewGroup {
 
     public void initIcon(){
         icon = new ImageView(getContext());
-        icon.setImageResource(R.drawable.icon_tick);
+        if (!isSelect)
+            icon.setImageResource(R.drawable.icon_event_timeslot_unselected);
+        else
+            icon.setImageResource(R.drawable.icon_event_timeslot_selected);
         this.addView(icon);
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        this.width = (int) (MeasureSpec.getSize(widthMeasureSpec));
-        this.height = (MeasureSpec.getSize(heightMeasureSpec));
+        this.width = (View.MeasureSpec.getSize(widthMeasureSpec));
+        this.height = (View.MeasureSpec.getSize(heightMeasureSpec));
         setMeasuredDimension(width,height);
     }
 
 
     @Override
     protected void onLayout(boolean b, int i, int i1, int i2, int i3) {
+        this.width = i2 - i;
         int iconWidth = this.width/3;
-        TimeSlotViewLayoutParams iconParams = (TimeSlotViewLayoutParams) icon.getLayoutParams();
-        iconParams.top = this.width/10;
-        iconParams.left = this.width/3*2-this.width/10;
-        icon.layout(iconParams.left , iconParams.top,
-                iconParams.left + iconWidth, iconParams.top + iconWidth);
+        int top = iconWidth/3;
+        int left = this.width - iconWidth - iconWidth/3;
+        icon.layout(left , top, left + iconWidth, top + iconWidth);
+//        icon.layout(left, 20 ,110, 60);
     }
 
-    @Override
-    public android.view.ViewGroup.LayoutParams generateLayoutParams(AttributeSet attrs) {
-        return new TimeSlotViewLayoutParams(getContext(), attrs);
-    }
 
-    @Override
-    protected android.view.ViewGroup.LayoutParams generateDefaultLayoutParams() {
-        return new TimeSlotViewLayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-    }
-
-    @Override
-    protected android.view.ViewGroup.LayoutParams generateLayoutParams(android.view.ViewGroup.LayoutParams p) {
-        return new TimeSlotViewLayoutParams(p);
-    }
-
-    @Override
-    protected boolean checkLayoutParams(android.view.ViewGroup.LayoutParams p) {
-        return p instanceof TimeSlotView.LayoutParams;
-    }
 
     public Long getStartTime() {
         return startTime;
@@ -97,4 +86,20 @@ public class TimeSlotView extends ViewGroup {
     }
 
 
+    public boolean isSelect() {
+        return isSelect;
+    }
+
+    public void setSelect(boolean select) {
+        isSelect = select;
+        updateIcon();
+    }
+
+    private void updateIcon(){
+        if (isSelect)
+            icon.setImageResource(R.drawable.icon_event_timeslot_selected);
+        else
+            icon.setImageResource(R.drawable.icon_event_timeslot_unselected);
+        icon.invalidate();
+    }
 }

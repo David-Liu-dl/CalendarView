@@ -6,12 +6,12 @@ import android.util.Log;
 
 import org.unimelb.itime.test.R;
 import org.unimelb.itime.test.bean.Event;
+import org.unimelb.itime.vendor.dayview.MonthDayView;
 import org.unimelb.itime.vendor.dayview.DayViewBodyPagerAdapter;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 public class DavidActivity extends AppCompatActivity {
@@ -38,7 +38,7 @@ public class DavidActivity extends AppCompatActivity {
     }
 
     private void doThings(){
-        CalendarMonthDayFragment monthDayFragment = new CalendarMonthDayFragment();
+        MonthDayView monthDayFragment = (MonthDayView) findViewById(R.id.monthDayView);
         monthDayFragment.setOnBodyPageChanged(new DayViewBodyPagerAdapter.OnBodyPageChanged() {
             @Override
             public List<ITimeEventInterface> updateEvent(long timeStart, long endTime) {
@@ -51,9 +51,9 @@ public class DavidActivity extends AppCompatActivity {
                 return events;
             }
         });
-
-        AttendeeFragment pageF = new AttendeeFragment();
-        getFragmentManager().beginTransaction().add(R.id.david_fragment, pageF).commit();
+        Log.i(TAG, "doThings: ");
+//        InviteeFragment pageF = new InviteeFragment();
+//        getFragmentManager().beginTransaction().add(R.id.david_fragment, monthDayFragment).commit();
     }
 
     private void initDB(){
@@ -63,7 +63,7 @@ public class DavidActivity extends AppCompatActivity {
         int[] status = {0,1};
         long interval = 3600 * 1000;
         int alldayCount = 0;
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 100000; i++) {
 
             long startTime = calendar.getTimeInMillis();
             long endTime = startTime + interval * (i%30);

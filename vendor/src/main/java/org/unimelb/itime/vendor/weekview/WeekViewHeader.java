@@ -28,151 +28,113 @@ public class WeekViewHeader extends LinearLayout{
     private int totalWidth;
     private int paddingTop = 0;
     private int paddingLeft = 0;
-    private int paddingBottom = 0;
     private int viewWidth;
-    private int textSize = 12;
-    private int titleTextSize = 20;
 
     private MyCalendar myCalendar;
-    private LinearLayout dateLayout;
-//    private RelativeLayout titleLayout;
-    private ArrayList<TextView> textViews = new ArrayList<>();
-    ImageView newEventCreateImageView;
-    private String[] titles= {"SUN","MON","TUE","WED","TUR","FRI","SAT"};
+
+    private RelativeLayout dateLayout;
+    private TextView blankLeftTextView;
+    private ArrayList<RelativeLayout> dayBackgroundRelativeLayoutArrayList = new ArrayList<>();
+    private ArrayList<RelativeLayout> dayRelativeLayoutArrayList = new ArrayList<>();
+    private ArrayList<TextView> dayOfWeekArrayList = new ArrayList<>();
+    private ArrayList<TextView> dayOfMonthArrayList = new ArrayList<>();
+
 
     public WeekViewHeader(Context context) {
         super(context);
-        this.setOrientation(VERTICAL);
+        init();
     }
 
     public WeekViewHeader(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.setOrientation(VERTICAL);
+        init();
     }
 
+    private void init(){
+        this.setOrientation(VERTICAL);
+        dateLayout = new RelativeLayout(getContext());
+        blankLeftTextView = new TextView(getContext());
+        dateLayout.addView(blankLeftTextView);
 
-    public void initCurrentWeekHeaders(){
-        this.removeAllViews();
-        textViews.clear();
+        //clean arrayList;
+        dayBackgroundRelativeLayoutArrayList.clear();
+        dayRelativeLayoutArrayList.clear();
+        dayOfWeekArrayList.clear();
+        dayOfMonthArrayList.clear();
 
-//        titleLayout = new RelativeLayout(getContext());
-        dateLayout = new LinearLayout(getContext());
-//        this.addView(titleLayout);
-        this.addView(dateLayout);
-        dateLayout.removeAllViews();
-//        titleLayout.removeAllViews();
+        for (int i = 0; i<7;i++){
+            RelativeLayout dayBackgoundRelativeLayout = new RelativeLayout(getContext());//this for set red background
+            dayBackgroundRelativeLayoutArrayList.add(dayBackgoundRelativeLayout); // add to arraylist
 
-//        titleLayout.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,totalHeight/3));
-        dateLayout.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,totalHeight - totalHeight/3));
-        Calendar todayCalendar = Calendar.getInstance();
-        Calendar calendar = Calendar.getInstance();
+            RelativeLayout dayRelativeLayout = new RelativeLayout(getContext());
+            dayRelativeLayout.setGravity(Gravity.CENTER);
+            dayRelativeLayoutArrayList.add(dayRelativeLayout); // add to arrayList
 
-        calendar.set(Calendar.YEAR, myCalendar.getYear());
-        calendar.set(Calendar.MONTH, myCalendar.getMonth());
-        calendar.set(Calendar.DATE, myCalendar.getDay());
-
-        //****************************************************
-//        TextView calendarTitleText = new TextView(getContext());
-//        RelativeLayout.LayoutParams calendarTitleTextParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-//        calendarTitleTextParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-//        calendarTitleText.setLayoutParams(calendarTitleTextParams);
-//        calendarTitleText.setText(new StringBuilder().append(getMonthName(calendar.get(Calendar.MONTH))).append("  ").append(calendar.get(Calendar.YEAR)).toString());
-//        calendarTitleText.setGravity(Gravity.CENTER);
-//        calendarTitleText.setTextSize(titleTextSize);
-//        titleLayout.addView(calendarTitleText);
-//
-//
-//
-//        newEventCreateImageView = new ImageView(getContext());
-//        newEventCreateImageView.setImageResource(R.drawable.image_create_new_event);
-//        RelativeLayout.LayoutParams newEventCreateImageViewParams = new RelativeLayout.LayoutParams(totalHeight/4, totalHeight/4);
-//        newEventCreateImageViewParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-//        newEventCreateImageViewParams.addRule(RelativeLayout.CENTER_VERTICAL);
-//        newEventCreateImageViewParams.setMarginEnd(totalHeight/10);
-//        newEventCreateImageView.setLayoutParams(newEventCreateImageViewParams);
-//        titleLayout.addView(newEventCreateImageView);
-
-        //*************************************************
-
-        TextView blankView = new TextView(getContext());
-        RelativeLayout.LayoutParams blankParams = new RelativeLayout.LayoutParams(paddingLeft, ViewGroup.LayoutParams.MATCH_PARENT);
-        blankView.setLayoutParams(blankParams);
-        dateLayout.addView(blankView);
-
-        for (int day = 0; day < 7; day++){
-            LinearLayout dateLinearLayout = new LinearLayout(getContext());
-            dateLinearLayout.setOrientation(LinearLayout.VERTICAL);
-            LayoutParams params = new LayoutParams(viewWidth, ViewGroup.LayoutParams.MATCH_PARENT);
-            int dateLinearLayoutHeight = params.height;
             TextView dayOfWeek = new TextView(getContext());
+            dayOfWeek.setTextSize(12);
             TextView dayOfMonth = new TextView(getContext());
-            dayOfMonth.setGravity(Gravity.CENTER);
-            dayOfWeek.setGravity(Gravity.CENTER);
+            dayOfMonth.setTextSize(12);
 
-            dateLinearLayout.setLayoutParams(params);
-            dateLayout.addView(dateLinearLayout);
+            dayOfWeekArrayList.add(dayOfWeek); // add to arrayList
+            dayOfMonthArrayList.add(dayOfMonth); // add to arrayList
 
-            if(checkEqualDay( todayCalendar, calendar)){
-                LinearLayout todayBackGroundLayout = new LinearLayout(getContext());
-                LayoutParams todayBackGroundLP = new LayoutParams(viewWidth, viewWidth);
-                todayBackGroundLP.topMargin = (totalHeight*2/3 - viewWidth)/2;
-                todayBackGroundLayout.setLayoutParams(todayBackGroundLP);
-                todayBackGroundLayout.setOrientation(LinearLayout.VERTICAL);
-                todayBackGroundLayout.setBackgroundResource(R.drawable.itime_today_red_rectangle);
-                dayOfWeek.setTextColor(Color.WHITE);
-                dayOfMonth.setTextColor(Color.WHITE);
-                dayOfWeek.setTextSize(textSize);
-                dayOfMonth.setTextSize(textSize);
-                dayOfWeek.setText(getWeekOfDay(day));
-                dayOfMonth.setText(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
-
-                LayoutParams dayOfWeekParams = new LayoutParams(viewWidth,viewWidth /2);
-                dayOfWeek.setLayoutParams(dayOfWeekParams);
-                LayoutParams dayOfMonthParams = new LayoutParams(viewWidth, viewWidth /2);
-                dayOfMonth.setLayoutParams(dayOfMonthParams);
-                todayBackGroundLayout.addView(dayOfWeek);
-                todayBackGroundLayout.addView(dayOfMonth);
-                dateLinearLayout.addView(todayBackGroundLayout);
-                textViews.add(dayOfMonth);
-            }else{
-                dayOfWeek.setTextSize(textSize);
-                dayOfMonth.setTextSize(textSize);
-                dayOfWeek.setText(getWeekOfDay(day));
-                dayOfMonth.setText(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
-                LayoutParams dayOfWeekParams = new LayoutParams(viewWidth, viewWidth /2);
-                dayOfWeekParams.topMargin = (totalHeight * 2 / 3 - viewWidth)/2;
-                dayOfWeek.setLayoutParams(dayOfWeekParams);
-                LayoutParams dayOfMonthParams = new LayoutParams(viewWidth, viewWidth/2);
-                dayOfMonth.setLayoutParams(dayOfMonthParams);
-                dateLinearLayout.addView(dayOfWeek);
-                dateLinearLayout.addView(dayOfMonth);
-                textViews.add(dayOfMonth);
-            }
-            calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) + 1);
+            dayRelativeLayout.addView(dayOfWeek); // add to view
+            dayRelativeLayout.addView(dayOfMonth); // add to view
+            dayBackgoundRelativeLayout.addView(dayRelativeLayout);
+            dateLayout.addView(dayBackgoundRelativeLayout);
         }
-        dateLayout.invalidate();
-//        titleLayout.invalidate();
+        this.addView(dateLayout);
     }
 
     private boolean checkEqualDay(Calendar c1, Calendar c2){
         return
                 c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR)
                         && c1.get(Calendar.MONTH) == c2.get(Calendar.MONTH)
-                        && c1.get(Calendar.DATE) == c2.get(Calendar.DATE);
-    }
-
-    private String getMonthName(int index){
-        String[] Months = {"January","February","March","April","May","June",
-                "July","August","September","October","November","December"};
-        return Months[index];
-    }
-
-    private String getWeekOfDay(int day){
-        return titles[day];
+                        && c1.get(Calendar.DAY_OF_MONTH) == c2.get(Calendar.DAY_OF_MONTH);
     }
 
     public void setMyCalendar(MyCalendar myCalendar) {
         this.myCalendar = myCalendar;
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(myCalendar.getYear(),myCalendar.getMonth(),myCalendar.getDay(),myCalendar.getHour(),myCalendar.getMinute());
+
+        for (int i = 0 ; i < 7; i++){
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+            dayOfMonthArrayList.get(i).setText(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
+            calendar.set(Calendar.DAY_OF_MONTH,calendar.get(Calendar.DAY_OF_MONTH)+1);
+            dayBackgroundRelativeLayoutArrayList.get(i).setBackground(null);
+            dayOfMonthArrayList.get(i).setTextColor(Color.BLACK); //
+            dayOfWeekArrayList.get(i).setTextColor(Color.BLACK); //
+        }
+        dayOfWeekArrayList.get(0).setText(R.string._1th_of_week);
+        dayOfWeekArrayList.get(1).setText(R.string._2th_of_week);
+        dayOfWeekArrayList.get(2).setText(R.string._3th_of_week);
+        dayOfWeekArrayList.get(3).setText(R.string._4th_of_week);
+        dayOfWeekArrayList.get(4).setText(R.string._5th_of_week);
+        dayOfWeekArrayList.get(5).setText(R.string._6th_of_week);
+        dayOfWeekArrayList.get(6).setText(R.string._7th_of_week);
+
+        if (checkIfTodayInCurrentShowingCalendar()!=-1){
+            dayBackgroundRelativeLayoutArrayList.get(checkIfTodayInCurrentShowingCalendar() -1).setBackgroundResource(R.drawable.itime_today_red_rectangle);
+            dayOfMonthArrayList.get(checkIfTodayInCurrentShowingCalendar() -1).setTextColor(Color.WHITE);
+            dayOfWeekArrayList.get(checkIfTodayInCurrentShowingCalendar() -1).setTextColor(Color.WHITE);
+        }
+    }
+
+    public int checkIfTodayInCurrentShowingCalendar(){
+        Calendar todayCalendar = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(myCalendar.getYear(), myCalendar.getMonth(), myCalendar.getDay(), myCalendar.getHour(), myCalendar.getMinute());
+
+        for (int i = 0 ; i< 7; i++){
+            if (checkEqualDay(calendar,todayCalendar)) {
+                return calendar.get(Calendar.DAY_OF_WEEK);
+            }
+            else {
+                calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH) + 1);
+            }
+        }
+        return -1;
     }
 
     public MyCalendar getMyCalendar(){
@@ -180,12 +142,120 @@ public class WeekViewHeader extends LinearLayout{
     }
 
 
+
+//
+//    public void initCurrentWeekHeaders(){
+//        this.removeAllViews();
+//        textViews.clear();
+//
+////        titleLayout = new RelativeLayout(getContext());
+//        dateLayout = new LinearLayout(getContext());
+////        this.addView(titleLayout);
+//        this.addView(dateLayout);
+//        dateLayout.removeAllViews();
+////        titleLayout.removeAllViews();
+//
+////        titleLayout.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,totalHeight/3));
+//        dateLayout.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,totalHeight - totalHeight/3));
+//        Calendar todayCalendar = Calendar.getInstance();
+//        Calendar calendar = Calendar.getInstance();
+//
+//        calendar.set(Calendar.YEAR, myCalendar.getYear());
+//        calendar.set(Calendar.MONTH, myCalendar.getMonth());
+//        calendar.set(Calendar.DATE, myCalendar.getDay());
+//
+//
+//        TextView blankView = new TextView(getContext());
+//        RelativeLayout.LayoutParams blankParams = new RelativeLayout.LayoutParams(paddingLeft, ViewGroup.LayoutParams.MATCH_PARENT);
+//        blankView.setLayoutParams(blankParams);
+//        dateLayout.addView(blankView);
+//
+//        for (int day = 0; day < 7; day++){
+//            LinearLayout dateLinearLayout = new LinearLayout(getContext());
+//            dateLinearLayout.setOrientation(LinearLayout.VERTICAL);
+//            LayoutParams params = new LayoutParams(viewWidth, ViewGroup.LayoutParams.MATCH_PARENT);
+//            int dateLinearLayoutHeight = params.height;
+//            TextView dayOfWeek = new TextView(getContext());
+//            TextView dayOfMonth = new TextView(getContext());
+//            dayOfMonth.setGravity(Gravity.CENTER);
+//            dayOfWeek.setGravity(Gravity.CENTER);
+//
+//            dateLinearLayout.setLayoutParams(params);
+//            dateLayout.addView(dateLinearLayout);
+//
+//            if(checkEqualDay( todayCalendar, calendar)){
+//                LinearLayout todayBackGroundLayout = new LinearLayout(getContext());
+//                LayoutParams todayBackGroundLP = new LayoutParams(viewWidth, viewWidth);
+//                todayBackGroundLP.topMargin = (totalHeight*2/3 - viewWidth)/2;
+//                todayBackGroundLayout.setLayoutParams(todayBackGroundLP);
+//                todayBackGroundLayout.setOrientation(LinearLayout.VERTICAL);
+//                todayBackGroundLayout.setBackgroundResource(R.drawable.itime_today_red_rectangle);
+//                dayOfWeek.setTextColor(Color.WHITE);
+//                dayOfMonth.setTextColor(Color.WHITE);
+//                dayOfWeek.setTextSize(textSize);
+//                dayOfMonth.setTextSize(textSize);
+//                dayOfWeek.setText(getWeekOfDay(day));
+//                dayOfMonth.setText(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
+//
+//                LayoutParams dayOfWeekParams = new LayoutParams(viewWidth,viewWidth /2);
+//                dayOfWeek.setLayoutParams(dayOfWeekParams);
+//                LayoutParams dayOfMonthParams = new LayoutParams(viewWidth, viewWidth /2);
+//                dayOfMonth.setLayoutParams(dayOfMonthParams);
+//                todayBackGroundLayout.addView(dayOfWeek);
+//                todayBackGroundLayout.addView(dayOfMonth);
+//                dateLinearLayout.addView(todayBackGroundLayout);
+//                textViews.add(dayOfMonth);
+//            }else{
+//                dayOfWeek.setTextSize(textSize);
+//                dayOfMonth.setTextSize(textSize);
+//                dayOfWeek.setText(getWeekOfDay(day));
+//                dayOfMonth.setText(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
+//                LayoutParams dayOfWeekParams = new LayoutParams(viewWidth, viewWidth /2);
+//                dayOfWeekParams.topMargin = (totalHeight * 2 / 3 - viewWidth)/2;
+//                dayOfWeek.setLayoutParams(dayOfWeekParams);
+//                LayoutParams dayOfMonthParams = new LayoutParams(viewWidth, viewWidth/2);
+//                dayOfMonth.setLayoutParams(dayOfMonthParams);
+//                dateLinearLayout.addView(dayOfWeek);
+//                dateLinearLayout.addView(dayOfMonth);
+//                textViews.add(dayOfMonth);
+//            }
+//            calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) + 1);
+//        }
+//        dateLayout.invalidate();
+////        titleLayout.invalidate();
+//    }
+//
+//    private boolean checkEqualDay(Calendar c1, Calendar c2){
+//        return
+//                c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR)
+//                        && c1.get(Calendar.MONTH) == c2.get(Calendar.MONTH)
+//                        && c1.get(Calendar.DATE) == c2.get(Calendar.DATE);
+//    }
+//
+//    private String getMonthName(int index){
+//        String[] Months = {"January","February","March","April","May","June",
+//                "July","August","September","October","November","December"};
+//        return Months[index];
+//    }
+//
+//    private String getWeekOfDay(int day){
+//        return titles[day];
+//    }
+//
+//    public void setMyCalendar(MyCalendar myCalendar) {
+//        this.myCalendar = myCalendar;
+//    }
+//
+//    public MyCalendar getMyCalendar(){
+//        return this.myCalendar;
+//    }
+//
+
 //    ****************************************************************
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        initCurrentWeekHeaders();
     }
 
     @Override
@@ -193,12 +263,37 @@ public class WeekViewHeader extends LinearLayout{
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         totalHeight = MeasureSpec.getSize(heightMeasureSpec);
         totalWidth = MeasureSpec.getSize(widthMeasureSpec);
+        setMeasuredDimension(totalWidth,totalHeight);
         updateWidthHeight(totalWidth,totalHeight);
     }
 
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        dateLayout.layout(0, 0, totalWidth , viewWidth);
+        blankLeftTextView.layout(0, 0, paddingLeft, viewWidth);
+        for (int i =0 ; i<7;i++){
+            int backGroundLeft = paddingLeft + viewWidth * i;
+            int backGroundTop = 0;
+            int backGroundRight = backGroundLeft + viewWidth;
+            int backGroundBottom = viewWidth;
+            dayBackgroundRelativeLayoutArrayList.get(i).layout(backGroundLeft, backGroundTop, backGroundRight, backGroundBottom);
+            dayRelativeLayoutArrayList.get(i).layout(0, 0, viewWidth, viewWidth); // same size as background
+
+            int dayOfWeekLeft = viewWidth/4-5; // for align in parent center, need to change from 0 to viewWidth/4
+            int dayOfWeekTop = 0;
+            int dayOfWeekRight =  viewWidth;
+            int dayOfWeekBottom = viewWidth/2;
+            dayOfWeekArrayList.get(i).layout(dayOfWeekLeft, dayOfWeekTop, dayOfWeekRight, dayOfWeekBottom);
+
+            int dayOfMonthLeft = viewWidth*2/5-5;
+            int dayOfMonthTop = viewWidth/2;
+            int dayOfMonthRight = viewWidth;
+            int dayOfMonthBottom = viewWidth;
+            dayOfMonthArrayList.get(i).layout(dayOfMonthLeft, dayOfMonthTop, dayOfMonthRight, dayOfMonthBottom);
+        }
+    }
+
     public void updateWidthHeight(int width, int height){
-        this.totalWidth = width;
-        this.totalHeight=height;
         this.paddingLeft = (int)(width * 0.1); // this is for blank?.
         this.paddingTop = (int)(width * 0.05);
         this.viewWidth = (width - paddingLeft)/7;

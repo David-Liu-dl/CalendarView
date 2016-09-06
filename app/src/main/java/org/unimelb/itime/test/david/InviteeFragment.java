@@ -38,7 +38,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class AttendeeFragment extends Fragment {
+public class InviteeFragment extends Fragment {
 	public Map<Contact, ImageView> contacts_list = new HashMap<Contact, ImageView>();
 
 	private static final String TAG = "MyAPP";
@@ -56,7 +56,7 @@ public class AttendeeFragment extends Fragment {
 	private View root;
 	private Context context;
 
-	private AttendeeFragment self = this;
+	private InviteeFragment self = this;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {

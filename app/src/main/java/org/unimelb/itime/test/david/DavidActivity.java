@@ -27,8 +27,8 @@ public class DavidActivity extends AppCompatActivity {
         //init DB
 //        initData();
         loadData();
-        doMonthAgendaViewThings();
-//        doMonthDayViewThings();
+//        doMonthAgendaViewThings();
+        doMonthDayViewThings();
 
     }
     private void initData(){
@@ -45,28 +45,28 @@ public class DavidActivity extends AppCompatActivity {
         }
     }
 
-    private void doMonthAgendaViewThings(){
-        MonthAgendaView monthDayFragment = (MonthAgendaView) findViewById(R.id.monthAgendaView);
-
-        monthDayFragment.setOnCheckIfHasEvent(new DayViewHeader.OnCheckIfHasEvent() {
-                @Override
-                public boolean todayHasEvent(long startOfDay) {
-                    Calendar calendar1 = Calendar.getInstance();
-                    calendar1.setTimeInMillis(startOfDay);
-                    return (EventManager.getInstance().getEventsMap().containsKey(startOfDay));
-                }
-        });
-
-        monthDayFragment.setOnLoadEvents(new AgendaViewBody.OnLoadEvents() {
-            @Override
-            public List<ITimeEventInterface> loadTodayEvents(long beginOfDayMilliseconds) {
-                if (EventManager.getInstance().getEventsMap().containsKey(beginOfDayMilliseconds)){
-                    return EventManager.getInstance().getEventsMap().get(beginOfDayMilliseconds);
-                }
-                return null;
-            }
-        });
-    }
+//    private void doMonthAgendaViewThings(){
+//        MonthAgendaView monthDayFragment = (MonthAgendaView) findViewById(R.id.monthAgendaView);
+//
+//        monthDayFragment.setOnCheckIfHasEvent(new DayViewHeader.OnCheckIfHasEvent() {
+//                @Override
+//                public boolean todayHasEvent(long startOfDay) {
+//                    Calendar calendar1 = Calendar.getInstance();
+//                    calendar1.setTimeInMillis(startOfDay);
+//                    return (EventManager.getInstance().getEventsMap().containsKey(startOfDay));
+//                }
+//        });
+//
+//        monthDayFragment.setOnLoadEvents(new AgendaViewBody.OnLoadEvents() {
+//            @Override
+//            public List<ITimeEventInterface> loadTodayEvents(long beginOfDayMilliseconds) {
+//                if (EventManager.getInstance().getEventsMap().containsKey(beginOfDayMilliseconds)){
+//                    return EventManager.getInstance().getEventsMap().get(beginOfDayMilliseconds);
+//                }
+//                return null;
+//            }
+//        });
+//    }
 
     private void initDB(){
         Calendar calendar = Calendar.getInstance();

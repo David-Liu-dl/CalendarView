@@ -68,6 +68,16 @@ public class TestEvent implements ITimeEventInterface {
     }
 
     @Override
+    public void setLocation(String location) {
+
+    }
+
+    @Override
+    public String getLocation() {
+        return null;
+    }
+
+    @Override
     public void setProposedTimeSlots(ArrayList proposedTimeSlots) {
 
     }
@@ -75,6 +85,16 @@ public class TestEvent implements ITimeEventInterface {
     @Override
     public ArrayList<Long> getProposedTimeSlots() {
         return null;
+    }
+
+    @Override
+    public String getInvitees_urls() {
+        return null;
+    }
+
+    @Override
+    public void setInvitees_urls(String invitees_urls) {
+
     }
 
     @Override

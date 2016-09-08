@@ -7,6 +7,8 @@ import org.greenrobot.greendao.annotation.Property;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import org.greenrobot.greendao.annotation.Generated;
 
 /**
@@ -18,14 +20,14 @@ public class Event implements ITimeEventInterface<Event>{
     @Id(autoincrement = true)
     private Long id;
     private String title;
+    private String location;
+    
     @Property
     @NotNull
     private long startTime;
     @Property
     @NotNull
     private long endTime;
-//    private ITimeEventInterface.Type eventType;
-//    private ITimeEventInterface.Status status;
     @Property
     @NotNull
     private int eventType;
@@ -33,18 +35,22 @@ public class Event implements ITimeEventInterface<Event>{
     @NotNull
     private int status;
 
+    private String invitees_urls;
+
     public Event() {
     }
 
-    @Generated(hash = 101606351)
-    public Event(Long id, String title, long startTime, long endTime,
-            int eventType, int status) {
+    @Generated(hash = 1318812346)
+    public Event(Long id, String title, String location, long startTime,
+            long endTime, int eventType, int status, String invitees_urls) {
         this.id = id;
         this.title = title;
+        this.location = location;
         this.startTime = startTime;
         this.endTime = endTime;
         this.eventType = eventType;
         this.status = status;
+        this.invitees_urls = invitees_urls;
     }
 
     @Override
@@ -114,5 +120,23 @@ public class Event implements ITimeEventInterface<Event>{
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    @Override
+    public String getLocation() {
+        return location;
+    }
+
+    @Override
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getInvitees_urls() {
+        return this.invitees_urls;
+    }
+
+    public void setInvitees_urls(String invitees_urls) {
+        this.invitees_urls = invitees_urls;
     }
 }

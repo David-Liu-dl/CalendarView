@@ -1,5 +1,6 @@
 package org.unimelb.itime.vendor.weekview;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.databinding.BindingMethod;
 import android.databinding.BindingMethods;
@@ -83,11 +84,16 @@ public class WeekViewBody extends LinearLayout{
     }
 
     public void init(){
-        myCalendar = new MyCalendar(calendar);
+//        myCalendar = new MyCalendar(calendar);
         initWidgets();
         initHourTextViews();
         initTimeDottedLine();
         initMsgWindow();
+
+//        // for drag events
+//        initTimeSlot(getHours());
+//        initDaySlot();
+        initDragListener();
     }
 
     private void initWidgets() {
@@ -144,8 +150,8 @@ public class WeekViewBody extends LinearLayout{
         if (isShowingToday(myCalendar, todayCalendar)) {
             // set the current time line
             currentTimeLineTextView = new TextView(getContext());
-            currentTimeLineTextView.setBackgroundResource(R.drawable.itime_dotted_line);
-            currentTimeLineTextView.setBackgroundColor(Color.RED);
+            currentTimeLineTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.current_time_red_line));
+//            currentTimeLineTextView.setBackgroundColor(Color.RED);
             backGroundRelativeLayout.addView(currentTimeLineTextView);
 
             // set the showing time
@@ -228,6 +234,7 @@ public class WeekViewBody extends LinearLayout{
                 eventCalendar.setTime(eventDate);
                 if (isInCurrentWeek(eventCalendar,myCalendar)) {
                     WeekDraggableEventView eventView = new WeekDraggableEventView(getContext(),event);
+//                    eventView.setOnLongClickListener(new MyLongClickListener()); // for event draggable
                     eventViewArrayList.add(eventView);
                     eventRelativeLayout.addView(eventView);
                 }
@@ -307,6 +314,46 @@ public class WeekViewBody extends LinearLayout{
         this.totalHeight = MeasureSpec.getSize(heightMeasureSpec);
         setMeasuredDimension(totalWidth,totalHeight);
         updateWidthHeight(totalWidth,totalHeight);
+
+        for (int hour = 0;hour < getHours().length ; hour++){
+            // set hour view
+            MLayoutParams hourParams = new MLayoutParams(hourWidth,hourHeight);
+            hourParams.top = hourHeight * hour;
+            hourParams.left = 0;
+            hourTextViewArr[hour].setPadding(0,55,0,0); // gravity center has problem
+            hourTextViewArr[hour].setLayoutParams(hourParams);
+
+            // set dotted line
+            MLayoutParams dottedParams = new MLayoutParams(oneWeekWidth, dayHeight);
+            dottedParams.top = dayHeight * hour;
+            dottedParams.left = 0;
+            timeLineTextViewArr[hour].setGravity(Gravity.CENTER);
+            timeLineTextViewArr[hour].setLayoutParams(dottedParams);
+        }
+
+        Calendar todayCalendar = Calendar.getInstance(Locale.getDefault());
+        todayCalendar.setTime(new Date());
+        if (isShowingToday(myCalendar, todayCalendar)) {
+            int hour = todayCalendar.get(Calendar.HOUR_OF_DAY);
+            int minute = todayCalendar.get(Calendar.MINUTE);
+
+            MLayoutParams currentTimeLineParams = new MLayoutParams(oneWeekWidth,dayHeight);
+            currentTimeLineParams.top = hour * hourHeight + minute * hourHeight / 60;
+            currentTimeLineParams.left = hourWidth;
+            currentTimeLineTextView.setGravity(Gravity.CENTER);
+            currentTimeLineTextView.setLayoutParams(currentTimeLineParams);
+
+            MLayoutParams currentTimeTextParams = new MLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, hourHeight);
+            currentTimeTextParams.left =0;
+            currentTimeTextParams.top = hour * hourHeight + minute * hourHeight / 60;
+            currentTimeTextView.setPadding(0,55,0,0);
+            currentTimeTextView.setLayoutParams(currentTimeTextParams);
+        }
+
+
+
+
+
     }
 
 
@@ -323,25 +370,29 @@ public class WeekViewBody extends LinearLayout{
 
         // set 00:00, 01:00 ...
         for (int hour = 0; hour < getHours().length; hour++) {
-            int hourLeft = 0;
-            int hourTop = hourHeight * hour ;
-            int hourRight = hourWidth;
-            int hourBottom = (int) (hourHeight * hour +  hourHeight );
-            hourTextViewArr[hour].layout( hourLeft, hourTop, hourRight, hourBottom);
+            MLayoutParams hourParams = (MLayoutParams) hourTextViewArr[hour].getLayoutParams();
+            hourTextViewArr[hour].layout(hourParams.left, hourParams.top, hourParams.left + hourWidth, hourParams.top + hourHeight );
         }
         // set dotted line
         for (int hour = 0; hour < getHours().length; hour++) {
-            timeLineTextViewArr[hour].layout(0, dayHeight * hour, oneWeekWidth, (int) (dayHeight * hour + dottedLineHeight));
+            MLayoutParams timeLineParams = (MLayoutParams) timeLineTextViewArr[hour].getLayoutParams();
+            timeLineTextViewArr[hour].layout(timeLineParams.left, timeLineParams.top, timeLineParams.left+oneWeekWidth, timeLineParams.top+ dayHeight);
         }
+
         Calendar todayCalendar = Calendar.getInstance(Locale.getDefault());
         todayCalendar.setTime(new Date());
+
         if (isShowingToday(myCalendar, todayCalendar)) {
-            int hour = todayCalendar.get(Calendar.HOUR_OF_DAY);
-            int minute = todayCalendar.get(Calendar.MINUTE);
-            int currentTimePaddingTop = (int) (hour * hourHeight + (int) (minute * hourHeight / 60) + dottedLineHeight/2);
-            currentTimeLineTextView.layout(hourWidth + 20, currentTimePaddingTop, totalWidth, currentTimePaddingTop + 2);
-            currentTimeTextView.layout(0, currentTimePaddingTop, hourWidth,currentTimePaddingTop+ hourHeight);
+            MLayoutParams currentTimeLineParams = (MLayoutParams) currentTimeLineTextView.getLayoutParams();
+            currentTimeLineTextView.layout(
+                    currentTimeLineParams.left, currentTimeLineParams.top, currentTimeLineParams.left +
+                            oneWeekWidth, currentTimeLineParams.top+ hourHeight);
+
+            MLayoutParams currentTimeTextParams = (MLayoutParams) currentTimeTextView.getLayoutParams();
+            currentTimeTextView.layout(currentTimeTextParams.left, currentTimeTextParams.top,
+                    currentTimeTextParams.left + hourWidth, currentTimeTextParams.top+hourHeight);
         }
+
 
         // init events
         if (eventViewArrayList!=null){
@@ -352,11 +403,13 @@ public class WeekViewBody extends LinearLayout{
                 int day = calendar.get(Calendar.DAY_OF_WEEK);
                 int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int minute = calendar.get(Calendar.MINUTE);
-                int topOffset = hourHeight * hour + hourHeight * minute/60 + dottedLineHeight/2;
+                int topOffset = hourHeight * hour + hourHeight * minute/60 + hourHeight/2;
                 int leftOffSet = dayWidth * (day-1);
                 int duration = (int) ((eventView.getEvent().getEndTime() - eventView.getEvent().getStartTime())/1000/60);
                 int eventHeight = duration *hourHeight / 60;
                 eventView.layout(leftOffSet, topOffset, leftOffSet + dayWidth, topOffset + eventHeight);
+                eventView.setOnLongClickListener(new MyLongClickListener()); // for draggable
+
                 eventView.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -365,6 +418,9 @@ public class WeekViewBody extends LinearLayout{
                 });
             }
         }
+        // for drag events
+        initTimeSlot(getHours());
+        initDaySlot();
 
 
     }
@@ -400,7 +456,39 @@ public class WeekViewBody extends LinearLayout{
         return onClickEventInterface;
     }
 
+    public static class MLayoutParams extends RelativeLayout.LayoutParams {
+
+        public int left = 0;
+        public int top = 0;
+
+        public MLayoutParams(Context c, AttributeSet attrs) {
+            super(c, attrs);
+        }
+
+        public MLayoutParams(ViewGroup.LayoutParams source) {
+            super(source);
+        }
+
+        public MLayoutParams(int width, int height) {
+            super(width, height);
+        }
+    }
+
 //    ********************************************************************
+
+    private final class MyLongClickListener implements View.OnLongClickListener{
+        @Override
+        public boolean onLongClick(View view) {
+            ClipData data = ClipData.newPlainText("", "");
+            View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(
+                    view);
+            view.startDrag(data, shadowBuilder, view, 0);
+            view.setVisibility(View.VISIBLE);
+            view.getBackground().setAlpha(255);
+            return false;
+        }
+    }
+
 
     private final class MyDragListener implements View.OnDragListener{
         float actionStartX = 0;

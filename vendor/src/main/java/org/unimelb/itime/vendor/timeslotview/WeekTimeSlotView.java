@@ -49,8 +49,9 @@ public class WeekTimeSlotView extends RelativeLayout{
     private ArrayList<ITimeEventInterface> eventArrayList = new ArrayList<>();
 
     private OnTimeSlotClickListener onTimeSlotClickListener;
-    private WeekTimeSlotViewBody currentPageWeekViewBody;
+    private WeekTimeSlotViewBody currentPageWeekViewBody, preWeekTimeSlotViewBody, nextWeekTimeSlotViewBody;
     private WeekTimeSlotViewHeader currentPageWeekViewHeader;
+    Calendar firstSundayCalendar;
 
 
     public WeekTimeSlotView(Context context) {
@@ -79,6 +80,12 @@ public class WeekTimeSlotView extends RelativeLayout{
             this.timeSlots = timeSlots;
             this.duration = duration;
             currentPageWeekViewBody.setTimeSlots(timeSlots,duration);
+            if (preWeekTimeSlotViewBody!=null) {
+                preWeekTimeSlotViewBody.setTimeSlots(timeSlots, duration);
+            }
+            if (nextWeekTimeSlotViewBody!=null) {
+                nextWeekTimeSlotViewBody.setTimeSlots(timeSlots, duration);
+            }
             requestLayout();
         }
 //        initAll();
@@ -112,6 +119,11 @@ public class WeekTimeSlotView extends RelativeLayout{
         calendar.set(Calendar.MILLISECOND, 0);
         int todayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
         calendar.add(Calendar.DATE, -(todayOfWeek - 1));
+
+        // copy this calendar to pass to itime_main_program
+        firstSundayCalendar = Calendar.getInstance();
+        firstSundayCalendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
+                calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
 
         for (int i = 0 ; i < 4 ; i ++){
             LinearLayout linearLayout = (LinearLayout) LayoutInflater.from(getContext()).inflate(R.layout.time_slot_view_pager_page,null);
@@ -152,8 +164,8 @@ public class WeekTimeSlotView extends RelativeLayout{
                 else
                     deltaPosition=-1;
                 if(onTimeSlotWeekViewChangeListener != null){
-                    calendar.add(Calendar.DATE,(deltaPosition)*7);
-                    onTimeSlotWeekViewChangeListener.onWeekChanged(calendar);
+                    firstSundayCalendar.add(Calendar.DATE,(deltaPosition)*7);
+                    onTimeSlotWeekViewChangeListener.onWeekChanged(firstSundayCalendar); // pass the first sunday as interface
                 }
                 lastPosition=position;
             }
@@ -178,30 +190,30 @@ public class WeekTimeSlotView extends RelativeLayout{
                     MyCalendar myCalendar = preWeekTimeSlotViewHeader.getMyCalendar();
                     preWeekTimeSlotViewHeader.setMyCalendar(preWeekTimeSlotViewHeader.getMyCalendar());
 
-                    // init?
-                    WeekTimeSlotViewBody preWeekTimeSlotViewBody = (WeekTimeSlotViewBody) preView.getChildAt(1);
+
+                    preWeekTimeSlotViewBody = (WeekTimeSlotViewBody) preView.getChildAt(1);
                     preWeekTimeSlotViewBody.getMyCalendar().cloneFromMyCalendar(currentWeekViewMyCalendar);
                     preWeekTimeSlotViewBody.getMyCalendar().setOffsetByDate(-7);
                     preWeekTimeSlotViewBody.setMyCalendar(preWeekTimeSlotViewBody.getMyCalendar());
                     preWeekTimeSlotViewBody.setTimeSlots(timeSlots,duration);
                     preWeekTimeSlotViewBody.setEvents(eventArrayList);
                     preWeekTimeSlotViewBody.setOnTimeSlotClickListener(onTimeSlotClickListener);
-                    // init?
+
 
 //                    pagerAdapter.changeView(nextView,(currentPosition + 1) % size);
                     WeekTimeSlotViewHeader nextWeekTimeSlotViewHeader = (WeekTimeSlotViewHeader) nextView.getChildAt(0);
                     nextWeekTimeSlotViewHeader.getMyCalendar().cloneFromMyCalendar(currentWeekViewMyCalendar);
                     nextWeekTimeSlotViewHeader.getMyCalendar().setOffsetByDate(+7);
                     nextWeekTimeSlotViewHeader.setMyCalendar(nextWeekTimeSlotViewHeader.getMyCalendar());
-                    // init?
-                    WeekTimeSlotViewBody nextWeekTimeSlotViewBody = (WeekTimeSlotViewBody) nextView.getChildAt(1);
+
+                    nextWeekTimeSlotViewBody = (WeekTimeSlotViewBody) nextView.getChildAt(1);
                     nextWeekTimeSlotViewBody.getMyCalendar().cloneFromMyCalendar(currentWeekViewMyCalendar);
                     nextWeekTimeSlotViewBody.getMyCalendar().setOffsetByDate(+7);
                     nextWeekTimeSlotViewBody.setMyCalendar(nextWeekTimeSlotViewBody.getMyCalendar());
                     nextWeekTimeSlotViewBody.setTimeSlots(timeSlots,duration);
                     nextWeekTimeSlotViewBody.setEvents(eventArrayList);
                     nextWeekTimeSlotViewBody.setOnTimeSlotClickListener(onTimeSlotClickListener);
-                    // init?
+
                     pagerAdapter.changeView(preView, (currentPosition-1)%size);
                     pagerAdapter.changeView(nextView,(currentPosition + 1) % size);
 

@@ -32,7 +32,7 @@ public class WeekViewFragment extends Fragment implements WeekView.OnWeekViewCha
             // simulate Events
             ArrayList<ITimeEventInterface> testEventArrayList = new ArrayList<>();
             Calendar calendar1 = Calendar.getInstance();
-            calendar1.set(Calendar.DAY_OF_MONTH, 31);
+            calendar1.set(Calendar.DAY_OF_MONTH, 8);
             calendar1.set(Calendar.HOUR_OF_DAY, 3);
             calendar1.set(Calendar.MINUTE, 0);
 

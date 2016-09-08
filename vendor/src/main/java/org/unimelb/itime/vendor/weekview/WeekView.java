@@ -36,6 +36,7 @@ public class WeekView extends RelativeLayout{
     private ArrayList<LinearLayout> views = new ArrayList<LinearLayout>();
     private int currentPosition = 500;
     Calendar calendar;
+    Calendar firstSundayCalendar;
 
     private int totalHeight;
     private int totalWidth;
@@ -81,6 +82,13 @@ public class WeekView extends RelativeLayout{
         int todayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
         calendar.add(Calendar.DATE, -(todayOfWeek - 1));
 
+        // copy this calendar to pass to itime_main_program
+        firstSundayCalendar = Calendar.getInstance();
+        firstSundayCalendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
+                calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+
+
+
         for (int i = 0 ; i < 4 ; i ++){
             LinearLayout linearLayout = (LinearLayout) LayoutInflater.from(getContext()).inflate(R.layout.week_view_pager_page,null);
             calendar.set(Calendar.DAY_OF_MONTH,calendar.get(Calendar.DAY_OF_MONTH) + i * 7);
@@ -118,8 +126,8 @@ public class WeekView extends RelativeLayout{
                 else
                     deltaPosition=-1;
                 if(onWeekViewChangeListener != null){
-                    calendar.add(Calendar.DATE,(deltaPosition)*7);
-                    onWeekViewChangeListener.onWeekChanged(calendar);
+                    firstSundayCalendar.add(Calendar.DATE,(deltaPosition)*7);
+                    onWeekViewChangeListener.onWeekChanged(firstSundayCalendar);
                 }
                 lastPosition=position;
             }

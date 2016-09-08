@@ -6,10 +6,17 @@
     tools:context="org.unimelb.itime.test.david.DavidActivity"
     android:orientation="vertical">
 
-    <org.unimelb.itime.vendor.dayview.MonthDayView
-        android:id="@+id/monthDayView"
+    <org.unimelb.itime.vendor.agendaview.MonthAgendaView
+        android:id="@+id/monthAgendaView"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    </org.unimelb.itime.vendor.dayview.MonthDayView>
+    </org.unimelb.itime.vendor.agendaview.MonthAgendaView>
+
+    <!--<org.unimelb.itime.vendor.dayview.MonthDayView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:id="@+id/monthDayView">-->
+
+    <!--</org.unimelb.itime.vendor.dayview.MonthDayView>-->
 
 </LinearLayout>

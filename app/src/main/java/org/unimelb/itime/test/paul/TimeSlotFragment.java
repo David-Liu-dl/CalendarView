@@ -52,16 +52,21 @@ public class TimeSlotFragment extends Fragment implements WeekTimeSlotView.OnTim
 //         simulate timeSlots
         Map<Long,Boolean> simulateTimeSlots = new HashMap<>();
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_MONTH,29);
+        calendar.set(Calendar.DAY_OF_MONTH,8);
         calendar.set(Calendar.HOUR_OF_DAY,1);
         calendar.set(Calendar.MINUTE,0);
         simulateTimeSlots.put(calendar.getTime().getTime(),true);
+        simulateTimeSlots.put(calendar.getTimeInMillis()+3600000*24,true);
+        simulateTimeSlots.put(calendar.getTimeInMillis() + 3600000*24*3,true);
+        simulateTimeSlots.put(calendar.getTimeInMillis() + 3600000*24*6, true);
+        simulateTimeSlots.put(calendar.getTimeInMillis() + 3600000*24*8,true);
+        simulateTimeSlots.put(calendar.getTimeInMillis() - 3600000*24*6, true);
         weekTimeSlotView.setTimeSlots(simulateTimeSlots,60);
 
         // simulate Events
         ArrayList<ITimeEventInterface> eventArrayList = new ArrayList<>();
         Calendar calendar1 = Calendar.getInstance();
-        calendar1.set(Calendar.DAY_OF_MONTH,31);
+        calendar1.set(Calendar.DAY_OF_MONTH,7);
         calendar1.set(Calendar.HOUR_OF_DAY, 5);
         calendar1.set(Calendar.MINUTE,0);
 

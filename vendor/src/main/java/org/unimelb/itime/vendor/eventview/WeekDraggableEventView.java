@@ -1,11 +1,14 @@
 package org.unimelb.itime.vendor.eventview;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.telecom.Connection;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -17,7 +20,7 @@ import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 /**
  * Created by Paul on 26/08/2016.
  */
-public class WeekDraggableEventView extends RelativeLayout{
+public class WeekDraggableEventView extends RelativeLayout implements View.OnLongClickListener{
     private ITimeEventInterface event;
     private TextView title;
     private ImageView icon;
@@ -85,12 +88,17 @@ public class WeekDraggableEventView extends RelativeLayout{
             case PUBLIC:
                 color = getContext().getResources().getColor(R.color.public_et);
                 break;
+            default:
+                color = getContext().getResources().getColor(R.color.private_et);
+                break;
         }
         this.setBackground(getResources().getDrawable(R.drawable.itime_draggable_event_bg));
         ((GradientDrawable)this.getBackground()).setColor(color);
         this.getBackground().setAlpha(128);
         updateLeftBar(getResources().getDrawable(R.drawable.itime_draggable_event_bg), color);
-        this.resetIcon(getStatusIcon(status));
+        if (getStatusIcon(status)!=0) {
+            this.resetIcon(getStatusIcon(status));
+        }
     }
 
 
@@ -98,10 +106,10 @@ public class WeekDraggableEventView extends RelativeLayout{
         switch (status){
             case PENDING:
                 return R.drawable.itime_question_mark;
-            case CONFIRM:
-                return R.drawable.itime_icon_tick;
+//            case CONFIRM:
+//                return R.drawable.itime_icon_tick;
             default:
-                return -1;
+                return 0;
         }
     }
 
@@ -117,9 +125,11 @@ public class WeekDraggableEventView extends RelativeLayout{
 
 
     private void initIcon(){
-        icon = new ImageView(getContext());
-        icon.setImageResource(R.drawable.itime_question_mark);
-        this.addView(icon);
+        if (event.getStatus()!=0) {
+            icon = new ImageView(getContext());
+            icon.setImageResource(R.drawable.itime_question_mark);
+            this.addView(icon);
+        }
     }
 
     @Override
@@ -131,13 +141,15 @@ public class WeekDraggableEventView extends RelativeLayout{
         RelativeLayout.LayoutParams leftBarParams = (RelativeLayout.LayoutParams)leftBar.getLayoutParams();
         leftBar.layout(0,0,leftBarWidth,height);
 
-        int iconWidth = this.width/3;
-        int iconLeft = this.width/3 * 2 - this.width/10;
-        int iconTop = this.width/10;
-        RelativeLayout.LayoutParams iconParams = (RelativeLayout.LayoutParams)icon.getLayoutParams();
-        iconParams.topMargin = iconTop;
-        iconParams.leftMargin = iconLeft;
-        icon.layout(iconLeft, iconTop,  iconLeft + iconWidth,iconTop + iconWidth);
+        if (event.getStatus()!=0) {
+            int iconWidth = this.width / 3;
+            int iconLeft = this.width / 3 * 2 - this.width / 10;
+            int iconTop = this.width / 10;
+            RelativeLayout.LayoutParams iconParams = (RelativeLayout.LayoutParams) icon.getLayoutParams();
+            iconParams.topMargin = iconTop;
+            iconParams.leftMargin = iconLeft;
+            icon.layout(iconLeft, iconTop, iconLeft + iconWidth, iconTop + iconWidth);
+        }
 
         RelativeLayout.LayoutParams titleParams = (RelativeLayout.LayoutParams)title.getLayoutParams();
         titleParams.topMargin=this.width/10;
@@ -165,6 +177,14 @@ public class WeekDraggableEventView extends RelativeLayout{
     }
 
 
-
-
+    @Override
+    public boolean onLongClick(View view) {
+        ClipData data = ClipData.newPlainText("", "");
+        View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(
+                view);
+        view.startDrag(data, shadowBuilder, view, 0);
+        view.setVisibility(View.VISIBLE);
+        view.getBackground().setAlpha(255);
+        return false;
+    }
 }

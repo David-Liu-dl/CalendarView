@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimary">#1063ADF2</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="_iv_1063ADF2">#0163ADF2</color>
 
     <color name="white">#FFFFFF</color><!--白色 -->
     <color name="ivory">#FFFFF0</color><!--象牙色 -->
@@ -318,4 +320,11 @@
     <color name="gray_color">#AFAFAF</color>
     <color name="bg_sort_color">#EDEDED</color>
     <color name="page_bg_color">#efeef5</color>
+
+    <!-- for agenda-->
+    <color name="title_text_color">#4a4a4a</color>
+    <color name="title_bg_color">#f8f8fb</color>
+    <color name="title_today_bg_color">#fef7f7</color>
+    <color name="sub_title_text_color">#9b9b9b</color>
+    <color name="time_red">#f56572</color>
 </resources>

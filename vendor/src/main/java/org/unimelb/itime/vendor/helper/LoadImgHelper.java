@@ -1,4 +1,4 @@
-package org.unimelb.itime.vendor.contact.helper;
+package org.unimelb.itime.vendor.helper;
 
 import android.content.Context;
 import android.util.Log;
@@ -24,10 +24,18 @@ public class LoadImgHelper {
         return loadImgHelper;
     }
 
-    public void bindUrlWithImageView(Context mContext, Contact contact, ImageView img_v){
+    public void bindContactWithImageView(Context mContext, Contact contact, ImageView img_v){
         if (contact.getUrl() != null){
             Log.i(TAG, "url: " + contact.getUrl());
             Picasso.with(mContext).load(contact.getUrl()).placeholder(R.drawable.invitee_selected_loading).into(img_v);
+        }else {
+            Picasso.with(mContext).load(R.drawable.invitee_selected_default_picture).into(img_v);
+        }
+    }
+
+    public void bindUrlWithImageView(Context mContext, String url, ImageView img_v){
+        if (url != null){
+            Picasso.with(mContext).load(url).placeholder(R.drawable.invitee_selected_loading).into(img_v);
         }else {
             Picasso.with(mContext).load(R.drawable.invitee_selected_default_picture).into(img_v);
         }

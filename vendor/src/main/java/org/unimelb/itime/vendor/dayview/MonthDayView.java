@@ -45,6 +45,7 @@ public class MonthDayView extends LinearLayout {
 
     DayViewBodyPagerAdapter bodyPagerAdapter;
     ViewPager bodyPager;
+    private DayViewBodyController.OnCreateNewEvent onCreateNewEvent;
 
     int bodyCurrentPosition;
 
@@ -66,6 +67,10 @@ public class MonthDayView extends LinearLayout {
     public MonthDayView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initView();
+    }
+
+    public void setOnCreateNewEvent(DayViewBodyController.OnCreateNewEvent onCreateNewEvent){
+        this.onCreateNewEvent = onCreateNewEvent;
     }
 
     private void initView(){
@@ -126,6 +131,9 @@ public class MonthDayView extends LinearLayout {
 
     private void setUpBody(){
         bodyPagerAdapter = new DayViewBodyPagerAdapter(initBody(), upperBoundsOffset);
+        if (this.onCreateNewEvent != null){
+            bodyPagerAdapter.setOnCreateNewEvent(this.onCreateNewEvent);
+        }
         setOnBodyPageChanged(this.onBodyPageChanged);
         bodyPagerAdapter.notifyDataSetChanged();
         recyclerAdapter.setBodyPager(bodyPager);

@@ -63,12 +63,10 @@ public class DayViewBody extends RelativeLayout {
 
     public void addEvent(final ITimeEventInterface new_event){
         events.add(new_event);
-//        dividerRLayout.post(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//            }
-//        });
+    }
+
+    public void setOnCreateNewEvent(DayViewBodyController.OnCreateNewEvent onCreateNewEvent){
+        dayViewController.setOnCreateNewEvent(onCreateNewEvent);
     }
 
     public void removeEvent(ITimeEventInterface delete_event){

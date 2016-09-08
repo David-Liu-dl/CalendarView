@@ -31,7 +31,8 @@ public class DavidActivity extends AppCompatActivity {
 //        initData();
         loadData();
         doMonthAgendaViewThings();
-//        doMonthDayViewThings();
+//        doMonthDayView
+// Things();
 
     }
     private void initData(){

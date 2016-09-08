@@ -76,9 +76,9 @@ public class DayViewBodyController {
     private float nowTapX = 0;
     private float nowTapY = 0;
 
-
-
     private OnCreateNewEvent onCreateNewEvent;
+
+    private BodyOnTouchListener bodyOnTouchListener;
 
     public DayViewBodyController(AttributeSet attrs,
                                  Context context) {
@@ -120,6 +120,11 @@ public class DayViewBodyController {
             public boolean onTouch(View v, MotionEvent event) {
                 nowTapX = event.getX();
                 nowTapY = event.getY();
+                if (bodyOnTouchListener != null){
+                    bodyOnTouchListener.bodyOnTouchListener(nowTapX, nowTapY);
+                }else {
+                    Log.i(TAG, "controller:  bodyOnTouchListener null ");
+                }
 
                 return false;
             }
@@ -127,20 +132,19 @@ public class DayViewBodyController {
         dividerRLayout.setOnLongClickListener(new CreateEventListener());
     }
 
+    public interface BodyOnTouchListener{
+        void bodyOnTouchListener(float tapX, float tapY);
+    }
+
+    public void setBodyOnTouchListener(BodyOnTouchListener bodyOnTouchListener) {
+        this.bodyOnTouchListener = bodyOnTouchListener;
+    }
+
     public void initBackgroundView(){
         initTimeSlot();
         initMsgWindow();
         initTimeText(getHours());
         initDividerLine(getHours());
-    }
-
-    public void bringEventsToFront(){
-//        regular_event_view_map
-//        for (Map.Entry<Dra,String> entry : regular_event_view_map.entrySet()) {
-//            String key = entry.getKey();
-//            String value = entry.getValue();
-//            // do stuff
-//        }
     }
 
     private void initTimeSlot(){
@@ -467,7 +471,6 @@ public class DayViewBodyController {
     }
 
     private class EventDragListener implements View.OnDragListener {
-
         float actionStartX = 0;
         float actionStartY = 0;
         int currentEventNewHour;
@@ -539,6 +542,8 @@ public class DayViewBodyController {
                             newEventCalendar.setHour(currentEventNewHour);
                             newEventCalendar.setMinute(currentEventNewMinutes);
                             onCreateNewEvent.createNewEvent(newEventCalendar);
+                        }else {
+                            Log.i(TAG, "onCreateNewEvent null: ");
                         }
                         //finally reset tempDragView to NULL.
                         tempDragView = null;

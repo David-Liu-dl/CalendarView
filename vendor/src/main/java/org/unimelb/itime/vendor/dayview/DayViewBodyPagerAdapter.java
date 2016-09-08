@@ -18,6 +18,7 @@ public class DayViewBodyPagerAdapter extends PagerAdapter {
     private DayViewBodyController.OnCreateNewEvent onCreateNewEvent;
     private Calendar calendar = Calendar.getInstance();
     private OnBodyPageChanged onBodyPageChanged;
+    private DayViewBodyController.BodyOnTouchListener bodyOnTouchListener;
 
     ArrayList<View> vLists;
     int upperBounds;
@@ -29,6 +30,13 @@ public class DayViewBodyPagerAdapter extends PagerAdapter {
 
     public void setOnCreateNewEvent(DayViewBodyController.OnCreateNewEvent onCreateNewEvent){
         this.onCreateNewEvent = onCreateNewEvent;
+        for (int i = 0; i < vLists.size(); i++) {
+            ((DayViewBody) vLists.get(i)).setOnCreateNewEvent(onCreateNewEvent);
+        }
+    }
+
+    public void setBodyOnTouchListener(DayViewBodyController.BodyOnTouchListener bodyOnTouchListener) {
+        this.bodyOnTouchListener = bodyOnTouchListener;
     }
 
     @Override
@@ -69,6 +77,11 @@ public class DayViewBodyPagerAdapter extends PagerAdapter {
         }
         if (this.onCreateNewEvent != null){
             v.setOnCreateNewEvent(this.onCreateNewEvent);
+        }else {
+            Log.i(TAG, "adapter:  onCreateNewEvent null");
+        }
+        if (this.bodyOnTouchListener != null){
+            v.setBodyOnTouchListener(this.bodyOnTouchListener);
         }
         container.addView(v);
 

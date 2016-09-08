@@ -69,6 +69,9 @@ public class MonthDayView extends LinearLayout {
 
     public void setOnCreateNewEvent(DayViewBodyController.OnCreateNewEvent onCreateNewEvent){
         this.onCreateNewEvent = onCreateNewEvent;
+        if (this.onCreateNewEvent != null){
+            bodyPagerAdapter.setOnCreateNewEvent(this.onCreateNewEvent);
+        }
     }
 
     private void initView(){
@@ -132,6 +135,29 @@ public class MonthDayView extends LinearLayout {
         if (this.onCreateNewEvent != null){
             bodyPagerAdapter.setOnCreateNewEvent(this.onCreateNewEvent);
         }
+        bodyPagerAdapter.setBodyOnTouchListener(new DayViewBodyController.BodyOnTouchListener() {
+            @Override
+            public void bodyOnTouchListener(float tapX, float tapY) {
+                final View needChangeView = recyclerView;
+
+                if (needChangeView.getHeight() == scroll_height){
+                    Log.i(TAG, "changed height: ");
+                    recyclerView.stopScroll();
+                    mLinearLayoutManager.scrollToPositionWithOffset(recyclerAdapter.getCurrentSelectPst(), 0);
+                    final View view = needChangeView;
+                    ValueAnimator va = ValueAnimator.ofInt(scroll_height, init_height);
+                    va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                        public void onAnimationUpdate(ValueAnimator animation) {
+                            Integer value = (Integer) animation.getAnimatedValue();
+                            view.getLayoutParams().height = value.intValue();
+                            view.requestLayout();
+                        }
+                    });
+                    va.setDuration(200);
+                    va.start();
+                }
+            }
+        });
         setOnBodyPageChanged(this.onBodyPageChanged);
         bodyPagerAdapter.notifyDataSetChanged();
         recyclerAdapter.setBodyPager(bodyPager);
@@ -223,7 +249,7 @@ public class MonthDayView extends LinearLayout {
         for (int i = 0; i < size; i++) {
             DayViewBody bodyView = (DayViewBody) LayoutInflater.from(this.context).inflate(R.layout.itime_day_view_body_view,null);
             bodyView.setCalendar(new MyCalendar(calendar));
-            bodyView.dayViewController.scrollContainerView.setOnTouchListener(new bodyOnTouchListener());
+//            bodyView.dayViewController.scrollContainerView.setOnTouchListener(new bodyOnTouchListener());
             lists.add(bodyView);
         }
 
@@ -252,50 +278,50 @@ public class MonthDayView extends LinearLayout {
         }
     }
 
-    class bodyOnTouchListener implements View.OnTouchListener{
-        private float pointX;
-        private float pointY;
-        private int tolerance = 50;
-
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            Log.i(TAG, "down: ");
-            switch(event.getAction()){
-                case MotionEvent.ACTION_MOVE:
-                    pointX = event.getX();
-                    pointY = event.getY();
-
-                    final View needChangeView = recyclerView;
-
-                    if (needChangeView.getHeight() == scroll_height){
-                        Log.i(TAG, "changed height: ");
-                        recyclerView.stopScroll();
-                        mLinearLayoutManager.scrollToPositionWithOffset(recyclerAdapter.getCurrentSelectPst(), 0);
-                        final View view = needChangeView;
-                        ValueAnimator va = ValueAnimator.ofInt(scroll_height, init_height);
-                        va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                            public void onAnimationUpdate(ValueAnimator animation) {
-                                Integer value = (Integer) animation.getAnimatedValue();
-                                view.getLayoutParams().height = value.intValue();
-                                view.requestLayout();
-                            }
-                        });
-                        va.setDuration(100);
-                        va.start();
-                    }
-                    
-                    return false; //This is important, if you return TRUE the action of swipe will not take place.
-                case MotionEvent.ACTION_DOWN:
-                    Log.i(TAG, "onTouch: ");
-                    return true;
-                case MotionEvent.ACTION_UP:
-                    boolean sameX = pointX + tolerance > event.getX() && pointX - tolerance < event.getX();
-                    boolean sameY = pointY + tolerance > event.getY() && pointY - tolerance < event.getY();
-                    if(sameX && sameY){
-                    }
-                    return false;
-            }
-            return false;
-        }
-    }
+//    class bodyOnTouchListener implements View.OnTouchListener{
+//        private float pointX;
+//        private float pointY;
+//        private int tolerance = 50;
+//
+//        @Override
+//        public boolean onTouch(View v, MotionEvent event) {
+//            Log.i(TAG, "down: ");
+//            switch(event.getAction()){
+//                case MotionEvent.ACTION_MOVE:
+//                    pointX = event.getX();
+//                    pointY = event.getY();
+//
+////                    final View needChangeView = recyclerView;
+////
+////                    if (needChangeView.getHeight() == scroll_height){
+////                        Log.i(TAG, "changed height: ");
+////                        recyclerView.stopScroll();
+////                        mLinearLayoutManager.scrollToPositionWithOffset(recyclerAdapter.getCurrentSelectPst(), 0);
+////                        final View view = needChangeView;
+////                        ValueAnimator va = ValueAnimator.ofInt(scroll_height, init_height);
+////                        va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+////                            public void onAnimationUpdate(ValueAnimator animation) {
+////                                Integer value = (Integer) animation.getAnimatedValue();
+////                                view.getLayoutParams().height = value.intValue();
+////                                view.requestLayout();
+////                            }
+////                        });
+////                        va.setDuration(100);
+////                        va.start();
+////                    }
+//
+//                    return false; //This is important, if you return TRUE the action of swipe will not take place.
+//                case MotionEvent.ACTION_DOWN:
+//                    Log.i(TAG, "onTouch: ");
+//                    return true;
+//                case MotionEvent.ACTION_UP:
+//                    boolean sameX = pointX + tolerance > event.getX() && pointX - tolerance < event.getX();
+//                    boolean sameY = pointY + tolerance > event.getY() && pointY - tolerance < event.getY();
+//                    if(sameX && sameY){
+//                    }
+//                    return false;
+//            }
+//            return false;
+//        }
+//    }
 }

@@ -68,6 +68,7 @@ public class DayDraggableEventView extends RelativeLayout {
         this.type = type;
         this.status = status;
         int color = Color.RED;
+
         switch (this.type){
             case 0:
                 color = getContext().getResources().getColor(R.color.private_et);
@@ -78,7 +79,6 @@ public class DayDraggableEventView extends RelativeLayout {
             case 2:
                 color = getContext().getResources().getColor(R.color.public_et);
                 break;
-
         }
 
         this.setBackground(getResources().getDrawable(R.drawable.itime_draggable_event_bg));

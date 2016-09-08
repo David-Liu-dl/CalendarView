@@ -40,7 +40,7 @@ import java.util.TreeMap;
  * Created by yuhaoliu on 3/08/16.
  */
 public class DayViewBodyController {
-    public final String TAG = "DayViewBodyController";
+    public final String TAG = "MyAPP";
 
     private final long allDayMilliseconds = 24 * 60 * 60 * 1000;
 
@@ -134,6 +134,15 @@ public class DayViewBodyController {
         initDividerLine(getHours());
     }
 
+    public void bringEventsToFront(){
+//        regular_event_view_map
+//        for (Map.Entry<Dra,String> entry : regular_event_view_map.entrySet()) {
+//            String key = entry.getKey();
+//            String value = entry.getValue();
+//            // do stuff
+//        }
+    }
+
     private void initTimeSlot(){
         double startPoint = timeTextSize * 0.5;
         double timeSlotHeight = lineHeight/4;
@@ -208,6 +217,7 @@ public class DayViewBodyController {
     }
 
     public void resetViews(){
+//        Log.i(TAG, "resetViews: ");
         this.regularEventModules.clear();
         this.regular_event_view_map.clear();
         this.allDayEventModules.clear();
@@ -503,6 +513,7 @@ public class DayViewBodyController {
                         long[] new_date = changeDateFromString(dragging_event, currentEventNewHour, currentEventNewMinutes);
                         dragging_event.setStartTime(new_date[0]);
                         dragging_event.setEndTime(new_date[1]);
+                        Log.i(TAG, "changed: ");
                     }
                     //update Y position
                     params.topMargin = reComputeResult[1];
@@ -517,6 +528,8 @@ public class DayViewBodyController {
                     finalView.getBackground().setAlpha(128);
                     finalView.setVisibility(View.VISIBLE);
                     msgWindow.setVisibility(View.INVISIBLE);
+//                    Log.i(TAG, "currentEventNewHour: " + currentEventNewHour);
+//                    Log.i(TAG, "currentEventNewMinutes: " + currentEventNewMinutes);
                     if (tempDragView != null){
                         ViewGroup parent = (ViewGroup)tempDragView.getParent();
                         parent.removeView(tempDragView);
@@ -688,7 +701,6 @@ public class DayViewBodyController {
             Log.i(TAG, "Margin-Left pst: " + view.getLeft());
             Log.i(TAG, "Margin-Top pst: " + view.getTop());
         }
-
     }
 
 }

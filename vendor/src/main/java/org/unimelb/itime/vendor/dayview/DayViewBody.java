@@ -2,14 +2,19 @@ package org.unimelb.itime.vendor.dayview;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 
 import org.unimelb.itime.vendor.R;
+import org.unimelb.itime.vendor.eventview.DayDraggableEventView;
 import org.unimelb.itime.vendor.helper.MyCalendar;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by yuhaoliu on 3/08/16.
@@ -25,6 +30,9 @@ public class DayViewBody extends RelativeLayout {
     public ScrollContainerView scrollContainerView;
 
     public DayViewBodyController dayViewController;
+
+    private List<ITimeEventInterface> events = new ArrayList<>();
+
 
     public MyCalendar myCalendar;
 
@@ -54,13 +62,13 @@ public class DayViewBody extends RelativeLayout {
     }
 
     public void addEvent(final ITimeEventInterface new_event){
-        dividerRLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                dayViewController.addEvent(new_event);
-                invalidateEvents();
-            }
-        });
+        events.add(new_event);
+//        dividerRLayout.post(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//            }
+//        });
     }
 
     public void removeEvent(ITimeEventInterface delete_event){
@@ -74,6 +82,10 @@ public class DayViewBody extends RelativeLayout {
     public void invalidateEvents(){
         dayViewController.reDrawEvents();
     }
+
+    public void resetView(){
+        this.events.clear();
+        dayViewController.resetViews();}
 
     @Override
     protected void onFinishInflate() {
@@ -95,14 +107,18 @@ public class DayViewBody extends RelativeLayout {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        dayViewController.resetViews();
-
         dayViewController.initBackgroundView();
+
+        for (ITimeEventInterface event: this.events
+             ) {
+            Log.i(TAG, "onAttachedToWindow: " + events.size());
+            dayViewController.addEvent(event);
+            invalidateEvents();
+        }
 
         if (myCalendar.isToday()){
             dayViewController.addNowTimeLine();
         }
-
         dividerRLayout.invalidate();
     }
 }

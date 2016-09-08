@@ -197,10 +197,10 @@ public class MonthAgendaView extends RelativeLayout{
                 day_diff = day_diff <= 0 ? (7 + day_diff):day_diff;
             }
 
-
             if ((row_diff != 0 || day_diff != 0)){
                 if (row_diff != 0){
                     int newRowPst = row_diff + headerRecyclerAdapter.rowPst;
+                    headerRecyclerView.stopScroll();
                     headerRecyclerView.getLayoutManager().smoothScrollToPosition(headerRecyclerView,null,newRowPst);
                     headerRecyclerAdapter.rowPst = newRowPst;
                 }
@@ -219,6 +219,7 @@ public class MonthAgendaView extends RelativeLayout{
                 }
             }
         }else {
+            headerRecyclerView.stopScroll();
             headerRecyclerView.getLayoutManager().scrollToPosition(headerRecyclerAdapter.rowPst);
         }
     }

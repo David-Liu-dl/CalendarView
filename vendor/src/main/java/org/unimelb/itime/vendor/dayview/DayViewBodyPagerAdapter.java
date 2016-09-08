@@ -43,6 +43,8 @@ public class DayViewBodyPagerAdapter extends PagerAdapter {
         if (parent != null){
             parent.removeView(v);
         }
+        v.resetView();
+        Log.i(TAG, "resetView: ");
         v.getCalendar().setOffset(position - upperBounds - (calendar.get(Calendar.DAY_OF_WEEK)-1));
         if (this.onBodyPageChanged != null){
             Calendar calendar = v.getCalendar().getCalendar();
@@ -51,19 +53,19 @@ public class DayViewBodyPagerAdapter extends PagerAdapter {
             calendar.set(Calendar.SECOND, 0);
             calendar.set(Calendar.MILLISECOND, 0);
             long beginOfDayMilliseconds = calendar.getTimeInMillis();
-
             List<ITimeEventInterface> events = this.onBodyPageChanged.loadEvents(beginOfDayMilliseconds);
             if (events != null){
+                Log.i(TAG, "instantiateItem: " + v.getCalendar().toString());
                 for (ITimeEventInterface event: events
                         ) {
                     v.addEvent(event);
                 }
             }
-
         }else{
-            Log.i(TAG, "instantiateItem: null listenner");
+            Log.i(TAG, "instantiateItem: null listener");
         }
         container.addView(v);
+
         return v;
     }
 

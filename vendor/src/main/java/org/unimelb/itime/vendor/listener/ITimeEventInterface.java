@@ -22,6 +22,14 @@ public interface ITimeEventInterface<T> extends Comparable<T> {
     void setStatus(int statusId);
     int getStatus();
 
+    /**
+     * Note: Display status:
+     *  int[0] = color, Color.parse("#xxxxx")
+     *  int[1] = status
+     * @return int[] size=2
+     */
+//    int[] getDisplayStatus();
+
     void setLocation(String location);
     String getLocation();
 

@@ -122,7 +122,6 @@ public class Event implements ITimeEventInterface<Event>{
         this.id = id;
     }
 
-
     @Override
     public String getLocation() {
         return location;

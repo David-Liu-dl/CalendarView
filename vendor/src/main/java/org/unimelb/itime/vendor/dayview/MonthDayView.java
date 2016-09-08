@@ -259,10 +259,9 @@ public class MonthDayView extends LinearLayout {
 
         @Override
         public boolean onTouch(View v, MotionEvent event) {
+            Log.i(TAG, "down: ");
             switch(event.getAction()){
                 case MotionEvent.ACTION_MOVE:
-                    Log.i(TAG, "wadwa");
-
                     pointX = event.getX();
                     pointY = event.getY();
 
@@ -284,9 +283,11 @@ public class MonthDayView extends LinearLayout {
                         va.setDuration(100);
                         va.start();
                     }
+                    
                     return false; //This is important, if you return TRUE the action of swipe will not take place.
                 case MotionEvent.ACTION_DOWN:
-                    return false;
+                    Log.i(TAG, "onTouch: ");
+                    return true;
                 case MotionEvent.ACTION_UP:
                     boolean sameX = pointX + tolerance > event.getX() && pointX - tolerance < event.getX();
                     boolean sameY = pointY + tolerance > event.getY() && pointY - tolerance < event.getY();

@@ -682,7 +682,7 @@ public class DayViewBodyController {
 
     /*************************** LISTENER ******************************************/
     public interface OnCreateNewEvent{
-        ITimeEventInterface createNewEvent(MyCalendar newEventCalendar);
+        void createNewEvent(MyCalendar newEventCalendar);
     }
 
     public void setOnCreateNewEvent(OnCreateNewEvent onCreateNewEvent) {

@@ -120,4 +120,24 @@ public class MyCalendar {
 
         return calendar.get(Calendar.DAY_OF_WEEK);
     }
+
+    public long getBeginOfDayMilliseconds(){
+        Calendar calendar = this.getCalendar();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        return  calendar.getTimeInMillis();
+    }
+
+    public String toString(){
+        int year = this.getYear();
+        int month = this.getMonth();
+        int day = this.getDay();
+        int hour = this.getHour();
+        int minutes = this.getMinute();
+
+        return year + "  " + day + "/" + month + "  " + hour + " : " + minutes;
+    }
 }

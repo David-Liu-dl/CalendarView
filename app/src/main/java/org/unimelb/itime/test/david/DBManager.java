@@ -40,6 +40,7 @@ public class DBManager {
             return mInstance;
     }
 
+
     public void insertEvent(Event event) {
         DaoMaster daoMaster = new DaoMaster(getWritableDatabase());
         DaoSession daoSession = daoMaster.newSession();
@@ -67,6 +68,15 @@ public class DBManager {
         return list;
     }
 
+    public List<Event> getAllEvents() {
+        DaoMaster daoMaster = new DaoMaster(getReadableDatabase());
+        DaoSession daoSession = daoMaster.newSession();
+        EventDao eventDao = daoSession.getEventDao();
+        QueryBuilder<Event> qb = eventDao.queryBuilder();
+        List<Event> list = qb.list();
+        return list;
+    }
+
     public void clearDB(){
         DaoMaster daoMaster = new DaoMaster(getWritableDatabase());
         DaoSession daoSession = daoMaster.newSession();
@@ -82,7 +92,7 @@ public class DBManager {
         return db;
     }
 
-    private SQLiteDatabase getWritableDatabase() {
+    public SQLiteDatabase getWritableDatabase() {
         if (openHelper == null) {
             openHelper = new DaoMaster.DevOpenHelper(context, dbName, null);
         }

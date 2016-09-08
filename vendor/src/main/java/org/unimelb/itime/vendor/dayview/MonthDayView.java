@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import org.unimelb.itime.vendor.R;
+
 import org.unimelb.itime.vendor.helper.MyCalendar;
 
 import java.util.ArrayList;
@@ -26,9 +27,9 @@ import java.util.Locale;
 /**
  * Created by yuhaoliu on 10/08/16.
  */
+
 public class MonthDayView extends LinearLayout {
     private final String TAG = "MyAPP";
-
 
     private Handler handler=new Handler();
 
@@ -50,6 +51,7 @@ public class MonthDayView extends LinearLayout {
     private Context context;
 
     private DayViewBodyPagerAdapter.OnBodyPageChanged onBodyPageChanged;
+    private DayViewHeader.OnCheckIfHasEvent onCheckIfHasEvent;
 
     public MonthDayView(Context context) {
         super(context);
@@ -88,8 +90,16 @@ public class MonthDayView extends LinearLayout {
         }
     }
 
+    public void setOnCheckIfHasEvent(DayViewHeader.OnCheckIfHasEvent onCheckIfHasEvent){
+        this.onCheckIfHasEvent = onCheckIfHasEvent;
+        if (recyclerAdapter != null){
+            recyclerAdapter.setOnCheckIfHasEvent(this.onCheckIfHasEvent);
+        }
+    }
+
     private void setUpHeader(){
         recyclerAdapter = new DayViewHeaderRecyclerAdapter(context, upperBoundsOffset);
+        setOnCheckIfHasEvent(this.onCheckIfHasEvent);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(recyclerAdapter);
         mLinearLayoutManager = new LinearLayoutManager(context);
@@ -286,9 +296,4 @@ public class MonthDayView extends LinearLayout {
             return false;
         }
     }
-
-//    public interface OnBodyPageChanged{
-//        List<Event> updateEvent(long timeStart);
-//    }
-
 }

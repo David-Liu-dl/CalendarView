@@ -1,6 +1,5 @@
 package org.unimelb.itime.vendor.listener;
 
-import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -23,9 +22,22 @@ public interface ITimeEventInterface<T> extends Comparable<T> {
     void setStatus(int statusId);
     int getStatus();
 
+    /**
+     * Note: Display status:
+     *  int[0] = color, Color.parse("#xxxxx")
+     *  int[1] = status
+     * @return int[] size=2
+     */
+//    int[] getDisplayStatus();
+
+    void setLocation(String location);
+    String getLocation();
 
     void setProposedTimeSlots(ArrayList<Long> proposedTimeSlots);
     ArrayList<Long> getProposedTimeSlots();
 
+    String getInvitees_urls();
+
+    void setInvitees_urls(String invitees_urls);
 
 }

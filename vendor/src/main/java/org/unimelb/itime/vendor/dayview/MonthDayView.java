@@ -31,8 +31,6 @@ import java.util.Locale;
 public class MonthDayView extends LinearLayout {
     private final String TAG = "MyAPP";
 
-    private Handler handler=new Handler();
-
     private LinearLayout parent;
     private RecyclerView recyclerView;
     private DayViewHeaderRecyclerAdapter recyclerAdapter;
@@ -150,55 +148,43 @@ public class MonthDayView extends LinearLayout {
             @Override
             public void onPageSelected(int position) {
                 try{
-
                     if (slideByUser) {
                         final boolean slideToRight = (position > bodyCurrentPosition);
 
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                recyclerAdapter.notifyDataSetChanged();
+                        DayViewHeader headerView =
+                                (DayViewHeader) mLinearLayoutManager.findViewByPosition(recyclerAdapter.getCurrentSelectPst());
 
-                                Log.i(TAG, "onPageSelected: slide body by user");
-                                DayViewHeader headerView =
+                        if (slideToRight){
+                            if (headerView.getCurrentSelectedIndex() == 6){
+                                recyclerAdapter.rowPst += 1;
+                                recyclerAdapter.indexInRow = 0;
+                                recyclerView.scrollToPosition(recyclerAdapter.rowPst);
+
+                                DayViewHeader nextHeaderView =
                                         (DayViewHeader) mLinearLayoutManager.findViewByPosition(recyclerAdapter.getCurrentSelectPst());
-
-                                if (headerView == null){
-                                    Log.e(TAG, "onPageSelected: ", new Throwable("current header is null"));
-                                }
-                                if (slideToRight){
-                                    if (headerView.getCurrentSelectedIndex() == 6){
-                                        recyclerAdapter.rowPst += 1;
-                                        recyclerAdapter.indexInRow = 0;
-                                        recyclerView.scrollToPosition(recyclerAdapter.rowPst);
-
-                                        DayViewHeader nextHeaderView =
-                                                (DayViewHeader) mLinearLayoutManager.findViewByPosition(recyclerAdapter.getCurrentSelectPst());
-                                        if (nextHeaderView != null){
-                                            nextHeaderView.performFstDayClick();
-                                        }else
-                                            Log.i(TAG, "next find null in main: ");
-                                    }else {
-                                        headerView.nextPerformClick();
-                                    }
-                                }else{
-                                    if (headerView.getCurrentSelectedIndex() == 0){
-                                        recyclerAdapter.rowPst -= 1;
-                                        recyclerAdapter.indexInRow = 6;
-                                        recyclerView.scrollToPosition(recyclerAdapter.rowPst);
-                                        DayViewHeader previousHeaderView =
-                                                (DayViewHeader) mLinearLayoutManager.findViewByPosition(recyclerAdapter.getCurrentSelectPst());
-                                        if (previousHeaderView != null){
-                                            previousHeaderView.performLastDayClick();
-                                        }else{
-                                            Log.i(TAG, "previous find null in main: ");
-                                        }
-                                    }else {
-                                        headerView.previousPerformClick();
-                                    }
-                                }
+                                if (nextHeaderView != null){
+                                    nextHeaderView.performFstDayClick();
+                                }else
+                                    Log.i(TAG, "next find null in main: ");
+                            }else {
+                                headerView.nextPerformClick();
                             }
-                        },0);
+                        }else{
+                            if (headerView.getCurrentSelectedIndex() == 0){
+                                recyclerAdapter.rowPst -= 1;
+                                recyclerAdapter.indexInRow = 6;
+                                recyclerView.scrollToPosition(recyclerAdapter.rowPst);
+                                DayViewHeader previousHeaderView =
+                                        (DayViewHeader) mLinearLayoutManager.findViewByPosition(recyclerAdapter.getCurrentSelectPst());
+                                if (previousHeaderView != null){
+                                    previousHeaderView.performLastDayClick();
+                                }else{
+                                    Log.i(TAG, "previous find null in main: ");
+                                }
+                            }else {
+                                headerView.previousPerformClick();
+                            }
+                        }
 
                     }
                 }finally {
@@ -270,16 +256,20 @@ public class MonthDayView extends LinearLayout {
         private float pointX;
         private float pointY;
         private int tolerance = 50;
+
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             switch(event.getAction()){
                 case MotionEvent.ACTION_MOVE:
-                    return false; //This is important, if you return TRUE the action of swipe will not take place.
-                case MotionEvent.ACTION_DOWN:
+                    Log.i(TAG, "wadwa");
+
                     pointX = event.getX();
                     pointY = event.getY();
+
                     final View needChangeView = recyclerView;
+
                     if (needChangeView.getHeight() == scroll_height){
+                        Log.i(TAG, "changed height: ");
                         recyclerView.stopScroll();
                         mLinearLayoutManager.scrollToPositionWithOffset(recyclerAdapter.getCurrentSelectPst(), 0);
                         final View view = needChangeView;
@@ -291,15 +281,18 @@ public class MonthDayView extends LinearLayout {
                                 view.requestLayout();
                             }
                         });
-                        va.setDuration(200);
+                        va.setDuration(100);
                         va.start();
                     }
-                    break;
+                    return false; //This is important, if you return TRUE the action of swipe will not take place.
+                case MotionEvent.ACTION_DOWN:
+                    return false;
                 case MotionEvent.ACTION_UP:
                     boolean sameX = pointX + tolerance > event.getX() && pointX - tolerance < event.getX();
                     boolean sameY = pointY + tolerance > event.getY() && pointY - tolerance < event.getY();
                     if(sameX && sameY){
                     }
+                    return false;
             }
             return false;
         }

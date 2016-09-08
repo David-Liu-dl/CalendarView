@@ -1,5 +1,6 @@
 package org.unimelb.itime.vendor.weekview;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.databinding.BindingMethod;
 import android.databinding.BindingMethods;
@@ -88,6 +89,11 @@ public class WeekViewBody extends LinearLayout{
         initHourTextViews();
         initTimeDottedLine();
         initMsgWindow();
+
+//        // for drag events
+//        initTimeSlot(getHours());
+//        initDaySlot();
+        initDragListener();
     }
 
     private void initWidgets() {
@@ -228,6 +234,7 @@ public class WeekViewBody extends LinearLayout{
                 eventCalendar.setTime(eventDate);
                 if (isInCurrentWeek(eventCalendar,myCalendar)) {
                     WeekDraggableEventView eventView = new WeekDraggableEventView(getContext(),event);
+//                    eventView.setOnLongClickListener(new MyLongClickListener()); // for event draggable
                     eventViewArrayList.add(eventView);
                     eventRelativeLayout.addView(eventView);
                 }
@@ -401,6 +408,8 @@ public class WeekViewBody extends LinearLayout{
                 int duration = (int) ((eventView.getEvent().getEndTime() - eventView.getEvent().getStartTime())/1000/60);
                 int eventHeight = duration *hourHeight / 60;
                 eventView.layout(leftOffSet, topOffset, leftOffSet + dayWidth, topOffset + eventHeight);
+                eventView.setOnLongClickListener(new MyLongClickListener()); // for draggable
+
                 eventView.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -409,6 +418,9 @@ public class WeekViewBody extends LinearLayout{
                 });
             }
         }
+        // for drag events
+        initTimeSlot(getHours());
+        initDaySlot();
 
 
     }
@@ -463,6 +475,20 @@ public class WeekViewBody extends LinearLayout{
     }
 
 //    ********************************************************************
+
+    private final class MyLongClickListener implements View.OnLongClickListener{
+        @Override
+        public boolean onLongClick(View view) {
+            ClipData data = ClipData.newPlainText("", "");
+            View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(
+                    view);
+            view.startDrag(data, shadowBuilder, view, 0);
+            view.setVisibility(View.VISIBLE);
+            view.getBackground().setAlpha(255);
+            return false;
+        }
+    }
+
 
     private final class MyDragListener implements View.OnDragListener{
         float actionStartX = 0;

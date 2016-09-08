@@ -1,11 +1,13 @@
 package org.unimelb.itime.vendor.eventview;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -17,7 +19,7 @@ import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 /**
  * Created by Paul on 26/08/2016.
  */
-public class WeekDraggableEventView extends RelativeLayout{
+public class WeekDraggableEventView extends RelativeLayout implements View.OnLongClickListener{
     private ITimeEventInterface event;
     private TextView title;
     private ImageView icon;
@@ -138,7 +140,7 @@ public class WeekDraggableEventView extends RelativeLayout{
         RelativeLayout.LayoutParams leftBarParams = (RelativeLayout.LayoutParams)leftBar.getLayoutParams();
         leftBar.layout(0,0,leftBarWidth,height);
 
-        if (event.getStatus()!=-1) {
+        if (event.getStatus()!=0) {
             int iconWidth = this.width / 3;
             int iconLeft = this.width / 3 * 2 - this.width / 10;
             int iconTop = this.width / 10;
@@ -174,6 +176,14 @@ public class WeekDraggableEventView extends RelativeLayout{
     }
 
 
-
-
+    @Override
+    public boolean onLongClick(View view) {
+        ClipData data = ClipData.newPlainText("", "");
+        View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(
+                view);
+        view.startDrag(data, shadowBuilder, view, 0);
+        view.setVisibility(View.VISIBLE);
+        view.getBackground().setAlpha(255);
+        return false;
+    }
 }

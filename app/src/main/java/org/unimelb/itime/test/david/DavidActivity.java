@@ -8,6 +8,7 @@ import org.unimelb.itime.test.R;
 import org.unimelb.itime.test.bean.Event;
 import org.unimelb.itime.vendor.agendaview.AgendaViewBody;
 import org.unimelb.itime.vendor.agendaview.MonthAgendaView;
+import org.unimelb.itime.vendor.dayview.DayViewBodyController;
 import org.unimelb.itime.vendor.dayview.DayViewBodyPagerAdapter;
 import org.unimelb.itime.vendor.dayview.DayViewHeader;
 import org.unimelb.itime.vendor.dayview.MonthDayView;
@@ -32,7 +33,6 @@ public class DavidActivity extends AppCompatActivity {
         loadData();
 //        doMonthAgendaViewThings();
         doMonthDayViewThings();
-
     }
     private void initData(){
         this.dbManager.clearDB();
@@ -49,7 +49,7 @@ public class DavidActivity extends AppCompatActivity {
     }
 
     private void doMonthDayViewThings(){
-        MonthDayView monthDayFragment = (MonthDayView) findViewById(R.id.monthDayView);
+        final MonthDayView monthDayFragment = (MonthDayView) findViewById(R.id.monthDayView);
 
         monthDayFragment.setOnCheckIfHasEvent(new DayViewHeader.OnCheckIfHasEvent() {
                 @Override
@@ -59,20 +59,47 @@ public class DavidActivity extends AppCompatActivity {
                     return (EventManager.getInstance().getEventsMap().containsKey(startOfDay));
                 }
         });
-
-        monthDayFragment.setOnBodyPageChanged(new DayViewBodyPagerAdapter.OnBodyPageChanged() {
-
+//        public List<ITimeEventInterface> loadEvents(long beginOfDayM) {
+//
+//            if (EventManager.getInstance().getEventsMap().containsKey(beginOfDayM)){
+//                Log.i(TAG, "size: " + EventManager.getInstance().getEventsMap().get(beginOfDayM).size());
+//                return EventManager.getInstance().getEventsMap().get(beginOfDayM);
+//            }
+//
+//            return null;
+//        }
+        monthDayFragment.setOnLoadEvents(new DayViewBodyController.OnLoadEvents() {
             @Override
             public List<ITimeEventInterface> loadEvents(long beginOfDayM) {
-
                 if (EventManager.getInstance().getEventsMap().containsKey(beginOfDayM)){
-                    Log.i(TAG, "size: " + EventManager.getInstance().getEventsMap().get(beginOfDayM).size());
-                    return EventManager.getInstance().getEventsMap().get(beginOfDayM);
-                }
-
+                Log.i(TAG, "size: " + EventManager.getInstance().getEventsMap().get(beginOfDayM).size());
+                return EventManager.getInstance().getEventsMap().get(beginOfDayM);
+            }
                 return null;
             }
         });
+
+        monthDayFragment.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Event event = new Event();
+                event.setTitle("new added");
+                event.setEventType(2);
+                event.setStatus(1);
+                event.setLocation("here");
+                event.setStartTime(Calendar.getInstance().getTimeInMillis());
+                event.setEndTime(Calendar.getInstance().getTimeInMillis() + 60 * 60 * 1000);
+                String urls;
+                urls = ("http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg");
+                urls += "|" + ("http://education.news.cn/2015-05/04/127751980_14303593148421n.jpg");
+                urls += "|" + ("http://i1.wp.com/pmcdeadline2.files.wordpress.com/2016/06/angelababy.jpg?crop=0px%2C107px%2C1980px%2C1327px&resize=446%2C299&ssl=1");
+                event.setInvitees_urls(urls);
+                EventManager.getInstance().addEvent(event);
+                monthDayFragment.reloadCurrentBodyEvents();
+
+                Log.i(TAG, "reload done: ");
+            }
+        },5000);
     }
 
 //

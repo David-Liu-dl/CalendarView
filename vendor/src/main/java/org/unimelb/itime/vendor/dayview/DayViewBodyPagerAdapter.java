@@ -16,9 +16,9 @@ public class DayViewBodyPagerAdapter extends PagerAdapter {
     public String TAG = "MyAPP";
 
     private DayViewBodyController.OnCreateNewEvent onCreateNewEvent;
-    private Calendar calendar = Calendar.getInstance();
-    private OnBodyPageChanged onBodyPageChanged;
     private DayViewBodyController.BodyOnTouchListener bodyOnTouchListener;
+
+    private Calendar calendar = Calendar.getInstance();
 
     ArrayList<View> vLists;
     int upperBounds;
@@ -37,6 +37,24 @@ public class DayViewBodyPagerAdapter extends PagerAdapter {
 
     public void setBodyOnTouchListener(DayViewBodyController.BodyOnTouchListener bodyOnTouchListener) {
         this.bodyOnTouchListener = bodyOnTouchListener;
+        for (int i = 0; i < vLists.size(); i++) {
+            ((DayViewBody) vLists.get(i)).setBodyOnTouchListener(this.bodyOnTouchListener);
+        }
+    }
+
+    public void setOnLoadEvents(DayViewBodyController.OnLoadEvents onLoadEvents) {
+        for (int i = 0; i < vLists.size(); i++) {
+            ((DayViewBody) vLists.get(i)).setOnLoadEvents(onLoadEvents);
+        }
+    }
+//    public void setOnBodyPageChanged(OnBodyPageChanged onBodyPageChanged){
+//        this.onBodyPageChanged = onBodyPageChanged;
+//    }
+
+    public DayViewBody getViewByPosition(int position){
+        DayViewBody viewAtPosition = (DayViewBody) vLists.get(position % vLists.size());
+
+        return viewAtPosition;
     }
 
     @Override
@@ -56,33 +74,11 @@ public class DayViewBodyPagerAdapter extends PagerAdapter {
         if (parent != null){
             parent.removeView(v);
         }
+
         v.resetView();
         v.getCalendar().setOffset(position - upperBounds - (calendar.get(Calendar.DAY_OF_WEEK)-1));
-        if (this.onBodyPageChanged != null){
-            Calendar calendar = v.getCalendar().getCalendar();
-            calendar.set(Calendar.HOUR_OF_DAY, 0);
-            calendar.set(Calendar.MINUTE, 0);
-            calendar.set(Calendar.SECOND, 0);
-            calendar.set(Calendar.MILLISECOND, 0);
-            long beginOfDayMilliseconds = calendar.getTimeInMillis();
-            List<ITimeEventInterface> events = this.onBodyPageChanged.loadEvents(beginOfDayMilliseconds);
-            if (events != null){
-                for (ITimeEventInterface event: events
-                        ) {
-                    v.addEvent(event);
-                }
-            }
-        }else{
-            Log.i(TAG, "instantiateItem: null listener");
-        }
-        if (this.onCreateNewEvent != null){
-            v.setOnCreateNewEvent(this.onCreateNewEvent);
-        }else {
-            Log.i(TAG, "adapter:  onCreateNewEvent null");
-        }
-        if (this.bodyOnTouchListener != null){
-            v.setBodyOnTouchListener(this.bodyOnTouchListener);
-        }
+        v.reloadEvents();
+
         container.addView(v);
 
         return v;
@@ -98,11 +94,4 @@ public class DayViewBodyPagerAdapter extends PagerAdapter {
 //        container.removeView(vLists.get(position % vLists.size()));
     }
 
-    public void setOnBodyPageChanged(OnBodyPageChanged onBodyPageChanged){
-        this.onBodyPageChanged = onBodyPageChanged;
-    }
-
-    public interface OnBodyPageChanged{
-        List<ITimeEventInterface> loadEvents(long beginOfDayM);
-    }
 }

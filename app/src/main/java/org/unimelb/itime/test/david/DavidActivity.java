@@ -1,14 +1,17 @@
 package org.unimelb.itime.test.david;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import org.unimelb.itime.test.R;
+import org.unimelb.itime.test.bean.Contact;
 import org.unimelb.itime.test.bean.Event;
 import org.unimelb.itime.vendor.dayview.DayViewBodyController;
 import org.unimelb.itime.vendor.dayview.DayViewHeader;
 import org.unimelb.itime.vendor.dayview.MonthDayView;
+import org.unimelb.itime.vendor.listener.ITimeContactInterface;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 
 import java.util.ArrayList;
@@ -25,12 +28,26 @@ public class DavidActivity extends AppCompatActivity {
         setContentView(R.layout.activity_david);
 
         dbManager = DBManager.getInstance(this.getApplicationContext());
-        //init DB
+
+//        doInviteesThings();
 //        initData();
         loadData();
 //        doMonthAgendaViewThings();
         doMonthDayViewThings();
     }
+
+    private void doInviteesThings(){
+        InviteeFragment inviteeFragment = new InviteeFragment();
+        inviteeFragment.setOnLoadContact(new InviteeFragment.OnLoadContact() {
+            @Override
+            public List<ITimeContactInterface> loadContacts() {
+                return simulateContacts();
+            }
+        });
+
+        getFragmentManager().beginTransaction().add(R.id.fragment, inviteeFragment).commit();
+    }
+
     private void initData(){
         this.dbManager.clearDB();
         this.initDB();
@@ -61,7 +78,6 @@ public class DavidActivity extends AppCompatActivity {
             @Override
             public List<ITimeEventInterface> loadEvents(long beginOfDayM) {
                 if (EventManager.getInstance().getEventsMap().containsKey(beginOfDayM)){
-                Log.i(TAG, "size: " + EventManager.getInstance().getEventsMap().get(beginOfDayM).size());
                 return EventManager.getInstance().getEventsMap().get(beginOfDayM);
             }
                 return null;
@@ -174,4 +190,19 @@ public class DavidActivity extends AppCompatActivity {
         dbManager.insertEventList(events);
     }
 
+
+    public List<ITimeContactInterface> simulateContacts(){
+        List<ITimeContactInterface> contacts = new ArrayList<>();
+        contacts.add(new Contact(null,"赵普", "1"));
+        contacts.add(new Contact(null,"AGE", "2"));
+        contacts.add(new Contact(null,"B", "3"));
+        contacts.add(new Contact(null,"C", "4"));
+        contacts.add(new Contact(null,"D", "5"));
+        contacts.add(new Contact(null,"F", "6"));
+        contacts.add(new Contact(null,"Crron", "7"));
+        contacts.add(new Contact(null,"Bob", "8"));
+        contacts.add(new Contact("http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg","周二珂", "9"));
+
+		return contacts;
+	}
 }

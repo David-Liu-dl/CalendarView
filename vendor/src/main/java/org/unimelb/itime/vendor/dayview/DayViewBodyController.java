@@ -352,7 +352,6 @@ public class DayViewBodyController {
                         - allDayContainer.getPaddingLeft() - allDayContainer.getPaddingRight();
         int marginLeft = DensityUtil.dip2px(context,1);
         DayDraggableEventView new_dgEvent = this.createDayDraggableEventView(event, true);
-//        new_dgEvent.
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) new_dgEvent.getLayoutParams();
         params.leftMargin = marginLeft;
         allDayDgEventViews.add(new_dgEvent);
@@ -470,12 +469,12 @@ public class DayViewBodyController {
     }
 
     private DayDraggableEventView createDayDraggableEventView(ITimeEventInterface event, boolean isAllDayEvent){
-        DayDraggableEventView event_view = new DayDraggableEventView(context);
+
+        DayDraggableEventView event_view = new DayDraggableEventView(context, event, isAllDayEvent);
+
         if (isAllDayEvent){
             int allDayHeight = allDayContainer.getWidth() - allDayContainer.getPaddingBottom() - allDayContainer.getPaddingTop();
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(0, allDayHeight);
-            event_view.setSummary(event.getTitle());
-            event_view.setTypeAndStatus(event.getEventType(),event.getStatus(), true);
             event_view.setTag(event);
             event_view.setLayoutParams(params);
         }else{
@@ -486,8 +485,6 @@ public class DayViewBodyController {
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(0, eventHeight);
             event_view.setTop(getStartY);
             event_view.setOnLongClickListener(new EventLongClickListener());
-            event_view.setSummary(event.getTitle());
-            event_view.setTypeAndStatus(event.getEventType(),event.getStatus(), duration <= (15 * 60 * 1000));
             event_view.setTag(event);
             event_view.setLayoutParams(params);
         }
@@ -496,7 +493,7 @@ public class DayViewBodyController {
     }
 
     public DayDraggableEventView createTempDayDraggableEventView(float tapX, float tapY){
-        DayDraggableEventView event_view = new DayDraggableEventView(context);
+        DayDraggableEventView event_view = new DayDraggableEventView(context, null, false);
         int eventHeight = 1 * lineHeight;//one hour
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,eventHeight);
         params.topMargin = (int)(tapY - eventHeight/2);

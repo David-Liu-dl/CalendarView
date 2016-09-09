@@ -242,25 +242,6 @@ public class MonthDayView extends LinearLayout {
         recyclerView.scrollToPosition(n);
     }
 
-//    public void addEvent(ITimeEventInterface new_event){
-//        DayViewBody viewBody = bodyPagerAdapter.getViewByPosition(bodyCurrentPosition);
-//        if (viewBody != null){
-//            Log.i(TAG, "bodyCurrentPosition: " + bodyCurrentPosition);
-//            viewBody.addEvent(new_event);
-//        }else {
-//            Log.i(TAG, "addEvent viewBody null: ");
-//        }
-//    }
-//
-//    public void removeEvent(ITimeEventInterface deleteEvent){
-//        DayViewBody viewBody = bodyPagerAdapter.getViewByPosition(bodyCurrentPosition);
-//        if (viewBody != null){
-//            viewBody.removeEvent(deleteEvent);
-//        }else {
-//            Log.i(TAG, "removeEvent viewBody null: ");
-//        }
-//    }
-
     private ArrayList<View> initBody(){
         int size = 4;
         ArrayList<View> lists = new ArrayList<>();

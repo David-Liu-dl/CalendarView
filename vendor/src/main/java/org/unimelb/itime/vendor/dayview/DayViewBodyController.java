@@ -54,6 +54,7 @@ public class DayViewBodyController {
     private Context context;
 
     private ArrayList<ITimeEventInterface> regularEventModules = new ArrayList<>();
+    private ArrayList<DayDraggableEventView> regularDayDgEventViews = new ArrayList<>();
     private ArrayList<ITimeEventInterface> allDayEventModules = new ArrayList<>();
     private ArrayList<DayDraggableEventView> allDayDgEventViews = new ArrayList<>();
 
@@ -77,6 +78,7 @@ public class DayViewBodyController {
     private float nowTapY = 0;
 
     private OnCreateNewEvent onCreateNewEvent;
+    private OnLoadEvents onLoadEvents;
 
     private BodyOnTouchListener bodyOnTouchListener;
 
@@ -116,8 +118,10 @@ public class DayViewBodyController {
         this.scrollContainerView = scrollContainerView;
         dividerRLayout.setOnDragListener(new EventDragListener());
         dividerRLayout.setOnTouchListener(new View.OnTouchListener() {
+
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+
                 nowTapX = event.getX();
                 nowTapY = event.getY();
                 if (bodyOnTouchListener != null){
@@ -130,14 +134,6 @@ public class DayViewBodyController {
             }
         });
         dividerRLayout.setOnLongClickListener(new CreateEventListener());
-    }
-
-    public interface BodyOnTouchListener{
-        void bodyOnTouchListener(float tapX, float tapY);
-    }
-
-    public void setBodyOnTouchListener(BodyOnTouchListener bodyOnTouchListener) {
-        this.bodyOnTouchListener = bodyOnTouchListener;
     }
 
     public void initBackgroundView(){
@@ -221,8 +217,8 @@ public class DayViewBodyController {
     }
 
     public void resetViews(){
-//        Log.i(TAG, "resetViews: ");
         this.regularEventModules.clear();
+        this.regularDayDgEventViews.clear();
         this.regular_event_view_map.clear();
         this.allDayEventModules.clear();
 
@@ -238,11 +234,37 @@ public class DayViewBodyController {
             dividerRLayout.removeAllViews();
         }
 
+        if (this.dividerRLayout != null){
+            timeRLayout.removeAllViews();
+        }
+
         if (this.parent != null){
             parent.removeView(nowTime);
             parent.removeView(nowTimeLine);
         }
 
+    }
+
+    public void clearAllEvents(){
+        if(this.allDayContainer != null){
+            for (DayDraggableEventView dgEventView: this.allDayDgEventViews
+                    ) {
+                allDayContainer.removeView(dgEventView);
+            }
+            this.allDayDgEventViews.clear();
+        }
+
+        if (this.dividerRLayout != null){
+            for (DayDraggableEventView dgView : regularDayDgEventViews
+                 ) {
+                this.dividerRLayout.removeView(dgView);
+            }
+        }
+
+        this.regularEventModules.clear();
+        this.regularDayDgEventViews.clear();
+        this.regular_event_view_map.clear();
+        this.allDayEventModules.clear();
     }
 
     public void addNowTimeLine(){
@@ -330,7 +352,6 @@ public class DayViewBodyController {
                         - allDayContainer.getPaddingLeft() - allDayContainer.getPaddingRight();
         int marginLeft = DensityUtil.dip2px(context,1);
         DayDraggableEventView new_dgEvent = this.createDayDraggableEventView(event, true);
-//        new_dgEvent.
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) new_dgEvent.getLayoutParams();
         params.leftMargin = marginLeft;
         allDayDgEventViews.add(new_dgEvent);
@@ -353,6 +374,7 @@ public class DayViewBodyController {
         new_dgEvent.setId(View.generateViewId());
         this.regular_event_view_map.put(event,new_dgEvent.getId());
         this.dividerRLayout.addView(new_dgEvent, params);
+        this.regularDayDgEventViews.add(new_dgEvent);
     }
 
     private void resizeAllDayEvents(int totalWidth, int marginLeft){
@@ -416,13 +438,43 @@ public class DayViewBodyController {
         dividerRLayout.requestLayout();
     }
 
+    public void reLoadEvents(){
+        this.clearAllEvents();
+        if (this.onLoadEvents != null){
+            Calendar calendar = myCalendar.getCalendar();
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+            long beginOfDayMilliseconds = calendar.getTimeInMillis();
+            List<ITimeEventInterface> events = this.onLoadEvents.loadEvents(beginOfDayMilliseconds);
+            if (events != null){
+                for (ITimeEventInterface event: events
+                        ) {
+                    this.addEvent(event);
+                }
+            }
+            this.reDrawEvents();
+        }else {
+            Log.i(TAG, "reLoadEvents onLoadEvents: null");
+        }
+        
+    }
+
+    public void bringDgViewsToFront(){
+        for (DayDraggableEventView dgView: this.regularDayDgEventViews
+             ) {
+            dgView.bringToFront();
+        }
+    }
+
     private DayDraggableEventView createDayDraggableEventView(ITimeEventInterface event, boolean isAllDayEvent){
-        DayDraggableEventView event_view = new DayDraggableEventView(context);
+
+        DayDraggableEventView event_view = new DayDraggableEventView(context, event, isAllDayEvent);
+
         if (isAllDayEvent){
             int allDayHeight = allDayContainer.getWidth() - allDayContainer.getPaddingBottom() - allDayContainer.getPaddingTop();
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(0, allDayHeight);
-            event_view.setSummary(event.getTitle());
-            event_view.setTypeAndStatus(event.getEventType(),event.getStatus(), true);
             event_view.setTag(event);
             event_view.setLayoutParams(params);
         }else{
@@ -433,8 +485,6 @@ public class DayViewBodyController {
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(0, eventHeight);
             event_view.setTop(getStartY);
             event_view.setOnLongClickListener(new EventLongClickListener());
-            event_view.setSummary(event.getTitle());
-            event_view.setTypeAndStatus(event.getEventType(),event.getStatus(), duration <= (15 * 60 * 1000));
             event_view.setTag(event);
             event_view.setLayoutParams(params);
         }
@@ -443,7 +493,7 @@ public class DayViewBodyController {
     }
 
     public DayDraggableEventView createTempDayDraggableEventView(float tapX, float tapY){
-        DayDraggableEventView event_view = new DayDraggableEventView(context);
+        DayDraggableEventView event_view = new DayDraggableEventView(context, null, false);
         int eventHeight = 1 * lineHeight;//one hour
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,eventHeight);
         params.topMargin = (int)(tapY - eventHeight/2);
@@ -452,7 +502,9 @@ public class DayViewBodyController {
 
         return event_view;
     }
+
     /****************************************************************************************/
+
     private class EventLongClickListener implements View.OnLongClickListener {
         @Override
         public boolean onLongClick(View view) {
@@ -518,6 +570,7 @@ public class DayViewBodyController {
                         dragging_event.setEndTime(new_date[1]);
                         Log.i(TAG, "changed: ");
                     }
+
                     //update Y position
                     params.topMargin = reComputeResult[1];
 
@@ -531,8 +584,7 @@ public class DayViewBodyController {
                     finalView.getBackground().setAlpha(128);
                     finalView.setVisibility(View.VISIBLE);
                     msgWindow.setVisibility(View.INVISIBLE);
-//                    Log.i(TAG, "currentEventNewHour: " + currentEventNewHour);
-//                    Log.i(TAG, "currentEventNewMinutes: " + currentEventNewMinutes);
+
                     if (tempDragView != null){
                         ViewGroup parent = (ViewGroup)tempDragView.getParent();
                         parent.removeView(tempDragView);
@@ -685,13 +737,30 @@ public class DayViewBodyController {
         return param;
     }
 
-    /*************************** LISTENER ******************************************/
+    /*************************** Interface ******************************************/
+    public interface BodyOnTouchListener{
+        void bodyOnTouchListener(float tapX, float tapY);
+    }
+
     public interface OnCreateNewEvent{
         void createNewEvent(MyCalendar newEventCalendar);
     }
 
+    public interface OnLoadEvents{
+        List<ITimeEventInterface> loadEvents(long beginOfDayM);
+    }
+
+    public void setBodyOnTouchListener(BodyOnTouchListener bodyOnTouchListener) {
+        this.bodyOnTouchListener = bodyOnTouchListener;
+    }
+
+
     public void setOnCreateNewEvent(OnCreateNewEvent onCreateNewEvent) {
         this.onCreateNewEvent = onCreateNewEvent;
+    }
+
+    public void setOnLoadEvents(OnLoadEvents onLoadEvents) {
+        this.onLoadEvents = onLoadEvents;
     }
     /****************************************************************************************/
 

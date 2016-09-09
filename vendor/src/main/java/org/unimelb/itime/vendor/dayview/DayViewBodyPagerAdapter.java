@@ -15,8 +15,10 @@ import java.util.List;
 public class DayViewBodyPagerAdapter extends PagerAdapter {
     public String TAG = "MyAPP";
 
+    private DayViewBodyController.OnCreateNewEvent onCreateNewEvent;
     private Calendar calendar = Calendar.getInstance();
     private OnBodyPageChanged onBodyPageChanged;
+    private DayViewBodyController.BodyOnTouchListener bodyOnTouchListener;
 
     ArrayList<View> vLists;
     int upperBounds;
@@ -24,6 +26,17 @@ public class DayViewBodyPagerAdapter extends PagerAdapter {
     public DayViewBodyPagerAdapter(ArrayList<View> vLists, int upperBounds) {
         this.vLists = vLists;
         this.upperBounds = upperBounds;
+    }
+
+    public void setOnCreateNewEvent(DayViewBodyController.OnCreateNewEvent onCreateNewEvent){
+        this.onCreateNewEvent = onCreateNewEvent;
+        for (int i = 0; i < vLists.size(); i++) {
+            ((DayViewBody) vLists.get(i)).setOnCreateNewEvent(onCreateNewEvent);
+        }
+    }
+
+    public void setBodyOnTouchListener(DayViewBodyController.BodyOnTouchListener bodyOnTouchListener) {
+        this.bodyOnTouchListener = bodyOnTouchListener;
     }
 
     @Override
@@ -44,7 +57,6 @@ public class DayViewBodyPagerAdapter extends PagerAdapter {
             parent.removeView(v);
         }
         v.resetView();
-        Log.i(TAG, "resetView: ");
         v.getCalendar().setOffset(position - upperBounds - (calendar.get(Calendar.DAY_OF_WEEK)-1));
         if (this.onBodyPageChanged != null){
             Calendar calendar = v.getCalendar().getCalendar();
@@ -55,7 +67,6 @@ public class DayViewBodyPagerAdapter extends PagerAdapter {
             long beginOfDayMilliseconds = calendar.getTimeInMillis();
             List<ITimeEventInterface> events = this.onBodyPageChanged.loadEvents(beginOfDayMilliseconds);
             if (events != null){
-                Log.i(TAG, "instantiateItem: " + v.getCalendar().toString());
                 for (ITimeEventInterface event: events
                         ) {
                     v.addEvent(event);
@@ -63,6 +74,14 @@ public class DayViewBodyPagerAdapter extends PagerAdapter {
             }
         }else{
             Log.i(TAG, "instantiateItem: null listener");
+        }
+        if (this.onCreateNewEvent != null){
+            v.setOnCreateNewEvent(this.onCreateNewEvent);
+        }else {
+            Log.i(TAG, "adapter:  onCreateNewEvent null");
+        }
+        if (this.bodyOnTouchListener != null){
+            v.setBodyOnTouchListener(this.bodyOnTouchListener);
         }
         container.addView(v);
 

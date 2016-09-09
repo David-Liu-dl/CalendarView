@@ -32,7 +32,7 @@ public class DayViewBody extends RelativeLayout {
     public DayViewBodyController dayViewController;
 
     private List<ITimeEventInterface> events = new ArrayList<>();
-
+    private DayViewBodyController.BodyOnTouchListener bodyOnTouchListener;
 
     public MyCalendar myCalendar;
 
@@ -63,16 +63,19 @@ public class DayViewBody extends RelativeLayout {
 
     public void addEvent(final ITimeEventInterface new_event){
         events.add(new_event);
-//        dividerRLayout.post(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//            }
-//        });
+    }
+
+    public void setOnCreateNewEvent(DayViewBodyController.OnCreateNewEvent onCreateNewEvent){
+        dayViewController.setOnCreateNewEvent(onCreateNewEvent);
     }
 
     public void removeEvent(ITimeEventInterface delete_event){
         dayViewController.removeEvent(delete_event);
+    }
+
+    public void setBodyOnTouchListener(DayViewBodyController.BodyOnTouchListener bodyOnTouchListener) {
+        this.bodyOnTouchListener = bodyOnTouchListener;
+        this.dayViewController.setBodyOnTouchListener(this.bodyOnTouchListener);
     }
 
     public void updateEvent(ITimeEventInterface old_event, ITimeEventInterface new_event){
@@ -102,6 +105,12 @@ public class DayViewBody extends RelativeLayout {
                 dividerRLayout,
                 body_container,
                 allDayContainer);
+
+        if (this.bodyOnTouchListener != null){
+            dayViewController.setBodyOnTouchListener(this.bodyOnTouchListener);
+        }else {
+            Log.i(TAG, "view: bodyOnTouchListener null ");
+        }
     }
 
     @Override
@@ -111,7 +120,6 @@ public class DayViewBody extends RelativeLayout {
 
         for (ITimeEventInterface event: this.events
              ) {
-            Log.i(TAG, "onAttachedToWindow: " + events.size());
             dayViewController.addEvent(event);
             invalidateEvents();
         }

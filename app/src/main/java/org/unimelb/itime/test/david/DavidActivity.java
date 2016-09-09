@@ -6,10 +6,7 @@ import android.util.Log;
 
 import org.unimelb.itime.test.R;
 import org.unimelb.itime.test.bean.Event;
-import org.unimelb.itime.vendor.agendaview.AgendaViewBody;
-import org.unimelb.itime.vendor.agendaview.MonthAgendaView;
 import org.unimelb.itime.vendor.dayview.DayViewBodyController;
-import org.unimelb.itime.vendor.dayview.DayViewBodyPagerAdapter;
 import org.unimelb.itime.vendor.dayview.DayViewHeader;
 import org.unimelb.itime.vendor.dayview.MonthDayView;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
@@ -59,15 +56,7 @@ public class DavidActivity extends AppCompatActivity {
                     return (EventManager.getInstance().getEventsMap().containsKey(startOfDay));
                 }
         });
-//        public List<ITimeEventInterface> loadEvents(long beginOfDayM) {
-//
-//            if (EventManager.getInstance().getEventsMap().containsKey(beginOfDayM)){
-//                Log.i(TAG, "size: " + EventManager.getInstance().getEventsMap().get(beginOfDayM).size());
-//                return EventManager.getInstance().getEventsMap().get(beginOfDayM);
-//            }
-//
-//            return null;
-//        }
+
         monthDayFragment.setOnLoadEvents(new DayViewBodyController.OnLoadEvents() {
             @Override
             public List<ITimeEventInterface> loadEvents(long beginOfDayM) {

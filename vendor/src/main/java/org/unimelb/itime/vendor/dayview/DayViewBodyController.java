@@ -234,6 +234,10 @@ public class DayViewBodyController {
             dividerRLayout.removeAllViews();
         }
 
+        if (this.dividerRLayout != null){
+            timeRLayout.removeAllViews();
+        }
+
         if (this.parent != null){
             parent.removeView(nowTime);
             parent.removeView(nowTimeLine);

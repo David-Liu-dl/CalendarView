@@ -4,14 +4,12 @@ import android.util.Log;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.JoinProperty;
 import org.greenrobot.greendao.annotation.Keep;
 import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.Property;
 import org.greenrobot.greendao.annotation.ToMany;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.greenrobot.greendao.annotation.Generated;
@@ -25,10 +23,19 @@ import org.greenrobot.greendao.DaoException;
 @Entity
 public class Event implements ITimeEventInterface<Event>{
     @Id
-    private Long id;
-    private String title;
+    private String eventUid;
+    // for other calendars
+    private String eventId;
+    private String recurringEventUid;
+    // for other calendars
+    private String recurringEventId;
+    private String calendarUid;
+    private String iCalUID;
+    private String recurrence;
+    private String summary;
+    private String url;
     private String location;
-    
+
     @Property
     @NotNull
     private long startTime;
@@ -42,7 +49,7 @@ public class Event implements ITimeEventInterface<Event>{
     @NotNull
     private int status;
 
-    @ToMany(referencedJoinProperty = "eventId")
+    @ToMany(referencedJoinProperty = "eventUid")
     private List<Invitee> invitee = null;
     /** Used for active entity operations. */
     @Generated(hash = 1542254534)
@@ -54,11 +61,21 @@ public class Event implements ITimeEventInterface<Event>{
     public Event() {
     }
 
-    @Generated(hash = 108715400)
-    public Event(Long id, String title, String location, long startTime, long endTime, int eventType,
-            int status) {
-        this.id = id;
-        this.title = title;
+
+    @Generated(hash = 640668368)
+    public Event(String eventUid, String eventId, String recurringEventUid,
+            String recurringEventId, String calendarUid, String iCalUID,
+            String recurrence, String summary, String url, String location,
+            long startTime, long endTime, int eventType, int status) {
+        this.eventUid = eventUid;
+        this.eventId = eventId;
+        this.recurringEventUid = recurringEventUid;
+        this.recurringEventId = recurringEventId;
+        this.calendarUid = calendarUid;
+        this.iCalUID = iCalUID;
+        this.recurrence = recurrence;
+        this.summary = summary;
+        this.url = url;
         this.location = location;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -66,33 +83,29 @@ public class Event implements ITimeEventInterface<Event>{
         this.status = status;
     }
 
+
     @Override
-    public void setTitle(String title) {
-        this.title = title;
+    public void setTitle(String summary) {
+        this.summary = summary;
     }
 
     @Override
     public String getTitle() {
-        return this.title;
+        return this.summary;
     }
 
     @Override
-    public void setProposedTimeSlots(List<Long> proposedTimeSlots) {
-
+    public List<? extends ITimeInviteeInterface> getDisplayInvitee() {
+        return this.invitee;
     }
 
-    @Override
-    public List<Long> getProposedTimeSlots() {
-        return null;
-    }
-
-    public void setEventId(Long id){ this.id = id;}
+    public void setEventId(String id){ this.eventUid = id;}
 
     public void setStartTime(long startTime){ this.startTime = startTime; }
 
     public void setEndTime(long endTime){ this.endTime = endTime; }
 
-    public Long getId(){ return id; }
+    public String getEventUid(){ return eventUid; }
 
     public long getStartTime(){return startTime;}
 
@@ -131,8 +144,8 @@ public class Event implements ITimeEventInterface<Event>{
         }
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setEventUid(String eventUid) {
+        this.eventUid = eventUid;
     }
 
     @Override
@@ -145,38 +158,8 @@ public class Event implements ITimeEventInterface<Event>{
         this.location = location;
     }
 
-
-    /**
-     * To-many relationship, resolved on first access (and after reset).
-     * Changes to to-many relations are not persisted, make changes to the target entity.
-     */
-//    @Generated(hash = 1446513538)
-    @Keep
-    public List<Invitee> getInvitee() {
-        if (invitee == null) {
-            Log.d("MyAPP", "getInvitee: --------------");
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            InviteeDao targetDao = daoSession.getInviteeDao();
-            List<Invitee> inviteeNew = targetDao._queryEvent_Invitee(id);
-            synchronized (this) {
-                if(invitee == null) {
-                    invitee = inviteeNew;
-                }
-            }
-        }
-        return invitee;
-    }
-
     public void setInvitee(List<Invitee> invitee) {
         this.invitee = invitee;
-    }
-
-    @Override
-    public List<? extends ITimeInviteeInterface> getDisplayInvitee() {
-        return getInvitee();
     }
 
     /**
@@ -191,6 +174,7 @@ public class Event implements ITimeEventInterface<Event>{
         myDao.refresh(this);
     }
 
+
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
      * Entity must attached to an entity context.
@@ -202,6 +186,7 @@ public class Event implements ITimeEventInterface<Event>{
         }
         myDao.update(this);
     }
+
 
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
@@ -215,17 +200,117 @@ public class Event implements ITimeEventInterface<Event>{
         myDao.delete(this);
     }
 
+
     /** Resets a to-many relationship, making the next get call to query for a fresh result. */
     @Generated(hash = 777091542)
     public synchronized void resetInvitee() {
         invitee = null;
     }
 
+
+    /**
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
+     */
+    @Generated(hash = 1368951675)
+    public List<Invitee> getInvitee() {
+        if (invitee == null) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            InviteeDao targetDao = daoSession.getInviteeDao();
+            List<Invitee> inviteeNew = targetDao._queryEvent_Invitee(eventUid);
+            synchronized (this) {
+                if(invitee == null) {
+                    invitee = inviteeNew;
+                }
+            }
+        }
+        return invitee;
+    }
+
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1459865304)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getEventDao() : null;
+    }
+
+
+    public String getUrl() {
+        return this.url;
+    }
+
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+
+    public String getSummary() {
+        return this.summary;
+    }
+
+
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+
+
+    public String getRecurrence() {
+        return this.recurrence;
+    }
+
+
+    public void setRecurrence(String recurrence) {
+        this.recurrence = recurrence;
+    }
+
+
+    public String getICalUID() {
+        return this.iCalUID;
+    }
+
+
+    public void setICalUID(String iCalUID) {
+        this.iCalUID = iCalUID;
+    }
+
+
+    public String getCalendarUid() {
+        return this.calendarUid;
+    }
+
+
+    public void setCalendarUid(String calendarUid) {
+        this.calendarUid = calendarUid;
+    }
+
+
+    public String getRecurringEventId() {
+        return this.recurringEventId;
+    }
+
+
+    public void setRecurringEventId(String recurringEventId) {
+        this.recurringEventId = recurringEventId;
+    }
+
+
+    public String getRecurringEventUid() {
+        return this.recurringEventUid;
+    }
+
+
+    public void setRecurringEventUid(String recurringEventUid) {
+        this.recurringEventUid = recurringEventUid;
+    }
+
+
+    public String getEventId() {
+        return this.eventId;
     }
 
 

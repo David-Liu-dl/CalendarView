@@ -13,18 +13,7 @@ import org.greenrobot.greendao.annotation.Generated;
  */
 @Entity
 public class Invitee implements ITimeInviteeInterface{
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    @Id(autoincrement = true)
-    Long id;
-    Long eventId;
+    String eventUid;
     String inviteeUid;
     String photo = null;
     String name;
@@ -33,15 +22,9 @@ public class Invitee implements ITimeInviteeInterface{
     public Invitee() {
     }
 
-    @Keep
-    public Invitee(@Nullable String photo, String name, String id) {
-    }
-
-    @Generated(hash = 2138699291)
-    public Invitee(Long id, Long eventId, String inviteeUid, String photo,
-            String name) {
-        this.id = id;
-        this.eventId = eventId;
+    @Generated(hash = 935710098)
+    public Invitee(String eventUid, String inviteeUid, String photo, String name) {
+        this.eventUid = eventUid;
         this.inviteeUid = inviteeUid;
         this.photo = photo;
         this.name = name;
@@ -77,11 +60,11 @@ public class Invitee implements ITimeInviteeInterface{
         this.photo = photo;
     }
 
-    public Long getEventId() {
-        return eventId;
+    public String getEventUid() {
+        return eventUid;
     }
 
-    public void setEventId(Long eventId) {
-        this.eventId = eventId;
+    public void setEventUid(String eventUid) {
+        this.eventUid = eventUid;
     }
 }

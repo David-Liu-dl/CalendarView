@@ -124,7 +124,7 @@ public class InviteeFragment extends Fragment{
             List<ITimeContactInterface> contact_models = loadContacts();
             for (ITimeContactInterface contact_model :contact_models
                  ) {
-                contacts.put(contact_model.getId(), contact_model);
+                contacts.put(contact_model.getContactUid(), contact_model);
             }
 			result = 1;
 
@@ -217,7 +217,7 @@ public class InviteeFragment extends Fragment{
         for(Map.Entry<String,ITimeContactInterface> contact : map.entrySet()){
             SortModel sortModel = new SortModel();
             sortModel.setName(contact.getValue().getName());
-            sortModel.setId(contact.getValue().getId());
+            sortModel.setId(contact.getValue().getContactUid());
             String pinyin = characterParser.getSelling(contact.getValue().getName());
             String sortString = pinyin.substring(0, 1).toUpperCase();
 

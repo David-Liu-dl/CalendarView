@@ -64,7 +64,6 @@ public class DavidActivity extends AppCompatActivity {
             List<Invitee> invitee = event.getInvitee();
             Log.i(TAG, "loadData: " + invitee.size());
             EventManager.getInstance().addEvent(event);
-            break;
         }
 
     }
@@ -152,7 +151,7 @@ public class DavidActivity extends AppCompatActivity {
             long duration = (endTime - startTime);
 
             Event event = new Event();
-            event.setId((long)i);
+            event.setEventUid("" + i);
             event.setTitle("" + i);
             event.setEventType(i%type.length);
             event.setStatus(i%status.length);
@@ -162,7 +161,7 @@ public class DavidActivity extends AppCompatActivity {
             List<Invitee> inviteeList = new ArrayList<>();
 
             Invitee invitee1 = new Invitee();
-            invitee1.setEventId((long) i);
+            invitee1.setEventUid("" + i);
 
             invitee1.setInviteeUid("1");
             invitee1.setPhoto("http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg");
@@ -170,13 +169,15 @@ public class DavidActivity extends AppCompatActivity {
             Invitee invitee2 = new Invitee();
             invitee2.setPhoto("http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg");
             invitee2.setInviteeUid("2");
-            invitee2.setEventId((long) i);
+            invitee2.setEventUid("" + i);
+
 
 
             Invitee invitee3 = new Invitee();
             invitee3.setPhoto("http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg");
             invitee3.setInviteeUid("3");
-            invitee3.setEventId((long) i);
+            invitee3.setEventUid("" +  i);
+
 
             inviteeList.add(invitee1);
             inviteeList.add(invitee2);

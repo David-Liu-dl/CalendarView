@@ -79,20 +79,9 @@ public class TestEvent implements ITimeEventInterface {
     }
 
     @Override
-    public void setProposedTimeSlots(List proposedTimeSlots) {
-
-    }
-
-    @Override
-    public ArrayList<Long> getProposedTimeSlots() {
-        return null;
-    }
-
-    @Override
     public List<? extends ITimeInviteeInterface> getDisplayInvitee() {
         return null;
     }
-
 
     @Override
     public int compareTo(Object o) {

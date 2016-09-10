@@ -13,6 +13,6 @@ public interface ITimeContactInterface {
     void setName(String name);
     String getName();
 
-    void setId(String id);
-    String getId();
+    void setContactUid(String contactUid);
+    String getContactUid();
 }

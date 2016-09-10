@@ -1,5 +1,7 @@
 package org.unimelb.itime.test.bean;
 
+import android.util.Log;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.JoinProperty;
@@ -22,7 +24,7 @@ import org.greenrobot.greendao.DaoException;
 
 @Entity
 public class Event implements ITimeEventInterface<Event>{
-    @Id(autoincrement = true)
+    @Id
     private Long id;
     private String title;
     private String location;
@@ -40,12 +42,8 @@ public class Event implements ITimeEventInterface<Event>{
     @NotNull
     private int status;
 
-//    @ToMany
-//    private List<String> inviteesUrls;
-    @ToMany(joinProperties = {
-            @JoinProperty(name = "id", referencedName = "id")
-    })
-    private List<Invitee> invitee = new ArrayList<>();
+    @ToMany(referencedJoinProperty = "eventId")
+    private List<Invitee> invitee = null;
     /** Used for active entity operations. */
     @Generated(hash = 1542254534)
     private transient EventDao myDao;
@@ -57,8 +55,8 @@ public class Event implements ITimeEventInterface<Event>{
     }
 
     @Generated(hash = 108715400)
-    public Event(Long id, String title, String location, long startTime,
-            long endTime, int eventType, int status) {
+    public Event(Long id, String title, String location, long startTime, long endTime, int eventType,
+            int status) {
         this.id = id;
         this.title = title;
         this.location = location;
@@ -147,27 +145,34 @@ public class Event implements ITimeEventInterface<Event>{
         this.location = location;
     }
 
+
+    /**
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
+     */
+//    @Generated(hash = 1446513538)
     @Keep
     public List<Invitee> getInvitee() {
-        return this.invitee;
+        if (invitee == null) {
+            Log.d("MyAPP", "getInvitee: --------------");
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            InviteeDao targetDao = daoSession.getInviteeDao();
+            List<Invitee> inviteeNew = targetDao._queryEvent_Invitee(id);
+            synchronized (this) {
+                if(invitee == null) {
+                    invitee = inviteeNew;
+                }
+            }
+        }
+        return invitee;
     }
 
     public void setInvitee(List<Invitee> invitee) {
         this.invitee = invitee;
     }
-
-//    public List<ITimeInviteeInterface> getInvitee() {
-//        return this.invitee;
-//    }
-//
-//    public void setInvitee(List<ITimeInviteeInterface> invitee) {
-//        for (ITimeInviteeInterface inviteeInterface: invitee
-//             ) {
-//            this.invitee.add((Invitee)inviteeInterface);
-//        }
-////        this.invitee = (List<Invitee>) invitee;
-//    }
-
 
     @Override
     public List<? extends ITimeInviteeInterface> getDisplayInvitee() {
@@ -222,4 +227,6 @@ public class Event implements ITimeEventInterface<Event>{
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getEventDao() : null;
     }
+
+
 }

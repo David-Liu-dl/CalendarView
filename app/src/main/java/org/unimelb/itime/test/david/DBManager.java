@@ -9,6 +9,8 @@ import org.unimelb.itime.test.bean.DaoMaster;
 import org.unimelb.itime.test.bean.DaoSession;
 import org.unimelb.itime.test.bean.Event;
 import org.unimelb.itime.test.bean.EventDao;
+import org.unimelb.itime.test.bean.Invitee;
+import org.unimelb.itime.test.bean.InviteeDao;
 
 import java.util.List;
 
@@ -48,6 +50,13 @@ public class DBManager {
         eventDaoDao.insert(event);
     }
 
+    public void insertInvitee(Invitee invitee) {
+        DaoMaster daoMaster = new DaoMaster(getWritableDatabase());
+        DaoSession daoSession = daoMaster.newSession();
+        InviteeDao inviteeDao = daoSession.getInviteeDao();
+        inviteeDao.insert(invitee);
+    }
+
     public void insertEventList(List<Event> events) {
         if (events == null || events.isEmpty()) {
             return;
@@ -56,6 +65,16 @@ public class DBManager {
         DaoSession daoSession = daoMaster.newSession();
         EventDao eventDaoDao = daoSession.getEventDao();
         eventDaoDao.insertInTx(events);
+    }
+
+    public void insertInviteeList(List<Invitee> invitees) {
+        if (invitees == null || invitees.isEmpty()) {
+            return;
+        }
+        DaoMaster daoMaster = new DaoMaster(getWritableDatabase());
+        DaoSession daoSession = daoMaster.newSession();
+        InviteeDao inviteeDao = daoSession.getInviteeDao();
+        inviteeDao.insertInTx(invitees);
     }
 
     public List<Event> queryEventList(long startTime, long endTime) {
@@ -77,10 +96,20 @@ public class DBManager {
         return list;
     }
 
+    public List<Invitee> getAllInvitee(){
+        DaoMaster daoMaster = new DaoMaster(getReadableDatabase());
+        DaoSession daoSession = daoMaster.newSession();
+        InviteeDao inviteeDao = daoSession.getInviteeDao();
+        QueryBuilder<Invitee> qb = inviteeDao.queryBuilder();
+        List<Invitee> list = qb.list();
+        return list;
+    }
+
     public void clearDB(){
         DaoMaster daoMaster = new DaoMaster(getWritableDatabase());
         DaoSession daoSession = daoMaster.newSession();
         EventDao eventDaoDao = daoSession.getEventDao();
+//        EventDao eventDaoDao = daoSession.getEventDao();
         eventDaoDao.deleteAll();
     }
 

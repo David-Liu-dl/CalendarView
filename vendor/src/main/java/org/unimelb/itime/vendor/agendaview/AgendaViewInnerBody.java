@@ -29,7 +29,7 @@ import java.util.List;
  * Created by yuhaoliu on 31/08/16.
  */
 public class AgendaViewInnerBody extends RelativeLayout {
-    private final String TAG = "AgendaViewInnerBody";
+    private final String TAG = "MyAPP";
 
     private RelativeLayout self = this;
 
@@ -287,8 +287,12 @@ public class AgendaViewInnerBody extends RelativeLayout {
         eventName = event.getTitle();
         location = event.getLocation();
 
+
+
         List<? extends ITimeInviteeInterface> inviteeList = event.getDisplayInvitee();
         Log.i(TAG, "size: " + inviteeList.size());
+
+
         List<String> allUrls = new ArrayList<>();
 
         for (ITimeInviteeInterface invitee : inviteeList

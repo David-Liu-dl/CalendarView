@@ -38,7 +38,7 @@ public class DayViewHeader extends LinearLayout {
     private int paddingBottom = 0;
     private int paddingLeft = 0;
     private int viewWidth = 0;
-    private int textSize = 15;
+    private int textSize = 16;
 
     private int currentSelectedPst = 0;
     //means default is none;

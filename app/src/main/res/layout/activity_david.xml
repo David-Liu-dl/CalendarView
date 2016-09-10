@@ -12,16 +12,16 @@
         <!--android:layout_height="match_parent">-->
     <!--</org.unimelb.itime.vendor.agendaview.MonthAgendaView>-->
 
-    <org.unimelb.itime.vendor.dayview.MonthDayView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/monthDayView">
-    </org.unimelb.itime.vendor.dayview.MonthDayView>
-
-    <!--<FrameLayout-->
-        <!--android:id="@+id/fragment"-->
+    <!--<org.unimelb.itime.vendor.dayview.MonthDayView-->
         <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent">-->
-    <!--</FrameLayout>-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:id="@+id/monthDayView">-->
+    <!--</org.unimelb.itime.vendor.dayview.MonthDayView>-->
+
+    <FrameLayout
+        android:id="@+id/fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </FrameLayout>
 
 </LinearLayout>

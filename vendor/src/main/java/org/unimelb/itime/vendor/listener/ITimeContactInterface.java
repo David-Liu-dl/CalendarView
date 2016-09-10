@@ -7,8 +7,8 @@ import android.support.annotation.Nullable;
  */
 public interface ITimeContactInterface {
 
-    void setProfilePhotoUrl(String profilePhotoUrl);
-    @Nullable String getProfilePhotoUrl();
+    void setPhoto(String photo);
+    @Nullable String getPhoto();
 
     void setName(String name);
     String getName();

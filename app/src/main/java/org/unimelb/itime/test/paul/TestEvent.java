@@ -1,6 +1,7 @@
 package org.unimelb.itime.test.paul;
 
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
+import org.unimelb.itime.vendor.listener.ITimeInviteeInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,13 +89,10 @@ public class TestEvent implements ITimeEventInterface {
     }
 
     @Override
-    public String getInviteesUrls() {
+    public List<? extends ITimeInviteeInterface> getDisplayInvitee() {
         return null;
     }
 
-    @Override
-    public void setInviteesUrls(String inviteesUrls) {
-    }
 
     @Override
     public int compareTo(Object o) {

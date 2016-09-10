@@ -3,6 +3,7 @@ package org.unimelb.itime.test.paul;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Paul on 28/08/2016.
@@ -69,7 +70,6 @@ public class TestEvent implements ITimeEventInterface {
 
     @Override
     public void setLocation(String location) {
-
     }
 
     @Override
@@ -78,7 +78,7 @@ public class TestEvent implements ITimeEventInterface {
     }
 
     @Override
-    public void setProposedTimeSlots(ArrayList proposedTimeSlots) {
+    public void setProposedTimeSlots(List proposedTimeSlots) {
 
     }
 
@@ -88,13 +88,12 @@ public class TestEvent implements ITimeEventInterface {
     }
 
     @Override
-    public String getInvitees_urls() {
+    public String getInviteesUrls() {
         return null;
     }
 
     @Override
-    public void setInvitees_urls(String invitees_urls) {
-
+    public void setInviteesUrls(String inviteesUrls) {
     }
 
     @Override

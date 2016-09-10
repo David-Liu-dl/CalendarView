@@ -283,7 +283,7 @@ public class AgendaViewInnerBody extends RelativeLayout{
         eventName = event.getTitle();
         location = event.getLocation();
 
-        String allUrls = event.getInvitees_urls();
+        String allUrls = event.getInviteesUrls();
         if (allUrls.contains("|")){
             String[] urls = allUrls.split("\\|");
             for (int i = 0; i < urls.length; i++) {

@@ -1,6 +1,7 @@
 package org.unimelb.itime.vendor.listener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by yinchuandong on 22/08/2016.
@@ -33,11 +34,11 @@ public interface ITimeEventInterface<T> extends Comparable<T> {
     void setLocation(String location);
     String getLocation();
 
-    void setProposedTimeSlots(ArrayList<Long> proposedTimeSlots);
-    ArrayList<Long> getProposedTimeSlots();
+    void setProposedTimeSlots(List<Long> proposedTimeSlots);
+    List<Long> getProposedTimeSlots();
 
-    String getInvitees_urls();
+    String getInviteesUrls();
 
-    void setInvitees_urls(String invitees_urls);
+    void setInviteesUrls(String inviteesUrls);
 
 }

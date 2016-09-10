@@ -153,7 +153,7 @@ public class DavidActivity extends AppCompatActivity {
             urls = ("http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg");
             urls += "|" + ("http://education.news.cn/2015-05/04/127751980_14303593148421n.jpg");
             urls += "|" + ("http://i1.wp.com/pmcdeadline2.files.wordpress.com/2016/06/angelababy.jpg?crop=0px%2C107px%2C1980px%2C1327px&resize=446%2C299&ssl=1");
-            event.setInvitees_urls(urls);
+            event.setInviteesUrls(urls);
 
             long realEnd = endTime;
             long temp = duration;
@@ -175,7 +175,7 @@ public class DavidActivity extends AppCompatActivity {
                     event_clone.setStartTime(startTime);
                     event_clone.setEndTime(endTime);
                     event_clone.setLocation("here");
-                    event_clone.setInvitees_urls("");
+                    event_clone.setInviteesUrls("");
                     events.add(event_clone);
                     title = title + " all day";
                 }

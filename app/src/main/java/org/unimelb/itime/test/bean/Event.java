@@ -35,14 +35,14 @@ public class Event implements ITimeEventInterface<Event>{
     @NotNull
     private int status;
 
-    private String invitees_urls;
+    private String inviteesUrls;
 
     public Event() {
     }
 
-    @Generated(hash = 1318812346)
+    @Generated(hash = 24008605)
     public Event(Long id, String title, String location, long startTime,
-            long endTime, int eventType, int status, String invitees_urls) {
+            long endTime, int eventType, int status, String inviteesUrls) {
         this.id = id;
         this.title = title;
         this.location = location;
@@ -50,7 +50,7 @@ public class Event implements ITimeEventInterface<Event>{
         this.endTime = endTime;
         this.eventType = eventType;
         this.status = status;
-        this.invitees_urls = invitees_urls;
+        this.inviteesUrls = inviteesUrls;
     }
 
     @Override
@@ -64,12 +64,12 @@ public class Event implements ITimeEventInterface<Event>{
     }
 
     @Override
-    public void setProposedTimeSlots(ArrayList<Long> proposedTimeSlots) {
+    public void setProposedTimeSlots(List<Long> proposedTimeSlots) {
 
     }
 
     @Override
-    public ArrayList<Long> getProposedTimeSlots() {
+    public List<Long> getProposedTimeSlots() {
         return null;
     }
 
@@ -132,11 +132,11 @@ public class Event implements ITimeEventInterface<Event>{
         this.location = location;
     }
 
-    public String getInvitees_urls() {
-        return this.invitees_urls;
+    public String getInviteesUrls() {
+        return this.inviteesUrls;
     }
 
-    public void setInvitees_urls(String invitees_urls) {
-        this.invitees_urls = invitees_urls;
+    public void setInviteesUrls(String invitees_urls) {
+        this.inviteesUrls = invitees_urls;
     }
 }

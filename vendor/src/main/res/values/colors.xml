@@ -307,14 +307,14 @@
     <color name="text_in_circle_color">#ffffff</color>
     <color name="text_today_color">#FF3333</color>
     <color name="text_normal_color_odd">#b6b6b6</color>
-    <color name="text_normal_color_even">#6f6f6f</color>
+    <color name="text_normal_color_even">#6D6D6D</color>
     <color name="today_circle_color">#f53331</color>
     <color name="other_circle_color">#6692d1</color>
     <color name="divider_color">#cccccc</color>
     <color name="allday_container_bg">#ebebeb</color>
 
     <!--for contact-->
-    <color name="sidebar_text_color">#888888</color>
+    <color name="sidebar_text_color">#000000</color>
 
     <color name="whites">#ffffff</color>
     <color name="gray_color">#AFAFAF</color>

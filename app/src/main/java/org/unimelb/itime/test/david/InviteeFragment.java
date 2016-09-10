@@ -22,6 +22,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import org.unimelb.itime.test.R;
+import org.unimelb.itime.test.bean.Contact;
 import org.unimelb.itime.vendor.contact.SortAdapter;
 import org.unimelb.itime.vendor.contact.helper.CharacterParser;
 import org.unimelb.itime.vendor.contact.helper.ClearEditText;
@@ -37,7 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class InviteeFragment extends Fragment {
+public class InviteeFragment extends Fragment{
     private static final String TAG = "MyAPP";
 
     public Map<ITimeContactInterface, ImageView> contacts_list = new HashMap<>();
@@ -56,14 +57,13 @@ public class InviteeFragment extends Fragment {
 	private View root;
 	private Context context;
 
-	private OnLoadContact onLoadContact;
-
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {
 		context = getActivity().getApplicationContext();
 		root = inflater.inflate(R.layout.itime_invitee_fragment, container, false);
 		// Inflate the layout for this fragment
+        //set load methods
 		initView();
 		initData();
 
@@ -115,20 +115,19 @@ public class InviteeFragment extends Fragment {
 
 	}
 
-	private class ContactsAsyncTask extends AsyncTask<Integer, Integer, Integer> {
+    private class ContactsAsyncTask extends AsyncTask<Integer, Integer, Integer> {
 
 		@Override
 		protected Integer doInBackground(Integer... arg0) {
 			int result = -1;
             //load contacts info
-			if (onLoadContact != null){
-                List<ITimeContactInterface> contact_models = onLoadContact.loadContacts();
-                for (ITimeContactInterface contact_model :contact_models
-                     ) {
-                    contacts.put(contact_model.getId(), contact_model);
-                }
+            List<ITimeContactInterface> contact_models = loadContacts();
+            for (ITimeContactInterface contact_model :contact_models
+                 ) {
+                contacts.put(contact_model.getId(), contact_model);
             }
 			result = 1;
+
 			return result;
 		}
 		@Override
@@ -272,13 +271,24 @@ public class InviteeFragment extends Fragment {
         }
     }
 
-	/*********************************** Interface ***********************************************/
-	public interface OnLoadContact{
-		List<ITimeContactInterface> loadContacts();
-	}
+	/*********************************** load contacts ***********************************************/
+    public List<ITimeContactInterface> loadContacts() {
+        return simulateContacts();
+    }
 
-	public void setOnLoadContact(OnLoadContact onLoadContact) {
-		this.onLoadContact = onLoadContact;
-	}
+    private List<ITimeContactInterface> simulateContacts(){
+        List<ITimeContactInterface> contacts = new ArrayList<>();
+        contacts.add(new Contact(null,"赵普", "1"));
+        contacts.add(new Contact(null,"AGE", "2"));
+        contacts.add(new Contact(null,"B", "3"));
+        contacts.add(new Contact(null,"C", "4"));
+        contacts.add(new Contact(null,"D", "5"));
+        contacts.add(new Contact(null,"F", "6"));
+        contacts.add(new Contact(null,"Crron", "7"));
+        contacts.add(new Contact(null,"Bob", "8"));
+        contacts.add(new Contact("http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg","周二珂", "9"));
+
+        return contacts;
+    }
 
 }

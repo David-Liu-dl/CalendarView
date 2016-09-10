@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import org.unimelb.itime.vendor.R;
 
 import org.unimelb.itime.vendor.helper.MyCalendar;
+import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -49,7 +50,7 @@ public class MonthDayView extends LinearLayout {
 
     private Context context;
 
-    private DayViewBodyPagerAdapter.OnBodyPageChanged onBodyPageChanged;
+//    private DayViewBodyPagerAdapter.OnBodyPageChanged onBodyPageChanged;
     private DayViewHeader.OnCheckIfHasEvent onCheckIfHasEvent;
 
     public MonthDayView(Context context) {
@@ -67,13 +68,6 @@ public class MonthDayView extends LinearLayout {
         initView();
     }
 
-    public void setOnCreateNewEvent(DayViewBodyController.OnCreateNewEvent onCreateNewEvent){
-        this.onCreateNewEvent = onCreateNewEvent;
-        if (this.onCreateNewEvent != null){
-            bodyPagerAdapter.setOnCreateNewEvent(this.onCreateNewEvent);
-        }
-    }
-
     private void initView(){
         this.context = getContext();
 
@@ -89,10 +83,16 @@ public class MonthDayView extends LinearLayout {
         this.setUpBody();
     }
 
-    public void setOnBodyPageChanged(DayViewBodyPagerAdapter.OnBodyPageChanged onBodyPageChanged){
-        this.onBodyPageChanged = onBodyPageChanged;
+    public void setOnCreateNewEvent(DayViewBodyController.OnCreateNewEvent onCreateNewEvent){
+        this.onCreateNewEvent = onCreateNewEvent;
+        if (this.onCreateNewEvent != null){
+            bodyPagerAdapter.setOnCreateNewEvent(this.onCreateNewEvent);
+        }
+    }
+
+    public void setOnLoadEvents(DayViewBodyController.OnLoadEvents onLoadEvents){
         if (bodyPagerAdapter != null){
-            bodyPagerAdapter.setOnBodyPageChanged(this.onBodyPageChanged);
+            bodyPagerAdapter.setOnLoadEvents(onLoadEvents);
         }
     }
 
@@ -100,6 +100,15 @@ public class MonthDayView extends LinearLayout {
         this.onCheckIfHasEvent = onCheckIfHasEvent;
         if (recyclerAdapter != null){
             recyclerAdapter.setOnCheckIfHasEvent(this.onCheckIfHasEvent);
+        }
+    }
+
+    public void reloadCurrentBodyEvents(){
+        DayViewBody currentBody = bodyPagerAdapter.getViewByPosition(bodyCurrentPosition);
+        if (currentBody != null){
+            currentBody.reloadEvents();
+        }else {
+            Log.i(TAG, "currentBody null: ");
         }
     }
 
@@ -122,14 +131,6 @@ public class MonthDayView extends LinearLayout {
         move(upperBoundsOffset);
     }
 
-    private void move(int n){
-        if (n<0 || n>=recyclerAdapter.getItemCount() ){
-            return;
-        }
-        recyclerView.stopScroll();
-        recyclerView.scrollToPosition(n);
-    }
-
     private void setUpBody(){
         bodyPagerAdapter = new DayViewBodyPagerAdapter(initBody(), upperBoundsOffset);
         if (this.onCreateNewEvent != null){
@@ -141,7 +142,6 @@ public class MonthDayView extends LinearLayout {
                 final View needChangeView = recyclerView;
 
                 if (needChangeView.getHeight() == scroll_height){
-                    Log.i(TAG, "changed height: ");
                     recyclerView.stopScroll();
                     mLinearLayoutManager.scrollToPositionWithOffset(recyclerAdapter.getCurrentSelectPst(), 0);
                     final View view = needChangeView;
@@ -158,7 +158,6 @@ public class MonthDayView extends LinearLayout {
                 }
             }
         });
-        setOnBodyPageChanged(this.onBodyPageChanged);
         bodyPagerAdapter.notifyDataSetChanged();
         recyclerAdapter.setBodyPager(bodyPager);
         bodyPager.setAdapter(bodyPagerAdapter);
@@ -235,6 +234,14 @@ public class MonthDayView extends LinearLayout {
 
     }
 
+    private void move(int n){
+        if (n<0 || n>=recyclerAdapter.getItemCount() ){
+            return;
+        }
+        recyclerView.stopScroll();
+        recyclerView.scrollToPosition(n);
+    }
+
     private ArrayList<View> initBody(){
         int size = 4;
         ArrayList<View> lists = new ArrayList<>();
@@ -249,7 +256,6 @@ public class MonthDayView extends LinearLayout {
         for (int i = 0; i < size; i++) {
             DayViewBody bodyView = (DayViewBody) LayoutInflater.from(this.context).inflate(R.layout.itime_day_view_body_view,null);
             bodyView.setCalendar(new MyCalendar(calendar));
-//            bodyView.dayViewController.scrollContainerView.setOnTouchListener(new bodyOnTouchListener());
             lists.add(bodyView);
         }
 
@@ -278,50 +284,4 @@ public class MonthDayView extends LinearLayout {
         }
     }
 
-//    class bodyOnTouchListener implements View.OnTouchListener{
-//        private float pointX;
-//        private float pointY;
-//        private int tolerance = 50;
-//
-//        @Override
-//        public boolean onTouch(View v, MotionEvent event) {
-//            Log.i(TAG, "down: ");
-//            switch(event.getAction()){
-//                case MotionEvent.ACTION_MOVE:
-//                    pointX = event.getX();
-//                    pointY = event.getY();
-//
-////                    final View needChangeView = recyclerView;
-////
-////                    if (needChangeView.getHeight() == scroll_height){
-////                        Log.i(TAG, "changed height: ");
-////                        recyclerView.stopScroll();
-////                        mLinearLayoutManager.scrollToPositionWithOffset(recyclerAdapter.getCurrentSelectPst(), 0);
-////                        final View view = needChangeView;
-////                        ValueAnimator va = ValueAnimator.ofInt(scroll_height, init_height);
-////                        va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-////                            public void onAnimationUpdate(ValueAnimator animation) {
-////                                Integer value = (Integer) animation.getAnimatedValue();
-////                                view.getLayoutParams().height = value.intValue();
-////                                view.requestLayout();
-////                            }
-////                        });
-////                        va.setDuration(100);
-////                        va.start();
-////                    }
-//
-//                    return false; //This is important, if you return TRUE the action of swipe will not take place.
-//                case MotionEvent.ACTION_DOWN:
-//                    Log.i(TAG, "onTouch: ");
-//                    return true;
-//                case MotionEvent.ACTION_UP:
-//                    boolean sameX = pointX + tolerance > event.getX() && pointX - tolerance < event.getX();
-//                    boolean sameY = pointY + tolerance > event.getY() && pointY - tolerance < event.getY();
-//                    if(sameX && sameY){
-//                    }
-//                    return false;
-//            }
-//            return false;
-//        }
-//    }
 }

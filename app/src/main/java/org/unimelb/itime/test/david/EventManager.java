@@ -38,10 +38,8 @@ public class EventManager {
         Long dayBeginMilliseconds = getDayBeginMilliseconds(startTime);
 
         if (day_event_map.containsKey(dayBeginMilliseconds)){
-            Log.i(TAG, "addTo: " + dayBeginMilliseconds);
             day_event_map.get(dayBeginMilliseconds).add(event);
         }else {
-            Log.i(TAG, "Create: " + dayBeginMilliseconds);
             List<ITimeEventInterface> events = new ArrayList<>();
             day_event_map.put(dayBeginMilliseconds,events);
             day_event_map.get(dayBeginMilliseconds).add(event);

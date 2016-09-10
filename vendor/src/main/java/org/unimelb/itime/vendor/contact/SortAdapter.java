@@ -13,8 +13,8 @@ import android.widget.TextView;
 
 import org.unimelb.itime.vendor.R;
 import org.unimelb.itime.vendor.helper.LoadImgHelper;
-import org.unimelb.itime.vendor.contact.widgets.Contact;
 import org.unimelb.itime.vendor.contact.widgets.SortModel;
+import org.unimelb.itime.vendor.listener.ITimeContactInterface;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,12 +27,12 @@ import java.util.Map;
 public class SortAdapter extends BaseAdapter implements SectionIndexer{
 	private static final String TAG = "MyAPP";
 	private List<SortModel> list = null;
-	private Map<String, Contact> contactsMap = new HashMap<>();
+	private Map<String, ITimeContactInterface> contactsMap = new HashMap<>();
 	private Context mContext;
 	private CircleCheckOnClickListener circleCheckOnClickListener;
 //	private int currentClickPst = -1;
 
-	public SortAdapter(Context mContext, List<SortModel> list, Map<String, Contact> contactsMap) {
+	public SortAdapter(Context mContext, List<SortModel> list, Map<String, ITimeContactInterface> contactsMap) {
 		this.mContext = mContext;
 		this.contactsMap = contactsMap;
 		this.list = list;
@@ -62,6 +62,7 @@ public class SortAdapter extends BaseAdapter implements SectionIndexer{
 	@Override
 	public View getView(final int position, View view, ViewGroup arg2) {
 		ViewHolder viewHolder = null;
+
 		final SortModel mContent = list.get(position);
 		if (view == null) {
 			int width = mContext.getResources().getDisplayMetrics().widthPixels;
@@ -106,10 +107,9 @@ public class SortAdapter extends BaseAdapter implements SectionIndexer{
 		}
 		String nameKey = this.list.get(position).getName();
 		viewHolder.tvTitle.setText(nameKey);
-		viewHolder.contact = contactsMap.get(nameKey);
+		viewHolder.contact = contactsMap.get(this.list.get(position).getId());
 		viewHolder.check_circle.setOnClickListener(
 				new CircleClickListener(viewHolder.contact, viewHolder.check_circle));
-		Log.i(TAG, "bind here: ");
 		LoadImgHelper.getInstance().bindContactWithImageView(mContext, viewHolder.contact, viewHolder.icon);
 		return view;
 	}
@@ -121,7 +121,7 @@ public class SortAdapter extends BaseAdapter implements SectionIndexer{
 		ImageView icon;
 		ImageView check_circle;
 		//Data
-		Contact contact;
+		ITimeContactInterface contact;
 	}
 
 
@@ -136,7 +136,6 @@ public class SortAdapter extends BaseAdapter implements SectionIndexer{
 		int nearestPreChar = -1;
 		for (int i = 0; i < getCount(); i++) {
 			String sortStr = list.get(i).getSortLetters();
-			Log.i(TAG, "sortStr: " + sortStr);
 			char firstChar = sortStr.toUpperCase().charAt(0);
 			if (firstChar <= section){
 				if (firstChar == section) {
@@ -153,7 +152,6 @@ public class SortAdapter extends BaseAdapter implements SectionIndexer{
 				break;
 			}
 		}
-		Log.i(TAG, "findNearestPreMatch: " + nearestPreChar);
 		return nearestPreChar;
 	}
 
@@ -195,10 +193,10 @@ public class SortAdapter extends BaseAdapter implements SectionIndexer{
 	}
 
 	class CircleClickListener implements View.OnClickListener {
-		Contact contact;
+		ITimeContactInterface contact;
 		boolean checked = false;
 
-		public CircleClickListener(Contact contact, ImageView bindView) {
+		public CircleClickListener(ITimeContactInterface contact, ImageView bindView) {
 			this.contact = contact;
 			updateChecked();
 			updateCircleBg(bindView);
@@ -230,13 +228,12 @@ public class SortAdapter extends BaseAdapter implements SectionIndexer{
 			}else {
 				circle_view.setImageDrawable(mContext.getResources().getDrawable(R.drawable.invitee_selected_event_attendee_unselected));
 			}
-//			circle_view.setImageDrawable(db);
 		}
 	}
 
 
 	public interface CircleCheckOnClickListener{
-		void synCheckedContactsList(Contact contact, boolean add);
+		void synCheckedContactsList(ITimeContactInterface contact, boolean add);
 		Map getMapInContactsList();
 	}
 

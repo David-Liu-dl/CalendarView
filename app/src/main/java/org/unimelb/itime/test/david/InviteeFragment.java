@@ -27,27 +27,27 @@ import org.unimelb.itime.vendor.contact.helper.CharacterParser;
 import org.unimelb.itime.vendor.contact.helper.ClearEditText;
 import org.unimelb.itime.vendor.helper.LoadImgHelper;
 import org.unimelb.itime.vendor.contact.helper.PinyinComparator;
-import org.unimelb.itime.vendor.contact.widgets.Contact;
 import org.unimelb.itime.vendor.contact.widgets.SideBar;
 import org.unimelb.itime.vendor.contact.widgets.SortModel;
+import org.unimelb.itime.vendor.listener.ITimeContactInterface;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 public class InviteeFragment extends Fragment {
-	public Map<Contact, ImageView> contacts_list = new HashMap<Contact, ImageView>();
+    private static final String TAG = "MyAPP";
 
-	private static final String TAG = "MyAPP";
+    public Map<ITimeContactInterface, ImageView> contacts_list = new HashMap<>();
+    private Map<String, ITimeContactInterface> contacts = new HashMap<>();//id contact
+
 	private ListView sortListView;
 	private SideBar sideBar;
 	private TextView dialog;
 	private SortAdapter adapter;
 	private ClearEditText mClearEditText;
-	private Map<String, Contact> contacts;
 
 	private CharacterParser characterParser;
 	private List<SortModel> SourceDateList;
@@ -56,7 +56,8 @@ public class InviteeFragment extends Fragment {
 	private View root;
 	private Context context;
 
-	private InviteeFragment self = this;
+	private OnLoadContact onLoadContact;
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {
@@ -69,7 +70,7 @@ public class InviteeFragment extends Fragment {
 		return root;
 	}
 
-	public Map<Contact, ImageView> getAllSelectedContacts(){
+	public Map<ITimeContactInterface, ImageView> getAllSelectedContacts(){
         return this.contacts_list;
     }
 
@@ -120,7 +121,13 @@ public class InviteeFragment extends Fragment {
 		protected Integer doInBackground(Integer... arg0) {
 			int result = -1;
             //load contacts info
-			contacts = simulateContacts();
+			if (onLoadContact != null){
+                List<ITimeContactInterface> contact_models = onLoadContact.loadContacts();
+                for (ITimeContactInterface contact_model :contact_models
+                     ) {
+                    contacts.put(contact_model.getId(), contact_model);
+                }
+            }
 			result = 1;
 			return result;
 		}
@@ -128,15 +135,7 @@ public class InviteeFragment extends Fragment {
 		protected void onPostExecute(Integer result) {
 			super.onPostExecute(result);
 			if (result == 1) {
-				final List<String> constact = new ArrayList<String>();
-				for (Iterator<String> keys = contacts.keySet().iterator(); keys
-						.hasNext();) {
-					String key = keys.next();
-					constact.add(key);
-				}
-				String[] names = new String[] {};
-				names = constact.toArray(names);
-				SourceDateList = filledData(names);
+				SourceDateList = filledData(contacts);
 
 				Collections.sort(SourceDateList, pinyinComparator);
 				adapter = new SortAdapter(getActivity().getApplicationContext(), SourceDateList, contacts);
@@ -163,7 +162,6 @@ public class InviteeFragment extends Fragment {
 					@Override
 					public void beforeTextChanged(CharSequence s, int start,
 							int count, int after) {
-
 					}
 
 					@Override
@@ -177,7 +175,7 @@ public class InviteeFragment extends Fragment {
 					int width = getActivity().getWindowManager().getDefaultDisplay().getWidth();
 					int margin = width/40;
 					@Override
-					public void synCheckedContactsList(Contact contact, boolean add) {
+					public void synCheckedContactsList(ITimeContactInterface contact, boolean add) {
 						if (add){
 							ImageView img_v = new ImageView(context);
                             img_v.setOnClickListener(new ContactViewTouchListener());
@@ -214,25 +212,26 @@ public class InviteeFragment extends Fragment {
 
 	}
 
-	private List<SortModel> filledData(String[] date) {
+	private List<SortModel> filledData(Map<String,ITimeContactInterface> map) {
 		List<SortModel> mSortList = new ArrayList<SortModel>();
 
-		for (int i = 0; i < date.length; i++) {
-			SortModel sortModel = new SortModel();
-			sortModel.setName(date[i]);
-			String pinyin = characterParser.getSelling(date[i]);
-			String sortString = pinyin.substring(0, 1).toUpperCase();
+        for(Map.Entry<String,ITimeContactInterface> contact : map.entrySet()){
+            SortModel sortModel = new SortModel();
+            sortModel.setName(contact.getValue().getName());
+            sortModel.setId(contact.getValue().getId());
+            String pinyin = characterParser.getSelling(contact.getValue().getName());
+            String sortString = pinyin.substring(0, 1).toUpperCase();
 
-			if (sortString.matches("[A-Z]")) {
-				sortModel.setSortLetters(sortString.toUpperCase());
-			} else {
-				sortModel.setSortLetters("#");
-			}
+            if (sortString.matches("[A-Z]")) {
+                sortModel.setSortLetters(sortString.toUpperCase());
+            } else {
+                sortModel.setSortLetters("#");
+            }
 
-			mSortList.add(sortModel);
-		}
+            mSortList.add(sortModel);
+        }
+
 		return mSortList;
-
 	}
 
 	private void filterData(String filterStr) {
@@ -257,27 +256,7 @@ public class InviteeFragment extends Fragment {
 		adapter.updateListView(filterDateList);
 	}
 
-	public Map simulateContacts(){
-		Map<String, Contact> map = new HashMap<>();
-//		map.put("Angelababy",new Contact("http://i1.wp.com/pmcdeadline2.files.wordpress.com/2016/06/angelababy.jpg?crop=0px%2C107px%2C1980px%2C1327px&resize=446%2C299&ssl=1","Angelababy"));
-		map.put("赵普",new Contact(null,"赵普"));
-		map.put("Crron",new Contact(null,"Crron"));
-		map.put("Bob",new Contact(null,"Bob"));
-//		map.put("Alice",new Contact("http://education.news.cn/2015-05/04/127751980_14303593148421n.jpg","Crron"));
-		map.put("赵普 3",new Contact(null,"赵普"));
-		map.put("周二珂",new Contact("http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg","周二珂"));
-//		map.put("David Liu",new Contact(null,"David Liu"));
-		map.put("Kangaroo",new Contact("http://static.ettoday.net/images/1114/d1114210.jpg","David Liu"));
-		map.put("Crron 4",new Contact(null,"Crron"));
-		map.put("H哥",new Contact(null,"赵普"));
-//		map.put("刘诗诗",new Contact("http://img.zybus.com/uploads/allimg/131213/1-131213111353.jpg","刘诗诗"));
-		map.put("U哥",new Contact(null,"赵普"));
-		map.put("R哥",new Contact(null,"赵普"));
-		map.put("E哥",new Contact(null,"赵普"));
-		map.put("G哥",new Contact(null,"赵普"));
-		map.put("F哥",new Contact(null,"Crron"));
-		return map;
-	}
+
 
     class ContactViewTouchListener implements View.OnClickListener {
 
@@ -292,5 +271,14 @@ public class InviteeFragment extends Fragment {
             }
         }
     }
+
+	/*********************************** Interface ***********************************************/
+	public interface OnLoadContact{
+		List<ITimeContactInterface> loadContacts();
+	}
+
+	public void setOnLoadContact(OnLoadContact onLoadContact) {
+		this.onLoadContact = onLoadContact;
+	}
 
 }

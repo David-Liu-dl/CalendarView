@@ -48,7 +48,6 @@ public class DayViewBody extends RelativeLayout {
         super(context, attrs, defStyleAttr);
         this.mInflater = LayoutInflater.from(context);
         inflate(context, R.layout.day_view_body, this);
-//        setOrientation(VERTICAL);
         dayViewController = new DayViewBodyController(attrs, context);
     }
 
@@ -61,21 +60,31 @@ public class DayViewBody extends RelativeLayout {
         dayViewController.myCalendar = this.myCalendar;
     }
 
-    public void addEvent(final ITimeEventInterface new_event){
-        events.add(new_event);
-    }
-
     public void setOnCreateNewEvent(DayViewBodyController.OnCreateNewEvent onCreateNewEvent){
         dayViewController.setOnCreateNewEvent(onCreateNewEvent);
     }
 
-    public void removeEvent(ITimeEventInterface delete_event){
-        dayViewController.removeEvent(delete_event);
+
+    public void setOnLoadEvents(DayViewBodyController.OnLoadEvents onLoadEvents){
+        dayViewController.setOnLoadEvents(onLoadEvents);
     }
 
     public void setBodyOnTouchListener(DayViewBodyController.BodyOnTouchListener bodyOnTouchListener) {
         this.bodyOnTouchListener = bodyOnTouchListener;
         this.dayViewController.setBodyOnTouchListener(this.bodyOnTouchListener);
+    }
+
+    public void reloadEvents(){
+        this.dayViewController.reLoadEvents();
+    }
+
+    public void addEvent(final ITimeEventInterface new_event){
+        dayViewController.addEvent(new_event);
+        invalidateEvents();
+    }
+
+    public void removeEvent(ITimeEventInterface delete_event){
+        dayViewController.removeEvent(delete_event);
     }
 
     public void updateEvent(ITimeEventInterface old_event, ITimeEventInterface new_event){
@@ -117,16 +126,11 @@ public class DayViewBody extends RelativeLayout {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         dayViewController.initBackgroundView();
-
-        for (ITimeEventInterface event: this.events
-             ) {
-            dayViewController.addEvent(event);
-            invalidateEvents();
-        }
-
+        dayViewController.bringDgViewsToFront();
         if (myCalendar.isToday()){
             dayViewController.addNowTimeLine();
         }
+
         dividerRLayout.invalidate();
     }
 }

@@ -2,14 +2,19 @@ package org.unimelb.itime.test.bean;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.JoinProperty;
+import org.greenrobot.greendao.annotation.Keep;
 import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.Property;
+import org.greenrobot.greendao.annotation.ToMany;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.greenrobot.greendao.annotation.Generated;
+import org.unimelb.itime.vendor.listener.ITimeInviteeInterface;
+import org.greenrobot.greendao.DaoException;
 
 /**
  * Created by yinchuandong on 22/08/2016.
@@ -35,14 +40,25 @@ public class Event implements ITimeEventInterface<Event>{
     @NotNull
     private int status;
 
-    private String inviteesUrls;
+//    @ToMany
+//    private List<String> inviteesUrls;
+    @ToMany(joinProperties = {
+            @JoinProperty(name = "id", referencedName = "id")
+    })
+    private List<Invitee> invitee = new ArrayList<>();
+    /** Used for active entity operations. */
+    @Generated(hash = 1542254534)
+    private transient EventDao myDao;
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
 
     public Event() {
     }
 
-    @Generated(hash = 24008605)
+    @Generated(hash = 108715400)
     public Event(Long id, String title, String location, long startTime,
-            long endTime, int eventType, int status, String inviteesUrls) {
+            long endTime, int eventType, int status) {
         this.id = id;
         this.title = title;
         this.location = location;
@@ -50,7 +66,6 @@ public class Event implements ITimeEventInterface<Event>{
         this.endTime = endTime;
         this.eventType = eventType;
         this.status = status;
-        this.inviteesUrls = inviteesUrls;
     }
 
     @Override
@@ -132,11 +147,79 @@ public class Event implements ITimeEventInterface<Event>{
         this.location = location;
     }
 
-    public String getInviteesUrls() {
-        return this.inviteesUrls;
+    @Keep
+    public List<Invitee> getInvitee() {
+        return this.invitee;
     }
 
-    public void setInviteesUrls(String invitees_urls) {
-        this.inviteesUrls = invitees_urls;
+    public void setInvitee(List<Invitee> invitee) {
+        this.invitee = invitee;
+    }
+
+//    public List<ITimeInviteeInterface> getInvitee() {
+//        return this.invitee;
+//    }
+//
+//    public void setInvitee(List<ITimeInviteeInterface> invitee) {
+//        for (ITimeInviteeInterface inviteeInterface: invitee
+//             ) {
+//            this.invitee.add((Invitee)inviteeInterface);
+//        }
+////        this.invitee = (List<Invitee>) invitee;
+//    }
+
+
+    @Override
+    public List<? extends ITimeInviteeInterface> getDisplayInvitee() {
+        return getInvitee();
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 1942392019)
+    public void refresh() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.refresh(this);
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 713229351)
+    public void update() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.update(this);
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 128553479)
+    public void delete() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.delete(this);
+    }
+
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    @Generated(hash = 777091542)
+    public synchronized void resetInvitee() {
+        invitee = null;
+    }
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 1459865304)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getEventDao() : null;
     }
 }

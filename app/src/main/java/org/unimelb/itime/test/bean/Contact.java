@@ -2,32 +2,42 @@ package org.unimelb.itime.test.bean;
 
 import android.support.annotation.Nullable;
 
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Keep;
 import org.unimelb.itime.vendor.listener.ITimeContactInterface;
+import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * Created by yuhaoliu on 17/08/16.
  */
+@Entity
 public class Contact implements ITimeContactInterface {
+    @Id()
     String id;
-    String profile_photo_URL = null;
+    String photo = null;
     String name;
 
-    public Contact(@Nullable String profile_photo_URL, String name, String id) {
-        if (profile_photo_URL != null){
-            this.profile_photo_URL = profile_photo_URL;
+    public Contact(){
+    }
+
+    @Keep
+    public Contact(@Nullable String photo, String name, String id) {
+        if (photo != null){
+            this.photo = photo;
         }
         this.id = id;
         this.name = name;
     }
 
     @Override
-    public void setProfilePhotoUrl(String profilePhotoUrl) {
-        this.profile_photo_URL = profilePhotoUrl;
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 
     @Override
-    public String getProfilePhotoUrl() {
-        return this.profile_photo_URL;
+    public String getPhoto() {
+        return this.photo;
     }
 
     @Override

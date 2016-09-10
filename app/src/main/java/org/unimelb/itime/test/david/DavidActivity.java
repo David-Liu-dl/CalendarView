@@ -2,15 +2,13 @@ package org.unimelb.itime.test.david;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import org.unimelb.itime.test.R;
-import org.unimelb.itime.test.bean.Contact;
 import org.unimelb.itime.test.bean.Event;
-import org.unimelb.itime.vendor.dayview.DayViewBodyController;
+import org.unimelb.itime.test.bean.Invitee;
+import org.unimelb.itime.vendor.agendaview.AgendaViewBody;
+import org.unimelb.itime.vendor.agendaview.MonthAgendaView;
 import org.unimelb.itime.vendor.dayview.DayViewHeader;
-import org.unimelb.itime.vendor.dayview.MonthDayView;
-import org.unimelb.itime.vendor.listener.ITimeContactInterface;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 
 import java.util.ArrayList;
@@ -28,10 +26,10 @@ public class DavidActivity extends AppCompatActivity {
 
         dbManager = DBManager.getInstance(this.getApplicationContext());
 
-        doInviteesThings();
+//        doInviteesThings();
 //        initData();
-//        loadData();
-//        doMonthAgendaViewThings();
+        loadData();
+        doMonthAgendaViewThings();
 //        doMonthDayViewThings();
     }
 
@@ -108,28 +106,28 @@ public class DavidActivity extends AppCompatActivity {
 //    }
 
 //
-//    private void doMonthAgendaViewThings(){
-//        MonthAgendaView monthDayFragment = (MonthAgendaView) findViewById(R.id.monthAgendaView);
-//
-//        monthDayFragment.setOnCheckIfHasEvent(new DayViewHeader.OnCheckIfHasEvent() {
-//                @Override
-//                public boolean todayHasEvent(long startOfDay) {
-//                    Calendar calendar1 = Calendar.getInstance();
-//                    calendar1.setTimeInMillis(startOfDay);
-//                    return (EventManager.getInstance().getEventsMap().containsKey(startOfDay));
-//                }
-//        });
-//
-//        monthDayFragment.setOnLoadEvents(new AgendaViewBody.OnLoadEvents() {
-//            @Override
-//            public List<ITimeEventInterface> loadTodayEvents(long beginOfDayMilliseconds) {
-//                if (EventManager.getInstance().getEventsMap().containsKey(beginOfDayMilliseconds)){
-//                    return EventManager.getInstance().getEventsMap().get(beginOfDayMilliseconds);
-//                }
-//                return null;
-//            }
-//        });
-//    }
+    private void doMonthAgendaViewThings(){
+        MonthAgendaView monthDayFragment = (MonthAgendaView) findViewById(R.id.monthAgendaView);
+
+        monthDayFragment.setOnCheckIfHasEvent(new DayViewHeader.OnCheckIfHasEvent() {
+                @Override
+                public boolean todayHasEvent(long startOfDay) {
+                    Calendar calendar1 = Calendar.getInstance();
+                    calendar1.setTimeInMillis(startOfDay);
+                    return (EventManager.getInstance().getEventsMap().containsKey(startOfDay));
+                }
+        });
+
+        monthDayFragment.setOnLoadEvents(new AgendaViewBody.OnLoadEvents() {
+            @Override
+            public List<ITimeEventInterface> loadTodayEvents(long beginOfDayMilliseconds) {
+                if (EventManager.getInstance().getEventsMap().containsKey(beginOfDayMilliseconds)){
+                    return EventManager.getInstance().getEventsMap().get(beginOfDayMilliseconds);
+                }
+                return null;
+            }
+        });
+    }
 
     private void initDB(){
         Calendar calendar = Calendar.getInstance();
@@ -151,10 +149,22 @@ public class DavidActivity extends AppCompatActivity {
             event.setLocation("here");
             event.setStartTime(startTime);
             String urls;
-            urls = ("http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg");
-            urls += "|" + ("http://education.news.cn/2015-05/04/127751980_14303593148421n.jpg");
-            urls += "|" + ("http://i1.wp.com/pmcdeadline2.files.wordpress.com/2016/06/angelababy.jpg?crop=0px%2C107px%2C1980px%2C1327px&resize=446%2C299&ssl=1");
-            event.setInviteesUrls(urls);
+//            urls = ("http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg");
+//            urls += "|" + ("http://education.news.cn/2015-05/04/127751980_14303593148421n.jpg");
+//            urls += "|" + ("http://i1.wp.com/pmcdeadline2.files.wordpress.com/2016/06/angelababy.jpg?crop=0px%2C107px%2C1980px%2C1327px&resize=446%2C299&ssl=1");
+
+            List<Invitee> inviteeList = new ArrayList<>();
+            Invitee invitee1 = new Invitee();
+            invitee1.setPhoto("http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg");
+            Invitee invitee2 = new Invitee();
+            invitee2.setPhoto("http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg");
+            Invitee invitee3 = new Invitee();
+            invitee3.setPhoto("http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg");
+            inviteeList.add(invitee1);
+            inviteeList.add(invitee2);
+            inviteeList.add(invitee3);
+
+            event.setInvitee(inviteeList);
 
             long realEnd = endTime;
             long temp = duration;
@@ -176,8 +186,7 @@ public class DavidActivity extends AppCompatActivity {
                     event_clone.setStartTime(startTime);
                     event_clone.setEndTime(endTime);
                     event_clone.setLocation("here");
-                    event_clone.setInviteesUrls("");
-                    events.add(event_clone);
+//                    event_clone.setInviteesUrls("");
                     title = title + " all day";
                 }
                 alldayCount = 0;

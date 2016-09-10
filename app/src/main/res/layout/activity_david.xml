@@ -11,20 +11,11 @@
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="match_parent">-->
     <!--</org.unimelb.itime.vendor.agendaview.MonthAgendaView>-->
-<<<<<<< HEAD
 
     <org.unimelb.itime.vendor.dayview.MonthDayView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/monthDayView">
-
-=======
-
-    <org.unimelb.itime.vendor.dayview.MonthDayView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/monthDayView">
->>>>>>> 44eaf6b923ef680bac26d0681e9a07e4abea94f0
     </org.unimelb.itime.vendor.dayview.MonthDayView>
 
 </LinearLayout>

@@ -568,6 +568,7 @@ public class DayViewBodyController {
                         long[] new_date = changeDateFromString(dragging_event, currentEventNewHour, currentEventNewMinutes);
                         dragging_event.setStartTime(new_date[0]);
                         dragging_event.setEndTime(new_date[1]);
+
                         Log.i(TAG, "changed: ");
                     }
 

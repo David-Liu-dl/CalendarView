@@ -14,19 +14,17 @@ import org.greenrobot.greendao.annotation.Generated;
 @Entity
 public class Contact implements ITimeContactInterface {
     @Id()
-    String contactUid;
-    String photo = null;
-    String name;
+    private String contactUid;
+    private String photo = null;
+    private String name;
 
     public Contact(){
     }
 
-    @Keep
-    public Contact(@Nullable String photo, String name, String contactUid) {
-        if (photo != null){
-            this.photo = photo;
-        }
+    @Generated(hash = 1462673109)
+    public Contact(String contactUid, String photo, String name) {
         this.contactUid = contactUid;
+        this.photo = photo;
         this.name = name;
     }
 

@@ -5,6 +5,8 @@ import android.database.sqlite.SQLiteDatabase;
 
 
 import org.greenrobot.greendao.query.QueryBuilder;
+import org.unimelb.itime.test.bean.Contact;
+import org.unimelb.itime.test.bean.ContactDao;
 import org.unimelb.itime.test.bean.DaoMaster;
 import org.unimelb.itime.test.bean.DaoSession;
 import org.unimelb.itime.test.bean.Event;
@@ -55,6 +57,13 @@ public class DBManager {
         DaoSession daoSession = daoMaster.newSession();
         InviteeDao inviteeDao = daoSession.getInviteeDao();
         inviteeDao.insert(invitee);
+    }
+
+    public void insertContact(Contact contact) {
+        DaoMaster daoMaster = new DaoMaster(getWritableDatabase());
+        DaoSession daoSession = daoMaster.newSession();
+        ContactDao contactDao = daoSession.getContactDao();
+        contactDao.insert(contact);
     }
 
     public void insertEventList(List<Event> events) {
@@ -108,9 +117,12 @@ public class DBManager {
     public void clearDB(){
         DaoMaster daoMaster = new DaoMaster(getWritableDatabase());
         DaoSession daoSession = daoMaster.newSession();
-        EventDao eventDaoDao = daoSession.getEventDao();
-//        EventDao eventDaoDao = daoSession.getEventDao();
-        eventDaoDao.deleteAll();
+        EventDao eventDao = daoSession.getEventDao();
+        ContactDao contactDao = daoSession.getContactDao();
+        InviteeDao inviteeDao = daoSession.getInviteeDao();
+        eventDao.deleteAll();
+        contactDao.deleteAll();
+        inviteeDao.deleteAll();
     }
 
     private SQLiteDatabase getReadableDatabase() {

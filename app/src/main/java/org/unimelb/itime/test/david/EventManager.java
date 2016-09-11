@@ -18,7 +18,7 @@ public class EventManager {
     private final String TAG = "MyAPP";
     private static EventManager ourInstance = new EventManager();
 
-    Map<Long, List<ITimeEventInterface>> day_event_map = new HashMap<>();
+    Map<Long, List<ITimeEventInterface>> eventMap = new HashMap<>();
     Calendar calendar = Calendar.getInstance();
 
     public static EventManager getInstance() {
@@ -30,19 +30,19 @@ public class EventManager {
 
     public Map<Long, List<ITimeEventInterface>> getEventsMap(){
 
-        return this.day_event_map;
+        return this.eventMap;
     }
 
     public void addEvent(Event event){
         Long startTime = event.getStartTime();
         Long dayBeginMilliseconds = getDayBeginMilliseconds(startTime);
 
-        if (day_event_map.containsKey(dayBeginMilliseconds)){
-            day_event_map.get(dayBeginMilliseconds).add(event);
+        if (eventMap.containsKey(dayBeginMilliseconds)){
+            eventMap.get(dayBeginMilliseconds).add(event);
         }else {
             List<ITimeEventInterface> events = new ArrayList<>();
-            day_event_map.put(dayBeginMilliseconds,events);
-            day_event_map.get(dayBeginMilliseconds).add(event);
+            eventMap.put(dayBeginMilliseconds,events);
+            eventMap.get(dayBeginMilliseconds).add(event);
         }
     }
 

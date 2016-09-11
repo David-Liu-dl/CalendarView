@@ -20,7 +20,7 @@ import org.greenrobot.greendao.DaoException;
  * Created by yinchuandong on 22/08/2016.
  */
 
-@Entity
+@Entity(active = true)
 public class Event implements ITimeEventInterface<Event>{
     @Id
     private String eventUid;
@@ -162,6 +162,82 @@ public class Event implements ITimeEventInterface<Event>{
         this.invitee = invitee;
     }
 
+
+    public String getUrl() {
+        return this.url;
+    }
+
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+
+    public String getSummary() {
+        return this.summary;
+    }
+
+
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+
+
+    public String getRecurrence() {
+        return this.recurrence;
+    }
+
+
+    public void setRecurrence(String recurrence) {
+        this.recurrence = recurrence;
+    }
+
+
+    public String getICalUID() {
+        return this.iCalUID;
+    }
+
+
+    public void setICalUID(String iCalUID) {
+        this.iCalUID = iCalUID;
+    }
+
+
+    public String getCalendarUid() {
+        return this.calendarUid;
+    }
+
+
+    public void setCalendarUid(String calendarUid) {
+        this.calendarUid = calendarUid;
+    }
+
+
+    public String getRecurringEventId() {
+        return this.recurringEventId;
+    }
+
+
+    public void setRecurringEventId(String recurringEventId) {
+        this.recurringEventId = recurringEventId;
+    }
+
+
+    public String getRecurringEventUid() {
+        return this.recurringEventUid;
+    }
+
+
+    public void setRecurringEventUid(String recurringEventUid) {
+        this.recurringEventUid = recurringEventUid;
+    }
+
+
+    public String getEventId() {
+        return this.eventId;
+    }
+
+
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
      * Entity must attached to an entity context.
@@ -236,81 +312,6 @@ public class Event implements ITimeEventInterface<Event>{
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getEventDao() : null;
-    }
-
-
-    public String getUrl() {
-        return this.url;
-    }
-
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-
-    public String getSummary() {
-        return this.summary;
-    }
-
-
-    public void setSummary(String summary) {
-        this.summary = summary;
-    }
-
-
-    public String getRecurrence() {
-        return this.recurrence;
-    }
-
-
-    public void setRecurrence(String recurrence) {
-        this.recurrence = recurrence;
-    }
-
-
-    public String getICalUID() {
-        return this.iCalUID;
-    }
-
-
-    public void setICalUID(String iCalUID) {
-        this.iCalUID = iCalUID;
-    }
-
-
-    public String getCalendarUid() {
-        return this.calendarUid;
-    }
-
-
-    public void setCalendarUid(String calendarUid) {
-        this.calendarUid = calendarUid;
-    }
-
-
-    public String getRecurringEventId() {
-        return this.recurringEventId;
-    }
-
-
-    public void setRecurringEventId(String recurringEventId) {
-        this.recurringEventId = recurringEventId;
-    }
-
-
-    public String getRecurringEventUid() {
-        return this.recurringEventUid;
-    }
-
-
-    public void setRecurringEventUid(String recurringEventUid) {
-        this.recurringEventUid = recurringEventUid;
-    }
-
-
-    public String getEventId() {
-        return this.eventId;
     }
 
 

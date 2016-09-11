@@ -5,11 +5,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import org.unimelb.itime.test.R;
+import org.unimelb.itime.test.bean.Contact;
 import org.unimelb.itime.test.bean.Event;
 import org.unimelb.itime.test.bean.Invitee;
 import org.unimelb.itime.vendor.agendaview.AgendaViewBody;
 import org.unimelb.itime.vendor.agendaview.MonthAgendaView;
+import org.unimelb.itime.vendor.dayview.DayViewBodyController;
 import org.unimelb.itime.vendor.dayview.DayViewHeader;
+import org.unimelb.itime.vendor.dayview.MonthDayView;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 
 import java.util.ArrayList;
@@ -29,13 +32,12 @@ public class DavidActivity extends AppCompatActivity {
 
 //        doInviteesThings();
 
-
 //        initData();
         loadData();
-        doMonthAgendaViewThings();
-        displayAllInvitee();
+//        doMonthAgendaViewThings();
+//        displayAllInvitee();
 
-//        doMonthDayViewThings();
+        doMonthDayViewThings();
     }
 
     private void doInviteesThings(){
@@ -53,7 +55,6 @@ public class DavidActivity extends AppCompatActivity {
     private void initData(){
         this.dbManager.clearDB();
         this.initDB();
-//        this.initInvitees();
     }
 
     private void loadData(){
@@ -68,52 +69,46 @@ public class DavidActivity extends AppCompatActivity {
 
     }
 
-//    private void doMonthDayViewThings(){
-//        final MonthDayView monthDayFragment = (MonthDayView) findViewById(R.id.monthDayView);
-//
-//        monthDayFragment.setOnCheckIfHasEvent(new DayViewHeader.OnCheckIfHasEvent() {
-//                @Override
-//                public boolean todayHasEvent(long startOfDay) {
-//                    Calendar calendar1 = Calendar.getInstance();
-//                    calendar1.setTimeInMillis(startOfDay);
-//                    return (EventManager.getInstance().getEventsMap().containsKey(startOfDay));
-//                }
-//        });
-//
-//        monthDayFragment.setOnLoadEvents(new DayViewBodyController.OnLoadEvents() {
-//            @Override
-//            public List<ITimeEventInterface> loadEvents(long beginOfDayM) {
-//                if (EventManager.getInstance().getEventsMap().containsKey(beginOfDayM)){
-//                return EventManager.getInstance().getEventsMap().get(beginOfDayM);
-//            }
-//                return null;
-//            }
-//        });
-//
-//        monthDayFragment.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                Event event = new Event();
-//                event.setTitle("new added");
+    private void doMonthDayViewThings(){
+        final MonthDayView monthDayFragment = (MonthDayView) findViewById(R.id.monthDayView);
+
+        monthDayFragment.setOnCheckIfHasEvent(new DayViewHeader.OnCheckIfHasEvent() {
+                @Override
+                public boolean todayHasEvent(long startOfDay) {
+                    Calendar calendar1 = Calendar.getInstance();
+                    calendar1.setTimeInMillis(startOfDay);
+                    return (EventManager.getInstance().getEventsMap().containsKey(startOfDay));
+                }
+        });
+
+        monthDayFragment.setOnLoadEvents(new DayViewBodyController.OnLoadEvents() {
+            @Override
+            public List<ITimeEventInterface> loadEvents(long beginOfDayM) {
+                if (EventManager.getInstance().getEventsMap().containsKey(beginOfDayM)){
+                return EventManager.getInstance().getEventsMap().get(beginOfDayM);
+            }
+                return null;
+            }
+        });
+
+        monthDayFragment.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Event event = new Event();
+                event.setTitle("new added");
 //                event.setEventType(2);
 //                event.setStatus(1);
 //                event.setLocation("here");
-//                event.setStartTime(Calendar.getInstance().getTimeInMillis());
-//                event.setEndTime(Calendar.getInstance().getTimeInMillis() + 60 * 60 * 1000);
-//                String urls;
-//                urls = ("http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg");
-//                urls += "|" + ("http://education.news.cn/2015-05/04/127751980_14303593148421n.jpg");
-//                urls += "|" + ("http://i1.wp.com/pmcdeadline2.files.wordpress.com/2016/06/angelababy.jpg?crop=0px%2C107px%2C1980px%2C1327px&resize=446%2C299&ssl=1");
-//                event.setInvitees_urls(urls);
-//                EventManager.getInstance().addEvent(event);
-//                monthDayFragment.reloadCurrentBodyEvents();
-//
-//                Log.i(TAG, "reload done: ");
-//            }
-//        },5000);
-//    }
+                event.setStartTime(Calendar.getInstance().getTimeInMillis());
+                event.setEndTime(Calendar.getInstance().getTimeInMillis() + 60 * 60 * 1000);
+                EventManager.getInstance().addEvent(event);
+                monthDayFragment.reloadCurrentBodyEvents();
+                monthDayFragment.invalidate();
+                Log.i(TAG, "reload done: ");
+            }
+        },5000);
+    }
 
-//
     private void doMonthAgendaViewThings(){
         MonthAgendaView monthDayFragment = (MonthAgendaView) findViewById(R.id.monthAgendaView);
 
@@ -140,6 +135,8 @@ public class DavidActivity extends AppCompatActivity {
     private void initDB(){
         Calendar calendar = Calendar.getInstance();
         List<Event> events = new ArrayList<>();
+        List<Contact> contacts = initContact();
+
         int[] type = {0,1,2};
         int[] status = {0,1};
         long interval = 3600 * 1000;
@@ -162,26 +159,16 @@ public class DavidActivity extends AppCompatActivity {
 
             Invitee invitee1 = new Invitee();
             invitee1.setEventUid("" + i);
-
-            invitee1.setInviteeUid("1");
-            invitee1.setPhoto("http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg");
+            invitee1.setContact(contacts.get(0));
+            invitee1.setInviteeUid(contacts.get(0).getContactUid());
+            inviteeList.add(invitee1);
 
             Invitee invitee2 = new Invitee();
-            invitee2.setPhoto("http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg");
-            invitee2.setInviteeUid("2");
             invitee2.setEventUid("" + i);
-
-
-
-            Invitee invitee3 = new Invitee();
-            invitee3.setPhoto("http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg");
-            invitee3.setInviteeUid("3");
-            invitee3.setEventUid("" +  i);
-
-
-            inviteeList.add(invitee1);
+            invitee2.setContact(contacts.get(1));
+            invitee2.setInviteeUid(contacts.get(1).getContactUid());
             inviteeList.add(invitee2);
-            inviteeList.add(invitee3);
+
             dbManager.insertInviteeList(inviteeList);
             event.setInvitee(inviteeList);
 
@@ -218,35 +205,15 @@ public class DavidActivity extends AppCompatActivity {
         dbManager.insertEventList(events);
     }
 
-    private void initInvitees(){
-        List<Invitee> inviteeList = new ArrayList<>();
-
-        Invitee invitee1 = new Invitee();
-        invitee1.setInviteeUid("1");
-        invitee1.setPhoto("http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg");
-
-        Invitee invitee2 = new Invitee();
-        invitee2.setPhoto("http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg");
-        invitee2.setInviteeUid("2");
-
-        Invitee invitee3 = new Invitee();
-        invitee3.setPhoto("http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg");
-        invitee3.setInviteeUid("3");
-
-        inviteeList.add(invitee1);
-        inviteeList.add(invitee2);
-        inviteeList.add(invitee3);
-        dbManager.insertInviteeList(inviteeList);
-    }
-
-    private void displayAllInvitee(){
-
-
-
-        for (Invitee invitee:dbManager.getAllInvitee()
-             ) {
-            Log.i(TAG, "invitee uid: " + invitee.getInviteeUid());
+    private List<Contact> initContact(){
+        List<Contact> contacts = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            Contact contact = new Contact(""+i, "http://img.zybus.com/uploads/allimg/131213/1-131213111353.jpg", "name " + i);
+            contacts.add(contact);
+            dbManager.insertContact(contact);
         }
-//        dbManager.getAllInvitee();
+
+        return contacts;
     }
+
 }

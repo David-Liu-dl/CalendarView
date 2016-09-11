@@ -28,7 +28,6 @@ import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 public class DayDraggableEventView extends RelativeLayout {
     private final String TAG = "MyAPP";
 
-    private String summary = "pre";
     private TextView title;
     private ImageView icon;
     private ImageView leftBar;
@@ -66,7 +65,7 @@ public class DayDraggableEventView extends RelativeLayout {
     }
 
     private void setSummary(){
-        title.setText(summary);
+        title.setText(event.getTitle());
     }
 
     private void setType(){
@@ -141,7 +140,7 @@ public class DayDraggableEventView extends RelativeLayout {
     private void initEventTitle(){
         int padding = DensityUtil.dip2px(getContext(), isAllDayEvent ? 1 : 3);
         title = new TextView(getContext());
-        title.setText(summary);
+//        title.setText(summary);
         title.setMaxLines(1);
         title.setEllipsize(TextUtils.TruncateAt.END);
         title.setGravity(Gravity.CENTER_VERTICAL);

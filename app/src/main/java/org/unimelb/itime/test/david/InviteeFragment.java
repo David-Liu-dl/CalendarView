@@ -23,6 +23,8 @@ import android.widget.TextView;
 
 import org.unimelb.itime.test.R;
 import org.unimelb.itime.test.bean.Contact;
+import org.unimelb.itime.test.bean.Event;
+import org.unimelb.itime.test.bean.Invitee;
 import org.unimelb.itime.vendor.contact.SortAdapter;
 import org.unimelb.itime.vendor.contact.helper.CharacterParser;
 import org.unimelb.itime.vendor.contact.helper.ClearEditText;
@@ -31,6 +33,8 @@ import org.unimelb.itime.vendor.contact.helper.PinyinComparator;
 import org.unimelb.itime.vendor.contact.widgets.SideBar;
 import org.unimelb.itime.vendor.contact.widgets.SortModel;
 import org.unimelb.itime.vendor.listener.ITimeContactInterface;
+import org.unimelb.itime.vendor.listener.ITimeEventInterface;
+import org.unimelb.itime.vendor.listener.ITimeInviteeInterface;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -71,8 +75,22 @@ public class InviteeFragment extends Fragment{
 	}
 
 	public Map<ITimeContactInterface, ImageView> getAllSelectedContacts(){
+		List<ITimeInviteeInterface> inviteeList = new ArrayList<>();
+
         return this.contacts_list;
     }
+
+	/**
+	 * for Utility
+	 */
+	private Invitee contactToInvitee(Contact contact, Event event){
+		Invitee invitee = new Invitee();
+		invitee.setEventUid(event.getEventUid());
+		invitee.setInviteeUid(contact.getContactUid());
+
+		return invitee;
+	}
+	/****/
 
 	private void initView() {
 

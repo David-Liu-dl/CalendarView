@@ -79,6 +79,7 @@ public class DayViewBodyController {
 
     private OnCreateNewEvent onCreateNewEvent;
     private OnLoadEvents onLoadEvents;
+    private OnEventChanged onEventChanged;
 
     private BodyOnTouchListener bodyOnTouchListener;
 
@@ -565,11 +566,12 @@ public class DayViewBodyController {
                     if (tempDragView == null){
                         //if not the new drag event, then update event instance
                         ITimeEventInterface dragging_event = (ITimeEventInterface) view.getTag();
-                        long[] new_date = changeDateFromString(dragging_event, currentEventNewHour, currentEventNewMinutes);
-                        dragging_event.setStartTime(new_date[0]);
-                        dragging_event.setEndTime(new_date[1]);
-
-                        Log.i(TAG, "changed: ");
+                        if (onEventChanged != null){
+                            onEventChanged.OnEventChanged(dragging_event);
+//                            long[] new_date = changeDateFromString(dragging_event, currentEventNewHour, currentEventNewMinutes);
+//                            dragging_event.setStartTime(new_date[0]);
+//                            dragging_event.setEndTime(new_date[1]);
+                        }
                     }
 
                     //update Y position
@@ -749,6 +751,14 @@ public class DayViewBodyController {
 
     public interface OnLoadEvents{
         List<ITimeEventInterface> loadEvents(long beginOfDayM);
+    }
+
+    public interface OnEventChanged{
+        void OnEventChanged(ITimeEventInterface event);
+    }
+
+    public void setOnEventChanged(OnEventChanged onEventChanged) {
+        this.onEventChanged = onEventChanged;
     }
 
     public void setBodyOnTouchListener(BodyOnTouchListener bodyOnTouchListener) {

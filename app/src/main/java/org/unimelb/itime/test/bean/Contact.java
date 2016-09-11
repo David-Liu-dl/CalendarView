@@ -14,7 +14,7 @@ import org.greenrobot.greendao.annotation.Generated;
 @Entity
 public class Contact implements ITimeContactInterface {
     @Id()
-    String id;
+    String contactUid;
     String photo = null;
     String name;
 
@@ -22,11 +22,11 @@ public class Contact implements ITimeContactInterface {
     }
 
     @Keep
-    public Contact(@Nullable String photo, String name, String id) {
+    public Contact(@Nullable String photo, String name, String contactUid) {
         if (photo != null){
             this.photo = photo;
         }
-        this.id = id;
+        this.contactUid = contactUid;
         this.name = name;
     }
 
@@ -51,12 +51,12 @@ public class Contact implements ITimeContactInterface {
     }
 
     @Override
-    public void setId(String id) {
-        this.id = id;
+    public void setContactUid(String contactUid) {
+        this.contactUid = contactUid;
     }
 
     @Override
-    public String getId() {
-        return this.id;
+    public String getContactUid() {
+        return this.contactUid;
     }
 }

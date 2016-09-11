@@ -2,6 +2,7 @@ package org.unimelb.itime.test.david;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import org.unimelb.itime.test.R;
 import org.unimelb.itime.test.bean.Event;
@@ -27,9 +28,13 @@ public class DavidActivity extends AppCompatActivity {
         dbManager = DBManager.getInstance(this.getApplicationContext());
 
 //        doInviteesThings();
+
+
 //        initData();
         loadData();
         doMonthAgendaViewThings();
+        displayAllInvitee();
+
 //        doMonthDayViewThings();
     }
 
@@ -48,6 +53,7 @@ public class DavidActivity extends AppCompatActivity {
     private void initData(){
         this.dbManager.clearDB();
         this.initDB();
+//        this.initInvitees();
     }
 
     private void loadData(){
@@ -55,8 +61,11 @@ public class DavidActivity extends AppCompatActivity {
         EventManager.getInstance().getEventsMap().clear();
         for (Event event: allEvents
              ) {
+            List<Invitee> invitee = event.getInvitee();
+            Log.i(TAG, "loadData: " + invitee.size());
             EventManager.getInstance().addEvent(event);
         }
+
     }
 
 
@@ -143,27 +152,38 @@ public class DavidActivity extends AppCompatActivity {
             long duration = (endTime - startTime);
 
             Event event = new Event();
+            event.setEventUid("" + i);
             event.setTitle("" + i);
             event.setEventType(i%type.length);
             event.setStatus(i%status.length);
             event.setLocation("here");
             event.setStartTime(startTime);
-            String urls;
-//            urls = ("http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg");
-//            urls += "|" + ("http://education.news.cn/2015-05/04/127751980_14303593148421n.jpg");
-//            urls += "|" + ("http://i1.wp.com/pmcdeadline2.files.wordpress.com/2016/06/angelababy.jpg?crop=0px%2C107px%2C1980px%2C1327px&resize=446%2C299&ssl=1");
 
             List<Invitee> inviteeList = new ArrayList<>();
+
             Invitee invitee1 = new Invitee();
+            invitee1.setEventUid("" + i);
+
+            invitee1.setInviteeUid("1");
             invitee1.setPhoto("http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg");
+
             Invitee invitee2 = new Invitee();
             invitee2.setPhoto("http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg");
+            invitee2.setInviteeUid("2");
+            invitee2.setEventUid("" + i);
+
+
+
             Invitee invitee3 = new Invitee();
             invitee3.setPhoto("http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg");
+            invitee3.setInviteeUid("3");
+            invitee3.setEventUid("" +  i);
+
+
             inviteeList.add(invitee1);
             inviteeList.add(invitee2);
             inviteeList.add(invitee3);
-
+            dbManager.insertInviteeList(inviteeList);
             event.setInvitee(inviteeList);
 
             long realEnd = endTime;
@@ -199,5 +219,35 @@ public class DavidActivity extends AppCompatActivity {
         dbManager.insertEventList(events);
     }
 
+    private void initInvitees(){
+        List<Invitee> inviteeList = new ArrayList<>();
 
+        Invitee invitee1 = new Invitee();
+        invitee1.setInviteeUid("1");
+        invitee1.setPhoto("http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg");
+
+        Invitee invitee2 = new Invitee();
+        invitee2.setPhoto("http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg");
+        invitee2.setInviteeUid("2");
+
+        Invitee invitee3 = new Invitee();
+        invitee3.setPhoto("http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg");
+        invitee3.setInviteeUid("3");
+
+        inviteeList.add(invitee1);
+        inviteeList.add(invitee2);
+        inviteeList.add(invitee3);
+        dbManager.insertInviteeList(inviteeList);
+    }
+
+    private void displayAllInvitee(){
+
+
+
+        for (Invitee invitee:dbManager.getAllInvitee()
+             ) {
+            Log.i(TAG, "invitee uid: " + invitee.getInviteeUid());
+        }
+//        dbManager.getAllInvitee();
+    }
 }

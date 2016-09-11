@@ -12,44 +12,59 @@ import org.greenrobot.greendao.annotation.Generated;
  * Created by yuhaoliu on 10/09/2016.
  */
 @Entity
-public class Invitee extends Contact implements ITimeInviteeInterface{
-    @Id()
-    String id;
+public class Invitee implements ITimeInviteeInterface{
+    String eventUid;
+    String inviteeUid;
     String photo = null;
     String name;
 
     @Keep
     public Invitee() {
-
     }
 
-    @Keep
-    public Invitee(@Nullable String profile_photo_URL, String name, String id) {
-        super(profile_photo_URL, name, id);
+    @Generated(hash = 935710098)
+    public Invitee(String eventUid, String inviteeUid, String photo, String name) {
+        this.eventUid = eventUid;
+        this.inviteeUid = inviteeUid;
+        this.photo = photo;
+        this.name = name;
     }
 
+    @Override
     public String getName() {
         return this.name;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
     }
 
+    @Override
+    public void setInviteeUid(String inviteeUid) {
+        this.inviteeUid = inviteeUid;
+    }
+
+    @Override
+    public String getInviteeUid() {
+        return this.inviteeUid;
+    }
+
+    @Override
     public String getPhoto() {
         return this.photo;
     }
 
+    @Override
     public void setPhoto(String photo) {
         this.photo = photo;
     }
 
-    public String getId() {
-        return this.id;
+    public String getEventUid() {
+        return eventUid;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setEventUid(String eventUid) {
+        this.eventUid = eventUid;
     }
-
 }

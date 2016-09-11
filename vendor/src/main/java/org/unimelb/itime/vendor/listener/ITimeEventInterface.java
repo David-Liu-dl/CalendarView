@@ -34,12 +34,7 @@ public interface ITimeEventInterface<T> extends Comparable<T> {
     void setLocation(String location);
     String getLocation();
 
-    void setTimeSlots(List<ITimeTimeSlotInterface> proposedTimeSlots);
-    List<ITimeTimeSlotInterface> getTimeSlots();
-
-
     List<? extends ITimeInviteeInterface> getDisplayInvitee();
 
-//    void setInviteesUrls(List<ITimeInviteeInterface> invitee);
 
 }

@@ -75,7 +75,7 @@ public class SortAdapter extends BaseAdapter implements SectionIndexer{
 			LinearLayout.LayoutParams tvLetterParams = (LinearLayout.LayoutParams) viewHolder.tvLetter.getLayoutParams();
 			int tvLetterPadding = width/60;
 			viewHolder.tvLetter.setPadding(tvLetterPadding,tvLetterPadding,tvLetterPadding,tvLetterPadding);
-			viewHolder.tvLetter.setTextSize(15);
+			viewHolder.tvLetter.setTextSize(12);
 			viewHolder.tvLetter.setTextColor(mContext.getResources().getColor(R.color.text_enable));
 			viewHolder.tvLetter.setBackgroundColor(mContext.getResources().getColor(R.color.page_bg_color));
 			viewHolder.tvLetter.setLayoutParams(tvLetterParams);

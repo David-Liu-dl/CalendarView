@@ -1,8 +1,10 @@
 package org.unimelb.itime.test.paul;
 
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
+import org.unimelb.itime.vendor.listener.ITimeInviteeInterface;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Paul on 28/08/2016.
@@ -69,7 +71,6 @@ public class TestEvent implements ITimeEventInterface {
 
     @Override
     public void setLocation(String location) {
-
     }
 
     @Override
@@ -78,23 +79,8 @@ public class TestEvent implements ITimeEventInterface {
     }
 
     @Override
-    public void setProposedTimeSlots(ArrayList proposedTimeSlots) {
-
-    }
-
-    @Override
-    public ArrayList<Long> getProposedTimeSlots() {
+    public List<? extends ITimeInviteeInterface> getDisplayInvitee() {
         return null;
-    }
-
-    @Override
-    public String getInvitees_urls() {
-        return null;
-    }
-
-    @Override
-    public void setInvitees_urls(String invitees_urls) {
-
     }
 
     @Override

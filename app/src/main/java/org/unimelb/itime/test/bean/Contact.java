@@ -2,32 +2,40 @@ package org.unimelb.itime.test.bean;
 
 import android.support.annotation.Nullable;
 
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Keep;
 import org.unimelb.itime.vendor.listener.ITimeContactInterface;
+import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * Created by yuhaoliu on 17/08/16.
  */
+@Entity
 public class Contact implements ITimeContactInterface {
-    String id;
-    String profile_photo_URL = null;
-    String name;
+    @Id()
+    private String contactUid;
+    private String photo = null;
+    private String name;
 
-    public Contact(@Nullable String profile_photo_URL, String name, String id) {
-        if (profile_photo_URL != null){
-            this.profile_photo_URL = profile_photo_URL;
-        }
-        this.id = id;
+    public Contact(){
+    }
+
+    @Generated(hash = 1462673109)
+    public Contact(String contactUid, String photo, String name) {
+        this.contactUid = contactUid;
+        this.photo = photo;
         this.name = name;
     }
 
     @Override
-    public void setProfilePhotoUrl(String profilePhotoUrl) {
-        this.profile_photo_URL = profilePhotoUrl;
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 
     @Override
-    public String getProfilePhotoUrl() {
-        return this.profile_photo_URL;
+    public String getPhoto() {
+        return this.photo;
     }
 
     @Override
@@ -41,12 +49,12 @@ public class Contact implements ITimeContactInterface {
     }
 
     @Override
-    public void setId(String id) {
-        this.id = id;
+    public void setContactUid(String contactUid) {
+        this.contactUid = contactUid;
     }
 
     @Override
-    public String getId() {
-        return this.id;
+    public String getContactUid() {
+        return this.contactUid;
     }
 }

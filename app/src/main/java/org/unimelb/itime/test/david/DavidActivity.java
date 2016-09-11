@@ -1,6 +1,5 @@
 package org.unimelb.itime.test.david;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -8,10 +7,12 @@ import android.util.Log;
 import org.unimelb.itime.test.R;
 import org.unimelb.itime.test.bean.Contact;
 import org.unimelb.itime.test.bean.Event;
+import org.unimelb.itime.test.bean.Invitee;
+import org.unimelb.itime.vendor.agendaview.AgendaViewBody;
+import org.unimelb.itime.vendor.agendaview.MonthAgendaView;
 import org.unimelb.itime.vendor.dayview.DayViewBodyController;
 import org.unimelb.itime.vendor.dayview.DayViewHeader;
 import org.unimelb.itime.vendor.dayview.MonthDayView;
-import org.unimelb.itime.vendor.listener.ITimeContactInterface;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 
 import java.util.ArrayList;
@@ -30,20 +31,23 @@ public class DavidActivity extends AppCompatActivity {
         dbManager = DBManager.getInstance(this.getApplicationContext());
 
 //        doInviteesThings();
+
 //        initData();
         loadData();
 //        doMonthAgendaViewThings();
+//        displayAllInvitee();
+
         doMonthDayViewThings();
     }
 
     private void doInviteesThings(){
         InviteeFragment inviteeFragment = new InviteeFragment();
-        inviteeFragment.setOnLoadContact(new InviteeFragment.OnLoadContact() {
-            @Override
-            public List<ITimeContactInterface> loadContacts() {
-                return simulateContacts();
-            }
-        });
+//        inviteeFragment.setOnLoadContact(new InviteeFragment.OnLoadContact() {
+//            @Override
+//            public List<ITimeContactInterface> loadContacts() {
+//                return simulateContacts();
+//            }
+//        });
 
         getFragmentManager().beginTransaction().add(R.id.fragment, inviteeFragment).commit();
     }
@@ -58,8 +62,11 @@ public class DavidActivity extends AppCompatActivity {
         EventManager.getInstance().getEventsMap().clear();
         for (Event event: allEvents
              ) {
+            List<Invitee> invitee = event.getInvitee();
+            Log.i(TAG, "loadData: " + invitee.size());
             EventManager.getInstance().addEvent(event);
         }
+
     }
 
     private void doMonthDayViewThings(){
@@ -89,51 +96,47 @@ public class DavidActivity extends AppCompatActivity {
             public void run() {
                 Event event = new Event();
                 event.setTitle("new added");
-                event.setEventType(2);
-                event.setStatus(1);
-                event.setLocation("here");
+//                event.setEventType(2);
+//                event.setStatus(1);
+//                event.setLocation("here");
                 event.setStartTime(Calendar.getInstance().getTimeInMillis());
                 event.setEndTime(Calendar.getInstance().getTimeInMillis() + 60 * 60 * 1000);
-                String urls;
-                urls = ("http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg");
-                urls += "|" + ("http://education.news.cn/2015-05/04/127751980_14303593148421n.jpg");
-                urls += "|" + ("http://i1.wp.com/pmcdeadline2.files.wordpress.com/2016/06/angelababy.jpg?crop=0px%2C107px%2C1980px%2C1327px&resize=446%2C299&ssl=1");
-                event.setInvitees_urls(urls);
                 EventManager.getInstance().addEvent(event);
                 monthDayFragment.reloadCurrentBodyEvents();
-
+                monthDayFragment.invalidate();
                 Log.i(TAG, "reload done: ");
             }
         },5000);
     }
 
-//
-//    private void doMonthAgendaViewThings(){
-//        MonthAgendaView monthDayFragment = (MonthAgendaView) findViewById(R.id.monthAgendaView);
-//
-//        monthDayFragment.setOnCheckIfHasEvent(new DayViewHeader.OnCheckIfHasEvent() {
-//                @Override
-//                public boolean todayHasEvent(long startOfDay) {
-//                    Calendar calendar1 = Calendar.getInstance();
-//                    calendar1.setTimeInMillis(startOfDay);
-//                    return (EventManager.getInstance().getEventsMap().containsKey(startOfDay));
-//                }
-//        });
-//
-//        monthDayFragment.setOnLoadEvents(new AgendaViewBody.OnLoadEvents() {
-//            @Override
-//            public List<ITimeEventInterface> loadTodayEvents(long beginOfDayMilliseconds) {
-//                if (EventManager.getInstance().getEventsMap().containsKey(beginOfDayMilliseconds)){
-//                    return EventManager.getInstance().getEventsMap().get(beginOfDayMilliseconds);
-//                }
-//                return null;
-//            }
-//        });
-//    }
+    private void doMonthAgendaViewThings(){
+        MonthAgendaView monthDayFragment = (MonthAgendaView) findViewById(R.id.monthAgendaView);
+
+        monthDayFragment.setOnCheckIfHasEvent(new DayViewHeader.OnCheckIfHasEvent() {
+                @Override
+                public boolean todayHasEvent(long startOfDay) {
+                    Calendar calendar1 = Calendar.getInstance();
+                    calendar1.setTimeInMillis(startOfDay);
+                    return (EventManager.getInstance().getEventsMap().containsKey(startOfDay));
+                }
+        });
+
+        monthDayFragment.setOnLoadEvents(new AgendaViewBody.OnLoadEvents() {
+            @Override
+            public List<ITimeEventInterface> loadTodayEvents(long beginOfDayMilliseconds) {
+                if (EventManager.getInstance().getEventsMap().containsKey(beginOfDayMilliseconds)){
+                    return EventManager.getInstance().getEventsMap().get(beginOfDayMilliseconds);
+                }
+                return null;
+            }
+        });
+    }
 
     private void initDB(){
         Calendar calendar = Calendar.getInstance();
         List<Event> events = new ArrayList<>();
+        List<Contact> contacts = initContact();
+
         int[] type = {0,1,2};
         int[] status = {0,1};
         long interval = 3600 * 1000;
@@ -145,16 +148,29 @@ public class DavidActivity extends AppCompatActivity {
             long duration = (endTime - startTime);
 
             Event event = new Event();
+            event.setEventUid("" + i);
             event.setTitle("" + i);
             event.setEventType(i%type.length);
             event.setStatus(i%status.length);
             event.setLocation("here");
             event.setStartTime(startTime);
-            String urls;
-            urls = ("http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg");
-            urls += "|" + ("http://education.news.cn/2015-05/04/127751980_14303593148421n.jpg");
-            urls += "|" + ("http://i1.wp.com/pmcdeadline2.files.wordpress.com/2016/06/angelababy.jpg?crop=0px%2C107px%2C1980px%2C1327px&resize=446%2C299&ssl=1");
-            event.setInvitees_urls(urls);
+
+            List<Invitee> inviteeList = new ArrayList<>();
+
+            Invitee invitee1 = new Invitee();
+            invitee1.setEventUid("" + i);
+            invitee1.setContact(contacts.get(0));
+            invitee1.setInviteeUid(contacts.get(0).getContactUid());
+            inviteeList.add(invitee1);
+
+            Invitee invitee2 = new Invitee();
+            invitee2.setEventUid("" + i);
+            invitee2.setContact(contacts.get(1));
+            invitee2.setInviteeUid(contacts.get(1).getContactUid());
+            inviteeList.add(invitee2);
+
+            dbManager.insertInviteeList(inviteeList);
+            event.setInvitee(inviteeList);
 
             long realEnd = endTime;
             long temp = duration;
@@ -176,8 +192,7 @@ public class DavidActivity extends AppCompatActivity {
                     event_clone.setStartTime(startTime);
                     event_clone.setEndTime(endTime);
                     event_clone.setLocation("here");
-                    event_clone.setInvitees_urls("");
-                    events.add(event_clone);
+//                    event_clone.setInviteesUrls("");
                     title = title + " all day";
                 }
                 alldayCount = 0;
@@ -190,19 +205,15 @@ public class DavidActivity extends AppCompatActivity {
         dbManager.insertEventList(events);
     }
 
+    private List<Contact> initContact(){
+        List<Contact> contacts = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            Contact contact = new Contact(""+i, "http://img.zybus.com/uploads/allimg/131213/1-131213111353.jpg", "name " + i);
+            contacts.add(contact);
+            dbManager.insertContact(contact);
+        }
 
-    public List<ITimeContactInterface> simulateContacts(){
-        List<ITimeContactInterface> contacts = new ArrayList<>();
-        contacts.add(new Contact(null,"赵普", "1"));
-        contacts.add(new Contact(null,"AGE", "2"));
-        contacts.add(new Contact(null,"B", "3"));
-        contacts.add(new Contact(null,"C", "4"));
-        contacts.add(new Contact(null,"D", "5"));
-        contacts.add(new Contact(null,"F", "6"));
-        contacts.add(new Contact(null,"Crron", "7"));
-        contacts.add(new Contact(null,"Bob", "8"));
-        contacts.add(new Contact("http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg","周二珂", "9"));
+        return contacts;
+    }
 
-		return contacts;
-	}
 }

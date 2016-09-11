@@ -34,14 +34,14 @@ public class DBManager {
     public static DBManager getInstance(Context context) {
         if (mInstance == null) {
             synchronized (DBManager.class)
-        {
-            if (mInstance == null)
+            {
+                if (mInstance == null)
                 {
                     mInstance = new DBManager(context);
                 }
+            }
         }
-        }
-            return mInstance;
+        return mInstance;
     }
 
 
@@ -64,6 +64,13 @@ public class DBManager {
         DaoSession daoSession = daoMaster.newSession();
         ContactDao contactDao = daoSession.getContactDao();
         contactDao.insert(contact);
+    }
+
+    public void insertTimeSlot(TimeSlot timeSlot){
+        DaoMaster daoMaster = new DaoMaster(getWritableDatabase());
+        DaoSession daoSession = daoMaster.newSession();
+        TimeSlotDao timeSlotDao = daoSession.getTimeSlotDao();
+        timeSlotDao.insert(timeSlot);
     }
 
     public void insertEventList(List<Event> events) {
@@ -114,15 +121,27 @@ public class DBManager {
         return list;
     }
 
+    public Event getEvent(String uid){
+        DaoMaster daoMaster = new DaoMaster(getReadableDatabase());
+        DaoSession daoSession = daoMaster.newSession();
+        EventDao eventDao = daoSession.getEventDao();
+        QueryBuilder<Event> qb = eventDao.queryBuilder();
+        qb.where(EventDao.Properties.EventUid.eq(uid));
+        return  qb.list().get(0);
+    }
+
     public void clearDB(){
         DaoMaster daoMaster = new DaoMaster(getWritableDatabase());
         DaoSession daoSession = daoMaster.newSession();
         EventDao eventDao = daoSession.getEventDao();
         ContactDao contactDao = daoSession.getContactDao();
         InviteeDao inviteeDao = daoSession.getInviteeDao();
+        TimeSlotDao timeSlotDao = daoSession.getTimeSlotDao();
         eventDao.deleteAll();
         contactDao.deleteAll();
         inviteeDao.deleteAll();
+        timeSlotDao.deleteAll();
+
     }
 
     private SQLiteDatabase getReadableDatabase() {

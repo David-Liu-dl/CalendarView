@@ -16,6 +16,7 @@ import org.unimelb.itime.vendor.agendaview.MonthAgendaView;
 import org.unimelb.itime.vendor.dayview.DayViewBodyController;
 import org.unimelb.itime.vendor.dayview.DayViewHeader;
 import org.unimelb.itime.vendor.dayview.MonthDayView;
+import org.unimelb.itime.vendor.listener.ITimeContactInterface;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 
 import java.util.ArrayList;
@@ -33,23 +34,18 @@ public class DavidActivity extends AppCompatActivity {
 
         dbManager = DBManager.getInstance(this.getApplicationContext());
 
-//        doInviteesThings();
 
 //        initData();
-        loadData();
+//        loadData();
+        doInviteesThings();
+
 //        doMonthAgendaViewThings();
 //        displayAllInvitee();
-        doMonthDayViewThings();
+//        doMonthDayViewThings();
     }
 
     private void doInviteesThings(){
         InviteeFragment inviteeFragment = new InviteeFragment();
-//        inviteeFragment.setOnLoadContact(new InviteeFragment.OnLoadContact() {
-//            @Override
-//            public List<ITimeContactInterface> loadContacts() {
-//                return simulateContacts();
-//            }
-//        });
 
         getFragmentManager().beginTransaction().add(R.id.fragment, inviteeFragment).commit();
     }

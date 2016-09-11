@@ -50,7 +50,6 @@ public class MonthDayView extends LinearLayout {
 
     private Context context;
 
-//    private DayViewBodyPagerAdapter.OnBodyPageChanged onBodyPageChanged;
     private DayViewHeader.OnCheckIfHasEvent onCheckIfHasEvent;
 
     public MonthDayView(Context context) {
@@ -96,6 +95,12 @@ public class MonthDayView extends LinearLayout {
         }
     }
 
+    public void setOnEventChanged(DayViewBodyController.OnEventChanged onEventChanged){
+        if (bodyPagerAdapter != null){
+            bodyPagerAdapter.setOnEventChanged(onEventChanged);
+        }
+    }
+
     public void setOnCheckIfHasEvent(DayViewHeader.OnCheckIfHasEvent onCheckIfHasEvent){
         this.onCheckIfHasEvent = onCheckIfHasEvent;
         if (recyclerAdapter != null){
@@ -136,6 +141,9 @@ public class MonthDayView extends LinearLayout {
         if (this.onCreateNewEvent != null){
             bodyPagerAdapter.setOnCreateNewEvent(this.onCreateNewEvent);
         }
+//        if (this.onEventchan != null){
+//            bodyPagerAdapter.setOnEventChanged(onEventChanged);
+//        }
         bodyPagerAdapter.setBodyOnTouchListener(new DayViewBodyController.BodyOnTouchListener() {
             @Override
             public void bodyOnTouchListener(float tapX, float tapY) {

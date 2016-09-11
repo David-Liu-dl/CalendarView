@@ -15,7 +15,6 @@ import java.util.List;
 public class DayViewBodyPagerAdapter extends PagerAdapter {
     public String TAG = "MyAPP";
 
-    private DayViewBodyController.OnCreateNewEvent onCreateNewEvent;
     private DayViewBodyController.BodyOnTouchListener bodyOnTouchListener;
 
     private Calendar calendar = Calendar.getInstance();
@@ -28,25 +27,6 @@ public class DayViewBodyPagerAdapter extends PagerAdapter {
         this.upperBounds = upperBounds;
     }
 
-    public void setOnCreateNewEvent(DayViewBodyController.OnCreateNewEvent onCreateNewEvent){
-        this.onCreateNewEvent = onCreateNewEvent;
-        for (int i = 0; i < vLists.size(); i++) {
-            ((DayViewBody) vLists.get(i)).setOnCreateNewEvent(onCreateNewEvent);
-        }
-    }
-
-    public void setBodyOnTouchListener(DayViewBodyController.BodyOnTouchListener bodyOnTouchListener) {
-        this.bodyOnTouchListener = bodyOnTouchListener;
-        for (int i = 0; i < vLists.size(); i++) {
-            ((DayViewBody) vLists.get(i)).setBodyOnTouchListener(this.bodyOnTouchListener);
-        }
-    }
-
-    public void setOnLoadEvents(DayViewBodyController.OnLoadEvents onLoadEvents) {
-        for (int i = 0; i < vLists.size(); i++) {
-            ((DayViewBody) vLists.get(i)).setOnLoadEvents(onLoadEvents);
-        }
-    }
 //    public void setOnBodyPageChanged(OnBodyPageChanged onBodyPageChanged){
 //        this.onBodyPageChanged = onBodyPageChanged;
 //    }
@@ -94,4 +74,29 @@ public class DayViewBodyPagerAdapter extends PagerAdapter {
 //        container.removeView(vLists.get(position % vLists.size()));
     }
 
+
+    public void setOnCreateNewEvent(DayViewBodyController.OnCreateNewEvent onCreateNewEvent){
+        for (int i = 0; i < vLists.size(); i++) {
+            ((DayViewBody) vLists.get(i)).setOnCreateNewEvent(onCreateNewEvent);
+        }
+    }
+
+    public void setBodyOnTouchListener(DayViewBodyController.BodyOnTouchListener bodyOnTouchListener) {
+        this.bodyOnTouchListener = bodyOnTouchListener;
+        for (int i = 0; i < vLists.size(); i++) {
+            ((DayViewBody) vLists.get(i)).setBodyOnTouchListener(this.bodyOnTouchListener);
+        }
+    }
+
+    public void setOnLoadEvents(DayViewBodyController.OnLoadEvents onLoadEvents) {
+        for (int i = 0; i < vLists.size(); i++) {
+            ((DayViewBody) vLists.get(i)).setOnLoadEvents(onLoadEvents);
+        }
+    }
+
+    public void setOnEventChanged(DayViewBodyController.OnEventChanged onEventChanged) {
+        for (int i = 0; i < vLists.size(); i++) {
+            ((DayViewBody) vLists.get(i)).dayViewController.setOnEventChanged(onEventChanged);
+        }
+    }
 }

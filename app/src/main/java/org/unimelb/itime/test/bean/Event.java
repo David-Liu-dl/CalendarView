@@ -15,6 +15,7 @@ import java.util.List;
 import org.greenrobot.greendao.annotation.Generated;
 import org.unimelb.itime.vendor.listener.ITimeInviteeInterface;
 import org.greenrobot.greendao.DaoException;
+import org.unimelb.itime.vendor.listener.ITimeTimeSlotInterface;
 
 /**
  * Created by yinchuandong on 22/08/2016.
@@ -151,6 +152,12 @@ public class Event implements ITimeEventInterface<Event>{
     @Override
     public String getLocation() {
         return location;
+    }
+
+
+
+    public List<ITimeTimeSlotInterface> getTimeSlots() {
+        return null;
     }
 
     @Override

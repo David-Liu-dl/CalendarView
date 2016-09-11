@@ -88,8 +88,9 @@ public class WeekTimeSlotView extends RelativeLayout{
             }
             requestLayout();
         }
-//        initAll();
     }
+
+
 //     end of set time slots
 
 

@@ -13,9 +13,9 @@ public interface ITimeTimeSlotInterface {
     String getStatus();
 
     int getAcceptedNum();
-    void setAcceptedNum();
+    void setAcceptedNum(int num);
 
     int getTotalNum();
-    void setTotalNum();
+    void setTotalNum(int num);
 
 }

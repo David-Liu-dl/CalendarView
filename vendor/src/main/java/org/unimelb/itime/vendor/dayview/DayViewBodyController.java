@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import org.unimelb.itime.vendor.R;
 import org.unimelb.itime.vendor.eventview.DayDraggableEventView;
+import org.unimelb.itime.vendor.eventview.Event;
 import org.unimelb.itime.vendor.helper.CalendarEventOverlapHelper;
 import org.unimelb.itime.vendor.helper.DensityUtil;
 import org.unimelb.itime.vendor.helper.MyCalendar;
@@ -80,8 +81,8 @@ public class DayViewBodyController {
     private OnCreateNewEvent onCreateNewEvent;
     private OnLoadEvents onLoadEvents;
     private OnEventChanged onEventChanged;
-
     private BodyOnTouchListener bodyOnTouchListener;
+    private OnDgClickListener onDgClickListener;
 
     public DayViewBodyController(AttributeSet attrs,
                                  Context context) {
@@ -472,7 +473,7 @@ public class DayViewBodyController {
     private DayDraggableEventView createDayDraggableEventView(ITimeEventInterface event, boolean isAllDayEvent){
 
         DayDraggableEventView event_view = new DayDraggableEventView(context, event, isAllDayEvent);
-
+        event_view.setOnClickListener(new DgOnClickListener());
         if (isAllDayEvent){
             int allDayHeight = allDayContainer.getWidth() - allDayContainer.getPaddingBottom() - allDayContainer.getPaddingTop();
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(0, allDayHeight);
@@ -502,6 +503,10 @@ public class DayViewBodyController {
         event_view.setLayoutParams(params);
 
         return event_view;
+    }
+
+    public void setOnDgClickListener(OnDgClickListener onDgClickListener) {
+        this.onDgClickListener = onDgClickListener;
     }
 
     /****************************************************************************************/
@@ -740,7 +745,22 @@ public class DayViewBodyController {
         return param;
     }
 
+    class DgOnClickListener implements View.OnClickListener{
+        @Override
+        public void onClick(View v) {
+            if (onDgClickListener != null){
+                onDgClickListener.onDgClick((ITimeEventInterface) v.getTag());
+                Log.i(TAG, "onClick: ");
+            }
+        }
+    }
+
     /*************************** Interface ******************************************/
+    public interface OnDgClickListener{
+        void onDgClick(ITimeEventInterface event);
+    }
+
+
     public interface BodyOnTouchListener{
         void bodyOnTouchListener(float tapX, float tapY);
     }

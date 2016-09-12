@@ -34,14 +34,13 @@ public class DavidActivity extends AppCompatActivity {
 
         dbManager = DBManager.getInstance(this.getApplicationContext());
 
-
 //        initData();
-//        loadData();
-        doInviteesThings();
+        loadData();
+//        doInviteesThings();
 
 //        doMonthAgendaViewThings();
 //        displayAllInvitee();
-//        doMonthDayViewThings();
+        doMonthDayViewThings();
     }
 
     private void doInviteesThings(){
@@ -103,18 +102,18 @@ public class DavidActivity extends AppCompatActivity {
             }
         });
 
-        monthDayFragment.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Event event = new Event();
-                event.setTitle("new added");
-                event.setStartTime(Calendar.getInstance().getTimeInMillis());
-                event.setEndTime(Calendar.getInstance().getTimeInMillis() + 60 * 60 * 1000);
-                EventManager.getInstance().addEvent(event);
-                monthDayFragment.reloadCurrentBodyEvents();
-                monthDayFragment.invalidate();
-            }
-        },5000);
+//        monthDayFragment.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                Event event = new Event();
+//                event.setTitle("new added");
+//                event.setStartTime(Calendar.getInstance().getTimeInMillis());
+//                event.setEndTime(Calendar.getInstance().getTimeInMillis() + 60 * 60 * 1000);
+//                EventManager.getInstance().addEvent(event);
+//                monthDayFragment.reloadCurrentBodyEvents();
+//                monthDayFragment.invalidate();
+//            }
+//        },5000);
     }
 
 //    private void doMonthAgendaViewThings(){

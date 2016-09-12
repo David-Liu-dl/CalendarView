@@ -53,8 +53,6 @@ public class DayViewBody extends RelativeLayout{
     private RelativeLayout dividerBgRLayout;
     private RelativeLayout eventLayout;
 
-
-
     public MyCalendar myCalendar;
     private Context context;
 
@@ -87,7 +85,6 @@ public class DayViewBody extends RelativeLayout{
     private OnEventChanged onEventChanged;
     private BodyOnTouchListener bodyOnTouchListener;
     private OnDgClickListener onDgClickListener;
-
 
     public DayViewBody(Context context) {
         super(context);
@@ -146,6 +143,9 @@ public class DayViewBody extends RelativeLayout{
         initMsgWindow();
         initTimeText(getHours());
         initDividerLine(getHours());
+//        this.reLoadEvents();
+        Log.i(TAG, "initBackgroundView: ");
+//        this.invalidate();
     }
 
     private void initTimeSlot(){
@@ -332,6 +332,7 @@ public class DayViewBody extends RelativeLayout{
 
     public void addEvent(ITimeEventInterface event){
         boolean isAllDayEvent = isAllDayEvent(event);
+
         if (isAllDayEvent){
             allDayEventModules.add(event);
             addAllDayEvent(event);
@@ -381,6 +382,8 @@ public class DayViewBody extends RelativeLayout{
         DayDraggableEventView new_dgEvent = this.createDayDraggableEventView(event, false);
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) new_dgEvent.getLayoutParams();
         params.topMargin = margin_top;
+
+        Log.i(TAG, "topMargin: " + margin_top);
 
         new_dgEvent.setId(View.generateViewId());
         this.regular_event_view_map.put(event,new_dgEvent.getId());
@@ -441,6 +444,8 @@ public class DayViewBody extends RelativeLayout{
                 params.width = eventWidth;
                 params.leftMargin = margin_left + 5 * x_pst;
                 params.topMargin = getStartY + overlapGapHeight * i + previousGroupExtraY;
+                Log.i(TAG, "dividerBgRLayout: " + dividerBgRLayout.getHeight());
+                Log.i(TAG, "reDrawEvents: " + params.topMargin);
                 event_view.setLayoutParams(params);
                 event_view.invalidate();
             }
@@ -457,14 +462,17 @@ public class DayViewBody extends RelativeLayout{
             calendar.set(Calendar.MINUTE, 0);
             calendar.set(Calendar.SECOND, 0);
             calendar.set(Calendar.MILLISECOND, 0);
+
             long beginOfDayMilliseconds = calendar.getTimeInMillis();
             List<ITimeEventInterface> events = this.onLoadEvents.loadEvents(beginOfDayMilliseconds);
+            Log.i(TAG, "date: " + calendar.getTime());
             if (events != null){
                 for (ITimeEventInterface event: events
                         ) {
                     this.addEvent(event);
                 }
             }
+
             this.reDrawEvents();
         }else {
             Log.i(TAG, "reLoadEvents onLoadEvents: null");
@@ -794,7 +802,6 @@ public class DayViewBody extends RelativeLayout{
         this.bodyOnTouchListener = bodyOnTouchListener;
     }
 
-
     public void setOnCreateNewEvent(OnCreateNewEvent onCreateNewEvent) {
         this.onCreateNewEvent = onCreateNewEvent;
     }
@@ -808,7 +815,6 @@ public class DayViewBody extends RelativeLayout{
     protected void onFinishInflate() {
         super.onFinishInflate();
         scrollContainerView = (ScrollContainerView) findViewById(R.id.customer_day_view);
-//        body_container = (RelativeLayout) findViewById(R.id.body_container);
         leftSideRLayout = (RelativeLayout) findViewById(R.id.timeReLayout);
         dividerBgRLayout = (RelativeLayout) findViewById(R.id.eventRelativeLayout);
         topAllDayLayout = (LinearLayout) findViewById(R.id.allDayContainer);
@@ -836,18 +842,18 @@ public class DayViewBody extends RelativeLayout{
             }
         });
         dividerBgRLayout.setOnLongClickListener(new CreateEventListener());
+        Log.i(TAG, "onFinishInflate: ");
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        this.initBackgroundView();
-        this.bringDgViewsToFront();
+
+        initBackgroundView();
+
         if (myCalendar.isToday()){
             this.addNowTimeLine();
         }
-
-        dividerBgRLayout.invalidate();
     }
 
 }

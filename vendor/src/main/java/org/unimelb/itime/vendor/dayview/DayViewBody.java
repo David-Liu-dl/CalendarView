@@ -140,9 +140,10 @@ public class DayViewBody extends RelativeLayout{
 
         rightContentLayout = new RelativeLayout(getContext());
         rightContentLayout.setId(View.generateViewId());
-        RelativeLayout.LayoutParams rightContentLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 500);
+        RelativeLayout.LayoutParams rightContentLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         rightContentLayoutParams.addRule(RelativeLayout.BELOW, topAllDayLayout.getId());
         rightContentLayoutParams.addRule(RelativeLayout.END_OF, leftSideRLayout.getId());
+        rightContentLayoutParams.addRule(RelativeLayout.ALIGN_TOP, leftSideRLayout.getId());
         rightContentLayoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, leftSideRLayout.getId());
         rightContentLayout.setLayoutParams(rightContentLayoutParams);
 
@@ -174,8 +175,10 @@ public class DayViewBody extends RelativeLayout{
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-//        RelativeLayout.LayoutParams leftSideRLayoutParams = (RelativeLayout.LayoutParams)leftSideRLayout.getLayoutParams();
-//        leftSideRLayoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, topAllDayLayout.getId());
+
+        RelativeLayout.LayoutParams leftSideRLayoutParams = (RelativeLayout.LayoutParams)leftSideRLayout.getLayoutParams();
+        RelativeLayout.LayoutParams rightContentLayoutParams = (RelativeLayout.LayoutParams)rightContentLayout.getLayoutParams();
+        leftSideRLayoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, topAllDayLayout.getId());
 //        TextView a  = new TextView(getContext());
 //        a.setText("-------");
 //        topAllDayLayout.addView(a);

@@ -87,8 +87,8 @@ public class DavidActivity extends AppCompatActivity {
         monthDayFragment.setOnEventChanged(new DayViewBody.OnEventChanged() {
             @Override
             public void OnEventChanged(ITimeEventInterface event) {
-                Intent intent = new Intent(DavidActivity.this, PaulActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(DavidActivity.this, PaulActivity.class);
+//                startActivity(intent);
             }
         });
 

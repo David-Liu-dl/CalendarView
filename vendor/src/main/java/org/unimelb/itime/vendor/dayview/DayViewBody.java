@@ -4,20 +4,19 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
+import android.text.Layout;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Pair;
 import android.util.TypedValue;
 import android.view.DragEvent;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import org.unimelb.itime.vendor.R;
 import org.unimelb.itime.vendor.eventview.DayDraggableEventView;
 import org.unimelb.itime.vendor.helper.CalendarEventOverlapHelper;
@@ -45,8 +44,11 @@ public class DayViewBody extends RelativeLayout{
     private final long allDayMilliseconds = 24 * 60 * 60 * 1000;
 
     private ScrollContainerView scrollContainerView;
+    private RelativeLayout bodyContainerLayout;
 
     private LinearLayout topAllDayLayout;
+    private LinearLayout topAllDayEventLayout;
+
     private RelativeLayout leftSideRLayout;
     private RelativeLayout rightContentLayout;
 
@@ -63,7 +65,7 @@ public class DayViewBody extends RelativeLayout{
 
     private TreeMap< Integer, String> positionToTimeTreeMap = new TreeMap<>();
     private TreeMap<Float, Integer> timeToPositionTreeMap = new TreeMap<>();
-    private Map<ITimeEventInterface, Integer> regular_event_view_map = new HashMap<>();
+    private Map<ITimeEventInterface, Integer> regularEventViewMap = new HashMap<>();
 
     private CalendarEventOverlapHelper xHelper = new CalendarEventOverlapHelper();
 
@@ -77,6 +79,8 @@ public class DayViewBody extends RelativeLayout{
     private int timeTextSize = 20;
     private int overlapGapHeight;
 
+    private int dividerWidth;
+
     private float nowTapX = 0;
     private float nowTapY = 0;
 
@@ -88,38 +92,130 @@ public class DayViewBody extends RelativeLayout{
 
     public DayViewBody(Context context) {
         super(context);
-        inflate(context, R.layout.day_view_body, this);
         this.context = context;
         this.overlapGapHeight = DensityUtil.dip2px(context, 1);
+        init();
+        initBackgroundView();
     }
 
     public DayViewBody(Context context, AttributeSet attrs) {
         super(context, attrs);
-        inflate(context, R.layout.day_view_body, this);
         this.context = context;
         this.overlapGapHeight = DensityUtil.dip2px(context, 1);
         loadAttributes(attrs, context);
+        init();
+        initBackgroundView();
     }
 
     public DayViewBody(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        inflate(context, R.layout.day_view_body, this);
         this.context = context;
         this.overlapGapHeight = DensityUtil.dip2px(context, 1);
         loadAttributes(attrs, context);
+        init();
+        initBackgroundView();
     }
 
     private void init(){
-//        initBackgroundView();
+        scrollContainerView = new ScrollContainerView(context);
+        scrollContainerView.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        this.addView(scrollContainerView);
+
+        bodyContainerLayout = new RelativeLayout(context);
+        bodyContainerLayout.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        scrollContainerView.addView(bodyContainerLayout);
 
         topAllDayLayout = new LinearLayout(getContext());
+        topAllDayLayout.setId(View.generateViewId());
+        RelativeLayout.LayoutParams topAllDayLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        topAllDayLayout.setLayoutParams(topAllDayLayoutParams);
 
-        this.addView(topAllDayLayout);
+        ImageView divider = getDivider();
+        ((RelativeLayout.LayoutParams) divider.getLayoutParams()).addRule(BELOW,topAllDayLayout.getId());
+        bodyContainerLayout.addView(divider);
+
+        TextView allDayTitleTv = new TextView(context);
+        LinearLayout.LayoutParams allDayTitleTvParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        int allDayTitleTvPadding = DensityUtil.dip2px(context,3);
+        allDayTitleTv.setPadding(allDayTitleTvPadding,allDayTitleTvPadding,allDayTitleTvPadding,allDayTitleTvPadding);
+        allDayTitleTv.setTextSize(10);
+        allDayTitleTv.setText("All Day");
+        allDayTitleTv.setTextColor(context.getResources().getColor(R.color.text_enable));
+        allDayTitleTv.setGravity(Gravity.CENTER_VERTICAL);
+        allDayTitleTv.setLayoutParams(allDayTitleTvParams);
+        topAllDayLayout.addView(allDayTitleTv);
+
+        topAllDayEventLayout = new LinearLayout(getContext());
+        topAllDayEventLayout.setId(View.generateViewId());
+        RelativeLayout.LayoutParams topAllDayEventLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DensityUtil.dip2px(context,40));
+        topAllDayEventLayout.setLayoutParams(topAllDayEventLayoutParams);
+        topAllDayLayout.addView(topAllDayEventLayout);
+
+        leftSideRLayout = new RelativeLayout(getContext());
+        leftSideRLayout.setId(View.generateViewId());
+        RelativeLayout.LayoutParams leftSideRLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        leftSideRLayoutParams.addRule(RelativeLayout.BELOW, topAllDayLayout.getId());
+        leftSideRLayout.setPadding(DensityUtil.dip2px(context, 10), 0, DensityUtil.dip2px(context, 10), 0);
+        leftSideRLayout.setLayoutParams(leftSideRLayoutParams);
+
+        rightContentLayout = new RelativeLayout(getContext());
+        rightContentLayout.setId(View.generateViewId());
+        RelativeLayout.LayoutParams rightContentLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        rightContentLayoutParams.addRule(RelativeLayout.BELOW, topAllDayLayout.getId());
+        rightContentLayoutParams.addRule(RelativeLayout.RIGHT_OF, leftSideRLayout.getId());
+        rightContentLayoutParams.addRule(RelativeLayout.ALIGN_TOP, leftSideRLayout.getId());
+        rightContentLayoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, leftSideRLayout.getId());
+        rightContentLayout.setLayoutParams(rightContentLayoutParams);
+
+        dividerBgRLayout = new RelativeLayout(getContext());
+        dividerBgRLayout.setId(View.generateViewId());
+        RelativeLayout.LayoutParams dividerBgRLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        dividerBgRLayout.setLayoutParams(dividerBgRLayoutParams);
+        rightContentLayout.addView(dividerBgRLayout);
+
+        eventLayout = new RelativeLayout(getContext());
+        eventLayout.setId(View.generateViewId());
+        RelativeLayout.LayoutParams eventLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        eventLayout.setLayoutParams(eventLayoutParams);
+        eventLayout.setOnDragListener(new EventDragListener());
+        eventLayout.setOnClickListener();
+        rightContentLayout.addView(eventLayout);
+
+        bodyContainerLayout.addView(topAllDayLayout);
+        bodyContainerLayout.addView(leftSideRLayout);
+        bodyContainerLayout.addView(rightContentLayout);
+
     }
+
+    private ImageView getDivider(){
+        ImageView dividerImgV;
+        //divider
+        dividerImgV = new ImageView(context);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        dividerImgV.setLayoutParams(params);
+        dividerImgV.setImageDrawable(getResources().getDrawable(org.unimelb.itime.vendor.R.drawable.itime_header_divider_line));
+
+        return  dividerImgV;
+    }
+
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        dividerBgRLayout.measure(widthMeasureSpec, heightMeasureSpec);
+        dividerWidth = dividerBgRLayout.getMeasuredWidth();
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        reDrawEvents();
+//
+//        int evCount = dividerBgRLayout.getChildCount();
+//        for (int i = 0; i < evCount; i++){
+//            TextView tv = (TextView) dividerBgRLayout.getChildAt(i);
+//            tv.layout(0 + i * 100, 0 + i * 100, 100 + i * 100, 100 + i*100);
+//        }
 
     }
 
@@ -143,9 +239,11 @@ public class DayViewBody extends RelativeLayout{
         initMsgWindow();
         initTimeText(getHours());
         initDividerLine(getHours());
-//        this.reLoadEvents();
         Log.i(TAG, "initBackgroundView: ");
+//        this.reLoadEvents();
 //        this.invalidate();
+//        Log.i(TAG, "initBackgroundView: ");
+
     }
 
     private void initTimeSlot(){
@@ -232,23 +330,17 @@ public class DayViewBody extends RelativeLayout{
     public void resetViews(){
         this.regularEventModules.clear();
         this.regularDayDgEventViews.clear();
-        this.regular_event_view_map.clear();
+        this.regularEventViewMap.clear();
         this.allDayEventModules.clear();
 
-        if(this.topAllDayLayout != null){
-            for (DayDraggableEventView dgEventView: this.allDayDgEventViews
-                 ) {
-                topAllDayLayout.removeView(dgEventView);
-            }
+        if(this.topAllDayEventLayout != null){
+            this.topAllDayEventLayout.removeAllViews();
             this.allDayDgEventViews.clear();
         }
 
-        if (this.dividerBgRLayout != null){
-            dividerBgRLayout.removeAllViews();
-        }
-
-        if (this.dividerBgRLayout != null){
-            leftSideRLayout.removeAllViews();
+        if(this.eventLayout != null){
+            this.eventLayout.removeAllViews();
+            this.allDayDgEventViews.clear();
         }
 
         this.removeView(nowTime);
@@ -257,24 +349,18 @@ public class DayViewBody extends RelativeLayout{
     }
 
     public void clearAllEvents(){
-        if(this.topAllDayLayout != null){
-            for (DayDraggableEventView dgEventView: this.allDayDgEventViews
-                    ) {
-                topAllDayLayout.removeView(dgEventView);
-            }
-            this.allDayDgEventViews.clear();
+        if(this.topAllDayEventLayout != null){
+            this.topAllDayEventLayout.removeAllViews();
         }
 
-        if (this.dividerBgRLayout != null){
-            for (DayDraggableEventView dgView : regularDayDgEventViews
-                 ) {
-                this.dividerBgRLayout.removeView(dgView);
-            }
+        if (this.eventLayout != null){
+            this.eventLayout.removeAllViews();
         }
 
         this.regularEventModules.clear();
         this.regularDayDgEventViews.clear();
-        this.regular_event_view_map.clear();
+        this.regularEventViewMap.clear();
+        this.allDayDgEventViews.clear();
         this.allDayEventModules.clear();
     }
 
@@ -343,18 +429,18 @@ public class DayViewBody extends RelativeLayout{
     }
 
     public void removeEvent(ITimeEventInterface event){
-        this.regular_event_view_map.remove(event);
+        this.regularEventViewMap.remove(event);
         this.regularEventModules.remove(event);
-        this.dividerBgRLayout.removeView(dividerBgRLayout.findViewById(regular_event_view_map.get(event)));
+        this.dividerBgRLayout.removeView(dividerBgRLayout.findViewById(regularEventViewMap.get(event)));
     }
 
     public void updateEvent(ITimeEventInterface old_event, ITimeEventInterface new_event){
         int index = this.regularEventModules.indexOf(old_event);
         this.regularEventModules.add(index, new_event);
 
-        int tag = this.regular_event_view_map.get(old_event);
-        this.regular_event_view_map.remove(old_event);
-        this.regular_event_view_map.put(new_event, tag);
+        int tag = this.regularEventViewMap.get(old_event);
+        this.regularEventViewMap.remove(old_event);
+        this.regularEventViewMap.put(new_event, tag);
     }
 
     private void addAllDayEvent(ITimeEventInterface event){
@@ -367,7 +453,7 @@ public class DayViewBody extends RelativeLayout{
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) new_dgEvent.getLayoutParams();
         params.leftMargin = marginLeft;
         allDayDgEventViews.add(new_dgEvent);
-        topAllDayLayout.addView(new_dgEvent, params);
+        topAllDayEventLayout.addView(new_dgEvent, params);
         //resize all day events width
         resizeAllDayEvents(eventsContainerWidth, marginLeft);
     }
@@ -378,16 +464,13 @@ public class DayViewBody extends RelativeLayout{
         String[] components = hourWithMinutes.split(":");
         float trickTime = Integer.valueOf(components[0]) + (float) Integer.valueOf(components[1])/100;
         int margin_top = nearestTimeSlotValue(trickTime);
-
         DayDraggableEventView new_dgEvent = this.createDayDraggableEventView(event, false);
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) new_dgEvent.getLayoutParams();
         params.topMargin = margin_top;
 
-        Log.i(TAG, "topMargin: " + margin_top);
-
         new_dgEvent.setId(View.generateViewId());
-        this.regular_event_view_map.put(event,new_dgEvent.getId());
-        this.dividerBgRLayout.addView(new_dgEvent, params);
+        this.regularEventViewMap.put(event,new_dgEvent.getId());
+        this.eventLayout.addView(new_dgEvent, params);
         this.regularDayDgEventViews.add(new_dgEvent);
     }
 
@@ -422,7 +505,8 @@ public class DayViewBody extends RelativeLayout{
     }
 
     public void reDrawEvents(){
-        int layoutWidth = dividerBgRLayout.getWidth();
+        int layoutWidth = dividerWidth;
+
         List<ArrayList<Pair<Pair<Integer,Integer>,ITimeEventInterface>>> overlapGroups
                 = xHelper.computeOverlapXForEvents(this.regularEventModules);
 
@@ -438,20 +522,17 @@ public class DayViewBody extends RelativeLayout{
                 int margin_left = eventWidth * x_pst;
 
                 DayDraggableEventView event_view =
-                        (DayDraggableEventView) dividerBgRLayout.findViewById(regular_event_view_map.get(overlapGroup.get(i).second));// find by tag
+                        (DayDraggableEventView) eventLayout.findViewById(regularEventViewMap.get(overlapGroup.get(i).second));// find by tag
 
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) event_view.getLayoutParams();
                 params.width = eventWidth;
                 params.leftMargin = margin_left + 5 * x_pst;
                 params.topMargin = getStartY + overlapGapHeight * i + previousGroupExtraY;
-                Log.i(TAG, "dividerBgRLayout: " + dividerBgRLayout.getHeight());
-                Log.i(TAG, "reDrawEvents: " + params.topMargin);
                 event_view.setLayoutParams(params);
                 event_view.invalidate();
             }
             previousGroupExtraY += overlapGapHeight * overlapGroup.size();
         }
-        dividerBgRLayout.requestLayout();
     }
 
     public void reLoadEvents(){
@@ -465,7 +546,6 @@ public class DayViewBody extends RelativeLayout{
 
             long beginOfDayMilliseconds = calendar.getTimeInMillis();
             List<ITimeEventInterface> events = this.onLoadEvents.loadEvents(beginOfDayMilliseconds);
-            Log.i(TAG, "date: " + calendar.getTime());
             if (events != null){
                 for (ITimeEventInterface event: events
                         ) {
@@ -478,13 +558,6 @@ public class DayViewBody extends RelativeLayout{
             Log.i(TAG, "reLoadEvents onLoadEvents: null");
         }
         
-    }
-
-    public void bringDgViewsToFront(){
-        for (DayDraggableEventView dgView: this.regularDayDgEventViews
-             ) {
-            dgView.bringToFront();
-        }
     }
 
     private DayDraggableEventView createDayDraggableEventView(ITimeEventInterface event, boolean isAllDayEvent){
@@ -809,51 +882,7 @@ public class DayViewBody extends RelativeLayout{
     public void setOnLoadEvents(OnLoadEvents onLoadEvents) {
         this.onLoadEvents = onLoadEvents;
     }
+
     /****************************************************************************************/
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        scrollContainerView = (ScrollContainerView) findViewById(R.id.customer_day_view);
-        leftSideRLayout = (RelativeLayout) findViewById(R.id.timeReLayout);
-        dividerBgRLayout = (RelativeLayout) findViewById(R.id.eventRelativeLayout);
-        topAllDayLayout = (LinearLayout) findViewById(R.id.allDayContainer);
-
-        if (this.bodyOnTouchListener != null){
-            this.setBodyOnTouchListener(this.bodyOnTouchListener);
-        }else {
-            Log.i(TAG, "view: bodyOnTouchListener null ");
-        }
-
-        dividerBgRLayout.setOnDragListener(new EventDragListener());
-        dividerBgRLayout.setOnTouchListener(new View.OnTouchListener() {
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                nowTapX = event.getX();
-                nowTapY = event.getY();
-                if (bodyOnTouchListener != null){
-                    bodyOnTouchListener.bodyOnTouchListener(nowTapX, nowTapY);
-                }else {
-                    Log.i(TAG, "controller:  bodyOnTouchListener null ");
-                }
-
-                return false;
-            }
-        });
-        dividerBgRLayout.setOnLongClickListener(new CreateEventListener());
-        Log.i(TAG, "onFinishInflate: ");
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-
-        initBackgroundView();
-
-        if (myCalendar.isToday()){
-            this.addNowTimeLine();
-        }
-    }
 
 }

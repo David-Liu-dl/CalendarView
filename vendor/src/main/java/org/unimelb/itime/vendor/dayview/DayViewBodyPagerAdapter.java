@@ -53,7 +53,7 @@ public class DayViewBodyPagerAdapter extends PagerAdapter {
 
         v.resetViews();
         v.getCalendar().setOffset(position - upperBounds - (calendar.get(Calendar.DAY_OF_WEEK)-1));
-        Log.i(TAG, "instantiateItem123: " + position);
+        v.reLoadEvents();
         container.addView(v);
 
         return v;

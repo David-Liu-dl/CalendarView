@@ -1,15 +1,12 @@
 package org.unimelb.itime.test.paul;
 
 import android.app.Fragment;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import junit.framework.Test;
 
 import org.unimelb.itime.test.R;
 import org.unimelb.itime.test.bean.Contact;

@@ -2,7 +2,6 @@ package org.unimelb.itime.vendor.dayview;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,7 +9,6 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -23,7 +21,9 @@ import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by yuhaoliu on 10/08/16.
@@ -44,13 +44,15 @@ public class MonthDayView extends LinearLayout {
 
     DayViewBodyPagerAdapter bodyPagerAdapter;
     ViewPager bodyPager;
-    private DayViewBodyController.OnCreateNewEvent onCreateNewEvent;
+    private DayViewBody.OnCreateNewEvent onCreateNewEvent;
 
     int bodyCurrentPosition;
 
     private Context context;
 
     private DayViewHeader.OnCheckIfHasEvent onCheckIfHasEvent;
+
+    private Map<Long, List<? extends ITimeEventInterface>> dayEventMap;
 
     public MonthDayView(Context context) {
         super(context);
@@ -82,26 +84,44 @@ public class MonthDayView extends LinearLayout {
         this.setUpBody();
     }
 
-    public void setOnCreateNewEvent(DayViewBodyController.OnCreateNewEvent onCreateNewEvent){
+
+    /*--------------------*/
+
+//    public void setDayEventMap(Map<Long, List<? extends ITimeEventInterface>> dayEventMap){
+//        this.dayEventMap = dayEventMap;
+//    }
+//
+//    public void setDraggble(boolean isDraggble){
+//
+//    }
+//
+//    public void setOnDayViewBodyEventListener(DayViewBody.OnDayViewBodyEventListener){
+//
+//    }
+
+
+
+    /*----------------------*/
+    public void setOnCreateNewEvent(DayViewBody.OnCreateNewEvent onCreateNewEvent){
         this.onCreateNewEvent = onCreateNewEvent;
         if (this.onCreateNewEvent != null){
             bodyPagerAdapter.setOnCreateNewEvent(this.onCreateNewEvent);
         }
     }
 
-    public void setOnLoadEvents(DayViewBodyController.OnLoadEvents onLoadEvents){
+    public void setOnLoadEvents(DayViewBody.OnLoadEvents onLoadEvents){
         if (bodyPagerAdapter != null){
             bodyPagerAdapter.setOnLoadEvents(onLoadEvents);
         }
     }
 
-    public void setOnDgClick(DayViewBodyController.OnDgClickListener onDgClickListener){
+    public void setOnDgClick(DayViewBody.OnDgClickListener onDgClickListener){
         if (bodyPagerAdapter != null){
             bodyPagerAdapter.setOnDgOnClick(onDgClickListener);
         }
     }
 
-    public void setOnEventChanged(DayViewBodyController.OnEventChanged onEventChanged){
+    public void setOnEventChanged(DayViewBody.OnEventChanged onEventChanged){
         if (bodyPagerAdapter != null){
             bodyPagerAdapter.setOnEventChanged(onEventChanged);
         }
@@ -117,7 +137,7 @@ public class MonthDayView extends LinearLayout {
     public void reloadCurrentBodyEvents(){
         DayViewBody currentBody = bodyPagerAdapter.getViewByPosition(bodyCurrentPosition);
         if (currentBody != null){
-            currentBody.reloadEvents();
+            currentBody.reLoadEvents();
         }else {
             Log.i(TAG, "currentBody null: ");
         }
@@ -150,7 +170,7 @@ public class MonthDayView extends LinearLayout {
 //        if (this.onEventchan != null){
 //            bodyPagerAdapter.setOnEventChanged(onEventChanged);
 //        }
-        bodyPagerAdapter.setBodyOnTouchListener(new DayViewBodyController.BodyOnTouchListener() {
+        bodyPagerAdapter.setBodyOnTouchListener(new DayViewBody.BodyOnTouchListener() {
             @Override
             public void bodyOnTouchListener(float tapX, float tapY) {
                 final View needChangeView = recyclerView;

@@ -4,19 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 
 import org.unimelb.itime.test.R;
 import org.unimelb.itime.test.bean.Contact;
 import org.unimelb.itime.test.bean.Event;
 import org.unimelb.itime.test.bean.Invitee;
 import org.unimelb.itime.test.paul.PaulActivity;
-import org.unimelb.itime.vendor.agendaview.AgendaViewBody;
-import org.unimelb.itime.vendor.agendaview.MonthAgendaView;
-import org.unimelb.itime.vendor.dayview.DayViewBodyController;
+import org.unimelb.itime.vendor.dayview.DayViewBody;
 import org.unimelb.itime.vendor.dayview.DayViewHeader;
 import org.unimelb.itime.vendor.dayview.MonthDayView;
-import org.unimelb.itime.vendor.listener.ITimeContactInterface;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 
 import java.util.ArrayList;
@@ -34,14 +30,13 @@ public class DavidActivity extends AppCompatActivity {
 
         dbManager = DBManager.getInstance(this.getApplicationContext());
 
-
 //        initData();
-//        loadData();
-        doInviteesThings();
+        loadData();
+//        doInviteesThings();
 
 //        doMonthAgendaViewThings();
 //        displayAllInvitee();
-//        doMonthDayViewThings();
+        doMonthDayViewThings();
     }
 
     private void doInviteesThings(){
@@ -79,7 +74,7 @@ public class DavidActivity extends AppCompatActivity {
                 }
         });
 
-        monthDayFragment.setOnLoadEvents(new DayViewBodyController.OnLoadEvents() {
+        monthDayFragment.setOnLoadEvents(new DayViewBody.OnLoadEvents() {
             @Override
             public List<ITimeEventInterface> loadEvents(long beginOfDayM) {
                 if (EventManager.getInstance().getEventsMap().containsKey(beginOfDayM)){
@@ -89,7 +84,7 @@ public class DavidActivity extends AppCompatActivity {
             }
         });
 
-        monthDayFragment.setOnEventChanged(new DayViewBodyController.OnEventChanged() {
+        monthDayFragment.setOnEventChanged(new DayViewBody.OnEventChanged() {
             @Override
             public void OnEventChanged(ITimeEventInterface event) {
                 Intent intent = new Intent(DavidActivity.this, PaulActivity.class);
@@ -97,24 +92,24 @@ public class DavidActivity extends AppCompatActivity {
             }
         });
 
-        monthDayFragment.setOnDgClick(new DayViewBodyController.OnDgClickListener() {
+        monthDayFragment.setOnDgClick(new DayViewBody.OnDgClickListener() {
             @Override
             public void onDgClick(ITimeEventInterface event) {
             }
         });
 
-        monthDayFragment.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Event event = new Event();
-                event.setTitle("new added");
-                event.setStartTime(Calendar.getInstance().getTimeInMillis());
-                event.setEndTime(Calendar.getInstance().getTimeInMillis() + 60 * 60 * 1000);
-                EventManager.getInstance().addEvent(event);
-                monthDayFragment.reloadCurrentBodyEvents();
-                monthDayFragment.invalidate();
-            }
-        },5000);
+//        monthDayFragment.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                Event event = new Event();
+//                event.setTitle("new added");
+//                event.setStartTime(Calendar.getInstance().getTimeInMillis());
+//                event.setEndTime(Calendar.getInstance().getTimeInMillis() + 60 * 60 * 1000);
+//                EventManager.getInstance().addEvent(event);
+//                monthDayFragment.reloadCurrentBodyEvents();
+//                monthDayFragment.invalidate();
+//            }
+//        },5000);
     }
 
 //    private void doMonthAgendaViewThings(){

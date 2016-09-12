@@ -5,17 +5,13 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.unimelb.itime.vendor.listener.ITimeEventInterface;
-
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.EventListener;
-import java.util.List;
 
 public class DayViewBodyPagerAdapter extends PagerAdapter {
     public String TAG = "MyAPP";
 
-    private DayViewBodyController.BodyOnTouchListener bodyOnTouchListener;
+    private DayViewBody.BodyOnTouchListener bodyOnTouchListener;
 
     private Calendar calendar = Calendar.getInstance();
 
@@ -55,10 +51,10 @@ public class DayViewBodyPagerAdapter extends PagerAdapter {
             parent.removeView(v);
         }
 
-        v.resetView();
+        v.resetViews();
         v.getCalendar().setOffset(position - upperBounds - (calendar.get(Calendar.DAY_OF_WEEK)-1));
-        v.reloadEvents();
-
+        v.reLoadEvents();
+        Log.i(TAG, "instantiateItem: " + position);
         container.addView(v);
 
         return v;
@@ -75,34 +71,34 @@ public class DayViewBodyPagerAdapter extends PagerAdapter {
     }
 
 
-    public void setOnCreateNewEvent(DayViewBodyController.OnCreateNewEvent onCreateNewEvent){
+    public void setOnCreateNewEvent(DayViewBody.OnCreateNewEvent onCreateNewEvent){
         for (int i = 0; i < vLists.size(); i++) {
             ((DayViewBody) vLists.get(i)).setOnCreateNewEvent(onCreateNewEvent);
         }
     }
 
-    public void setBodyOnTouchListener(DayViewBodyController.BodyOnTouchListener bodyOnTouchListener) {
+    public void setBodyOnTouchListener(DayViewBody.BodyOnTouchListener bodyOnTouchListener) {
         this.bodyOnTouchListener = bodyOnTouchListener;
         for (int i = 0; i < vLists.size(); i++) {
             ((DayViewBody) vLists.get(i)).setBodyOnTouchListener(this.bodyOnTouchListener);
         }
     }
 
-    public void setOnLoadEvents(DayViewBodyController.OnLoadEvents onLoadEvents) {
+    public void setOnLoadEvents(DayViewBody.OnLoadEvents onLoadEvents) {
         for (int i = 0; i < vLists.size(); i++) {
             ((DayViewBody) vLists.get(i)).setOnLoadEvents(onLoadEvents);
         }
     }
 
-    public void setOnEventChanged(DayViewBodyController.OnEventChanged onEventChanged) {
+    public void setOnEventChanged(DayViewBody.OnEventChanged onEventChanged) {
         for (int i = 0; i < vLists.size(); i++) {
-            ((DayViewBody) vLists.get(i)).dayViewController.setOnEventChanged(onEventChanged);
+            ((DayViewBody) vLists.get(i)).setOnEventChanged(onEventChanged);
         }
     }
 
-    public void setOnDgOnClick(DayViewBodyController.OnDgClickListener onDgClickListener) {
+    public void setOnDgOnClick(DayViewBody.OnDgClickListener onDgClickListener) {
         for (int i = 0; i < vLists.size(); i++) {
-            ((DayViewBody) vLists.get(i)).dayViewController.setOnDgClickListener(onDgClickListener);
+            ((DayViewBody) vLists.get(i)).setOnDgClickListener(onDgClickListener);
         }
     }
 }

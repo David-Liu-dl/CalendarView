@@ -80,18 +80,6 @@ public class InviteeFragment extends Fragment{
         return this.contacts_list;
     }
 
-	/**
-	 * for Utility
-	 */
-	private Invitee contactToInvitee(Contact contact, Event event){
-		Invitee invitee = new Invitee();
-		invitee.setEventUid(event.getEventUid());
-		invitee.setInviteeUid(contact.getContactUid());
-
-		return invitee;
-	}
-	/****/
-
 	private void initView() {
 
 		sideBar = (SideBar) root.findViewById(R.id.sidrbar);
@@ -140,6 +128,7 @@ public class InviteeFragment extends Fragment{
 			int result = -1;
             //load contacts info
             List<ITimeContactInterface> contact_models = loadContacts();
+
             for (ITimeContactInterface contact_model :contact_models
                  ) {
                 contacts.put(contact_model.getContactUid(), contact_model);
@@ -296,15 +285,11 @@ public class InviteeFragment extends Fragment{
 
     private List<ITimeContactInterface> simulateContacts(){
         List<ITimeContactInterface> contacts = new ArrayList<>();
-        contacts.add(new Contact(null,"赵普", "1"));
-        contacts.add(new Contact(null,"AGE", "2"));
-        contacts.add(new Contact(null,"B", "3"));
-        contacts.add(new Contact(null,"C", "4"));
-        contacts.add(new Contact(null,"D", "5"));
-        contacts.add(new Contact(null,"F", "6"));
-        contacts.add(new Contact(null,"Crron", "7"));
-        contacts.add(new Contact(null,"Bob", "8"));
-        contacts.add(new Contact("http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg","周二珂", "9"));
+
+		for (int i = 0; i < 5; i++) {
+			contacts.add(new Contact("" + i ,"http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg","周二珂 " + i));
+
+		}
 
         return contacts;
     }

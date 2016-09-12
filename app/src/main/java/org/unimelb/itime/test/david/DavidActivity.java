@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 
 import org.unimelb.itime.test.R;
 import org.unimelb.itime.test.bean.Contact;
@@ -15,6 +16,7 @@ import org.unimelb.itime.vendor.agendaview.MonthAgendaView;
 import org.unimelb.itime.vendor.dayview.DayViewBodyController;
 import org.unimelb.itime.vendor.dayview.DayViewHeader;
 import org.unimelb.itime.vendor.dayview.MonthDayView;
+import org.unimelb.itime.vendor.listener.ITimeContactInterface;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 
 import java.util.ArrayList;
@@ -32,23 +34,18 @@ public class DavidActivity extends AppCompatActivity {
 
         dbManager = DBManager.getInstance(this.getApplicationContext());
 
-//        doInviteesThings();
 
 //        initData();
-        loadData();
+//        loadData();
+        doInviteesThings();
+
 //        doMonthAgendaViewThings();
 //        displayAllInvitee();
-        doMonthDayViewThings();
+//        doMonthDayViewThings();
     }
 
     private void doInviteesThings(){
         InviteeFragment inviteeFragment = new InviteeFragment();
-//        inviteeFragment.setOnLoadContact(new InviteeFragment.OnLoadContact() {
-//            @Override
-//            public List<ITimeContactInterface> loadContacts() {
-//                return simulateContacts();
-//            }
-//        });
 
         getFragmentManager().beginTransaction().add(R.id.fragment, inviteeFragment).commit();
     }
@@ -99,20 +96,23 @@ public class DavidActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        monthDayFragment.setOnDgClick(new DayViewBodyController.OnDgClickListener() {
+            @Override
+            public void onDgClick(ITimeEventInterface event) {
+            }
+        });
+
         monthDayFragment.postDelayed(new Runnable() {
             @Override
             public void run() {
                 Event event = new Event();
                 event.setTitle("new added");
-//                event.setEventType(2);
-//                event.setStatus(1);
-//                event.setLocation("here");
                 event.setStartTime(Calendar.getInstance().getTimeInMillis());
                 event.setEndTime(Calendar.getInstance().getTimeInMillis() + 60 * 60 * 1000);
                 EventManager.getInstance().addEvent(event);
                 monthDayFragment.reloadCurrentBodyEvents();
                 monthDayFragment.invalidate();
-                Log.i(TAG, "reload done: ");
             }
         },5000);
     }

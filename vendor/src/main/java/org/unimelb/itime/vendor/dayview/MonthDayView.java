@@ -95,6 +95,12 @@ public class MonthDayView extends LinearLayout {
         }
     }
 
+    public void setOnDgClick(DayViewBodyController.OnDgClickListener onDgClickListener){
+        if (bodyPagerAdapter != null){
+            bodyPagerAdapter.setOnDgOnClick(onDgClickListener);
+        }
+    }
+
     public void setOnEventChanged(DayViewBodyController.OnEventChanged onEventChanged){
         if (bodyPagerAdapter != null){
             bodyPagerAdapter.setOnEventChanged(onEventChanged);

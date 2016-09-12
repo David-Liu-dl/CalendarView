@@ -99,4 +99,10 @@ public class DayViewBodyPagerAdapter extends PagerAdapter {
             ((DayViewBody) vLists.get(i)).dayViewController.setOnEventChanged(onEventChanged);
         }
     }
+
+    public void setOnDgOnClick(DayViewBodyController.OnDgClickListener onDgClickListener) {
+        for (int i = 0; i < vLists.size(); i++) {
+            ((DayViewBody) vLists.get(i)).dayViewController.setOnDgClickListener(onDgClickListener);
+        }
+    }
 }

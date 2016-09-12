@@ -6,11 +6,9 @@ import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.util.Pair;
 import android.util.TypedValue;
 import android.view.DragEvent;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -45,10 +43,12 @@ public class DayViewBody extends RelativeLayout{
     private final long allDayMilliseconds = 24 * 60 * 60 * 1000;
 
     private ScrollContainerView scrollContainerView;
+    private RelativeLayout bodyContainerLayout;
 
     private LinearLayout topAllDayLayout;
     private RelativeLayout leftSideRLayout;
     private RelativeLayout rightContentLayout;
+
 
     private RelativeLayout dividerBgRLayout;
     private RelativeLayout eventLayout;
@@ -91,39 +91,109 @@ public class DayViewBody extends RelativeLayout{
 
     public DayViewBody(Context context) {
         super(context);
-        inflate(context, R.layout.day_view_body, this);
+//        inflate(context, R.layout.day_view_body, this);
         this.context = context;
         this.overlapGapHeight = DensityUtil.dip2px(context, 1);
     }
 
     public DayViewBody(Context context, AttributeSet attrs) {
         super(context, attrs);
-        inflate(context, R.layout.day_view_body, this);
+//        inflate(context, R.layout.day_view_body, this);
         this.context = context;
         this.overlapGapHeight = DensityUtil.dip2px(context, 1);
         loadAttributes(attrs, context);
+        init();
     }
 
     public DayViewBody(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        inflate(context, R.layout.day_view_body, this);
+//        inflate(context, R.layout.day_view_body, this);
         this.context = context;
         this.overlapGapHeight = DensityUtil.dip2px(context, 1);
         loadAttributes(attrs, context);
+        init();
     }
 
     private void init(){
+//        scrollContainerView = (ScrollContainerView) findViewById(R.id.customer_day_view);
 //        initBackgroundView();
 
-        topAllDayLayout = new LinearLayout(getContext());
+        scrollContainerView = new ScrollContainerView(context);
+        scrollContainerView.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        this.addView(scrollContainerView);
 
-        this.addView(topAllDayLayout);
+        bodyContainerLayout = new RelativeLayout(context);
+        bodyContainerLayout.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        scrollContainerView.addView(bodyContainerLayout);
+
+        topAllDayLayout = new LinearLayout(getContext());
+        topAllDayLayout.setId(View.generateViewId());
+        RelativeLayout.LayoutParams topAllDayLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        topAllDayLayout.setLayoutParams(topAllDayLayoutParams);
+
+        leftSideRLayout = new RelativeLayout(getContext());
+        leftSideRLayout.setId(View.generateViewId());
+        RelativeLayout.LayoutParams leftSideRLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        leftSideRLayoutParams.addRule(RelativeLayout.BELOW, topAllDayLayout.getId());
+        leftSideRLayout.setPadding(DensityUtil.dip2px(context, 10), 0, DensityUtil.dip2px(context, 10), 0);
+        leftSideRLayout.setLayoutParams(leftSideRLayoutParams);
+
+        rightContentLayout = new RelativeLayout(getContext());
+        rightContentLayout.setId(View.generateViewId());
+        RelativeLayout.LayoutParams rightContentLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 500);
+        rightContentLayoutParams.addRule(RelativeLayout.BELOW, topAllDayLayout.getId());
+        rightContentLayoutParams.addRule(RelativeLayout.END_OF, leftSideRLayout.getId());
+        rightContentLayoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, leftSideRLayout.getId());
+        rightContentLayout.setLayoutParams(rightContentLayoutParams);
+
+        bodyContainerLayout.addView(topAllDayLayout);
+        bodyContainerLayout.addView(leftSideRLayout);
+        bodyContainerLayout.addView(rightContentLayout);
+        initTimeText(getHours());
+
+//        TextView a  = new TextView(getContext());
+//        a.setText("--------------");
+//
+//        TextView aa  = new TextView(getContext());
+//        aa.setText("===============");
+//        topAllDayLayout.addView(a);
+//        rightContentLayout.addView(aa);
+
+        setEventList();
+    }
+
+    public void setEventList(){
+        for (int i = 0; i < 5; i++){
+            TextView tv = new TextView(context);
+            tv.setText("" + i);
+            tv.setLayoutParams(new RelativeLayout.LayoutParams(50 ,50));
+            rightContentLayout.addView(tv);
+        }
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+//        RelativeLayout.LayoutParams leftSideRLayoutParams = (RelativeLayout.LayoutParams)leftSideRLayout.getLayoutParams();
+//        leftSideRLayoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, topAllDayLayout.getId());
+//        TextView a  = new TextView(getContext());
+//        a.setText("-------");
+//        topAllDayLayout.addView(a);
 
+
+
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+
+        int evCount = rightContentLayout.getChildCount();
+        for (int i = 0; i < evCount; i++){
+            TextView tv = (TextView) rightContentLayout.getChildAt(i);
+            tv.layout(0 + i * 100, 0 + i * 100, 100 + i * 100, 100 + i*100);
+        }
+        return;
     }
 
     private void loadAttributes(AttributeSet attrs, Context context) {
@@ -419,34 +489,34 @@ public class DayViewBody extends RelativeLayout{
     }
 
     public void reDrawEvents(){
-        int layoutWidth = dividerBgRLayout.getWidth();
-        List<ArrayList<Pair<Pair<Integer,Integer>,ITimeEventInterface>>> overlapGroups
-                = xHelper.computeOverlapXForEvents(this.regularEventModules);
-
-        int previousGroupExtraY = 0;
-
-        for (ArrayList<Pair<Pair<Integer,Integer>,ITimeEventInterface>> overlapGroup : overlapGroups
-             ) {
-            for (int i = 0; i < overlapGroup.size(); i++) {
-                int getStartY = getEventY(overlapGroup.get(i).second);
-                int width_factor = overlapGroup.get(i).first.first;
-                int x_pst = overlapGroup.get(i).first.second;
-                int eventWidth = layoutWidth/width_factor;
-                int margin_left = eventWidth * x_pst;
-
-                DayDraggableEventView event_view =
-                        (DayDraggableEventView) dividerBgRLayout.findViewById(regular_event_view_map.get(overlapGroup.get(i).second));// find by tag
-
-                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) event_view.getLayoutParams();
-                params.width = eventWidth;
-                params.leftMargin = margin_left + 5 * x_pst;
-                params.topMargin = getStartY + overlapGapHeight * i + previousGroupExtraY;
-                event_view.setLayoutParams(params);
-                event_view.invalidate();
-            }
-            previousGroupExtraY += overlapGapHeight * overlapGroup.size();
-        }
-        dividerBgRLayout.requestLayout();
+//        int layoutWidth = dividerBgRLayout.getWidth();
+//        List<ArrayList<Pair<Pair<Integer,Integer>,ITimeEventInterface>>> overlapGroups
+//                = xHelper.computeOverlapXForEvents(this.regularEventModules);
+//
+//        int previousGroupExtraY = 0;
+//
+//        for (ArrayList<Pair<Pair<Integer,Integer>,ITimeEventInterface>> overlapGroup : overlapGroups
+//             ) {
+//            for (int i = 0; i < overlapGroup.size(); i++) {
+//                int getStartY = getEventY(overlapGroup.get(i).second);
+//                int width_factor = overlapGroup.get(i).first.first;
+//                int x_pst = overlapGroup.get(i).first.second;
+//                int eventWidth = layoutWidth/width_factor;
+//                int margin_left = eventWidth * x_pst;
+//
+//                DayDraggableEventView event_view =
+//                        (DayDraggableEventView) dividerBgRLayout.findViewById(regular_event_view_map.get(overlapGroup.get(i).second));// find by tag
+//
+//                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) event_view.getLayoutParams();
+//                params.width = eventWidth;
+//                params.leftMargin = margin_left + 5 * x_pst;
+//                params.topMargin = getStartY + overlapGapHeight * i + previousGroupExtraY;
+//                event_view.setLayoutParams(params);
+//                event_view.invalidate();
+//            }
+//            previousGroupExtraY += overlapGapHeight * overlapGroup.size();
+//        }
+//        dividerBgRLayout.requestLayout();
     }
 
     public void reLoadEvents(){
@@ -807,47 +877,48 @@ public class DayViewBody extends RelativeLayout{
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        scrollContainerView = (ScrollContainerView) findViewById(R.id.customer_day_view);
-//        body_container = (RelativeLayout) findViewById(R.id.body_container);
-        leftSideRLayout = (RelativeLayout) findViewById(R.id.timeReLayout);
-        dividerBgRLayout = (RelativeLayout) findViewById(R.id.eventRelativeLayout);
-        topAllDayLayout = (LinearLayout) findViewById(R.id.allDayContainer);
-
-        if (this.bodyOnTouchListener != null){
-            this.setBodyOnTouchListener(this.bodyOnTouchListener);
-        }else {
-            Log.i(TAG, "view: bodyOnTouchListener null ");
-        }
-
-        dividerBgRLayout.setOnDragListener(new EventDragListener());
-        dividerBgRLayout.setOnTouchListener(new View.OnTouchListener() {
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                nowTapX = event.getX();
-                nowTapY = event.getY();
-                if (bodyOnTouchListener != null){
-                    bodyOnTouchListener.bodyOnTouchListener(nowTapX, nowTapY);
-                }else {
-                    Log.i(TAG, "controller:  bodyOnTouchListener null ");
-                }
-
-                return false;
-            }
-        });
-        dividerBgRLayout.setOnLongClickListener(new CreateEventListener());
+//        super.onFinishInflate();
+//        scrollContainerView = (ScrollContainerView) findViewById(R.id.customer_day_view);
+////        body_container = (RelativeLayout) findViewById(R.id.body_container);
+//        leftSideRLayout = (RelativeLayout) findViewById(R.id.timeReLayout);
+//        dividerBgRLayout = (RelativeLayout) findViewById(R.id.eventRelativeLayout);
+//        topAllDayLayout = (LinearLayout) findViewById(R.id.allDayContainer);
+//
+//        if (this.bodyOnTouchListener != null){
+//            this.setBodyOnTouchListener(this.bodyOnTouchListener);
+//        }else {
+//            Log.i(TAG, "view: bodyOnTouchListener null ");
+//        }
+//
+//        dividerBgRLayout.setOnDragListener(new EventDragListener());
+//        dividerBgRLayout.setOnTouchListener(new View.OnTouchListener() {
+//
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                nowTapX = event.getX();
+//                nowTapY = event.getY();
+//                if (bodyOnTouchListener != null){
+//                    bodyOnTouchListener.bodyOnTouchListener(nowTapX, nowTapY);
+//                }else {
+//                    Log.i(TAG, "controller:  bodyOnTouchListener null ");
+//                }
+//
+//                return false;
+//            }
+//        });
+//        dividerBgRLayout.setOnLongClickListener(new CreateEventListener());
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        this.initBackgroundView();
-        this.bringDgViewsToFront();
-        if (myCalendar.isToday()){
-            this.addNowTimeLine();
-        }
-
-        dividerBgRLayout.invalidate();
+//        this.initBackgroundView();
+//        this.bringDgViewsToFront();
+//        if (myCalendar.isToday()){
+//            this.addNowTimeLine();
+//        }
+//
+//        dividerBgRLayout.invalidate();
     }
 
 }

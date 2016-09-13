@@ -417,8 +417,6 @@ public class DayViewBody extends RelativeLayout{
         nowTimeLineParams.addRule(RelativeLayout.RIGHT_OF, nowTime.getId());
         nowTimeLine.setLayoutParams(nowTimeLineParams);
         bodyContainerLayout.addView(nowTimeLine);
-
-//        bodyContainerLayout.requestLayout();
     }
 
     private int getNowTimeLinePst(){
@@ -687,9 +685,9 @@ public class DayViewBody extends RelativeLayout{
 //                            dragging_event.setEndTime(new_date[1]);
                         }
 
-//                        long[] new_date = changeDateFromString(dragging_event, currentEventNewHour, currentEventNewMinutes);
-//                        dragging_event.setStartTime(new_date[0]);
-//                        dragging_event.setEndTime(new_date[1]);
+                        long[] new_date = changeDateFromString(dragging_event, currentEventNewHour, currentEventNewMinutes);
+                        dragging_event.setStartTime(new_date[0]);
+                        dragging_event.setEndTime(new_date[1]);
                     }
 
                     //update Y position

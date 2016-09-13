@@ -2,14 +2,10 @@ package org.unimelb.itime.vendor.eventview;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +15,6 @@ import android.widget.TextView;
 
 import org.unimelb.itime.vendor.R;
 import org.unimelb.itime.vendor.helper.DensityUtil;
-import org.unimelb.itime.vendor.listener.ITimeContactInterface;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 
 /**
@@ -35,6 +30,7 @@ public class DayDraggableEventView extends RelativeLayout {
     private boolean isAllDayEvent = false;
 
     private ITimeEventInterface event;
+    private PosParam posParam;
 
     public DayDraggableEventView(Context context, @Nullable ITimeEventInterface event, boolean isAllDayEvent) {
         super(context);
@@ -158,4 +154,43 @@ public class DayDraggableEventView extends RelativeLayout {
         ((GradientDrawable)leftBar.getDrawable()).setColor(color);
     }
 
+    public ITimeEventInterface getEvent() {
+        return event;
+    }
+
+    public void setEvent(ITimeEventInterface event) {
+        this.event = event;
+    }
+
+
+    /**
+     * the display position of draggable event,
+     * for overlapping algorithm
+     *
+     */
+    public static class PosParam{
+        public int startY;
+        public int startX;
+        public int widthFactor;
+        public int topMargin;
+
+        public PosParam(){
+
+        }
+
+        public PosParam(int startY, int startX, int widthFactor, int topMargin) {
+            this.startY = startY;
+            this.startX = startX;
+            this.widthFactor = widthFactor;
+            this.topMargin = topMargin;
+        }
+    }
+
+    public PosParam getPosParam() {
+        return posParam;
+    }
+
+    public void setPosParam(PosParam posParam) {
+        this.posParam = posParam;
+    }
 }

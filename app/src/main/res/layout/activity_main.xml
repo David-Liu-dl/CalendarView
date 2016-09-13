@@ -22,5 +22,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="David"/>
+        <Button
+            android:id="@+id/btn_yin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="yin"/>
     </LinearLayout>
 </RelativeLayout>

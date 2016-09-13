@@ -33,7 +33,7 @@
 //    public DayViewBodyController dayViewController;
 //
 //    private List<ITimeEventInterface> events = new ArrayList<>();
-//    private DayViewBodyController.BodyOnTouchListener bodyOnTouchListener;
+//    private DayViewBodyController.OnBodyTouchListener bodyOnTouchListener;
 //
 //    public MyCalendar myCalendar;
 //
@@ -70,9 +70,9 @@
 //        dayViewController.setOnLoadEvents(onLoadEvents);
 //    }
 //
-//    public void setBodyOnTouchListener(DayViewBodyController.BodyOnTouchListener bodyOnTouchListener) {
+//    public void setOnBodyTouchListener(DayViewBodyController.OnBodyTouchListener bodyOnTouchListener) {
 //        this.bodyOnTouchListener = bodyOnTouchListener;
-//        this.dayViewController.setBodyOnTouchListener(this.bodyOnTouchListener);
+//        this.dayViewController.setOnBodyTouchListener(this.bodyOnTouchListener);
 //    }
 //
 //    public void reloadEvents(){
@@ -117,7 +117,7 @@
 //                allDayContainer);
 //
 //        if (this.bodyOnTouchListener != null){
-//            dayViewController.setBodyOnTouchListener(this.bodyOnTouchListener);
+//            dayViewController.setOnBodyTouchListener(this.bodyOnTouchListener);
 //        }else {
 //            Log.i(TAG, "view: bodyOnTouchListener null ");
 //        }

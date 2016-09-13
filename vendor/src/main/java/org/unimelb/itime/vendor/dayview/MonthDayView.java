@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import org.unimelb.itime.vendor.R;
-
 import org.unimelb.itime.vendor.helper.MyCalendar;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 
@@ -43,8 +42,9 @@ public class MonthDayView extends LinearLayout {
     private LinearLayoutManager mLinearLayoutManager;
 
     DayViewBodyPagerAdapter bodyPagerAdapter;
+
+    ArrayList<DayViewBody> bodyViewList;
     ViewPager bodyPager;
-    private DayViewBody.OnCreateNewEvent onCreateNewEvent;
 
     int bodyCurrentPosition;
 
@@ -52,7 +52,7 @@ public class MonthDayView extends LinearLayout {
 
     private DayViewHeader.OnCheckIfHasEvent onCheckIfHasEvent;
 
-    private Map<Long, List<? extends ITimeEventInterface>> dayEventMap;
+    private Map<Long, List<ITimeEventInterface>> dayEventMap;
 
     public MonthDayView(Context context) {
         super(context);
@@ -80,6 +80,8 @@ public class MonthDayView extends LinearLayout {
 
         upperBoundsOffset = 100000;
 
+        bodyViewList = new ArrayList<>();
+        this.initBody();
         this.setUpHeader();
         this.setUpBody();
     }
@@ -87,45 +89,19 @@ public class MonthDayView extends LinearLayout {
 
     /*--------------------*/
 
-//    public void setDayEventMap(Map<Long, List<? extends ITimeEventInterface>> dayEventMap){
-//        this.dayEventMap = dayEventMap;
-//    }
-//
-//    public void setDraggble(boolean isDraggble){
-//
-//    }
-//
-//    public void setOnDayViewBodyEventListener(DayViewBody.OnDayViewBodyEventListener){
-//
-//    }
+    public void setDayEventMap(Map<Long, List<ITimeEventInterface>> dayEventMap){
+        this.dayEventMap = dayEventMap;
+        this.bodyPagerAdapter.setDayEventMap(dayEventMap);
+    }
 
+    public void setOnBodyListener(DayViewBody.OnBodyListener onBodyListener){
 
-
-    /*----------------------*/
-    public void setOnCreateNewEvent(DayViewBody.OnCreateNewEvent onCreateNewEvent){
-        this.onCreateNewEvent = onCreateNewEvent;
-        if (this.onCreateNewEvent != null){
-            bodyPagerAdapter.setOnCreateNewEvent(this.onCreateNewEvent);
+        for (DayViewBody view: this.bodyViewList) {
+            view.setOnBodyListener(onBodyListener);
         }
     }
 
-    public void setOnLoadEvents(DayViewBody.OnLoadEvents onLoadEvents){
-        if (bodyPagerAdapter != null){
-            bodyPagerAdapter.setOnLoadEvents(onLoadEvents);
-        }
-    }
 
-    public void setOnDgClick(DayViewBody.OnDgClickListener onDgClickListener){
-        if (bodyPagerAdapter != null){
-            bodyPagerAdapter.setOnDgOnClick(onDgClickListener);
-        }
-    }
-
-    public void setOnEventChanged(DayViewBody.OnEventChanged onEventChanged){
-        if (bodyPagerAdapter != null){
-            bodyPagerAdapter.setOnEventChanged(onEventChanged);
-        }
-    }
 
     public void setOnCheckIfHasEvent(DayViewHeader.OnCheckIfHasEvent onCheckIfHasEvent){
         this.onCheckIfHasEvent = onCheckIfHasEvent;
@@ -134,14 +110,6 @@ public class MonthDayView extends LinearLayout {
         }
     }
 
-    public void reloadCurrentBodyEvents(){
-        DayViewBody currentBody = bodyPagerAdapter.getViewByPosition(bodyCurrentPosition);
-        if (currentBody != null){
-            currentBody.reLoadEvents();
-        }else {
-            Log.i(TAG, "currentBody null: ");
-        }
-    }
 
     private void setUpHeader(){
         recyclerAdapter = new DayViewHeaderRecyclerAdapter(context, upperBoundsOffset);
@@ -163,35 +131,8 @@ public class MonthDayView extends LinearLayout {
     }
 
     private void setUpBody(){
-        bodyPagerAdapter = new DayViewBodyPagerAdapter(initBody(), upperBoundsOffset);
-        if (this.onCreateNewEvent != null){
-            bodyPagerAdapter.setOnCreateNewEvent(this.onCreateNewEvent);
-        }
-//        if (this.onEventchan != null){
-//            bodyPagerAdapter.setOnEventChanged(onEventChanged);
-//        }
-        bodyPagerAdapter.setBodyOnTouchListener(new DayViewBody.BodyOnTouchListener() {
-            @Override
-            public void bodyOnTouchListener(float tapX, float tapY) {
-                final View needChangeView = recyclerView;
+        bodyPagerAdapter = new DayViewBodyPagerAdapter(bodyViewList, upperBoundsOffset);
 
-                if (needChangeView.getHeight() == scroll_height){
-                    recyclerView.stopScroll();
-                    mLinearLayoutManager.scrollToPositionWithOffset(recyclerAdapter.getCurrentSelectPst(), 0);
-                    final View view = needChangeView;
-                    ValueAnimator va = ValueAnimator.ofInt(scroll_height, init_height);
-                    va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                        public void onAnimationUpdate(ValueAnimator animation) {
-                            Integer value = (Integer) animation.getAnimatedValue();
-                            view.getLayoutParams().height = value.intValue();
-                            view.requestLayout();
-                        }
-                    });
-                    va.setDuration(200);
-                    va.start();
-                }
-            }
-        });
         bodyPagerAdapter.notifyDataSetChanged();
         recyclerAdapter.setBodyPager(bodyPager);
         bodyPager.setAdapter(bodyPagerAdapter);
@@ -276,9 +217,8 @@ public class MonthDayView extends LinearLayout {
         recyclerView.scrollToPosition(n);
     }
 
-    private ArrayList<View> initBody(){
+    private void initBody(){
         int size = 4;
-        ArrayList<View> lists = new ArrayList<>();
         Calendar calendar = Calendar.getInstance(Locale.getDefault());
         calendar.setTime(new Date());
         int day_of_week = calendar.get(Calendar.DAY_OF_WEEK) - 1;
@@ -288,12 +228,33 @@ public class MonthDayView extends LinearLayout {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         for (int i = 0; i < size; i++) {
-            DayViewBody bodyView = (DayViewBody) LayoutInflater.from(this.context).inflate(R.layout.itime_day_view_body_view,null);
+            DayViewBody bodyView = (DayViewBody) LayoutInflater.from(this.context).inflate(R.layout.itime_day_view_body_view, null);
             bodyView.setCalendar(new MyCalendar(calendar));
-            lists.add(bodyView);
+            bodyViewList.add(bodyView);
+            bodyView.setOnBodyTouchListener(new DayViewBody.OnBodyTouchListener() {
+                @Override
+                public void bodyOnTouchListener(float tapX, float tapY) {
+                    final View needChangeView = recyclerView;
+
+                    if (needChangeView.getHeight() == scroll_height){
+                        recyclerView.stopScroll();
+                        mLinearLayoutManager.scrollToPositionWithOffset(recyclerAdapter.getCurrentSelectPst(), 0);
+                        final View view = needChangeView;
+                        ValueAnimator va = ValueAnimator.ofInt(scroll_height, init_height);
+                        va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                            public void onAnimationUpdate(ValueAnimator animation) {
+                                Integer value = (Integer) animation.getAnimatedValue();
+                                view.getLayoutParams().height = value.intValue();
+                                view.requestLayout();
+                            }
+                        });
+                        va.setDuration(200);
+                        va.start();
+                    }
+                }
+            });
         }
 
-        return lists;
     }
 
     class headerOnScrollListener extends RecyclerView.OnScrollListener {

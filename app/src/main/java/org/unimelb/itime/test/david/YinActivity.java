@@ -8,116 +8,82 @@ import org.unimelb.itime.test.R;
 import org.unimelb.itime.test.bean.Contact;
 import org.unimelb.itime.test.bean.Event;
 import org.unimelb.itime.test.bean.Invitee;
-import org.unimelb.itime.vendor.dayview.DayViewHeader;
+import org.unimelb.itime.vendor.dayview.DayViewBody;
 import org.unimelb.itime.vendor.dayview.MonthDayView;
+import org.unimelb.itime.vendor.eventview.DayDraggableEventView;
+import org.unimelb.itime.vendor.helper.MyCalendar;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class DavidActivity extends AppCompatActivity {
-    private final String TAG= "MyAPP";
-    DBManager dbManager;
+public class YinActivity extends AppCompatActivity {
+
+    private final static String TAG = "YinActivity";
+    private DBManager dbManager;
+    private EventManager eventManager;
+    private MonthDayView monthDayView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_david);
+        setContentView(R.layout.activity_yin);
+        dbManager = DBManager.getInstance(this);
+        eventManager = EventManager.getInstance();
 
-        dbManager = DBManager.getInstance(this.getApplicationContext());
+//        initDB();
 
-//        initData();
+        init();
+    }
+
+
+    private void init(){
         loadData();
-//        doInviteesThings();
+        monthDayView = (MonthDayView) findViewById(R.id.monthDayView);
+        monthDayView.setDayEventMap(eventManager.getEventsMap());
+        monthDayView.setOnBodyListener(new DayViewBody.OnBodyListener() {
+            @Override
+            public void onEventCreate(MyCalendar calendar) {
 
-//        doMonthAgendaViewThings();
-//        displayAllInvitee();
-        doMonthDayViewThings();
-    }
+            }
 
-    private void doInviteesThings(){
-        InviteeFragment inviteeFragment = new InviteeFragment();
+            @Override
+            public void onEventClick(DayDraggableEventView eventView) {
 
-        getFragmentManager().beginTransaction().add(R.id.fragment, inviteeFragment).commit();
-    }
+            }
 
-    private void initData(){
-        this.dbManager.clearDB();
-        this.initDB();
+            @Override
+            public void onEventDragStart(DayDraggableEventView eventView) {
+
+            }
+
+            @Override
+            public void onEventDragging(DayDraggableEventView eventView, int x, int y) {
+
+            }
+
+            @Override
+            public void onEventDragEnd(DayDraggableEventView eventView, MyCalendar calendar) {
+
+            }
+        });
+//        List<? extends ITimeEventInterface> dayEventList = eventManager.getEventsMap().get(Long.parseLong("1476504000000"));
+//        List<Event> eventList = (List<Event>) dayEventList;
+//        eventManager.getEventsMap().put((long)1, (List<ITimeEventInterface>) dayEventList);
+//        Log.d(TAG, "init: ");
     }
 
     private void loadData(){
         List<Event> allEvents = dbManager.getAllEvents();
         EventManager.getInstance().getEventsMap().clear();
         for (Event event: allEvents
-             ) {
+                ) {
             List<Invitee> invitee = event.getInvitee();
             Log.i(TAG, "loadData: " + invitee.size());
             EventManager.getInstance().addEvent(event);
         }
 
     }
-
-    private void doMonthDayViewThings(){
-        final MonthDayView monthDayFragment = (MonthDayView) findViewById(R.id.monthDayView);
-
-        monthDayFragment.setOnCheckIfHasEvent(new DayViewHeader.OnCheckIfHasEvent() {
-                @Override
-                public boolean todayHasEvent(long startOfDay) {
-                    Calendar calendar1 = Calendar.getInstance();
-                    calendar1.setTimeInMillis(startOfDay);
-                    return (EventManager.getInstance().getEventsMap().containsKey(startOfDay));
-                }
-        });
-
-
-//        monthDayFragment.setOnLoadEvents(new DayViewBody.OnLoadEvents() {
-//            @Override
-//            public List<ITimeEventInterface> loadEvents(long beginOfDayM) {
-//                if (EventManager.getInstance().getEventsMap().containsKey(beginOfDayM)){
-//                return EventManager.getInstance().getEventsMap().get(beginOfDayM);
-//            }
-//                return null;
-//            }
-//        });
-
-
-//        monthDayFragment.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                Event event = new Event();
-//                event.setTitle("new added");
-//                event.setStartTime(Calendar.getInstance().getTimeInMillis());
-//                event.setEndTime(Calendar.getInstance().getTimeInMillis() + 60 * 60 * 1000);
-//                EventManager.getInstance().addEvent(event);
-//                monthDayFragment.reloadCurrentBodyEvents();
-//                monthDayFragment.invalidate();
-//            }
-//        },5000);
-    }
-
-//    private void doMonthAgendaViewThings(){
-//        MonthAgendaView monthDayFragment = (MonthAgendaView) findViewById(R.id.monthAgendaView);
-//
-//        monthDayFragment.setOnCheckIfHasEvent(new DayViewHeader.OnCheckIfHasEvent() {
-//                @Override
-//                public boolean todayHasEvent(long startOfDay) {
-//                    Calendar calendar1 = Calendar.getInstance();
-//                    calendar1.setTimeInMillis(startOfDay);
-//                    return (EventManager.getInstance().getEventsMap().containsKey(startOfDay));
-//                }
-//        });
-//
-//        monthDayFragment.setOnLoadEvents(new AgendaViewBody.OnLoadEvents() {
-//            @Override
-//            public List<ITimeEventInterface> loadTodayEvents(long beginOfDayMilliseconds) {
-//                if (EventManager.getInstance().getEventsMap().containsKey(beginOfDayMilliseconds)){
-//                    return EventManager.getInstance().getEventsMap().get(beginOfDayMilliseconds);
-//                }
-//                return null;
-//            }
-//        });
-//    }
 
     private void initDB(){
         Calendar calendar = Calendar.getInstance();

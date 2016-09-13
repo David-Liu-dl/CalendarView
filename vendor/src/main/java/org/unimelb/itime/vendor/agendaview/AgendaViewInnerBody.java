@@ -3,6 +3,7 @@ package org.unimelb.itime.vendor.agendaview;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.media.Image;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -35,7 +36,7 @@ public class AgendaViewInnerBody extends RelativeLayout {
 
     private LinearLayout leftInfo;
     private LinearLayout rightInfo;
-    private LinearLayout picList;
+    private LinearLayout inviteeLayout;
     private ImageView eventTypeView;
     private ImageView eventStatusView;
 
@@ -164,15 +165,11 @@ public class AgendaViewInnerBody extends RelativeLayout {
         eventNameTv.setTextColor(titleColor);
         rightInfo.addView(eventNameTv);
 
-        picList = new LinearLayout(context);
-        LinearLayout.LayoutParams picListParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        picList.setOrientation(LinearLayout.HORIZONTAL);
-
-        for (String url : this.urls
-                ) {
-            picList.addView(addImage(url));
-        }
-        rightInfo.addView(picList, picListParams);
+        inviteeLayout = new LinearLayout(context);
+        LinearLayout.LayoutParams inviteeLayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        inviteeLayout.setOrientation(LinearLayout.HORIZONTAL);
+        this.initInviteeLayout(this.urls, inviteeLayout);
+        rightInfo.addView(inviteeLayout, inviteeLayoutParams);
 
         locationTv = new TextView(context);
         locationTv.setText(location);
@@ -257,6 +254,18 @@ public class AgendaViewInnerBody extends RelativeLayout {
         }
     }
 
+    private void initInviteeLayout(List<String> urls, LinearLayout container){
+
+        for (int i = 0; i < urls.size(); i++) {
+            if (i < 4){
+                container.addView(addImage(urls.get(i)));
+            }else{
+                int moreNo = urls.size() - (i + 1);
+                break;
+            }
+        }
+    }
+
     private ImageView addImage(String url) {
         ImageView img = new ImageView(context);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(pic_height_width, pic_height_width);
@@ -267,6 +276,11 @@ public class AgendaViewInnerBody extends RelativeLayout {
 
         return img;
     }
+
+//    private ImageView addMorePeopleIcon(int text){
+//        ImageView icon = new ImageView(context);
+//
+//    }
 
     private void initEventShowAttrs(ITimeEventInterface event) {
         type = event.getEventType();

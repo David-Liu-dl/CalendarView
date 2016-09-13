@@ -4,8 +4,6 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
-import android.text.Layout;
-import android.text.LoginFilter;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Pair;
@@ -222,15 +220,6 @@ public class DayViewBody extends RelativeLayout{
         reDrawEvents();
     }
 
-//    @Override
-//    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-//        super.onLayout(changed, l, t, r, b);
-//        if (dividerWidth != 0){
-//            reDrawEvents();
-//        }
-////        Log.i(TAG, "onLayout: " + dividerWidth + myCalendar.getCalendar().getTime());
-//    }
-
     private void loadAttributes(AttributeSet attrs, Context context) {
         if (attrs != null && context != null) {
             TypedArray typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.dayStyle, 0, 0);
@@ -362,8 +351,6 @@ public class DayViewBody extends RelativeLayout{
             nowTime.setVisibility(GONE);
             nowTimeLine.setVisibility(GONE);
         }
-
-
     }
 
     public void clearAllEvents(){
@@ -568,7 +555,6 @@ public class DayViewBody extends RelativeLayout{
                     this.addEvent(event);
                 }
             }
-
             this.reDrawEvents();
         }else {
             Log.i(TAG, "reLoadEvents onLoadEvents: null");

@@ -32,25 +32,27 @@ import java.util.Map;
 public class MonthDayView extends LinearLayout {
     private final String TAG = "MyAPP";
 
-    private LinearLayout parent;
-    private RecyclerView recyclerView;
-    private DayViewHeaderRecyclerAdapter recyclerAdapter;
-    private int upperBoundsOffset = 1;
-
-    private int init_height;
-    private int scroll_height;
-
-    private LinearLayoutManager mLinearLayoutManager;
-
-    DayViewBodyPagerAdapter bodyPagerAdapter;
-    ViewPager bodyPager;
-    private DayViewBody.OnCreateNewEvent onCreateNewEvent;
-
-    int bodyCurrentPosition;
-
     private Context context;
 
+    private int upperBoundsOffset = 1;
+    private int init_height;
+    private int scroll_height;
+    private int bodyCurrentPosition;
+
+    private MyCalendar monthDayViewCalendar = new MyCalendar(Calendar.getInstance());
+
+    private LinearLayout parent;
+    private LinearLayoutManager mLinearLayoutManager;
+
+    private DayViewBodyPagerAdapter bodyPagerAdapter;
+    private ViewPager bodyPager;
+    private RecyclerView recyclerView;
+    private DayViewHeaderRecyclerAdapter recyclerAdapter;
+
     private DayViewHeader.OnCheckIfHasEvent onCheckIfHasEvent;
+    private DayViewBody.OnCreateNewEvent onCreateNewEvent;
+
+    private OnHeaderListener onHeaderListener;
 
     private Map<Long, List<? extends ITimeEventInterface>> dayEventMap;
 
@@ -315,7 +317,24 @@ public class MonthDayView extends LinearLayout {
                     va.start();
                 }
             }
+            //for now header date
+            int index = mLinearLayoutManager.findFirstCompletelyVisibleItemPosition();
+            DayViewHeader fstVisibleHeader = (DayViewHeader) mLinearLayoutManager.findViewByPosition(index);
+            monthDayViewCalendar = fstVisibleHeader.getCalendar();
+            if (onHeaderListener != null){
+                onHeaderListener.onMonthChanged(monthDayViewCalendar);
+            }
         }
     }
 
+    public void setOnHeaderListener(OnHeaderListener onHeaderListener){
+        this.onHeaderListener = onHeaderListener;
+    }
+
+    public interface OnHeaderListener{
+        void onMonthChanged(MyCalendar calendar);
+    }
+
 }
+
+

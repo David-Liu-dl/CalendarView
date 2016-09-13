@@ -10,6 +10,8 @@ import org.unimelb.itime.test.bean.Contact;
 import org.unimelb.itime.test.bean.Event;
 import org.unimelb.itime.test.bean.Invitee;
 import org.unimelb.itime.test.paul.PaulActivity;
+import org.unimelb.itime.vendor.agendaview.AgendaViewBody;
+import org.unimelb.itime.vendor.agendaview.MonthAgendaView;
 import org.unimelb.itime.vendor.dayview.DayViewBody;
 import org.unimelb.itime.vendor.dayview.DayViewHeader;
 import org.unimelb.itime.vendor.dayview.MonthDayView;
@@ -98,18 +100,18 @@ public class DavidActivity extends AppCompatActivity {
             }
         });
 
-//        monthDayFragment.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                Event event = new Event();
-//                event.setTitle("new added");
-//                event.setStartTime(Calendar.getInstance().getTimeInMillis());
-//                event.setEndTime(Calendar.getInstance().getTimeInMillis() + 60 * 60 * 1000);
-//                EventManager.getInstance().addEvent(event);
-//                monthDayFragment.reloadCurrentBodyEvents();
-//                monthDayFragment.invalidate();
-//            }
-//        },5000);
+        monthDayFragment.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Event event = new Event();
+                event.setTitle("new added");
+                event.setStartTime(Calendar.getInstance().getTimeInMillis());
+                event.setEndTime(Calendar.getInstance().getTimeInMillis() + 60 * 60 * 1000);
+                EventManager.getInstance().addEvent(event);
+                monthDayFragment.reloadCurrentBodyEvents();
+                monthDayFragment.invalidate();
+            }
+        },5000);
     }
 
 //    private void doMonthAgendaViewThings(){

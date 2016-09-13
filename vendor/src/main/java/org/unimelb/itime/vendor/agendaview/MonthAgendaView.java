@@ -48,6 +48,9 @@ public class MonthAgendaView extends RelativeLayout{
     private DayViewHeader.OnCheckIfHasEvent onCheckIfHasEvent;
     private AgendaViewBody.OnLoadEvents onLoadEvents;
 
+    private MyCalendar monthAgendaViewCalendar;
+    private OnHeaderListener onHeaderListener;
+
     public MonthAgendaView(Context context) {
         super(context);
         initView();
@@ -170,9 +173,23 @@ public class MonthAgendaView extends RelativeLayout{
                     va.start();
                 }
             }
+
+            //for now header date
+            int index = headerLinearLayoutManager.findFirstCompletelyVisibleItemPosition();
+            DayViewHeader fstVisibleHeader = (DayViewHeader) headerLinearLayoutManager.findViewByPosition(index);
+            monthAgendaViewCalendar = fstVisibleHeader.getCalendar();
+            if (onHeaderListener != null){
+                onHeaderListener.onMonthChanged(monthAgendaViewCalendar);
+            }
         }
     }
+    public void setOnHeaderListener(OnHeaderListener onHeaderListener){
+        this.onHeaderListener = onHeaderListener;
+    }
 
+    public interface OnHeaderListener{
+        void onMonthChanged(MyCalendar calendar);
+    }
     public void headerScrollToDate(Calendar body_fst_cal){
         DayViewHeader headerView =
             (DayViewHeader) headerLinearLayoutManager.findViewByPosition(headerRecyclerAdapter.rowPst);

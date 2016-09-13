@@ -227,6 +227,11 @@ public class DayViewBody extends RelativeLayout{
             DayDraggableEventView eventView = (DayDraggableEventView) eventLayout.getChildAt(i);
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) eventView.getLayoutParams();
             DayDraggableEventView.PosParam pos = eventView.getPosParam();
+            if(pos == null){
+                // for creating a new event
+                // the pos parameter is null, because we just mock it
+                continue;
+            }
             int eventWidth = layoutWidth / pos.widthFactor;
             int leftMargin = eventWidth * pos.startX;
             params.width = eventWidth;
@@ -260,6 +265,7 @@ public class DayViewBody extends RelativeLayout{
         initMsgWindow();
         initTimeText(getHours());
         initDividerLine(getHours());
+        addNowTimeLine();
     }
 
     private void initTimeSlot(){
@@ -310,6 +316,8 @@ public class DayViewBody extends RelativeLayout{
         }
     }
 
+
+
     private void initDividerLine(String[] HOURS){
         int offsetY =  (int)(timeTextSize * 0.5);
         for (int numOfDottedLine = 0 ; numOfDottedLine < HOURS.length ; numOfDottedLine ++){
@@ -358,7 +366,6 @@ public class DayViewBody extends RelativeLayout{
         clearAllEvents();
         this.removeView(nowTime);
         this.removeView(nowTimeLine);
-
     }
 
     /**
@@ -393,18 +400,17 @@ public class DayViewBody extends RelativeLayout{
         nowTimeLine.setId(View.generateViewId());
 
         int lineMarin_top = getNowTimeLinePst() + (int) context.getResources().getDimension(R.dimen.all_day_height);
-
         nowTime.setText(localTime);
         nowTime.setTextSize(10);
         RelativeLayout.LayoutParams paramsText = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         paramsText.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         paramsText.addRule(RelativeLayout.ALIGN_BOTTOM, nowTimeLine.getId());
         int textPadding = DensityUtil.dip2px(context, 5);
-        nowTime.setPadding(textPadding,0,textPadding,0);
+        nowTime.setPadding(textPadding/2,0,textPadding/2,0);
         nowTime.setLayoutParams(paramsText);
         nowTime.setTextColor(context.getResources().getColor(R.color.text_today_color));
         nowTime.setBackgroundColor(context.getResources().getColor(R.color.whites));
-        this.addView(nowTime);
+        bodyContainerLayout.addView(nowTime);
 
         RelativeLayout.LayoutParams nowTimeLineParams =
                 new RelativeLayout.LayoutParams(
@@ -412,12 +418,10 @@ public class DayViewBody extends RelativeLayout{
                         , ViewGroup.LayoutParams.WRAP_CONTENT);
         nowTimeLine.setImageResource(R.drawable.itime_now_time_full_line);
         nowTimeLineParams.topMargin = lineMarin_top;
-        nowTimeLineParams.addRule(RelativeLayout.ALIGN_RIGHT, dividerBgRLayout.getId());
+        nowTimeLineParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         nowTimeLineParams.addRule(RelativeLayout.RIGHT_OF, nowTime.getId());
         nowTimeLine.setLayoutParams(nowTimeLineParams);
-        this.addView(nowTimeLine);
-
-        this.invalidate();
+        bodyContainerLayout.addView(nowTimeLine);
     }
 
     private int getNowTimeLinePst(){
@@ -549,6 +553,7 @@ public class DayViewBody extends RelativeLayout{
             }
             previousGroupExtraY += overlapGapHeight * overlapGroup.size();
         }
+        eventLayout.requestLayout();
     }
 
 
@@ -587,9 +592,7 @@ public class DayViewBody extends RelativeLayout{
         DayDraggableEventView event_view = new DayDraggableEventView(context, null, false);
         int eventHeight = 1 * lineHeight;//one hour
         Log.i(TAG, "createTempDayDraggableEventView: " + eventHeight);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(300,eventHeight);
-        params.width = 300;
-        params.height = 300;
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,eventHeight);
         params.topMargin = (int)(tapY - eventHeight/2);
         event_view.setOnLongClickListener(new EventLongClickListener());
         event_view.setLayoutParams(params);
@@ -710,6 +713,7 @@ public class DayViewBody extends RelativeLayout{
             if (tempDragView == null){
                 tempDragView = createTempDayDraggableEventView(nowTapX, nowTapY);
                 eventLayout.addView(tempDragView);
+
                 tempDragView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -787,10 +791,10 @@ public class DayViewBody extends RelativeLayout{
         float needPositionY_bottom = event.getY() + heightOfView/2;
 
         if (scrollBounds.top > needPositionY_top) {
-            int offsetY = (int)(scrollContainerView.getScrollY() +(needPositionY_top-scrollBounds.top) );
+            int offsetY = (int)(scrollContainerView.getScrollY() - DensityUtil.dip2px(context,10));//(needPositionY_top-scrollBounds.top)
             scrollContainerView.scrollTo(scrollContainerView.getScrollX(),offsetY);
         } else if(scrollBounds.bottom < needPositionY_bottom){
-            int offsetY = (int) (scrollContainerView.getScrollY() + (needPositionY_bottom-scrollBounds.bottom));
+            int offsetY = (int) (scrollContainerView.getScrollY() + DensityUtil.dip2px(context,10));//(needPositionY_bottom-scrollBounds.bottom)
             scrollContainerView.scrollTo(scrollContainerView.getScrollX(),offsetY);
         }
     }

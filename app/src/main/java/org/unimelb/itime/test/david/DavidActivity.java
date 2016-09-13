@@ -1,6 +1,5 @@
 package org.unimelb.itime.test.david;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -9,7 +8,6 @@ import org.unimelb.itime.test.R;
 import org.unimelb.itime.test.bean.Contact;
 import org.unimelb.itime.test.bean.Event;
 import org.unimelb.itime.test.bean.Invitee;
-import org.unimelb.itime.test.paul.PaulActivity;
 import org.unimelb.itime.vendor.dayview.DayViewBody;
 import org.unimelb.itime.vendor.dayview.DayViewHeader;
 import org.unimelb.itime.vendor.dayview.MonthDayView;
@@ -73,6 +71,7 @@ public class DavidActivity extends AppCompatActivity {
                     return (EventManager.getInstance().getEventsMap().containsKey(startOfDay));
                 }
         });
+
 
         monthDayFragment.setOnLoadEvents(new DayViewBody.OnLoadEvents() {
             @Override

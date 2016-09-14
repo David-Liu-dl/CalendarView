@@ -17,7 +17,6 @@ import org.unimelb.itime.vendor.R;
 import org.unimelb.itime.vendor.eventview.DayDraggableEventView;
 import org.unimelb.itime.vendor.helper.MyCalendar;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
-import org.unimelb.itime.vendor.listener.ITimeInviteeInterface;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -358,12 +357,12 @@ public class MonthDayView extends LinearLayout {
         }
 
         @Override
-        public void onEventDragEnd(DayDraggableEventView eventView) {
+        public void onEventDragDrop(DayDraggableEventView eventView) {
             MyCalendar currentCal = (bodyPagerAdapter.getViewByPosition(bodyCurrentPosition)).getCalendar();
             eventView.getNewCalendar().setDay(currentCal.getDay());
             eventView.getNewCalendar().setMonth(currentCal.getMonth());
             eventView.getNewCalendar().setYear(currentCal.getYear());
-            if (OnBodyOuterListener != null){OnBodyOuterListener.onEventDragEnd(eventView);}
+            if (OnBodyOuterListener != null){OnBodyOuterListener.onEventDragDrop(eventView);}
         }
     }
 

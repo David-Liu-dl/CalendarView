@@ -140,7 +140,7 @@
 //        void onEventLongClick(DayDraggableEventView dgView, ITimeEventInterface event);
 //        void onEventDragStart(DayDraggableEventView dgView, ITimeEventInterface event);
 //        void onEventDragging(DayDraggableEventView dgView, ITimeEventInterface event);
-//        void onEventDragEnd(DayDraggableEventView dgView, ITimeEventInterface event);
+//        void onEventDragDrop(DayDraggableEventView dgView, ITimeEventInterface event);
 //    }
 //
 //}

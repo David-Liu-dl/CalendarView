@@ -138,8 +138,8 @@ public class WeekViewBody extends LinearLayout{
         });
         eventAndWidgetsRelativeLayout = new RelativeLayout(getContext());
 
-        eventAndWidgetsRelativeLayout.addView(eventRelativeLayout);
         eventAndWidgetsRelativeLayout.addView(eventWidgetsRelativeLayout);
+        eventAndWidgetsRelativeLayout.addView(eventRelativeLayout);
         weekBodyLinearLayout.addView(timeRelativeLayout);
         weekBodyLinearLayout.addView(eventAndWidgetsRelativeLayout);
         backGroundRelativeLayout.addView(weekBodyLinearLayout);

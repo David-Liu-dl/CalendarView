@@ -72,6 +72,7 @@ public class YinActivity extends AppCompatActivity {
                 Log.i(TAG, "onEventDragDrop: yin");
                 Log.i(TAG, "onEventDragDrop: " + eventView.getNewCalendar().getHour());
             }
+
         });
 
         monthDayView.postDelayed(new Runnable() {

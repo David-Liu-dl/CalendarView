@@ -46,8 +46,9 @@ public class YinActivity extends AppCompatActivity {
         monthDayView = (MonthDayView) findViewById(R.id.monthDayView);
         Log.i(TAG, "init: " + eventManager.getEventsMap().size());
         monthDayView.setDayEventMap(eventManager.getEventsMap());
-
+        monthDayView.setEventClassName(Event.class);
         monthDayView.setOnBodyListener(new DayViewBody.OnBodyListener() {
+
             @Override
             public void onEventCreate(MyCalendar calendar) {
 

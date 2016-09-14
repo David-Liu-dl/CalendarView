@@ -341,8 +341,8 @@ public class MonthDayView extends LinearLayout {
         int parentWidth = 0;
 
         @Override
-        public void onEventCreate(MyCalendar calendar) {
-            if (OnBodyOuterListener != null){OnBodyOuterListener.onEventCreate(calendar);}
+        public void onEventCreate(DayDraggableEventView eventView) {
+            if (OnBodyOuterListener != null){OnBodyOuterListener.onEventCreate(eventView);}
 
         }
 
@@ -379,24 +379,24 @@ public class MonthDayView extends LinearLayout {
         }
 
         @Override
-        public void onEventDragEnd(DayDraggableEventView eventView, MyCalendar calendar) {
+        public void onEventDragEnd(DayDraggableEventView eventView) {
 
         }
     }
 
-//
-//    public interface OnNew
-//
-//    public <E extends ITimeEventInterface> E setEvent(Class<E> className){
-//
-//        E event = null;
-//        try {
-//            event = className.newInstance();
-//        } catch (Exception e){
-//
-//        }
-//        return event;
-//    }
+
+    /**
+     *
+     * @param className
+     * @param <E>
+     */
+    public <E extends ITimeEventInterface> void setEventClassName(Class<E> className){
+
+        for (DayViewBody view: bodyViewList){
+            view.setEventClassName(className);
+        }
+
+    }
 
 }
 

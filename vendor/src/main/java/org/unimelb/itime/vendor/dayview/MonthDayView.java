@@ -68,6 +68,10 @@ public class MonthDayView extends LinearLayout {
         initView();
     }
 
+    public void notifyDatasetChanged(){
+        bodyPagerAdapter.notifyDataSetChanged();
+    }
+
     private void initView(){
         this.context = getContext();
 
@@ -92,12 +96,6 @@ public class MonthDayView extends LinearLayout {
         this.dayEventMap = dayEventMap;
         this.bodyPagerAdapter.setDayEventMap(dayEventMap);
     }
-
-//    public void setOnBodyListener(DayViewBody.OnBodyListener onBodyListener){
-//        for (DayViewBody view: this.bodyViewList) {
-//            view.setOnBodyListener(onBodyListener);
-//        }
-//    }
 
     private void setUpHeader(){
         headerRecyclerAdapter = new DayViewHeaderRecyclerAdapter(context, upperBoundsOffset);

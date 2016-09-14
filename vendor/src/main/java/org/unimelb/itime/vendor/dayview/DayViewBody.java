@@ -213,7 +213,7 @@ public class DayViewBody extends RelativeLayout{
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        Log.i(TAG, "onMeasure: ");
+
         dividerBgRLayout.measure(widthMeasureSpec, heightMeasureSpec);
 
         int eventCount = eventLayout.getChildCount();
@@ -682,7 +682,8 @@ public class DayViewBody extends RelativeLayout{
                     finalView.getBackground().setAlpha(128);
                     finalView.setVisibility(View.VISIBLE);
                     msgWindow.setVisibility(View.INVISIBLE);
-                    if (onBodyListener != null){
+
+                    if (tempDragView == null && onBodyListener != null){
                         if ((currentEventNewHour !=-1) && (currentEventNewMinutes != -1)){
                             dgView.getNewCalendar().setHour(currentEventNewHour);
                             dgView.getNewCalendar().setMinute(currentEventNewMinutes);

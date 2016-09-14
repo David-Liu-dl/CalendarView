@@ -10,6 +10,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -19,6 +20,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import org.unimelb.itime.vendor.R;
+import org.unimelb.itime.vendor.eventview.DayDraggableEventView;
 import org.unimelb.itime.vendor.eventview.Event;
 import org.unimelb.itime.vendor.eventview.WeekDraggableEventView;
 import org.unimelb.itime.vendor.helper.MyCalendar;
@@ -73,6 +75,11 @@ public class WeekViewBody extends LinearLayout{
     private TextView currentTimeLineTextView;
     private TextView currentTimeTextView;
 
+    private OnWeekBodyListener onWeekBodyListener;
+
+    private float tapX;
+    private float tapY;
+
     public WeekViewBody(Context context) {
         super(context);
         init();
@@ -113,7 +120,22 @@ public class WeekViewBody extends LinearLayout{
         eventWidgetsRelativeLayout.setPadding(20,0,0,0);
 
         eventRelativeLayout = new RelativeLayout(getContext());
+        eventRelativeLayout.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                tapX = event.getX();
+                tapY = event.getY();
+                return false;
+            }
+        });
+        eventRelativeLayout.setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                //create event here;
 
+                return false;
+            }
+        });
         eventAndWidgetsRelativeLayout = new RelativeLayout(getContext());
 
         eventAndWidgetsRelativeLayout.addView(eventWidgetsRelativeLayout);
@@ -234,6 +256,14 @@ public class WeekViewBody extends LinearLayout{
                 eventCalendar.setTime(eventDate);
                 if (isInCurrentWeek(eventCalendar,myCalendar)) {
                     WeekDraggableEventView eventView = new WeekDraggableEventView(getContext(),event);
+                    eventView.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (onWeekBodyListener != null){
+                                onWeekBodyListener.onEventClick((WeekDraggableEventView) v);
+                            }
+                        }
+                    });
 //                    eventView.setOnLongClickListener(new MyLongClickListener()); // for event draggable
                     eventViewArrayList.add(eventView);
                     eventRelativeLayout.addView(eventView);
@@ -274,8 +304,6 @@ public class WeekViewBody extends LinearLayout{
         invalidate();
     }
 
-
-
     public boolean isInCurrentWeek(Calendar timeSlotCalendar,MyCalendar myCalendar){
         Calendar firstSundayCalendar = Calendar.getInstance();
         firstSundayCalendar.set(Calendar.YEAR, myCalendar.getYear());
@@ -284,8 +312,6 @@ public class WeekViewBody extends LinearLayout{
         return (timeSlotCalendar.get(Calendar.WEEK_OF_YEAR) == firstSundayCalendar.get(Calendar.WEEK_OF_YEAR)
                 && timeSlotCalendar.get(Calendar.YEAR) == firstSundayCalendar.get(Calendar.YEAR));
     }
-
-
 
     public void setOnClickEventInterface(WeekView.OnClickEventInterface onClickEventInterface){
         this.onClickEventInterface = onClickEventInterface;
@@ -356,7 +382,6 @@ public class WeekViewBody extends LinearLayout{
 
     }
 
-
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         updateWidthHeight(totalWidth, totalHeight);
@@ -425,11 +450,6 @@ public class WeekViewBody extends LinearLayout{
 
     }
 
-
-
-
-
-
     public void updateWidthHeight(int totalWidth, int totalHeight) {
         this.hourHeight = totalHeight / numOfHourShowInScreen;
         this.hourWidth = totalWidth / 10;
@@ -496,9 +516,10 @@ public class WeekViewBody extends LinearLayout{
 
         @Override
         public boolean onDrag(View view, DragEvent dragEvent) {
+            WeekDraggableEventView currentEventView = (WeekDraggableEventView) dragEvent.getLocalState();
             switch (dragEvent.getAction()){
                 case DragEvent.ACTION_DRAG_STARTED:
-                    View currentEventView = (View) dragEvent.getLocalState();
+
                     actionStartX = dragEvent.getX();
                     actionStartY = dragEvent.getY();
                     msgWindow.setVisibility(View.VISIBLE);
@@ -506,26 +527,25 @@ public class WeekViewBody extends LinearLayout{
                 case DragEvent.ACTION_DRAG_LOCATION:
                     scrollViewAutoScroll(dragEvent);
                     msgWindowFollow((int)dragEvent.getX(),(int)dragEvent.getY(),(View)dragEvent.getLocalState());
+                    if (onWeekBodyListener != null){
+                        onWeekBodyListener.onEventDragging(currentEventView, (int) dragEvent.getX(), (int) dragEvent.getY());
+                    }
                     break;
                 case DragEvent.ACTION_DRAG_ENDED:
                     break;
                 case DragEvent.ACTION_DRAG_EXITED:
                     break;
                 case DragEvent.ACTION_DROP:
-                    float actionStopX = dragEvent.getX();
-                    float actionStopY = dragEvent.getY();
-                    // reassign view to viewGroup
-                    View currentDragView = (View) dragEvent.getLocalState();
-                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)
-                            currentDragView.getLayoutParams();
+                    //need set currentEventView.event time, calendar
+//                    String new_time = positionToTimeTreeMap.get(reComputeResult[1]);
+//                    //important! update event time after drag
+//                    String[] time_parts = new_time.split(":");
+//                    currentEventNewHour = Integer.valueOf(time_parts[0]);
+//                    currentEventNewMinutes = Integer.valueOf(time_parts[1]);
+                    if (onWeekBodyListener != null){
+                        onWeekBodyListener.onEventDragging(currentEventView, (int) dragEvent.getX(), (int) dragEvent.getY());
+                    }
 
-                    int newX = (int) actionStopX - currentDragView.getWidth()/2;
-                    int newY = (int) actionStopY - currentDragView.getHeight()/2;
-                    int[] reComputeResult = reComputePositionToSet(newX, newY,currentDragView,view);
-
-                    params.leftMargin = reComputeResult[0];
-                    params.topMargin = reComputeResult[1];
-                    currentDragView.setLayoutParams(params);
                     break;
                 case DragEvent.ACTION_DRAG_ENTERED:
                     View finalView = (View) dragEvent.getLocalState();
@@ -538,6 +558,7 @@ public class WeekViewBody extends LinearLayout{
             return true;
         }
     }
+
     private  int[] reComputePositionToSet(int actualX, int actualY, View draggableObj, View container){
         int containerWidth = container.getWidth();
         int containerHeight = container.getHeight();
@@ -646,5 +667,15 @@ public class WeekViewBody extends LinearLayout{
         //msgWindow.setVisibility(View.VISIBLE);
     }
 
+    public interface OnWeekBodyListener{
+        void onEventCreate(WeekDraggableEventView eventView);
+        void onEventClick(WeekDraggableEventView eventView);
+        void onEventDragStart(WeekDraggableEventView eventView);
+        void onEventDragging(WeekDraggableEventView eventView, int x, int y);
+        void onEventDragDrop(WeekDraggableEventView eventView);
+    }
 
+    public void setOnWeekBodyListener(OnWeekBodyListener onWeekBodyListener){
+        this.onWeekBodyListener = onWeekBodyListener;
+    }
 }

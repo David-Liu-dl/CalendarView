@@ -127,9 +127,7 @@ public class MonthAgendaView extends RelativeLayout{
     }
 
     private void setUpBody(){
-
         bodyRecyclerAdapter = new AgendaBodyViewRecyclerAdapter(context, upperBoundsOffset);
-//        setOnCheckIfHasEvent(this.onCheckIfHasEvent);
         setOnEventClickListener(this.onEventClickListener);
         bodyRecyclerView.setFlingScale(0.3f);
         bodyRecyclerView.setHasFixedSize(false);

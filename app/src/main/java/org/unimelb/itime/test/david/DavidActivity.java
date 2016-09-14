@@ -52,7 +52,6 @@ public class DavidActivity extends AppCompatActivity {
         for (Event event: allEvents
              ) {
             List<Invitee> invitee = event.getInvitee();
-            Log.i(TAG, "loadData: " + invitee.size());
             EventManager.getInstance().addEvent(event);
         }
 

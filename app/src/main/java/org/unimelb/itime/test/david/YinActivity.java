@@ -16,6 +16,7 @@ import org.unimelb.itime.vendor.eventview.DayDraggableEventView;
 import org.unimelb.itime.vendor.helper.MyCalendar;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -104,6 +105,7 @@ public class YinActivity extends AppCompatActivity {
     }
 
     private void initDB(){
+        dbManager.clearDB();
         Calendar calendar = Calendar.getInstance();
         List<Event> events = new ArrayList<>();
         List<Contact> contacts = initContact();
@@ -120,11 +122,14 @@ public class YinActivity extends AppCompatActivity {
 
             Event event = new Event();
             event.setEventUid("" + i);
-            event.setTitle("" + i);
             event.setEventType(i%type.length);
             event.setStatus(i%status.length);
             event.setLocation("here");
             event.setStartTime(startTime);
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(startTime);
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+            event.setTitle("" + sdf.format(cal.getTime()));
 
             List<Invitee> inviteeList = new ArrayList<>();
 

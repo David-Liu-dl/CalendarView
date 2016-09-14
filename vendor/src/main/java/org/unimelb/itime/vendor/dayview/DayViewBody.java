@@ -692,9 +692,9 @@ public class DayViewBody extends RelativeLayout{
                     finalView.setVisibility(View.VISIBLE);
                     msgWindow.setVisibility(View.INVISIBLE);
                     if (onBodyListener != null){
-                        dgView.getNewCalendar().setHour(currentEventNewHour);
-                        dgView.getNewCalendar().setHour(currentEventNewMinutes);
                         if ((currentEventNewHour !=-1) && (currentEventNewMinutes != -1)){
+                            dgView.getNewCalendar().setHour(currentEventNewHour);
+                            dgView.getNewCalendar().setMinute(currentEventNewMinutes);
                             onBodyListener.onEventDragEnd(dgView);
                         }
                     }else{

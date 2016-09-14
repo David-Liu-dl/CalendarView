@@ -70,18 +70,9 @@ public class YinActivity extends AppCompatActivity {
             @Override
             public void onEventDragEnd(DayDraggableEventView eventView) {
                 Log.i(TAG, "onEventDragEnd: yin");
-                Log.i(TAG, "onEventDragEnd: " + eventView.getNewCalendar().getDay());
+                Log.i(TAG, "onEventDragEnd: " + eventView.getNewCalendar().getHour());
             }
         });
-
-//        monthAgendaView = (MonthAgendaView) findViewById(R.id.monthAgendaView);
-//        monthAgendaView.setDayEventMap(eventManager.getEventsMap());
-//        monthAgendaView.setOnEventClickListener(new AgendaViewBody.OnEventClickListener() {
-//            @Override
-//            public void onEventClick(ITimeEventInterface event) {
-//                Log.i(TAG, "onEventClick: ");
-//            }
-//        });
     }
 
     private void loadData(){

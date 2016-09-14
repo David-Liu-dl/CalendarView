@@ -15,7 +15,10 @@ import android.widget.TextView;
 
 import org.unimelb.itime.vendor.R;
 import org.unimelb.itime.vendor.helper.DensityUtil;
+import org.unimelb.itime.vendor.helper.MyCalendar;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
+
+import java.util.Calendar;
 
 /**
  * Created by yuhaoliu on 3/08/16.
@@ -32,7 +35,17 @@ public class DayDraggableEventView extends RelativeLayout {
     private ITimeEventInterface event;
     private PosParam posParam;
 
-    public DayDraggableEventView(Context context,@Nullable ITimeEventInterface event, boolean isAllDayEvent) {
+    public MyCalendar getNewCalendar() {
+        return newCalendar;
+    }
+
+    public void setNewCalendar(MyCalendar newCalendar) {
+        this.newCalendar = newCalendar;
+    }
+
+    private MyCalendar newCalendar = new MyCalendar(Calendar.getInstance());
+
+    public DayDraggableEventView(Context context, @Nullable ITimeEventInterface event, boolean isAllDayEvent) {
         super(context);
         this.event = event;
         this.isAllDayEvent = isAllDayEvent;
@@ -192,5 +205,13 @@ public class DayDraggableEventView extends RelativeLayout {
 
     public void setPosParam(PosParam posParam) {
         this.posParam = posParam;
+    }
+
+    public long getStartTimeM(){
+        return this.getNewCalendar().getCalendar().getTimeInMillis();
+    }
+
+    public long getEndTimeM(){
+        return this.getStartTimeM() + (event.getEndTime() - event.getStartTime());
     }
 }

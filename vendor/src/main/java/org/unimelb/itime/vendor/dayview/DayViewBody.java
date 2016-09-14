@@ -623,8 +623,8 @@ public class DayViewBody extends RelativeLayout{
     private class EventDragListener implements View.OnDragListener {
         float actionStartX = 0;
         float actionStartY = 0;
-        int currentEventNewHour;
-        int currentEventNewMinutes;
+        int currentEventNewHour = -1;
+        int currentEventNewMinutes = -1;
 
         @Override
         public boolean onDrag(View v, DragEvent event) {
@@ -635,6 +635,7 @@ public class DayViewBody extends RelativeLayout{
                     actionStartX = event.getX();
                     actionStartY = event.getY();
                     msgWindow.setVisibility(View.VISIBLE);
+                    Log.i(TAG, "start: " + myCalendar.toString());
                     break;
                 case DragEvent.ACTION_DRAG_LOCATION:
                     scrollViewAutoScroll(event);
@@ -666,15 +667,12 @@ public class DayViewBody extends RelativeLayout{
                     String[] time_parts = new_time.split(":");
                     currentEventNewHour = Integer.valueOf(time_parts[0]);
                     currentEventNewMinutes = Integer.valueOf(time_parts[1]);
-
+                    Log.i(TAG, "currentEventNewHour: " + currentEventNewHour);
+                    Log.i(TAG, "currentEventNewMinutes: " + currentEventNewMinutes);
                     if (tempDragView == null){
                         //if not the new drag event, then update event instance
                         if (onBodyListener != null){
-
-                            onBodyListener.onEventDragEnd(dgView);
-//                            long[] new_date = changeDateFromString(draggingView.getEvent(), currentEventNewHour, currentEventNewMinutes);
-//                            draggingView.getEvent().setStartTime(new_date[0]);
-//                            draggingView.getEvent().setEndTime(new_date[1]);
+//                            onBodyListener.onEventDragEnd(dgView);
                         }
                     }
 
@@ -693,13 +691,14 @@ public class DayViewBody extends RelativeLayout{
                     finalView.getBackground().setAlpha(128);
                     finalView.setVisibility(View.VISIBLE);
                     msgWindow.setVisibility(View.INVISIBLE);
-
                     if (onBodyListener != null){
-                        long[] new_date = changeDateFromString(dgView.getEvent(), currentEventNewHour, currentEventNewMinutes);
-                        dgView.getEvent().setStartTime(new_date[0]);
-                        dgView.getEvent().setEndTime(new_date[1]);
-
-//                        onBodyListener.onEventDragEnd(dgView, event.getX(), event.getY());
+                        dgView.getNewCalendar().setHour(currentEventNewHour);
+                        dgView.getNewCalendar().setHour(currentEventNewMinutes);
+                        if ((currentEventNewHour !=-1) && (currentEventNewMinutes != -1)){
+                            onBodyListener.onEventDragEnd(dgView);
+                        }
+                    }else{
+                        Log.i(TAG, "onDrag: null");
                     }
 
                     if (tempDragView != null){
@@ -715,9 +714,13 @@ public class DayViewBody extends RelativeLayout{
                         //finally reset tempDragView to NULL.
                         tempDragView = null;
                     }
+                    currentEventNewHour = -1;
+                    currentEventNewMinutes = -1;
+
                 default:
                     break;
             }
+            
             return true;
         }
     }

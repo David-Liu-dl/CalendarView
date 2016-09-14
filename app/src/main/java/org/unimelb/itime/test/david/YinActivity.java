@@ -40,15 +40,13 @@ public class YinActivity extends AppCompatActivity {
         init();
     }
 
-
     private void init(){
         loadData();
         monthDayView = (MonthDayView) findViewById(R.id.monthDayView);
         Log.i(TAG, "init: " + eventManager.getEventsMap().size());
         monthDayView.setDayEventMap(eventManager.getEventsMap());
         monthDayView.setEventClassName(Event.class);
-        monthDayView.setOnBodyListener(new DayViewBody.OnBodyListener() {
-
+        monthDayView.setOnBodyOuterListener(new DayViewBody.OnBodyListener() {
             @Override
             public void onEventCreate(DayDraggableEventView eventView) {
 
@@ -71,7 +69,8 @@ public class YinActivity extends AppCompatActivity {
 
             @Override
             public void onEventDragEnd(DayDraggableEventView eventView) {
-
+                Log.i(TAG, "onEventDragEnd: yin");
+                Log.i(TAG, "onEventDragEnd: " + eventView.getNewCalendar().getDay());
             }
 
         });

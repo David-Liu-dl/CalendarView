@@ -42,8 +42,6 @@ public class PaulActivity extends AppCompatActivity {
 //            }
 //        };
 
-
-
         testFragment = new TestFragment();
         getFragmentManager().beginTransaction().add(R.id.fragment,testFragment).commit();
 //        weekViewFragment = new WeekViewFragment();

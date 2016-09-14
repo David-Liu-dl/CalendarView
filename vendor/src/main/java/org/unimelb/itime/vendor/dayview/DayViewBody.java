@@ -589,7 +589,8 @@ public class DayViewBody extends RelativeLayout{
     }
 
     public DayDraggableEventView createTempDayDraggableEventView(float tapX, float tapY){
-        DayDraggableEventView event_view = new DayDraggableEventView(context, null, false);
+        ITimeEventInterface event = this.initializeEvent();
+        DayDraggableEventView event_view = new DayDraggableEventView(context, event, false);
         int eventHeight = 1 * lineHeight;//one hour
         Log.i(TAG, "createTempDayDraggableEventView: " + eventHeight);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,eventHeight);
@@ -670,7 +671,7 @@ public class DayViewBody extends RelativeLayout{
                         //if not the new drag event, then update event instance
                         if (onBodyListener != null){
 
-                            onBodyListener.onEventDragEnd(dgView, myCalendar);
+                            onBodyListener.onEventDragEnd(dgView);
 //                            long[] new_date = changeDateFromString(draggingView.getEvent(), currentEventNewHour, currentEventNewMinutes);
 //                            draggingView.getEvent().setStartTime(new_date[0]);
 //                            draggingView.getEvent().setEndTime(new_date[1]);
@@ -706,10 +707,10 @@ public class DayViewBody extends RelativeLayout{
                         parent.removeView(tempDragView);
                         //important! update event time after drag via listener
                         if (onBodyListener != null){
-                            MyCalendar newEventCalendar = new MyCalendar(myCalendar);
-                            newEventCalendar.setHour(currentEventNewHour);
-                            newEventCalendar.setMinute(currentEventNewMinutes);
-                            onBodyListener.onEventCreate(newEventCalendar);
+//                            MyCalendar newEventCalendar = new MyCalendar(myCalendar);
+//                            newEventCalendar.setHour(currentEventNewHour);
+//                            newEventCalendar.setMinute(currentEventNewMinutes);
+                            onBodyListener.onEventCreate(dgView);
                         }
                         //finally reset tempDragView to NULL.
                         tempDragView = null;
@@ -879,15 +880,36 @@ public class DayViewBody extends RelativeLayout{
 //    }
 
     public interface OnBodyListener{
-        void onEventCreate(MyCalendar calendar);
+        void onEventCreate(DayDraggableEventView eventView);
         void onEventClick(DayDraggableEventView eventView);
         void onEventDragStart(DayDraggableEventView eventView);
         void onEventDragging(DayDraggableEventView eventView, int x, int y);
-        void onEventDragEnd(DayDraggableEventView eventView, MyCalendar calendar);
+        void onEventDragEnd(DayDraggableEventView eventView);
     }
 
     public void setOnBodyListener(OnBodyListener onBodyListener){
         this.onBodyListener = onBodyListener;
+    }
+
+    Class<?> eventClassName;
+
+    public <E extends ITimeEventInterface> void setEventClassName(Class<E> className){
+        eventClassName = className;
+    }
+
+    /**
+     *
+     * @return
+     */
+    private ITimeEventInterface initializeEvent(){
+
+        try {
+            ITimeEventInterface t = (ITimeEventInterface) eventClassName.newInstance();
+            Log.d(TAG, "setEventClassName: " + t.getTitle());
+            return t;
+        } catch (Exception e){
+            return null;
+        }
     }
 
 

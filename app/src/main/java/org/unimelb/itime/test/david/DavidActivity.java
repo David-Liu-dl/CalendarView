@@ -38,7 +38,7 @@ public class DavidActivity extends AppCompatActivity {
     private void doInviteesThings(){
         InviteeFragment inviteeFragment = new InviteeFragment();
 
-        getFragmentManager().beginTransaction().add(R.id.fragment, inviteeFragment).commit();
+//        getFragmentManager().beginTransaction().add(R.id.fragment, inviteeFragment).commit();
     }
 
     private void initData(){

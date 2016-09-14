@@ -50,7 +50,7 @@ public class YinActivity extends AppCompatActivity {
         monthDayView.setOnBodyListener(new DayViewBody.OnBodyListener() {
 
             @Override
-            public void onEventCreate(MyCalendar calendar) {
+            public void onEventCreate(DayDraggableEventView eventView) {
 
             }
 
@@ -70,9 +70,10 @@ public class YinActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onEventDragEnd(DayDraggableEventView eventView, MyCalendar calendar) {
+            public void onEventDragEnd(DayDraggableEventView eventView) {
 
             }
+
         });
 
 //        monthAgendaView = (MonthAgendaView) findViewById(R.id.monthAgendaView);

@@ -39,7 +39,7 @@ import java.util.TreeMap;
 /**
  * Created by yuhaoliu on 3/08/16.
  */
-public class DayViewBody extends RelativeLayout{
+public class DayViewBody extends RelativeLayout {
     public final String TAG = "MyAPP";
 
     private final long allDayMilliseconds = 24 * 60 * 60 * 1000;
@@ -66,7 +66,7 @@ public class DayViewBody extends RelativeLayout{
     private ArrayList<ITimeEventInterface> allDayEventModules = new ArrayList<>();
     private ArrayList<DayDraggableEventView> allDayDgEventViews = new ArrayList<>();
 
-    private TreeMap< Integer, String> positionToTimeTreeMap = new TreeMap<>();
+    private TreeMap<Integer, String> positionToTimeTreeMap = new TreeMap<>();
     private TreeMap<Float, Integer> timeToPositionTreeMap = new TreeMap<>();
     private Map<ITimeEventInterface, Integer> regularEventViewMap = new HashMap<>();
 
@@ -114,7 +114,7 @@ public class DayViewBody extends RelativeLayout{
         initBackgroundView();
     }
 
-    private void init(){
+    private void init() {
         scrollContainerView = new ScrollContainerView(context);
         scrollContainerView.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         this.addView(scrollContainerView);
@@ -129,13 +129,13 @@ public class DayViewBody extends RelativeLayout{
         topAllDayLayout.setLayoutParams(topAllDayLayoutParams);
 
         ImageView divider = getDivider();
-        ((RelativeLayout.LayoutParams) divider.getLayoutParams()).addRule(BELOW,topAllDayLayout.getId());
+        ((RelativeLayout.LayoutParams) divider.getLayoutParams()).addRule(BELOW, topAllDayLayout.getId());
         bodyContainerLayout.addView(divider);
 
         TextView allDayTitleTv = new TextView(context);
         LinearLayout.LayoutParams allDayTitleTvParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        int allDayTitleTvPadding = DensityUtil.dip2px(context,3);
-        allDayTitleTv.setPadding(allDayTitleTvPadding,allDayTitleTvPadding,allDayTitleTvPadding,allDayTitleTvPadding);
+        int allDayTitleTvPadding = DensityUtil.dip2px(context, 3);
+        allDayTitleTv.setPadding(allDayTitleTvPadding, allDayTitleTvPadding, allDayTitleTvPadding, allDayTitleTvPadding);
         allDayTitleTv.setTextSize(10);
         allDayTitleTv.setText("All Day");
         allDayTitleTv.setTextColor(context.getResources().getColor(R.color.text_enable));
@@ -145,7 +145,7 @@ public class DayViewBody extends RelativeLayout{
 
         topAllDayEventLayout = new LinearLayout(getContext());
         topAllDayEventLayout.setId(View.generateViewId());
-        RelativeLayout.LayoutParams topAllDayEventLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DensityUtil.dip2px(context,40));
+        RelativeLayout.LayoutParams topAllDayEventLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DensityUtil.dip2px(context, 40));
         topAllDayEventLayout.setLayoutParams(topAllDayEventLayoutParams);
         topAllDayLayout.addView(topAllDayEventLayout);
 
@@ -181,9 +181,9 @@ public class DayViewBody extends RelativeLayout{
             public boolean onTouch(View v, MotionEvent event) {
                 nowTapX = event.getX();
                 nowTapY = event.getY();
-                if (onBodyTouchListener != null){
+                if (onBodyTouchListener != null) {
                     onBodyTouchListener.bodyOnTouchListener(nowTapX, nowTapY);
-                }else {
+                } else {
                     Log.i(TAG, "controller:  onBodyTouchListener null ");
                 }
                 return false;
@@ -198,7 +198,7 @@ public class DayViewBody extends RelativeLayout{
 
     }
 
-    private ImageView getDivider(){
+    private ImageView getDivider() {
         ImageView dividerImgV;
         //divider
         dividerImgV = new ImageView(context);
@@ -206,7 +206,7 @@ public class DayViewBody extends RelativeLayout{
         dividerImgV.setLayoutParams(params);
         dividerImgV.setImageDrawable(getResources().getDrawable(org.unimelb.itime.vendor.R.drawable.itime_header_divider_line));
 
-        return  dividerImgV;
+        return dividerImgV;
     }
 
 
@@ -220,13 +220,13 @@ public class DayViewBody extends RelativeLayout{
         int layoutWidth = dividerBgRLayout.getMeasuredWidth();
 
         for (int i = 0; i < eventCount; i++) {
-            if(!(eventLayout.getChildAt(i) instanceof DayDraggableEventView)){
+            if (!(eventLayout.getChildAt(i) instanceof DayDraggableEventView)) {
                 continue;
             }
             DayDraggableEventView eventView = (DayDraggableEventView) eventLayout.getChildAt(i);
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) eventView.getLayoutParams();
             DayDraggableEventView.PosParam pos = eventView.getPosParam();
-            if(pos == null){
+            if (pos == null) {
                 // for creating a new event
                 // the pos parameter is null, because we just mock it
                 continue;
@@ -259,7 +259,7 @@ public class DayViewBody extends RelativeLayout{
         }
     }
 
-    public void initBackgroundView(){
+    public void initBackgroundView() {
         initTimeSlot();
         initMsgWindow();
         initTimeText(getHours());
@@ -267,26 +267,26 @@ public class DayViewBody extends RelativeLayout{
         addNowTimeLine();
     }
 
-    private void initTimeSlot(){
+    private void initTimeSlot() {
         double startPoint = timeTextSize * 0.5;
-        double timeSlotHeight = lineHeight/4;
+        double timeSlotHeight = lineHeight / 4;
         String[] hours = getHours();
         for (int slot = 0; slot < hours.length; slot++) {
             //add full clock
-            positionToTimeTreeMap.put((int)startPoint + lineHeight*slot, hours[slot] + ":00");
-            String hourPart = hours[slot].substring(0,2); // XX
-            timeToPositionTreeMap.put((float) Integer.valueOf(hourPart), (int)startPoint + lineHeight*slot);
+            positionToTimeTreeMap.put((int) startPoint + lineHeight * slot, hours[slot] + ":00");
+            String hourPart = hours[slot].substring(0, 2); // XX
+            timeToPositionTreeMap.put((float) Integer.valueOf(hourPart), (int) startPoint + lineHeight * slot);
             for (int miniSlot = 0; miniSlot < 3; miniSlot++) {
-                String minutes = String.valueOf((miniSlot+1)*15);
+                String minutes = String.valueOf((miniSlot + 1) * 15);
                 String time = hourPart + ":" + minutes;
-                int positionY = (int) (startPoint + lineHeight*slot + timeSlotHeight*(miniSlot+1));
+                int positionY = (int) (startPoint + lineHeight * slot + timeSlotHeight * (miniSlot + 1));
                 positionToTimeTreeMap.put(positionY, time);
-                timeToPositionTreeMap.put(Integer.valueOf(hourPart) + (float) Integer.valueOf(minutes)/100,positionY);
+                timeToPositionTreeMap.put(Integer.valueOf(hourPart) + (float) Integer.valueOf(minutes) / 100, positionY);
             }
         }
     }
 
-    private void initMsgWindow(){
+    private void initMsgWindow() {
         msgWindow = new TextView(context);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.setMargins(0, 0, 0, 0);
@@ -299,8 +299,8 @@ public class DayViewBody extends RelativeLayout{
         eventLayout.addView(msgWindow);
     }
 
-    private void initTimeText(String[] HOURS){
-        for (int time = 0; time < HOURS.length; time++){
+    private void initTimeText(String[] HOURS) {
+        for (int time = 0; time < HOURS.length; time++) {
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             TextView timeView = new TextView(context);
             params.setMargins(0, lineHeight * time, 0, 0);
@@ -316,18 +316,17 @@ public class DayViewBody extends RelativeLayout{
     }
 
 
-
-    private void initDividerLine(String[] HOURS){
-        int offsetY =  (int)(timeTextSize * 0.5);
-        for (int numOfDottedLine = 0 ; numOfDottedLine < HOURS.length ; numOfDottedLine ++){
+    private void initDividerLine(String[] HOURS) {
+        int offsetY = (int) (timeTextSize * 0.5);
+        for (int numOfDottedLine = 0; numOfDottedLine < HOURS.length; numOfDottedLine++) {
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
             ImageView dividerImageView = new ImageView(context);
             dividerImageView.setImageResource(R.drawable.itime_day_view_dotted);
-            params.setMargins(0 , lineHeight * numOfDottedLine + offsetY, 0, 0);
+            params.setMargins(0, lineHeight * numOfDottedLine + offsetY, 0, 0);
             dividerImageView.setLayoutParams(params);
-            dividerImageView.setLayerType(dividerImageView.LAYER_TYPE_SOFTWARE,null);
-            dividerImageView.setPadding(0,0,0,0);
+            dividerImageView.setLayerType(dividerImageView.LAYER_TYPE_SOFTWARE, null);
+            dividerImageView.setPadding(0, 0, 0, 0);
             dividerBgRLayout.addView(dividerImageView);
         }
     }
@@ -340,33 +339,33 @@ public class DayViewBody extends RelativeLayout{
         return myCalendar;
     }
 
-    private String[] getHours(){
+    private String[] getHours() {
         String[] HOURS = new String[]{
-                "00","01","02","03","04","05","06","07",
-                "08","09","10","11","12","13","14","15",
-                "16","17","18","19","20","21","22","23",
+                "00", "01", "02", "03", "04", "05", "06", "07",
+                "08", "09", "10", "11", "12", "13", "14", "15",
+                "16", "17", "18", "19", "20", "21", "22", "23",
                 "24"
         };
 
-        return  HOURS;
+        return HOURS;
     }
 
     /**
      * call it when your dataset changed
      */
-    public void notifyDatasetChanged(){
+    public void notifyDatasetChanged() {
         calculateEventLayout();
     }
 
     /**
      * reset all the layouts and views in body
      */
-    public void resetViews(){
+    public void resetViews() {
         clearAllEvents();
-        if (this.myCalendar.isToday()){
+        if (this.myCalendar.isToday()) {
             nowTime.setVisibility(VISIBLE);
             nowTimeLine.setVisibility(VISIBLE);
-        }else {
+        } else {
             nowTime.setVisibility(GONE);
             nowTimeLine.setVisibility(GONE);
         }
@@ -376,12 +375,12 @@ public class DayViewBody extends RelativeLayout{
     /**
      * just clear the events in the layout
      */
-    public void clearAllEvents(){
-        if(this.topAllDayEventLayout != null){
+    public void clearAllEvents() {
+        if (this.topAllDayEventLayout != null) {
             this.topAllDayEventLayout.removeAllViews();
         }
 
-        if (this.eventLayout != null){
+        if (this.eventLayout != null) {
             this.eventLayout.removeAllViews();
             this.initMsgWindow();
         }
@@ -393,7 +392,7 @@ public class DayViewBody extends RelativeLayout{
         this.allDayEventModules.clear();
     }
 
-    public void addNowTimeLine(){
+    public void addNowTimeLine() {
         Calendar cal = Calendar.getInstance(Locale.getDefault());
         Date currentLocalTime = cal.getTime();
         DateFormat date = new SimpleDateFormat("HH:mm");
@@ -411,7 +410,7 @@ public class DayViewBody extends RelativeLayout{
         paramsText.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         paramsText.addRule(RelativeLayout.ALIGN_BOTTOM, nowTimeLine.getId());
         int textPadding = DensityUtil.dip2px(context, 5);
-        nowTime.setPadding(textPadding/2,0,textPadding/2,0);
+        nowTime.setPadding(textPadding / 2, 0, textPadding / 2, 0);
         nowTime.setLayoutParams(paramsText);
         nowTime.setTextColor(context.getResources().getColor(R.color.text_today_color));
         nowTime.setBackgroundColor(context.getResources().getColor(R.color.whites));
@@ -429,7 +428,7 @@ public class DayViewBody extends RelativeLayout{
         bodyContainerLayout.addView(nowTimeLine);
     }
 
-    private int getNowTimeLinePst(){
+    private int getNowTimeLinePst() {
         Calendar cal = Calendar.getInstance(Locale.getDefault());
         Date currentLocalTime = cal.getTime();
         DateFormat date = new SimpleDateFormat("HH:mm");
@@ -437,34 +436,35 @@ public class DayViewBody extends RelativeLayout{
         String[] converted = localTime.split(":");
         int hour = Integer.valueOf(converted[0]);
         int minutes = Integer.valueOf(converted[1]);
-        int nearestPst = nearestTimeSlotValue(hour + (float)minutes/100); //
-        int correctPst = (minutes%15) * ((lineHeight/4)/15);
+        int nearestPst = nearestTimeSlotValue(hour + (float) minutes / 100); //
+        int correctPst = (minutes % 15) * ((lineHeight / 4) / 15);
         return nearestPst + correctPst;
     }
 
     /**
      * add one event, only called in this class
+     *
      * @param event
      */
-    private  void addEvent(ITimeEventInterface event){
+    private void addEvent(ITimeEventInterface event) {
         boolean isAllDayEvent = isAllDayEvent(event);
 
-        if (isAllDayEvent){
+        if (isAllDayEvent) {
             allDayEventModules.add(event);
             addAllDayEvent(event);
-        }else {
+        } else {
             regularEventModules.add(event);
             addRegularEvent(event);
         }
         this.msgWindow.bringToFront();
     }
 
-    private void addAllDayEvent(ITimeEventInterface event){
+    private void addAllDayEvent(ITimeEventInterface event) {
         int eventsContainerWidth =
                 topAllDayLayout.getWidth()
                         - topAllDayLayout.findViewById(R.id.allDayContainerTitle).getWidth()
                         - topAllDayLayout.getPaddingLeft() - topAllDayLayout.getPaddingRight();
-        int marginLeft = DensityUtil.dip2px(context,1);
+        int marginLeft = DensityUtil.dip2px(context, 1);
         DayDraggableEventView new_dgEvent = this.createDayDraggableEventView(event, true);
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) new_dgEvent.getLayoutParams();
         params.leftMargin = marginLeft;
@@ -474,26 +474,26 @@ public class DayViewBody extends RelativeLayout{
         resizeAllDayEvents(eventsContainerWidth, marginLeft);
     }
 
-    private void addRegularEvent(ITimeEventInterface event){
-        SimpleDateFormat sdf= new SimpleDateFormat("HH:mm");
+    private void addRegularEvent(ITimeEventInterface event) {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         String hourWithMinutes = sdf.format(new Date(event.getStartTime()));
         String[] components = hourWithMinutes.split(":");
-        float trickTime = Integer.valueOf(components[0]) + (float) Integer.valueOf(components[1])/100;
+        float trickTime = Integer.valueOf(components[0]) + (float) Integer.valueOf(components[1]) / 100;
         int topMargin = nearestTimeSlotValue(trickTime);
         DayDraggableEventView newDragEventView = this.createDayDraggableEventView(event, false);
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) newDragEventView.getLayoutParams();
         params.topMargin = topMargin;
 
         newDragEventView.setId(View.generateViewId());
-        this.regularEventViewMap.put(event,newDragEventView.getId());
+        this.regularEventViewMap.put(event, newDragEventView.getId());
         this.eventLayout.addView(newDragEventView, params);
         this.regularDayDgEventViews.add(newDragEventView);
     }
 
-    private void resizeAllDayEvents(int totalWidth, int marginLeft){
-        int singleEventWidth = (totalWidth - this.allDayDgEventViews.size() * marginLeft)/this.allDayDgEventViews.size();
-        for (DayDraggableEventView dgEvent:this.allDayDgEventViews
-             ) {
+    private void resizeAllDayEvents(int totalWidth, int marginLeft) {
+        int singleEventWidth = (totalWidth - this.allDayDgEventViews.size() * marginLeft) / this.allDayDgEventViews.size();
+        for (DayDraggableEventView dgEvent : this.allDayDgEventViews
+                ) {
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) dgEvent.getLayoutParams();
             params.width = singleEventWidth;
             params.leftMargin = marginLeft;
@@ -502,34 +502,35 @@ public class DayViewBody extends RelativeLayout{
         topAllDayLayout.invalidate();
     }
 
-    private boolean isAllDayEvent(ITimeEventInterface event){
+    private boolean isAllDayEvent(ITimeEventInterface event) {
         long duration = event.getEndTime() - event.getStartTime();
         boolean isAllDay = duration >= allDayMilliseconds;
 
         return isAllDay;
     }
 
-    private int getEventY(ITimeEventInterface event){
-        SimpleDateFormat sdf= new SimpleDateFormat("HH:mm");
+    private int getEventY(ITimeEventInterface event) {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         String hourWithMinutes = sdf.format(new Date(event.getStartTime()));
 
         String[] components = hourWithMinutes.split(":");
-        float trickTime = Integer.valueOf(components[0]) + Integer.valueOf(components[1])/(float)100;
+        float trickTime = Integer.valueOf(components[0]) + Integer.valueOf(components[1]) / (float) 100;
         int getStartY = nearestTimeSlotValue(trickTime);
 
-        return  getStartY;
+        return getStartY;
     }
 
 
     /**
      * set publc for other
+     *
      * @param eventList
      */
-    public void setEventList(List<ITimeEventInterface> eventList){
+    public void setEventList(List<ITimeEventInterface> eventList) {
         this.eventList = eventList;
         this.clearAllEvents();
 
-        for (ITimeEventInterface event: eventList){
+        for (ITimeEventInterface event : eventList) {
             this.addEvent(event);
         }
 
@@ -540,12 +541,12 @@ public class DayViewBody extends RelativeLayout{
      * calculate the position of event
      * it needs to be called when setting event or event position changed
      */
-    private void calculateEventLayout(){
+    private void calculateEventLayout() {
         Log.i(TAG, "calculateEventLayout: ");
-        List<ArrayList<Pair<Pair<Integer,Integer>,ITimeEventInterface>>> overlapGroups
+        List<ArrayList<Pair<Pair<Integer, Integer>, ITimeEventInterface>>> overlapGroups
                 = xHelper.computeOverlapXForEvents(this.regularEventModules);
         int previousGroupExtraY = 0;
-        for (ArrayList<Pair<Pair<Integer,Integer>,ITimeEventInterface>> overlapGroup : overlapGroups
+        for (ArrayList<Pair<Pair<Integer, Integer>, ITimeEventInterface>> overlapGroup : overlapGroups
                 ) {
             for (int i = 0; i < overlapGroup.size(); i++) {
                 int startY = getEventY(overlapGroup.get(i).second);
@@ -559,25 +560,25 @@ public class DayViewBody extends RelativeLayout{
         }
     }
 
-    private DayDraggableEventView createDayDraggableEventView(ITimeEventInterface event, boolean isAllDayEvent){
+    private DayDraggableEventView createDayDraggableEventView(ITimeEventInterface event, boolean isAllDayEvent) {
 
         DayDraggableEventView event_view = new DayDraggableEventView(context, event, isAllDayEvent);
         event_view.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (onBodyListener != null){
+                if (onBodyListener != null) {
                     onBodyListener.onEventClick((DayDraggableEventView) view);
                 }
             }
         });
-        if (isAllDayEvent){
+        if (isAllDayEvent) {
             int allDayHeight = topAllDayLayout.getWidth() - topAllDayLayout.getPaddingBottom() - topAllDayLayout.getPaddingTop();
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(0, allDayHeight);
             event_view.setTag(event);
             event_view.setLayoutParams(params);
-        }else{
-            long duration = event.getEndTime()-event.getStartTime();
-            int eventHeight = (int) (((float)duration/(3600*1000))*lineHeight);
+        } else {
+            long duration = event.getEndTime() - event.getStartTime();
+            int eventHeight = (int) (((float) duration / (3600 * 1000)) * lineHeight);
             int getStartY = getEventY(event);
 
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(0, eventHeight);
@@ -590,13 +591,15 @@ public class DayViewBody extends RelativeLayout{
         return event_view;
     }
 
-    public DayDraggableEventView createTempDayDraggableEventView(float tapX, float tapY){
+    public DayDraggableEventView createTempDayDraggableEventView(float tapX, float tapY) {
         ITimeEventInterface event = this.initializeEvent();
+        if (event == null) {
+            throw new RuntimeException("need Class name in 'setEventClassName()'");
+        }
         DayDraggableEventView event_view = new DayDraggableEventView(context, event, false);
         int eventHeight = 1 * lineHeight;//one hour
-        Log.i(TAG, "createTempDayDraggableEventView: " + eventHeight);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,eventHeight);
-        params.topMargin = (int)(tapY - eventHeight/2);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, eventHeight);
+        params.topMargin = (int) (tapY - eventHeight / 2);
         event_view.setOnLongClickListener(new EventLongClickListener());
         event_view.setLayoutParams(params);
 
@@ -612,9 +615,9 @@ public class DayViewBody extends RelativeLayout{
             View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(
                     view);
             view.startDrag(data, shadowBuilder, view, 0);
-            if (tempDragView != null){
+            if (tempDragView != null) {
                 view.setVisibility(View.INVISIBLE);
-            }else {
+            } else {
                 view.setVisibility(View.VISIBLE);
             }
             view.getBackground().setAlpha(255);
@@ -641,12 +644,12 @@ public class DayViewBody extends RelativeLayout{
                     break;
                 case DragEvent.ACTION_DRAG_LOCATION:
                     scrollViewAutoScroll(event);
-                    if (onBodyListener != null){
-                        onBodyListener.onEventDragging(dgView,(int)event.getX(),(int)event.getY());
-                    }else{
+                    if (onBodyListener != null) {
+                        onBodyListener.onEventDragging(dgView, (int) event.getX(), (int) event.getY());
+                    } else {
                         Log.i(TAG, "onDrag: null onEventDragListener");
                     }
-                    msgWindowFollow((int)event.getX(),(int)event.getY(),(View) event.getLocalState());
+                    msgWindowFollow((int) event.getX(), (int) event.getY(), (View) event.getLocalState());
                     break;
                 case DragEvent.ACTION_DRAG_ENTERED:
                     break;
@@ -657,9 +660,9 @@ public class DayViewBody extends RelativeLayout{
                     float actionStopY = event.getY();
                     // Dropped, reassign View to ViewGroup
 
-                    int newX = (int) actionStopX - dgView.getWidth()/2;
-                    int newY = (int) actionStopY - dgView.getHeight()/2;
-                    int[] reComputeResult = reComputePositionToSet(newX,newY,dgView,v);
+                    int newX = (int) actionStopX - dgView.getWidth() / 2;
+                    int newY = (int) actionStopY - dgView.getHeight() / 2;
+                    int[] reComputeResult = reComputePositionToSet(newX, newY, dgView, v);
 
                     //update the event time
                     String new_time = positionToTimeTreeMap.get(reComputeResult[1]);
@@ -668,9 +671,9 @@ public class DayViewBody extends RelativeLayout{
                     currentEventNewHour = Integer.valueOf(time_parts[0]);
                     currentEventNewMinutes = Integer.valueOf(time_parts[1]);
 
-                    if (tempDragView == null){
+                    if (tempDragView == null) {
                         //if not the new drag event, then update event instance
-                        if (onBodyListener != null){
+                        if (onBodyListener != null) {
 //                            onBodyListener.onEventDragDrop(dgView);
                         }
                     }
@@ -683,25 +686,29 @@ public class DayViewBody extends RelativeLayout{
                     finalView.setVisibility(View.VISIBLE);
                     msgWindow.setVisibility(View.INVISIBLE);
 
-                    if (tempDragView == null && onBodyListener != null){
-                        if ((currentEventNewHour !=-1) && (currentEventNewMinutes != -1)){
-                            dgView.getNewCalendar().setHour(currentEventNewHour);
-                            dgView.getNewCalendar().setMinute(currentEventNewMinutes);
+                    dgView.getNewCalendar().setHour(currentEventNewHour);
+                    dgView.getNewCalendar().setMinute(currentEventNewMinutes);
+
+                    if (tempDragView == null && onBodyListener != null) {
+                        if ((currentEventNewHour != -1) && (currentEventNewMinutes != -1)) {
+
                             onBodyListener.onEventDragDrop(dgView);
+                            Log.i(TAG, "on drag: ");
                         }
-                    }else{
+                    } else {
                         Log.i(TAG, "onDrag: null");
                     }
 
-                    if (tempDragView != null){
-                        ViewGroup parent = (ViewGroup)tempDragView.getParent();
+                    if (tempDragView != null) {
+                        ViewGroup parent = (ViewGroup) tempDragView.getParent();
                         parent.removeView(tempDragView);
                         //important! update event time after drag via listener
-                        if (onBodyListener != null){
+                        if (onBodyListener != null) {
                             onBodyListener.onEventCreate(dgView);
                         }
                         //finally reset tempDragView to NULL.
                         tempDragView = null;
+                        Log.i(TAG, "create: ");
                     }
 
                     currentEventNewHour = -1;
@@ -710,21 +717,19 @@ public class DayViewBody extends RelativeLayout{
                     break;
                 case DragEvent.ACTION_DRAG_ENDED:
 
-
-
                 default:
                     break;
             }
-            
+
             return true;
         }
     }
 
-    private class CreateEventListener implements View.OnLongClickListener{
+    private class CreateEventListener implements View.OnLongClickListener {
 
         @Override
         public boolean onLongClick(View v) {
-            if (tempDragView == null){
+            if (tempDragView == null) {
                 tempDragView = createTempDayDraggableEventView(nowTapX, nowTapY);
                 eventLayout.addView(tempDragView);
 
@@ -734,47 +739,48 @@ public class DayViewBody extends RelativeLayout{
                         Log.i(TAG, "tempDragView: " + tempDragView.getHeight());
                         tempDragView.performLongClick();
                     }
-                },100);
+                }, 100);
             }
 
             return true;
         }
     }
+
     /****************************************************************************************/
 
-    private int[] reComputePositionToSet(int actualX, int actualY, View draggableObj, View container){
+    private int[] reComputePositionToSet(int actualX, int actualY, View draggableObj, View container) {
         int containerWidth = container.getWidth();
         int containerHeight = container.getHeight();
 
         int objWidth = draggableObj.getWidth();
         int objHeight = draggableObj.getHeight();
 
-        int finalX = (int)(timeTextSize * 1.5);
+        int finalX = (int) (timeTextSize * 1.5);
         int finalY = actualY;
 
-        if (actualY < 0){
+        if (actualY < 0) {
             finalY = 0;
-        }else if (actualY + objHeight > containerHeight){
+        } else if (actualY + objHeight > containerHeight) {
             finalY = containerHeight - objHeight;
         }
         int findNearestPosition = nearestTimeSlotKey(finalY);
-        if (findNearestPosition != -1){
+        if (findNearestPosition != -1) {
             finalY = findNearestPosition;
-        }else{
+        } else {
             Log.i(TAG, "reComputePositionToSet: " + "ERROR NO SUCH POSITION");
         }
 
-        return new int[] {finalX,finalY};
+        return new int[]{finalX, finalY};
     }
 
-    private int nearestTimeSlotKey(int tapY){
+    private int nearestTimeSlotKey(int tapY) {
         int key = tapY;
-        Map.Entry<Integer,String> low = positionToTimeTreeMap.floorEntry(key);
-        Map.Entry<Integer,String> high = positionToTimeTreeMap.ceilingEntry(key);
+        Map.Entry<Integer, String> low = positionToTimeTreeMap.floorEntry(key);
+        Map.Entry<Integer, String> high = positionToTimeTreeMap.ceilingEntry(key);
         if (low != null && high != null) {
-            return Math.abs(key-low.getKey()) < Math.abs(key-high.getKey())
-                    ?   low.getKey()
-                    :   high.getKey();
+            return Math.abs(key - low.getKey()) < Math.abs(key - high.getKey())
+                    ? low.getKey()
+                    : high.getKey();
         } else if (low != null || high != null) {
             return low != null ? low.getKey() : high.getKey();
         }
@@ -782,14 +788,14 @@ public class DayViewBody extends RelativeLayout{
         return -1;
     }
 
-    private int nearestTimeSlotValue(float time){
+    private int nearestTimeSlotValue(float time) {
         float key = time;
-        Map.Entry<Float,Integer> low = timeToPositionTreeMap.floorEntry(key);
-        Map.Entry<Float,Integer> high = timeToPositionTreeMap.ceilingEntry(key);
+        Map.Entry<Float, Integer> low = timeToPositionTreeMap.floorEntry(key);
+        Map.Entry<Float, Integer> high = timeToPositionTreeMap.ceilingEntry(key);
         if (low != null && high != null) {
-            return Math.abs(key-low.getKey()) < Math.abs(key-high.getKey())
-                    ?   low.getValue()
-                    :   high.getValue();
+            return Math.abs(key - low.getKey()) < Math.abs(key - high.getKey())
+                    ? low.getValue()
+                    : high.getValue();
         } else if (low != null || high != null) {
             return low != null ? low.getValue() : high.getValue();
         }
@@ -797,39 +803,39 @@ public class DayViewBody extends RelativeLayout{
         return -1;
     }
 
-    private void scrollViewAutoScroll(DragEvent event){
+    private void scrollViewAutoScroll(DragEvent event) {
         Rect scrollBounds = new Rect();
         scrollContainerView.getDrawingRect(scrollBounds);
         float heightOfView = ((View) event.getLocalState()).getHeight();
-        float needPositionY_top = event.getY() - heightOfView/2;
-        float needPositionY_bottom = event.getY() + heightOfView/2;
+        float needPositionY_top = event.getY() - heightOfView / 2;
+        float needPositionY_bottom = event.getY() + heightOfView / 2;
 
         if (scrollBounds.top > needPositionY_top) {
-            int offsetY = (int)(scrollContainerView.getScrollY() - DensityUtil.dip2px(context,10));//(needPositionY_top-scrollBounds.top)
-            scrollContainerView.scrollTo(scrollContainerView.getScrollX(),offsetY);
-        } else if(scrollBounds.bottom < needPositionY_bottom){
-            int offsetY = (int) (scrollContainerView.getScrollY() + DensityUtil.dip2px(context,10));//(needPositionY_bottom-scrollBounds.bottom)
-            scrollContainerView.scrollTo(scrollContainerView.getScrollX(),offsetY);
+            int offsetY = (int) (scrollContainerView.getScrollY() - DensityUtil.dip2px(context, 10));//(needPositionY_top-scrollBounds.top)
+            scrollContainerView.scrollTo(scrollContainerView.getScrollX(), offsetY);
+        } else if (scrollBounds.bottom < needPositionY_bottom) {
+            int offsetY = (int) (scrollContainerView.getScrollY() + DensityUtil.dip2px(context, 10));//(needPositionY_bottom-scrollBounds.bottom)
+            scrollContainerView.scrollTo(scrollContainerView.getScrollX(), offsetY);
         }
     }
 
-    private void msgWindowFollow(int tapX, int tapY, View followView){
+    private void msgWindowFollow(int tapX, int tapY, View followView) {
         float toX;
         float toY;
 
-        toY = tapY - followView.getHeight()/2 - msgWindow.getHeight();
-        if (tapX + msgWindow.getWidth()/2 > dividerBgRLayout.getWidth()){
+        toY = tapY - followView.getHeight() / 2 - msgWindow.getHeight();
+        if (tapX + msgWindow.getWidth() / 2 > dividerBgRLayout.getWidth()) {
             toX = dividerBgRLayout.getWidth() - msgWindow.getWidth();
-        }else if(tapX - msgWindow.getWidth()/2 < 0){
+        } else if (tapX - msgWindow.getWidth() / 2 < 0) {
             toX = 0;
-        } else{
-            toX = tapX - msgWindow.getWidth()/2;
+        } else {
+            toX = tapX - msgWindow.getWidth() / 2;
         }
-        int nearestProperPosition = nearestTimeSlotKey(tapY - followView.getHeight()/2);
-        if (nearestProperPosition != -1){
+        int nearestProperPosition = nearestTimeSlotKey(tapY - followView.getHeight() / 2);
+        if (nearestProperPosition != -1) {
             Log.i(TAG, "msgWindowFollow: " + positionToTimeTreeMap.get(nearestProperPosition));
             msgWindow.setText(positionToTimeTreeMap.get(nearestProperPosition));
-        }else{
+        } else {
             Log.i(TAG, "msgWindowFollow: " + "Error, text not found in Map");
         }
 
@@ -837,7 +843,7 @@ public class DayViewBody extends RelativeLayout{
         msgWindow.setTranslationY(toY);
     }
 
-    private long[ ] changeDateFromString(ITimeEventInterface event, int hour, int minute){
+    private long[] changeDateFromString(ITimeEventInterface event, int hour, int minute) {
         long startTime = event.getStartTime();
         long endTime = event.getEndTime();
         long duration = endTime - startTime;
@@ -851,13 +857,15 @@ public class DayViewBody extends RelativeLayout{
         long new_start = calendar.getTimeInMillis();
         calendar.setTimeInMillis(new_start + duration);
         long new_end = calendar.getTimeInMillis();
-        long[] param = {new_start,new_end};
+        long[] param = {new_start, new_end};
 
         return param;
     }
 
 
-    /*************************** Interface ******************************************/
+    /***************************
+     * Interface
+     ******************************************/
 
     public interface OnBodyTouchListener {
         void bodyOnTouchListener(float tapX, float tapY);
@@ -877,35 +885,38 @@ public class DayViewBody extends RelativeLayout{
 //        this.onEventDragListener = onEventDragListener;
 //    }
 
-    public interface OnBodyListener{
+    public interface OnBodyListener {
         void onEventCreate(DayDraggableEventView eventView);
+
         void onEventClick(DayDraggableEventView eventView);
+
         void onEventDragStart(DayDraggableEventView eventView);
+
         void onEventDragging(DayDraggableEventView eventView, int x, int y);
+
         void onEventDragDrop(DayDraggableEventView eventView);
     }
 
-    public void setOnBodyListener(OnBodyListener onBodyListener){
+    public void setOnBodyListener(OnBodyListener onBodyListener) {
         this.onBodyListener = onBodyListener;
     }
 
     Class<?> eventClassName;
 
-    public <E extends ITimeEventInterface> void setEventClassName(Class<E> className){
+    public <E extends ITimeEventInterface> void setEventClassName(Class<E> className) {
         eventClassName = className;
     }
 
     /**
-     *
      * @return
      */
-    private ITimeEventInterface initializeEvent(){
+    private ITimeEventInterface initializeEvent() {
 
         try {
             ITimeEventInterface t = (ITimeEventInterface) eventClassName.newInstance();
             Log.d(TAG, "setEventClassName: " + t.getTitle());
             return t;
-        } catch (Exception e){
+        } catch (Exception e) {
             return null;
         }
     }

@@ -43,7 +43,6 @@ public class YinActivity extends AppCompatActivity {
     private void init(){
         loadData();
         monthDayView = (MonthDayView) findViewById(R.id.monthDayView);
-        Log.i(TAG, "init: " + eventManager.getEventsMap().size());
         monthDayView.setDayEventMap(eventManager.getEventsMap());
         monthDayView.setEventClassName(Event.class);
         monthDayView.setOnBodyOuterListener(new DayViewBody.OnBodyListener() {

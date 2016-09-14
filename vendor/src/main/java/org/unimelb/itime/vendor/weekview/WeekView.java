@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 
 import org.unimelb.itime.vendor.R;
 import org.unimelb.itime.vendor.eventview.Event;
+import org.unimelb.itime.vendor.eventview.WeekDraggableEventView;
 import org.unimelb.itime.vendor.helper.MyCalendar;
 import org.unimelb.itime.vendor.helper.MyPagerAdapter;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
@@ -189,9 +190,6 @@ public class WeekView extends RelativeLayout{
 
 //    **********************************************************************************
 
-
-
-
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -217,4 +215,40 @@ public class WeekView extends RelativeLayout{
         void onClickEditEvent(ITimeEventInterface iTimeEventInterface);
     }
 
+    private WeekViewBody.OnWeekBodyListener onWeekBodyListener;
+    public void setOnWeekBodyOutterListener(WeekViewBody.OnWeekBodyListener onWeekBodyListener){
+        this.onWeekBodyListener = onWeekBodyListener;
+    }
+
+    class OnWeekBodyInnerListener implements WeekViewBody.OnWeekBodyListener{
+
+        @Override
+        public void onEventCreate(WeekDraggableEventView eventView) {
+            if (onWeekBodyListener != null){onWeekBodyListener.onEventClick(eventView);}
+        }
+
+        @Override
+        public void onEventClick(WeekDraggableEventView eventView) {
+            if (onWeekBodyListener != null){onWeekBodyListener.onEventClick(eventView);}
+
+        }
+
+        @Override
+        public void onEventDragStart(WeekDraggableEventView eventView) {
+            if (onWeekBodyListener != null){onWeekBodyListener.onEventClick(eventView);}
+
+        }
+
+        @Override
+        public void onEventDragging(WeekDraggableEventView eventView, int x, int y) {
+            if (onWeekBodyListener != null){onWeekBodyListener.onEventDragging(eventView, x, y);}
+
+        }
+
+        @Override
+        public void onEventDragDrop(WeekDraggableEventView eventView) {
+            if (onWeekBodyListener != null){onWeekBodyListener.onEventDragDrop(eventView);}
+
+        }
+    }
 }

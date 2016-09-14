@@ -543,7 +543,7 @@ public class WeekViewBody extends LinearLayout{
 //                    currentEventNewHour = Integer.valueOf(time_parts[0]);
 //                    currentEventNewMinutes = Integer.valueOf(time_parts[1]);
                     if (onWeekBodyListener != null){
-                        onWeekBodyListener.onEventDragging(currentEventView, (int) dragEvent.getX(), (int) dragEvent.getY());
+                        onWeekBodyListener.onEventDragDrop(currentEventView);
                     }
 
                     break;
@@ -655,8 +655,6 @@ public class WeekViewBody extends LinearLayout{
         int nearestProperPosition = nearestTimeSlotKey(tapY - followView.getHeight()/2);
         int nearestProperDay = nearestDaySlotKey(tapX - followView.getWidth()/2);
         if (nearestProperPosition != -1 && nearestProperDay != -1){
-//            Log.d("day",daySlotTreeMap.get(nearestProperDay));
-//            Log.d("time",timeSlotTreeMap.get(nearestProperPosition));
             msgWindow.setVisibility(View.VISIBLE);
             msgWindow.setText(daySlotTreeMap.get(nearestProperDay) + " "+ timeSlotTreeMap.get(nearestProperPosition) );
 

@@ -213,6 +213,7 @@ public class DayViewBody extends RelativeLayout{
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        Log.i(TAG, "onMeasure: ");
         dividerBgRLayout.measure(widthMeasureSpec, heightMeasureSpec);
 
         int eventCount = eventLayout.getChildCount();
@@ -540,6 +541,7 @@ public class DayViewBody extends RelativeLayout{
      * it needs to be called when setting event or event position changed
      */
     private void calculateEventLayout(){
+        Log.i(TAG, "calculateEventLayout: ");
         List<ArrayList<Pair<Pair<Integer,Integer>,ITimeEventInterface>>> overlapGroups
                 = xHelper.computeOverlapXForEvents(this.regularEventModules);
         int previousGroupExtraY = 0;
@@ -667,15 +669,13 @@ public class DayViewBody extends RelativeLayout{
                     String[] time_parts = new_time.split(":");
                     currentEventNewHour = Integer.valueOf(time_parts[0]);
                     currentEventNewMinutes = Integer.valueOf(time_parts[1]);
-                    Log.i(TAG, "currentEventNewHour: " + currentEventNewHour);
-                    Log.i(TAG, "currentEventNewMinutes: " + currentEventNewMinutes);
+
                     if (tempDragView == null){
                         //if not the new drag event, then update event instance
                         if (onBodyListener != null){
-//                            onBodyListener.onEventDragEnd(dgView);
+//                            onBodyListener.onEventDragDrop(dgView);
                         }
                     }
-
                     //update Y position
                     params.topMargin = reComputeResult[1];
 
@@ -685,17 +685,19 @@ public class DayViewBody extends RelativeLayout{
                     calculateEventLayout();
                     requestLayout();
 
-                    break;
-                case DragEvent.ACTION_DRAG_ENDED:
                     View finalView = (View) event.getLocalState();
                     finalView.getBackground().setAlpha(128);
                     finalView.setVisibility(View.VISIBLE);
                     msgWindow.setVisibility(View.INVISIBLE);
                     if (onBodyListener != null){
                         if ((currentEventNewHour !=-1) && (currentEventNewMinutes != -1)){
-                            dgView.getNewCalendar().setHour(currentEventNewHour);
-                            dgView.getNewCalendar().setMinute(currentEventNewMinutes);
-                            onBodyListener.onEventDragEnd(dgView);
+//                            dgView.getNewCalendar().setHour(currentEventNewHour);
+//                            dgView.getNewCalendar().setMinute(currentEventNewMinutes);
+//                            onBodyListener.onEventDragDrop(dgView);
+                            
+
+
+
                         }
                     }else{
                         Log.i(TAG, "onDrag: null");
@@ -706,16 +708,19 @@ public class DayViewBody extends RelativeLayout{
                         parent.removeView(tempDragView);
                         //important! update event time after drag via listener
                         if (onBodyListener != null){
-//                            MyCalendar newEventCalendar = new MyCalendar(myCalendar);
-//                            newEventCalendar.setHour(currentEventNewHour);
-//                            newEventCalendar.setMinute(currentEventNewMinutes);
                             onBodyListener.onEventCreate(dgView);
                         }
                         //finally reset tempDragView to NULL.
                         tempDragView = null;
                     }
+
                     currentEventNewHour = -1;
                     currentEventNewMinutes = -1;
+
+                    break;
+                case DragEvent.ACTION_DRAG_ENDED:
+
+
 
                 default:
                     break;
@@ -875,7 +880,7 @@ public class DayViewBody extends RelativeLayout{
 
 //    public interface OnEventDragListener {
 //        void onEventDragging(DayDraggableEventView eventView, int x, int y);
-//        void onEventDragEnd(DayDraggableEventView eventView, int x, int y);
+//        void onEventDragDrop(DayDraggableEventView eventView, int x, int y);
 //    }
 
 //    public void setOnEventDragListener(OnEventDragListener onEventDragListener) {
@@ -887,7 +892,7 @@ public class DayViewBody extends RelativeLayout{
         void onEventClick(DayDraggableEventView eventView);
         void onEventDragStart(DayDraggableEventView eventView);
         void onEventDragging(DayDraggableEventView eventView, int x, int y);
-        void onEventDragEnd(DayDraggableEventView eventView);
+        void onEventDragDrop(DayDraggableEventView eventView);
     }
 
     public void setOnBodyListener(OnBodyListener onBodyListener){

@@ -68,9 +68,9 @@ public class YinActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onEventDragEnd(DayDraggableEventView eventView) {
-                Log.i(TAG, "onEventDragEnd: yin");
-                Log.i(TAG, "onEventDragEnd: " + eventView.getNewCalendar().getHour());
+            public void onEventDragDrop(DayDraggableEventView eventView) {
+                Log.i(TAG, "onEventDragDrop: yin");
+                Log.i(TAG, "onEventDragDrop: " + eventView.getNewCalendar().getHour());
             }
         });
     }

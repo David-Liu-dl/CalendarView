@@ -70,6 +70,7 @@ public class YinActivity extends AppCompatActivity {
             @Override
             public void onEventDragEnd(DayDraggableEventView eventView) {
                 Log.i(TAG, "onEventDragEnd: yin");
+                Log.i(TAG, "onEventDragEnd: " + eventView.getNewCalendar().getDay());
             }
         });
 

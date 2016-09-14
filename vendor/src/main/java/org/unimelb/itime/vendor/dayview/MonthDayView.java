@@ -344,7 +344,7 @@ public class MonthDayView extends LinearLayout {
                 parentWidth = ((ViewGroup) eventView.getParent()).getWidth();
             }
 
-            int offset = x > (parentWidth * 0.6) ? 1 : (x < (parentWidth * 0.4) ? -1 : 0);
+            int offset = x > (parentWidth * 0.9) ? 1 : (x < (parentWidth * 0.1) ? -1 : 0);
             if (offset != 0){
                 int scrollTo = bodyCurrentPosition + offset;
                 bodyPager.setCurrentItem(scrollTo,true);

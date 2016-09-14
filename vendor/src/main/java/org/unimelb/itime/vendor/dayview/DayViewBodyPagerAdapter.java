@@ -1,6 +1,7 @@
 package org.unimelb.itime.vendor.dayview;
 
 import android.support.v4.view.PagerAdapter;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -65,14 +66,20 @@ public class DayViewBodyPagerAdapter extends PagerAdapter {
             currentBodyView.setEventList(this.dayEventMap.get(startTime));
         }
         container.addView(currentBodyView);
+        Log.i(TAG, "instantiateItem: " + position);
 
         return currentBodyView;
     }
 
-//    @Override
-//    public int getItemPosition(Object object) {
-//        return POSITION_NONE;
-//    }
+    public void reloadEvents(){
+        for (DayViewBody bodyView : vLists
+             ) {
+            long startTime = bodyView.getCalendar().getBeginOfDayMilliseconds();
+            if (this.dayEventMap.containsKey(startTime)){
+                bodyView.setEventList(this.dayEventMap.get(startTime));
+            }
+        }
+    }
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {

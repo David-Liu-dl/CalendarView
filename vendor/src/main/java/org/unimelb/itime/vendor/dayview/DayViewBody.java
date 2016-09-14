@@ -535,6 +535,7 @@ public class DayViewBody extends RelativeLayout {
         }
 
         calculateEventLayout();
+        this.requestLayout();
     }
 
     /**

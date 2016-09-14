@@ -68,9 +68,8 @@ public class MonthDayView extends LinearLayout {
         initView();
     }
 
-    public void notifyDatasetChanged(){
-        bodyPagerAdapter.notifyDataSetChanged();
-        bodyPager.setCurrentItem(bodyCurrentPosition);
+    public void reloadEvents(){
+        bodyPagerAdapter.reloadEvents();
     }
 
     private void initView(){
@@ -170,6 +169,7 @@ public class MonthDayView extends LinearLayout {
 
 
     }
+
     public void headerScrollToDate(Calendar body_fst_cal){
         DayViewHeader headerView =
                 (DayViewHeader) headerLinearLayoutManager.findViewByPosition(headerRecyclerAdapter.rowPst);

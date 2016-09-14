@@ -72,6 +72,23 @@ public class YinActivity extends AppCompatActivity {
                 Log.i(TAG, "onEventDragDrop: " + eventView.getNewCalendar().getHour());
             }
         });
+
+        monthDayView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Event event = new Event();
+                event.setEventUid("213123");
+                event.setTitle("new added");
+                event.setEventType(1);
+                event.setStatus(1);
+                event.setLocation("here");
+                event.setStartTime(Calendar.getInstance().getTimeInMillis());
+                event.setEndTime(Calendar.getInstance().getTimeInMillis() + 60 * 60 * 1000);
+                EventManager.getInstance().addEvent(event);
+
+                monthDayView.reloadEvents();
+            }
+        },5000);
     }
 
     private void loadData(){

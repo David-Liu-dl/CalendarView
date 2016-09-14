@@ -657,8 +657,6 @@ public class DayViewBody extends RelativeLayout{
                     float actionStopY = event.getY();
                     // Dropped, reassign View to ViewGroup
 
-                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) dgView.getLayoutParams(); //WRAP_CONTENT param can be FILL_PARENT
-
                     int newX = (int) actionStopX - dgView.getWidth()/2;
                     int newY = (int) actionStopY - dgView.getHeight()/2;
                     int[] reComputeResult = reComputePositionToSet(newX,newY,dgView,v);
@@ -677,13 +675,8 @@ public class DayViewBody extends RelativeLayout{
                         }
                     }
                     //update Y position
-                    params.topMargin = reComputeResult[1];
 
-                    dgView.setLayoutParams(params);
                     dgView.getBackground().setAlpha(128);
-
-                    calculateEventLayout();
-                    requestLayout();
 
                     View finalView = (View) event.getLocalState();
                     finalView.getBackground().setAlpha(128);
@@ -691,13 +684,9 @@ public class DayViewBody extends RelativeLayout{
                     msgWindow.setVisibility(View.INVISIBLE);
                     if (onBodyListener != null){
                         if ((currentEventNewHour !=-1) && (currentEventNewMinutes != -1)){
-//                            dgView.getNewCalendar().setHour(currentEventNewHour);
-//                            dgView.getNewCalendar().setMinute(currentEventNewMinutes);
-//                            onBodyListener.onEventDragDrop(dgView);
-                            
-
-
-
+                            dgView.getNewCalendar().setHour(currentEventNewHour);
+                            dgView.getNewCalendar().setMinute(currentEventNewMinutes);
+                            onBodyListener.onEventDragDrop(dgView);
                         }
                     }else{
                         Log.i(TAG, "onDrag: null");

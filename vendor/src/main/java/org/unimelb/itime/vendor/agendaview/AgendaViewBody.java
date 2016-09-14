@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -35,7 +36,7 @@ public class AgendaViewBody extends LinearLayout{
     private int titleSize = 12;
 
     private Context context;
-    private OnLoadEvents onLoadEvents;
+    private OnEventClickListener onEventClickListener;
 
     private int currentDayType = -2;
 
@@ -62,20 +63,13 @@ public class AgendaViewBody extends LinearLayout{
         this.rowHeader.setMyCalendar(this.myCalendar);
     }
 
-    public void setOnLoadEvents(OnLoadEvents onLoadEvents){
-        this.onLoadEvents = onLoadEvents;
-    }
-
-    public void loadEvents(){
+    public void setEventList(List<ITimeEventInterface> eventList){
         this.setCurrentDayType();
-        if (this.onLoadEvents != null){
-            this.events.clear();
-            List<ITimeEventInterface> events = this.onLoadEvents.loadTodayEvents(myCalendar.getBeginOfDayMilliseconds());
-            if (events != null){
-                this.events.addAll(events);
-            }
-            displayEvents(this.events);
+        this.events.clear();
+        if (events != null){
+            this.events = eventList;
         }
+        displayEvents(this.events);
     }
 
     private void setCurrentDayType(){
@@ -101,19 +95,27 @@ public class AgendaViewBody extends LinearLayout{
         this.addView(rowBody, rowBodyParams);
     }
 
-    private void displayEvents(List<ITimeEventInterface> events){
+    private void displayEvents(final List<ITimeEventInterface> events){
         this.rowBody.removeAllViews();
 
         if (events.size() != 0){
             for (int i = 0; i < events.size(); i++) {
-                AgendaViewInnerBody rowBody = new AgendaViewInnerBody(context, events.get(i), this.currentDayType);
+                final ITimeEventInterface currentEvent = events.get(i);
+                AgendaViewInnerBody rowBody = new AgendaViewInnerBody(context, currentEvent, this.currentDayType);
+                rowBody.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (onEventClickListener != null){
+                            onEventClickListener.onEventClick(currentEvent);
+                        }
+                    }
+                });
                 LinearLayout.LayoutParams rowBodyParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
                 this.rowBody.addView(rowBody, rowBodyParams);
                 if (i != events.size() -1){
                     this.rowBody.addView(getDivider());
                 }
 
-//                bodyRows.add(rowBody);
             }
         }else{
             noEvent = new TextView(context);
@@ -139,10 +141,13 @@ public class AgendaViewBody extends LinearLayout{
         return  dividerImgV;
     }
 
-    public interface OnLoadEvents{
-        List<ITimeEventInterface> loadTodayEvents(long beginOfDayMilliseconds);
+    public interface OnEventClickListener{
+        void onEventClick(ITimeEventInterface event);
     }
 
+    public void setOnEventClickListener(OnEventClickListener onEventClickListener){
+        this.onEventClickListener = onEventClickListener;
+    }
     private int getDatesRelationType(long todayM, long currentDayM){
         // -2 no relation, 1 tomorrow, 0 today, -1 yesterday
         int type = -2;

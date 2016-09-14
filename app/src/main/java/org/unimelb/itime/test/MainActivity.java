@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 
 import org.unimelb.itime.test.david.DavidActivity;
+import org.unimelb.itime.test.david.YinActivity;
 import org.unimelb.itime.test.paul.PaulActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -33,6 +34,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, DavidActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button yinBtn = (Button)findViewById(R.id.btn_yin);
+        yinBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, YinActivity.class);
                 startActivity(intent);
             }
         });

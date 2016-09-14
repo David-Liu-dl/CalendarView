@@ -17,8 +17,11 @@ import org.unimelb.itime.vendor.R;
 import org.unimelb.itime.vendor.dayview.DayViewHeader;
 import org.unimelb.itime.vendor.dayview.DayViewHeaderRecyclerDivider;
 import org.unimelb.itime.vendor.helper.MyCalendar;
+import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 
 import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by yuhaoliu on 31/08/16.
@@ -45,11 +48,12 @@ public class MonthAgendaView extends RelativeLayout{
     private int init_height;
     private int scroll_height;
 
-    private DayViewHeader.OnCheckIfHasEvent onCheckIfHasEvent;
-    private AgendaViewBody.OnLoadEvents onLoadEvents;
+    private AgendaViewBody.OnEventClickListener onEventClickListener;
 
     private MyCalendar monthAgendaViewCalendar;
     private OnHeaderListener onHeaderListener;
+
+    private Map<Long, List<ITimeEventInterface>> dayEventMap;
 
     public MonthAgendaView(Context context) {
         super(context);
@@ -92,7 +96,12 @@ public class MonthAgendaView extends RelativeLayout{
                 bodyLinearLayoutManager.scrollToPositionWithOffset(scrollTo, -5);
             }
         });
-        setOnCheckIfHasEvent(this.onCheckIfHasEvent);
+        headerRecyclerAdapter.setOnCheckIfHasEvent(new DayViewHeader.OnCheckIfHasEvent() {
+            @Override
+            public boolean todayHasEvent(long startOfDay) {
+                return dayEventMap.containsKey(startOfDay);
+            }
+        });
         headerRecyclerView.setHasFixedSize(true);
         headerRecyclerView.setAdapter(headerRecyclerAdapter);
         headerLinearLayoutManager = new LinearLayoutManager(context);
@@ -121,7 +130,7 @@ public class MonthAgendaView extends RelativeLayout{
 
         bodyRecyclerAdapter = new AgendaBodyViewRecyclerAdapter(context, upperBoundsOffset);
 //        setOnCheckIfHasEvent(this.onCheckIfHasEvent);
-        setOnLoadEvents(this.onLoadEvents);
+        setOnEventClickListener(this.onEventClickListener);
         bodyRecyclerView.setFlingScale(0.3f);
         bodyRecyclerView.setHasFixedSize(false);
         bodyRecyclerView.setAdapter(bodyRecyclerAdapter);
@@ -140,17 +149,10 @@ public class MonthAgendaView extends RelativeLayout{
         bodyRecyclerView.scrollToPosition(upperBoundsOffset);
     }
 
-    public void setOnCheckIfHasEvent(DayViewHeader.OnCheckIfHasEvent onCheckIfHasEvent){
-        this.onCheckIfHasEvent = onCheckIfHasEvent;
-        if (headerRecyclerAdapter != null){
-            headerRecyclerAdapter.setOnCheckIfHasEvent(this.onCheckIfHasEvent);
-        }
-    }
-
-    public void setOnLoadEvents(AgendaViewBody.OnLoadEvents onLoadEvents){
-        this.onLoadEvents = onLoadEvents;
+    public void setOnEventClickListener(AgendaViewBody.OnEventClickListener onEventClickListener){
+        this.onEventClickListener = onEventClickListener;
         if (bodyRecyclerAdapter != null){
-            bodyRecyclerAdapter.setOnLoadEvents(this.onLoadEvents);
+            bodyRecyclerAdapter.setOnEventClickListener(this.onEventClickListener);
         }
     }
 
@@ -185,6 +187,11 @@ public class MonthAgendaView extends RelativeLayout{
     }
     public void setOnHeaderListener(OnHeaderListener onHeaderListener){
         this.onHeaderListener = onHeaderListener;
+    }
+
+    public void setDayEventMap(Map<Long, List<ITimeEventInterface>> dayEventMap){
+        this.dayEventMap = dayEventMap;
+        this.bodyRecyclerAdapter.setDayEventMap(dayEventMap);
     }
 
     public interface OnHeaderListener{

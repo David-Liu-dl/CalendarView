@@ -24,7 +24,7 @@ android {
 }
 
 greendao {
-    schemaVersion 16
+    schemaVersion 18
     daoPackage "org.unimelb.itime.test.bean"
 }
 

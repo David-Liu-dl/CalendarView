@@ -111,9 +111,15 @@ public class DayViewHeaderRecyclerAdapter extends RecyclerView.Adapter<DayViewHe
                         bodyPager.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                bodyPager.setCurrentItem(scrollTo, false);
+                                boolean needUpdate =
+                                        ((DayViewBodyPagerAdapter) bodyPager.getAdapter()).currentDayPos
+                                        != scrollTo;
+                                if (needUpdate){
+                                    Log.i(TAG, "needUpdate: ");
+                                    bodyPager.setCurrentItem(scrollTo, false);
+                                }
                             }
-                        },200);
+                        },50);
                     }else {
                         Log.i(TAG, "synBodyPart: " + "Fail, pager == null");
                     }

@@ -70,6 +70,7 @@ public class MonthDayView extends LinearLayout {
 
     public void notifyDatasetChanged(){
         bodyPagerAdapter.notifyDataSetChanged();
+        bodyPager.setCurrentItem(bodyCurrentPosition);
     }
 
     private void initView(){

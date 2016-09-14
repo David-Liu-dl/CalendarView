@@ -353,9 +353,9 @@ public class DayViewBody extends RelativeLayout {
     /**
      * call it when your dataset changed
      */
-    public void notifyDatasetChanged() {
-        calculateEventLayout();
-    }
+//    public void notifyDatasetChanged() {
+//        calculateEventLayout();
+//    }
 
     /**
      * reset all the layouts and views in body

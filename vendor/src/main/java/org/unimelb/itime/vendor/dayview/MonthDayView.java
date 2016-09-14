@@ -94,11 +94,11 @@ public class MonthDayView extends LinearLayout {
         this.bodyPagerAdapter.setDayEventMap(dayEventMap);
     }
 
-    public void setOnBodyListener(DayViewBody.OnBodyListener onBodyListener){
-        for (DayViewBody view: this.bodyViewList) {
-            view.setOnBodyListener(onBodyListener);
-        }
-    }
+//    public void setOnBodyListener(DayViewBody.OnBodyListener onBodyListener){
+//        for (DayViewBody view: this.bodyViewList) {
+//            view.setOnBodyListener(onBodyListener);
+//        }
+//    }
 
     private void setUpHeader(){
         headerRecyclerAdapter = new DayViewHeaderRecyclerAdapter(context, upperBoundsOffset);
@@ -267,27 +267,6 @@ public class MonthDayView extends LinearLayout {
                 }
             });
             bodyView.setOnBodyListener(new OnBodyInnerListener());
-//                    new DayViewBody.OnEventDragListener() {
-//                int parentWidth = 0;
-//
-//                @Override
-//                public void onEventDragging(DayDraggableEventView eventView, int x, int y) {
-//                    if (eventView != null && eventView.getParent() != null){
-//                        parentWidth = ((ViewGroup) eventView.getParent()).getWidth();
-//                    }
-//
-//                    int offset = x > (parentWidth * 0.6) ? 1 : (x < (parentWidth * 0.4) ? -1 : 0);
-//                    if (offset != 0){
-//                        int scrollTo = bodyCurrentPosition + offset;
-//                        bodyPager.setCurrentItem(scrollTo,true);
-//                        bodyPagerAdapter.currentDayPos = scrollTo;
-//                        MyCalendar bodyMyCalendar = (bodyPagerAdapter.getViewByPosition(scrollTo)).getCalendar();
-//                        Calendar body_fst_cal = bodyMyCalendar.getCalendar();
-//                        headerScrollToDate(body_fst_cal);
-//                    }
-//
-//                }
-//            });
         }
 
     }
@@ -380,7 +359,11 @@ public class MonthDayView extends LinearLayout {
 
         @Override
         public void onEventDragEnd(DayDraggableEventView eventView) {
-
+            MyCalendar currentCal = (bodyPagerAdapter.getViewByPosition(bodyCurrentPosition)).getCalendar();
+            eventView.getNewCalendar().setDay(currentCal.getDay());
+            eventView.getNewCalendar().setMonth(currentCal.getMonth());
+            eventView.getNewCalendar().setYear(currentCal.getYear());
+            if (OnBodyOuterListener != null){OnBodyOuterListener.onEventDragEnd(eventView);}
         }
     }
 

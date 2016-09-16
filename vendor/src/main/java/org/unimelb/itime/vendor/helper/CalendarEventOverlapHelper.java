@@ -29,11 +29,9 @@ public class CalendarEventOverlapHelper {
         this.sortEvent();
         // get overlapped Groups
         ArrayList<ArrayList<ITimeEventInterface>> overlapEventGroups = divideOverlapGroup();
-        Log.i(TAG, "group size: " + overlapEventGroups.size());
         // compute each event X in every group in overlapped groups
         for (ArrayList<ITimeEventInterface> list: overlapEventGroups
                 ) {
-            Log.i(TAG, "For new group: ");
             if (list.size() > 1){
                 param_events.add(this.computeEventXPstInGroup(list));
             }else {

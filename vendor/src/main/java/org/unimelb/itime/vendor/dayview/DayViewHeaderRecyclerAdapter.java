@@ -117,6 +117,7 @@ public class DayViewHeaderRecyclerAdapter extends RecyclerView.Adapter<DayViewHe
                                 if (needUpdate){
                                     Log.i(TAG, "needUpdate: ");
                                     bodyPager.setCurrentItem(scrollTo, false);
+                                    ((DayViewBodyPagerAdapter) bodyPager.getAdapter()).currentDayPos = scrollTo;
                                 }
                             }
                         },50);

@@ -33,6 +33,7 @@ public class MonthDayView extends LinearLayout {
     private final String TAG = "MyAPP";
 
     private Context context;
+    final DisplayMetrics dm = getResources().getDisplayMetrics();
 
     private int upperBoundsOffset = 1;
     private int init_height;
@@ -47,11 +48,13 @@ public class MonthDayView extends LinearLayout {
     private LinearLayoutManager headerLinearLayoutManager;
 
     private DayViewBodyPagerAdapter bodyPagerAdapter;
-    private ViewPager bodyPager;
+    private DayViewBodyViewPager bodyPager;
     private RecyclerView headerRecyclerView;
     private DayViewHeaderRecyclerAdapter headerRecyclerAdapter;
 
     private Map<Long, List<ITimeEventInterface>> dayEventMap;
+
+    private int bodyPagerCurrentState = 0;
 
     public MonthDayView(Context context) {
         super(context);
@@ -79,8 +82,8 @@ public class MonthDayView extends LinearLayout {
         this.addView(parent);
 
         headerRecyclerView = (RecyclerView) parent.findViewById(R.id.headerRowList);
-        bodyPager = (ViewPager) parent.findViewById(R.id.pager);
-
+        bodyPager = (DayViewBodyViewPager) parent.findViewById(R.id.pager);
+        bodyPager.setScrollDurationFactor(5);
         upperBoundsOffset = 100000;
 
         bodyViewList = new ArrayList<>();
@@ -110,7 +113,7 @@ public class MonthDayView extends LinearLayout {
         headerLinearLayoutManager = new LinearLayoutManager(context);
         headerRecyclerView.setLayoutManager(headerLinearLayoutManager);
         headerRecyclerView.addItemDecoration(new DayViewHeaderRecyclerDivider(context));
-        final DisplayMetrics dm = getResources().getDisplayMetrics();
+
         init_height = (dm.widthPixels / 7) * 2;
         scroll_height = (dm.widthPixels / 7) * 4;
 
@@ -156,6 +159,7 @@ public class MonthDayView extends LinearLayout {
 
             @Override
             public void onPageScrollStateChanged(int state) {
+                bodyPagerCurrentState = state;
                 if (state == 1){
                     //because 1->2->selected->0
                     slideByUser = true;
@@ -315,7 +319,7 @@ public class MonthDayView extends LinearLayout {
     }
 
     public class OnBodyInnerListener implements DayViewBody.OnBodyListener{
-        int parentWidth = 0;
+        int parentWidth = dm.widthPixels;
 
         @Override
         public void onEventCreate(DayDraggableEventView eventView) {
@@ -340,21 +344,10 @@ public class MonthDayView extends LinearLayout {
 
         @Override
         public void onEventDragging(DayDraggableEventView eventView, int x, int y) {
-
-            if (eventView != null && eventView.getParent() != null){
-                parentWidth = ((ViewGroup) eventView.getParent()).getWidth();
+            boolean isSwiping = bodyPagerCurrentState == 0;
+            if (isSwiping){
+                this.bodyAutoSwipe(eventView, x, y);
             }
-
-            int offset = x > (parentWidth * 0.9) ? 1 : (x < (parentWidth * 0.1) ? -1 : 0);
-            if (offset != 0){
-                int scrollTo = bodyCurrentPosition + offset;
-                bodyPager.setCurrentItem(scrollTo,true);
-                bodyPagerAdapter.currentDayPos = scrollTo;
-                MyCalendar bodyMyCalendar = (bodyPagerAdapter.getViewByPosition(scrollTo)).getCalendar();
-                Calendar body_fst_cal = bodyMyCalendar.getCalendar();
-                headerScrollToDate(body_fst_cal);
-            }
-
             if (OnBodyOuterListener != null){OnBodyOuterListener.onEventDragging(eventView, x, y);}
         }
 
@@ -366,8 +359,26 @@ public class MonthDayView extends LinearLayout {
             eventView.getNewCalendar().setYear(currentCal.getYear());
             if (OnBodyOuterListener != null){OnBodyOuterListener.onEventDragDrop(eventView);}
         }
-    }
 
+        private void bodyAutoSwipe(DayDraggableEventView eventView, int x, int y){
+//            if (eventView != null && eventView.getParent() != null){
+//                parentWidth = ((ViewGroup) eventView.getParent()).getWidth();
+//            }
+            if (eventView == null){
+                Log.i(TAG, "null: ");
+            }
+            int offset = x > (parentWidth * 0.8) ? 1 : (x < (parentWidth * 0.2) ? -1 : 0);
+
+            if (offset != 0){
+                int scrollTo = bodyCurrentPosition + offset;
+                bodyPager.setCurrentItem(scrollTo,true);
+                bodyPagerAdapter.currentDayPos = scrollTo;
+                MyCalendar bodyMyCalendar = (bodyPagerAdapter.getViewByPosition(scrollTo)).getCalendar();
+                Calendar body_fst_cal = bodyMyCalendar.getCalendar();
+                headerScrollToDate(body_fst_cal);
+            }
+        }
+    }
 
     /**
      *

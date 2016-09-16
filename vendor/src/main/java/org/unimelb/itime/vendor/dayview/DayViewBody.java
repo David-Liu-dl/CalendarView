@@ -84,6 +84,7 @@ public class DayViewBody extends RelativeLayout {
 
     private float nowTapX = 0;
     private float nowTapY = 0;
+    private float fstEventPosY = 0;
 
     private OnBodyTouchListener onBodyTouchListener;
     private OnBodyListener onBodyListener;
@@ -515,7 +516,6 @@ public class DayViewBody extends RelativeLayout {
 
         String[] components = hourWithMinutes.split(":");
         float trickTime = Integer.valueOf(components[0]) + Integer.valueOf(components[1]) / (float) 100;
-        Log.i(TAG, "trickTime: " + trickTime);
         int getStartY = nearestTimeSlotValue(trickTime);
 
         return getStartY;
@@ -531,20 +531,21 @@ public class DayViewBody extends RelativeLayout {
         this.clearAllEvents();
         this.eventList = eventList;
 
-        Log.i(TAG, "setEventList: " + eventList.size() + " --- "+myCalendar.getDay());
         for (ITimeEventInterface event : eventList) {
             this.addEvent(event);
-            
-            Calendar cal = Calendar.getInstance();
-            cal.setTimeInMillis(event.getStartTime());
-            Log.i(TAG, "start: " + cal.getTime());
-            cal.setTimeInMillis(event.getEndTime());
-            Log.i(TAG, "end: " + cal.getTime());
         }
 
         calculateEventLayout();
         eventLayout.requestLayout();
+        scrollViewScrollToFstEventOffset();
+        scrollContainerView.requestLayout();
+
     }
+
+    private void scrollViewScrollToFstEventOffset(){
+        this.scrollContainerView.scrollTo(0,(int)fstEventPosY);
+    }
+
 
     /**
      * calculate the position of event
@@ -553,16 +554,23 @@ public class DayViewBody extends RelativeLayout {
     private void calculateEventLayout() {
         List<ArrayList<Pair<Pair<Integer, Integer>, ITimeEventInterface>>> overlapGroups
                 = xHelper.computeOverlapXForEvents(this.regularEventModules);
+        boolean foundFstPos = false;
         int previousGroupExtraY = 0;
         for (ArrayList<Pair<Pair<Integer, Integer>, ITimeEventInterface>> overlapGroup : overlapGroups
                 ) {
             for (int i = 0; i < overlapGroup.size(); i++) {
+
                 int startY = getEventY(overlapGroup.get(i).second);
                 int widthFactor = overlapGroup.get(i).first.first;
                 int startX = overlapGroup.get(i).first.second;
                 int topMargin = startY + overlapGapHeight * i + previousGroupExtraY;
                 DayDraggableEventView eventView = (DayDraggableEventView) eventLayout.findViewById(regularEventViewMap.get(overlapGroup.get(i).second));
                 eventView.setPosParam(new DayDraggableEventView.PosParam(startY, startX, widthFactor, topMargin));
+
+                if(!foundFstPos){
+                    fstEventPosY = startY;
+                    foundFstPos = true;
+                }
             }
             previousGroupExtraY += overlapGapHeight * overlapGroup.size();
         }
@@ -643,6 +651,7 @@ public class DayViewBody extends RelativeLayout {
         public boolean onDrag(View v, DragEvent event) {
             DayDraggableEventView dgView = (DayDraggableEventView) event.getLocalState();
 
+            Log.i(TAG, "event: " + event.getAction());
             switch (event.getAction()) {
                 case DragEvent.ACTION_DRAG_STARTED:
                     actionStartX = event.getX();
@@ -650,7 +659,9 @@ public class DayViewBody extends RelativeLayout {
                     msgWindow.setVisibility(View.VISIBLE);
                     break;
                 case DragEvent.ACTION_DRAG_LOCATION:
+                    Log.i(TAG, "ACTION_DRAG_LOCATION: " + myCalendar.getDay());
                     scrollViewAutoScroll(event);
+
                     if (onBodyListener != null) {
                         onBodyListener.onEventDragging(dgView, (int) event.getX(), (int) event.getY());
                     } else {
@@ -659,10 +670,14 @@ public class DayViewBody extends RelativeLayout {
                     msgWindowFollow((int) event.getX(), (int) event.getY(), (View) event.getLocalState());
                     break;
                 case DragEvent.ACTION_DRAG_ENTERED:
+                    Log.i(TAG, "ACTION_DRAG_ENTERED: ");
                     break;
                 case DragEvent.ACTION_DRAG_EXITED:
+                    Log.i(TAG, "ACTION_DRAG_EXITED: ");
+
                     break;
                 case DragEvent.ACTION_DROP:
+
                     float actionStopX = event.getX();
                     float actionStopY = event.getY();
                     // Dropped, reassign View to ViewGroup
@@ -714,7 +729,6 @@ public class DayViewBody extends RelativeLayout {
                         }
                         //finally reset tempDragView to NULL.
                         tempDragView = null;
-                        Log.i(TAG, "create: ");
                     }
 
                     currentEventNewHour = -1;
@@ -727,6 +741,7 @@ public class DayViewBody extends RelativeLayout {
                     finalView.getBackground().setAlpha(128);
                     finalView.setVisibility(View.VISIBLE);
                     msgWindow.setVisibility(View.INVISIBLE);
+                    break;
                 default:
                     break;
             }
@@ -843,7 +858,6 @@ public class DayViewBody extends RelativeLayout {
         }
         int nearestProperPosition = nearestTimeSlotKey(tapY - followView.getHeight() / 2);
         if (nearestProperPosition != -1) {
-            Log.i(TAG, "msgWindowFollow: " + positionToTimeTreeMap.get(nearestProperPosition));
             msgWindow.setText(positionToTimeTreeMap.get(nearestProperPosition));
         } else {
             Log.i(TAG, "msgWindowFollow: " + "Error, text not found in Map");

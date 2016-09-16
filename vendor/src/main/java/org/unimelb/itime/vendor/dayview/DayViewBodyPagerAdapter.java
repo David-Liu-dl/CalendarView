@@ -66,8 +66,7 @@ public class DayViewBodyPagerAdapter extends PagerAdapter {
             currentBodyView.setEventList(this.dayEventMap.get(startTime));
         }
         container.addView(currentBodyView);
-        Log.i(TAG, "instantiateItem: " + position);
-
+//        Log.i(TAG, "instantiateItem: " + position);
         return currentBodyView;
     }
 

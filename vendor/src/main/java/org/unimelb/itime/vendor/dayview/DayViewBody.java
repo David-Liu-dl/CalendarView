@@ -382,6 +382,7 @@ public class DayViewBody extends RelativeLayout {
      * just clear the events in the layout
      */
     public void clearAllEvents() {
+
         if (this.topAllDayEventLayout != null) {
             this.topAllDayEventLayout.removeAllViews();
         }
@@ -699,24 +700,6 @@ public class DayViewBody extends RelativeLayout {
                     dgView.getNewCalendar().setHour(currentEventNewHour);
                     dgView.getNewCalendar().setMinute(currentEventNewMinutes);
 
-//                    if (tempDragView == null) {
-//                        //if not the new drag event, then update event instance
-//                        if (onBodyListener != null) {
-//                            onBodyListener.onEventDragDrop(dgView);
-//                        }
-//                    }
-
-                    //for test
-//                    dgView.getNewCalendar().setHour(currentEventNewHour);
-//                    dgView.getNewCalendar().setMinute(currentEventNewMinutes);
-//                    long duration = dgView.getEndTimeM() - dgView.getStartTimeM();
-//                    dgView.getEvent().setStartTime(dgView.getStartTimeM());
-//                    dgView.getEvent().setEndTime(dgView.getStartTimeM() + duration);
-//
-//                    calculateEventLayout();
-//                    eventLayout.requestLayout();
-                    /* end test */
-
                     if (tempDragView == null && onBodyListener != null) {
                         if ((currentEventNewHour != -1) && (currentEventNewMinutes != -1)) {
                             onBodyListener.onEventDragDrop(dgView);
@@ -728,7 +711,9 @@ public class DayViewBody extends RelativeLayout {
 
                     if (tempDragView != null) {
                         ViewGroup parent = (ViewGroup) tempDragView.getParent();
-                        parent.removeView(tempDragView);
+                        if(parent != null){
+                            parent.removeView(tempDragView);
+                        }
                         //important! update event time after drag via listener
                         if (onBodyListener != null) {
                             onBodyListener.onEventCreate(dgView);

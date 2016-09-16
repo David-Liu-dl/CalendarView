@@ -537,8 +537,8 @@ public class DayViewBody extends RelativeLayout {
 
         calculateEventLayout();
         eventLayout.requestLayout();
-        scrollViewScrollToFstEventOffset();
-        scrollContainerView.requestLayout();
+//        scrollViewScrollToFstEventOffset();
+//        scrollContainerView.requestLayout();
 
     }
 
@@ -651,7 +651,6 @@ public class DayViewBody extends RelativeLayout {
         public boolean onDrag(View v, DragEvent event) {
             DayDraggableEventView dgView = (DayDraggableEventView) event.getLocalState();
 
-            Log.i(TAG, "event: " + event.getAction());
             switch (event.getAction()) {
                 case DragEvent.ACTION_DRAG_STARTED:
                     actionStartX = event.getX();
@@ -659,7 +658,6 @@ public class DayViewBody extends RelativeLayout {
                     msgWindow.setVisibility(View.VISIBLE);
                     break;
                 case DragEvent.ACTION_DRAG_LOCATION:
-                    Log.i(TAG, "ACTION_DRAG_LOCATION: " + myCalendar.getDay());
                     scrollViewAutoScroll(event);
 
                     if (onBodyListener != null) {
@@ -693,12 +691,15 @@ public class DayViewBody extends RelativeLayout {
                     currentEventNewHour = Integer.valueOf(time_parts[0]);
                     currentEventNewMinutes = Integer.valueOf(time_parts[1]);
 
-                    if (tempDragView == null) {
-                        //if not the new drag event, then update event instance
-                        if (onBodyListener != null) {
+                    dgView.getNewCalendar().setHour(currentEventNewHour);
+                    dgView.getNewCalendar().setMinute(currentEventNewMinutes);
+
+//                    if (tempDragView == null) {
+//                        //if not the new drag event, then update event instance
+//                        if (onBodyListener != null) {
 //                            onBodyListener.onEventDragDrop(dgView);
-                        }
-                    }
+//                        }
+//                    }
 
                     //for test
 //                    dgView.getNewCalendar().setHour(currentEventNewHour);

@@ -10,7 +10,6 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.lling.photopicker.PhotoPickerActivity;
 import com.lling.photopicker.R;
 import com.lling.photopicker.beans.Photo;
 import com.lling.photopicker.utils.ImageLoader;
@@ -38,9 +37,9 @@ public class PhotoAdapter extends BaseAdapter {
     //是否显示相机，默认不显示
     private boolean mIsShowCamera = false;
     //照片选择模式，默认单选
-    private int mSelectMode = PhotoPickerActivity.MODE_SINGLE;
+    private int mSelectMode = 0;
     //图片选择数量
-    private int mMaxNum = PhotoPickerActivity.DEFAULT_NUM;
+    private int mMaxNum = 9;
 
     private View.OnClickListener mOnPhotoClick;
     private PhotoClickCallBack mCallBack;
@@ -119,7 +118,7 @@ public class PhotoAdapter extends BaseAdapter {
 
     public void setSelectMode(int selectMode) {
         this.mSelectMode = selectMode;
-        if(mSelectMode == PhotoPickerActivity.MODE_MULTI) {
+        if(mSelectMode == 1) {
             initMultiMode();
         }
     }
@@ -180,7 +179,7 @@ public class PhotoAdapter extends BaseAdapter {
 
             holder.photoImageView.setImageResource(R.drawable.ic_photo_loading);
             Photo photo = getItem(position);
-            if(mSelectMode == PhotoPickerActivity.MODE_MULTI) {
+            if(mSelectMode == 1) {
                 holder.wrapLayout.setOnClickListener(mOnPhotoClick);
                 holder.photoImageView.setTag(photo.getPath());
                 holder.selectView.setVisibility(View.VISIBLE);
@@ -194,7 +193,7 @@ public class PhotoAdapter extends BaseAdapter {
             } else {
                 holder.selectView.setVisibility(View.GONE);
             }
-            ImageLoader.getInstance().display(photo.getPath(), holder.photoImageView,
+            ImageLoader.getInstance(mContext).display(photo.getPath(), holder.photoImageView,
                     mWidth, mWidth);
         }
         return convertView;

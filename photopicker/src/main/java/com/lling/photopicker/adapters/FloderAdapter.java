@@ -73,7 +73,7 @@ public class FloderAdapter extends BaseAdapter {
         }
         holder.floderNameTV.setText(floder.getName());
         holder.photoNumTV.setText(floder.getPhotoList().size() + "张");
-        ImageLoader.getInstance().display(floder.getPhotoList().get(0).getPath(), holder.photoIV,
+        ImageLoader.getInstance(mContext).display(floder.getPhotoList().get(0).getPath(), holder.photoIV,
                 mWidth, mWidth);
         return convertView;
     }

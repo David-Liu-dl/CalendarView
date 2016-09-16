@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.lling.photopicker.PhotoPickerActivity;
 
 import org.unimelb.itime.test.R;
 import org.unimelb.itime.vendor.helper.MyCalendar;
@@ -42,25 +41,15 @@ public class PaulActivity extends AppCompatActivity {
 //            }
 //        };
 
-        testFragment = new TestFragment();
-        getFragmentManager().beginTransaction().add(R.id.fragment,testFragment).commit();
-//        weekViewFragment = new WeekViewFragment();
+//        testFragment = new TestFragment();
+//        getFragmentManager().beginTransaction().add(R.id.fragment,testFragment).commit();
+        weekViewFragment = new WeekViewFragment();
 //        timeSlotFragment = new TimeSlotFragment();
 
-//        getFragmentManager().beginTransaction().add(R.id.fragment, weekViewFragment).commit();
+        getFragmentManager().beginTransaction().add(R.id.fragment, weekViewFragment).commit();
 //        getFragmentManager().beginTransaction().add(R.id.fragment,timeSlotFragment).commit();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == PICK_PHOTO){
-            if(resultCode == RESULT_OK){
-                ArrayList<String> result = data.getStringArrayListExtra(PhotoPickerActivity.KEY_RESULT);
-                showResult(result);
-            }
-        }
-    }
 
     private void showResult(ArrayList<String> paths){
         if(mResults == null){

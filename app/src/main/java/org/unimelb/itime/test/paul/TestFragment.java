@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.lling.photopicker.PhotoPickerActivity;
 
 import org.unimelb.itime.test.R;
 
@@ -29,24 +28,6 @@ public class TestFragment extends Fragment {
         return root;
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        Button btn = (Button) root.findViewById(R.id.button);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), PhotoPickerActivity.class);
-                int selectedMode = PhotoPickerActivity.MODE_MULTI;
-                intent.putExtra(PhotoPickerActivity.EXTRA_SELECT_MODE, selectedMode);
-                int maxNum = 9;
-                intent.putExtra(PhotoPickerActivity.EXTRA_MAX_MUN, maxNum);
-                intent.putExtra(PhotoPickerActivity.EXTRA_SHOW_CAMERA,true);
-
-                getActivity().startActivityForResult(intent,1);
-            }
-        });
-    }
 
 
 }

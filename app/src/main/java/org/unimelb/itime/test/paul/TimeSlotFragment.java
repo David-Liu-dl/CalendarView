@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.unimelb.itime.test.R;
-import org.unimelb.itime.vendor.eventview.Event;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 import org.unimelb.itime.vendor.timeslot.TimeSlotView;
 import org.unimelb.itime.vendor.timeslotview.WeekTimeSlotView;

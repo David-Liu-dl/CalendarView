@@ -83,7 +83,7 @@ public class MonthDayView extends LinearLayout {
 
         headerRecyclerView = (RecyclerView) parent.findViewById(R.id.headerRowList);
         bodyPager = (DayViewBodyViewPager) parent.findViewById(R.id.pager);
-        bodyPager.setScrollDurationFactor(5);
+        bodyPager.setScrollDurationFactor(3);
         upperBoundsOffset = 100000;
 
         bodyViewList = new ArrayList<>();
@@ -197,6 +197,10 @@ public class MonthDayView extends LinearLayout {
                 day_diff = day_diff <= 0 ? (7 + day_diff):day_diff;
             }
 
+//            if (row_diff > 5){
+//                Log.i(TAG, "header_current_cal: " + header_current_cal.getTime() );
+////                Log.i(TAG, "header_current_cal: " + header_current_cal.getTime() );
+//            }
             if ((row_diff != 0 || day_diff != 0)){
                 if (row_diff != 0){
                     int newRowPst = row_diff + headerRecyclerAdapter.rowPst;

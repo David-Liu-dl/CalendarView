@@ -175,6 +175,10 @@ public class DayViewBody extends RelativeLayout {
         eventLayout = new RelativeLayout(getContext());
         eventLayout.setId(View.generateViewId());
         RelativeLayout.LayoutParams eventLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        eventLayoutParams.addRule(ALIGN_LEFT, dividerBgRLayout.getId());
+        eventLayoutParams.addRule(ALIGN_RIGHT, dividerBgRLayout.getId());
+        eventLayoutParams.addRule(ALIGN_TOP, dividerBgRLayout.getId());
+        eventLayoutParams.addRule(ALIGN_BOTTOM, dividerBgRLayout.getId());
         eventLayout.setLayoutParams(eventLayoutParams);
         eventLayout.setOnDragListener(new EventDragListener());
         eventLayout.setOnTouchListener(new View.OnTouchListener() {
@@ -182,6 +186,7 @@ public class DayViewBody extends RelativeLayout {
             public boolean onTouch(View v, MotionEvent event) {
                 nowTapX = event.getX();
                 nowTapY = event.getY();
+                Log.i(TAG, "onTouch: ");
                 if (onBodyTouchListener != null) {
                     onBodyTouchListener.bodyOnTouchListener(nowTapX, nowTapY);
                 } else {
@@ -377,6 +382,7 @@ public class DayViewBody extends RelativeLayout {
      * just clear the events in the layout
      */
     public void clearAllEvents() {
+
         if (this.topAllDayEventLayout != null) {
             this.topAllDayEventLayout.removeAllViews();
         }
@@ -536,8 +542,8 @@ public class DayViewBody extends RelativeLayout {
         }
 
         calculateEventLayout();
+        scrollViewScrollToFstEventOffset();
         eventLayout.requestLayout();
-//        scrollViewScrollToFstEventOffset();
 //        scrollContainerView.requestLayout();
 
     }
@@ -694,24 +700,6 @@ public class DayViewBody extends RelativeLayout {
                     dgView.getNewCalendar().setHour(currentEventNewHour);
                     dgView.getNewCalendar().setMinute(currentEventNewMinutes);
 
-//                    if (tempDragView == null) {
-//                        //if not the new drag event, then update event instance
-//                        if (onBodyListener != null) {
-//                            onBodyListener.onEventDragDrop(dgView);
-//                        }
-//                    }
-
-                    //for test
-//                    dgView.getNewCalendar().setHour(currentEventNewHour);
-//                    dgView.getNewCalendar().setMinute(currentEventNewMinutes);
-//                    long duration = dgView.getEndTimeM() - dgView.getStartTimeM();
-//                    dgView.getEvent().setStartTime(dgView.getStartTimeM());
-//                    dgView.getEvent().setEndTime(dgView.getStartTimeM() + duration);
-//
-//                    calculateEventLayout();
-//                    eventLayout.requestLayout();
-                    /* end test */
-
                     if (tempDragView == null && onBodyListener != null) {
                         if ((currentEventNewHour != -1) && (currentEventNewMinutes != -1)) {
                             onBodyListener.onEventDragDrop(dgView);
@@ -723,7 +711,9 @@ public class DayViewBody extends RelativeLayout {
 
                     if (tempDragView != null) {
                         ViewGroup parent = (ViewGroup) tempDragView.getParent();
-                        parent.removeView(tempDragView);
+                        if(parent != null){
+                            parent.removeView(tempDragView);
+                        }
                         //important! update event time after drag via listener
                         if (onBodyListener != null) {
                             onBodyListener.onEventCreate(dgView);
@@ -755,6 +745,7 @@ public class DayViewBody extends RelativeLayout {
 
         @Override
         public boolean onLongClick(View v) {
+            Log.i(TAG, "tempDragView: " + tempDragView + myCalendar.getDay());
             if (tempDragView == null) {
                 tempDragView = createTempDayDraggableEventView(nowTapX, nowTapY);
                 eventLayout.addView(tempDragView);

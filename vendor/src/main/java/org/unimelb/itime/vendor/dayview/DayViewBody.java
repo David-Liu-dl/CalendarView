@@ -186,7 +186,6 @@ public class DayViewBody extends RelativeLayout {
             public boolean onTouch(View v, MotionEvent event) {
                 nowTapX = event.getX();
                 nowTapY = event.getY();
-                Log.i(TAG, "onTouch: ");
                 if (onBodyTouchListener != null) {
                     onBodyTouchListener.bodyOnTouchListener(nowTapX, nowTapY);
                 } else {
@@ -585,6 +584,7 @@ public class DayViewBody extends RelativeLayout {
     private DayDraggableEventView createDayDraggableEventView(ITimeEventInterface event, boolean isAllDayEvent) {
 
         DayDraggableEventView event_view = new DayDraggableEventView(context, event, isAllDayEvent);
+        event_view.setType(DayDraggableEventView.TYPE_NORMAL);
         event_view.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -619,6 +619,8 @@ public class DayViewBody extends RelativeLayout {
             throw new RuntimeException("need Class name in 'setEventClassName()'");
         }
         DayDraggableEventView event_view = new DayDraggableEventView(context, event, false);
+        event_view.setType(DayDraggableEventView.TYPE_TEMP);
+
         int eventHeight = 1 * lineHeight;//one hour
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, eventHeight);
         params.topMargin = (int) (tapY - eventHeight / 2);
@@ -674,11 +676,15 @@ public class DayViewBody extends RelativeLayout {
                     msgWindowFollow((int) event.getX(), (int) event.getY(), (View) event.getLocalState());
                     break;
                 case DragEvent.ACTION_DRAG_ENTERED:
-                    Log.i(TAG, "ACTION_DRAG_ENTERED: ");
+                    if (dgView.getType() == DayDraggableEventView.TYPE_TEMP){
+                        tempDragView = dgView;
+                    }else{
+                        tempDragView= null;
+                    }
+
                     break;
                 case DragEvent.ACTION_DRAG_EXITED:
-                    Log.i(TAG, "ACTION_DRAG_EXITED: ");
-
+                    tempDragView = null;
                     break;
                 case DragEvent.ACTION_DROP:
 
@@ -701,15 +707,13 @@ public class DayViewBody extends RelativeLayout {
                     dgView.getNewCalendar().setMinute(currentEventNewMinutes);
 
                     if (tempDragView == null && onBodyListener != null) {
-                        if ((currentEventNewHour != -1) && (currentEventNewMinutes != -1)) {
-                            onBodyListener.onEventDragDrop(dgView);
-                            Log.i(TAG, "on drag: ");
-                        }
+                        onBodyListener.onEventDragDrop(dgView);
                     } else {
-                        Log.i(TAG, "onDrag: null");
+                        Log.i(TAG, "onDrop Not Called");
                     }
 
                     if (tempDragView != null) {
+                        Log.i(TAG, "onCreate Called ");
                         ViewGroup parent = (ViewGroup) tempDragView.getParent();
                         if(parent != null){
                             parent.removeView(tempDragView);
@@ -721,9 +725,6 @@ public class DayViewBody extends RelativeLayout {
                         //finally reset tempDragView to NULL.
                         tempDragView = null;
                     }
-
-                    currentEventNewHour = -1;
-                    currentEventNewMinutes = -1;
 
                     break;
                 case DragEvent.ACTION_DRAG_ENDED:
@@ -745,7 +746,6 @@ public class DayViewBody extends RelativeLayout {
 
         @Override
         public boolean onLongClick(View v) {
-            Log.i(TAG, "tempDragView: " + tempDragView + myCalendar.getDay());
             if (tempDragView == null) {
                 tempDragView = createTempDayDraggableEventView(nowTapX, nowTapY);
                 eventLayout.addView(tempDragView);
@@ -753,7 +753,6 @@ public class DayViewBody extends RelativeLayout {
                 tempDragView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        Log.i(TAG, "tempDragView: " + tempDragView.getHeight());
                         tempDragView.performLongClick();
                     }
                 }, 100);
@@ -927,5 +926,8 @@ public class DayViewBody extends RelativeLayout {
         }
     }
 
+    public void setCurrentTempView(DayDraggableEventView tempDragView){
+        this.tempDragView = tempDragView;
+    }
 
 }

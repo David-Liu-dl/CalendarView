@@ -26,6 +26,10 @@ import java.util.Calendar;
 public class DayDraggableEventView extends RelativeLayout {
     private final String TAG = "MyAPP";
 
+    public static int TYPE_NORMAL = 0;
+    public static int TYPE_TEMP = 1;
+    //0: default_normal, -1: temp view;
+    private int type = 0;
     private TextView title;
     private ImageView icon;
     private ImageView leftBar;
@@ -213,5 +217,13 @@ public class DayDraggableEventView extends RelativeLayout {
 
     public long getEndTimeM(){
         return this.getStartTimeM() + (event.getEndTime() - event.getStartTime());
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 }

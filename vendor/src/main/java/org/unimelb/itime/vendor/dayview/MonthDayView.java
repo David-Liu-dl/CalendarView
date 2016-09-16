@@ -365,18 +365,13 @@ public class MonthDayView extends LinearLayout {
         }
 
         private void bodyAutoSwipe(DayDraggableEventView eventView, int x, int y){
-//            if (eventView != null && eventView.getParent() != null){
-//                parentWidth = ((ViewGroup) eventView.getParent()).getWidth();
-//            }
-            if (eventView == null){
-                Log.i(TAG, "null: ");
-            }
             int offset = x > (parentWidth * 0.8) ? 1 : (x < (parentWidth * 0.2) ? -1 : 0);
 
             if (offset != 0){
                 int scrollTo = bodyCurrentPosition + offset;
                 bodyPager.setCurrentItem(scrollTo,true);
                 bodyPagerAdapter.currentDayPos = scrollTo;
+//                (bodyPagerAdapter.getViewByPosition(scrollTo)).setCurrentTempView(eventView);
                 MyCalendar bodyMyCalendar = (bodyPagerAdapter.getViewByPosition(scrollTo)).getCalendar();
                 Calendar body_fst_cal = bodyMyCalendar.getCalendar();
                 headerScrollToDate(body_fst_cal);

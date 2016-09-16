@@ -1,5 +1,6 @@
 package org.unimelb.itime.test.david;
 
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -8,6 +9,7 @@ import org.unimelb.itime.test.R;
 import org.unimelb.itime.test.bean.Contact;
 import org.unimelb.itime.test.bean.Event;
 import org.unimelb.itime.test.bean.Invitee;
+import org.unimelb.itime.test.databinding.ActivityYinBinding;
 import org.unimelb.itime.vendor.agendaview.AgendaViewBody;
 import org.unimelb.itime.vendor.agendaview.MonthAgendaView;
 import org.unimelb.itime.vendor.dayview.DayViewBody;
@@ -22,7 +24,7 @@ import java.util.Calendar;
 import java.util.List;
 
 public class YinActivity extends AppCompatActivity {
-
+    ActivityYinBinding binding;
     private final static String TAG = "MyAPP";
     private DBManager dbManager;
     private EventManager eventManager;
@@ -32,13 +34,16 @@ public class YinActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_yin);
+//        setContentView(R.layout.activity_yin);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_yin);
+        binding.setTest(new TestViewModel());
         dbManager = DBManager.getInstance(this);
         eventManager = EventManager.getInstance();
 
 //        initDB();
 
         init();
+
     }
 
     private void init(){

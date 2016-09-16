@@ -1,27 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="org.unimelb.itime.test.david.YinActivity"
-    android:orientation="vertical">
-
-    <!--<org.unimelb.itime.vendor.agendaview.MonthAgendaView-->
-    <!--android:id="@+id/monthAgendaView"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent">-->
-    <!--</org.unimelb.itime.vendor.agendaview.MonthAgendaView>-->
-
-    <org.unimelb.itime.vendor.dayview.MonthDayView
+    >
+    <data>
+        <variable
+            name="test"
+            type="org.unimelb.itime.test.david.TestViewModel"/>
+    </data>
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/monthDayView">
-    </org.unimelb.itime.vendor.dayview.MonthDayView>
+        tools:context="org.unimelb.itime.test.david.YinActivity"
+        android:orientation="vertical">
 
-    <!--<FrameLayout-->
-    <!--android:id="@+id/fragment"-->
+        <!--<Button-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="test click"-->
+            <!--android:onClick="@{test.onBtnClick()}"-->
+            <!--/>-->
+
+        <!--<org.unimelb.itime.vendor.agendaview.MonthAgendaView-->
+        <!--android:id="@+id/monthAgendaView"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent">-->
+        <!--</org.unimelb.itime.vendor.agendaview.MonthAgendaView>-->
+
+        <org.unimelb.itime.vendor.dayview.MonthDayView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/monthDayView"
+            >
+        </org.unimelb.itime.vendor.dayview.MonthDayView>
+
+        <!--<FrameLayout-->
+        <!--android:id="@+id/fragment"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent">-->
+        <!--</FrameLayout>-->
+
+    </LinearLayout>
+</layout>
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--xmlns:tools="http://schemas.android.com/tools"-->
     <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent">-->
-    <!--</FrameLayout>-->
+    <!--android:layout_height="match_parent"-->
+    <!--tools:context="org.unimelb.itime.test.david.YinActivity"-->
+    <!--android:orientation="vertical">-->
 
-</LinearLayout>
+    <!--&lt;!&ndash;<org.unimelb.itime.vendor.agendaview.MonthAgendaView&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/monthAgendaView"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="match_parent">&ndash;&gt;-->
+    <!--&lt;!&ndash;</org.unimelb.itime.vendor.agendaview.MonthAgendaView>&ndash;&gt;-->
+
+    <!--<org.unimelb.itime.vendor.dayview.MonthDayView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:id="@+id/monthDayView">-->
+    <!--</org.unimelb.itime.vendor.dayview.MonthDayView>-->
+
+    <!--&lt;!&ndash;<FrameLayout&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/fragment"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="match_parent">&ndash;&gt;-->
+    <!--&lt;!&ndash;</FrameLayout>&ndash;&gt;-->
+
+    <!--</LinearLayout>-->

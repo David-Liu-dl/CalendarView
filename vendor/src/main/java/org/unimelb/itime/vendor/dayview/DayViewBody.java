@@ -175,6 +175,10 @@ public class DayViewBody extends RelativeLayout {
         eventLayout = new RelativeLayout(getContext());
         eventLayout.setId(View.generateViewId());
         RelativeLayout.LayoutParams eventLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        eventLayoutParams.addRule(ALIGN_LEFT, dividerBgRLayout.getId());
+        eventLayoutParams.addRule(ALIGN_RIGHT, dividerBgRLayout.getId());
+        eventLayoutParams.addRule(ALIGN_TOP, dividerBgRLayout.getId());
+        eventLayoutParams.addRule(ALIGN_BOTTOM, dividerBgRLayout.getId());
         eventLayout.setLayoutParams(eventLayoutParams);
         eventLayout.setOnDragListener(new EventDragListener());
         eventLayout.setOnTouchListener(new View.OnTouchListener() {
@@ -182,6 +186,7 @@ public class DayViewBody extends RelativeLayout {
             public boolean onTouch(View v, MotionEvent event) {
                 nowTapX = event.getX();
                 nowTapY = event.getY();
+                Log.i(TAG, "onTouch: ");
                 if (onBodyTouchListener != null) {
                     onBodyTouchListener.bodyOnTouchListener(nowTapX, nowTapY);
                 } else {
@@ -536,8 +541,8 @@ public class DayViewBody extends RelativeLayout {
         }
 
         calculateEventLayout();
+        scrollViewScrollToFstEventOffset();
         eventLayout.requestLayout();
-//        scrollViewScrollToFstEventOffset();
 //        scrollContainerView.requestLayout();
 
     }
@@ -755,6 +760,7 @@ public class DayViewBody extends RelativeLayout {
 
         @Override
         public boolean onLongClick(View v) {
+            Log.i(TAG, "tempDragView: " + tempDragView + myCalendar.getDay());
             if (tempDragView == null) {
                 tempDragView = createTempDayDraggableEventView(nowTapX, nowTapY);
                 eventLayout.addView(tempDragView);

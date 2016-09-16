@@ -2,6 +2,8 @@ package org.unimelb.itime.vendor.dayview;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.animation.Interpolator;
 import android.widget.Scroller;
 
@@ -10,13 +12,17 @@ import android.widget.Scroller;
  */
 public class ScrollerCustomDuration extends Scroller{
     private double mScrollFactor = 1;
+    private DisplayMetrics dm;
+    private float scrollWidthFactory = 0.0f;
 
     public ScrollerCustomDuration(Context context) {
         super(context);
+        dm = context.getResources().getDisplayMetrics();
     }
 
     public ScrollerCustomDuration(Context context, Interpolator interpolator) {
         super(context, interpolator);
+        dm = context.getResources().getDisplayMetrics();
     }
 
     @SuppressLint("NewApi")
@@ -33,7 +39,9 @@ public class ScrollerCustomDuration extends Scroller{
 
     @Override
     public void startScroll(int startX, int startY, int dx, int dy, int duration) {
-        super.startScroll(startX, startY, dx, dy, (int) (duration * mScrollFactor));
+        scrollWidthFactory = Math.abs((float) dx/dm.widthPixels);
+
+        super.startScroll(startX, startY, dx, dy, (int) ((duration * mScrollFactor) * scrollWidthFactory));
     }
 
 }

@@ -361,6 +361,10 @@ public class MonthDayView extends LinearLayout {
             eventView.getNewCalendar().setDay(currentCal.getDay());
             eventView.getNewCalendar().setMonth(currentCal.getMonth());
             eventView.getNewCalendar().setYear(currentCal.getYear());
+            Log.i(TAG, "currentCal.getDay(): " + currentCal.getDay());
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(eventView.getStartTimeM());
+            Log.i(TAG, "currentCal.getDay(): " + cal.getTime());
             if (OnBodyOuterListener != null){OnBodyOuterListener.onEventDragDrop(eventView);}
         }
 

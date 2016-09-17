@@ -99,7 +99,10 @@ public class MonthAgendaView extends RelativeLayout{
         headerRecyclerAdapter.setOnCheckIfHasEvent(new DayViewHeader.OnCheckIfHasEvent() {
             @Override
             public boolean todayHasEvent(long startOfDay) {
-                return dayEventMap.containsKey(startOfDay);
+                if (dayEventMap != null){
+                    return dayEventMap.containsKey(startOfDay);
+                }
+                return false;
             }
         });
         headerRecyclerView.setHasFixedSize(true);
@@ -207,7 +210,6 @@ public class MonthAgendaView extends RelativeLayout{
                 date_offset = date_offset > 0 ? -1 : 1;
             }
 
-
             int row_diff = date_offset/7;
             int day_diff = ((headerRecyclerAdapter.indexInRow+1) + date_offset%7);
 
@@ -223,7 +225,7 @@ public class MonthAgendaView extends RelativeLayout{
                 if (row_diff != 0){
                     int newRowPst = row_diff + headerRecyclerAdapter.rowPst;
                     headerRecyclerView.stopScroll();
-                    headerRecyclerView.getLayoutManager().smoothScrollToPosition(headerRecyclerView,null,newRowPst);
+                    headerRecyclerView.getLayoutManager().scrollToPosition(newRowPst);
                     headerRecyclerAdapter.rowPst = newRowPst;
                 }
                 if (day_diff != 0){
@@ -236,7 +238,7 @@ public class MonthAgendaView extends RelativeLayout{
                                 need_set_index_header.performNthDayClick(new_index);
                             }
                         }
-                    },50);
+                    },10);
                     headerRecyclerAdapter.indexInRow = new_index;
                 }
             }

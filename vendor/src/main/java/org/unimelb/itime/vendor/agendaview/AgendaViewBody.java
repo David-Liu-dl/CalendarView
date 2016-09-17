@@ -65,10 +65,7 @@ public class AgendaViewBody extends LinearLayout{
 
     public void setEventList(List<ITimeEventInterface> eventList){
         this.setCurrentDayType();
-        this.events.clear();
-        if (events != null){
-            this.events = eventList;
-        }
+        this.events = eventList;
         displayEvents(this.events);
     }
 

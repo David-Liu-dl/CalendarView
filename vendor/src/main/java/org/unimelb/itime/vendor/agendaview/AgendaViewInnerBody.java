@@ -179,17 +179,6 @@ public class AgendaViewInnerBody extends RelativeLayout {
         locationTv.setTextColor(subColor);
         rightInfo.addView(locationTv);
 
-        //right bottom time remains
-        timeLeftTv = new TextView(context);
-        setTimeLeftTv(timeLeftTv);
-        timeLeftTv.setGravity(Gravity.CENTER);
-        timeLeftTv.setTextSize(textRegularSize);
-        timeLeftTv.setPadding(0, 0, DensityUtil.dip2px(context, 10), DensityUtil.dip2px(context, 10));
-        RelativeLayout.LayoutParams timeLeftTvParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        timeLeftTvParams.addRule(ALIGN_BOTTOM, rightInfo.getId());
-        timeLeftTvParams.addRule(ALIGN_PARENT_RIGHT);
-        this.addView(timeLeftTv, timeLeftTvParams);
-
         //status icon
         eventStatusView = new ImageView(context);
         eventStatusView.setId(generateViewId());
@@ -202,6 +191,17 @@ public class AgendaViewInnerBody extends RelativeLayout {
         eventStatusViewParams.addRule(ALIGN_TOP, rightInfo.getId());
         eventStatusViewParams.addRule(ALIGN_PARENT_RIGHT);
         this.addView(eventStatusView, eventStatusViewParams);
+
+        //right bottom time remains
+        timeLeftTv = new TextView(context);
+        setTimeLeftTv(timeLeftTv);
+        timeLeftTv.setGravity(Gravity.CENTER);
+        timeLeftTv.setTextSize(textRegularSize);
+        timeLeftTv.setPadding(0, 0, DensityUtil.dip2px(context, 10), DensityUtil.dip2px(context, 10));
+        RelativeLayout.LayoutParams timeLeftTvParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        timeLeftTvParams.addRule(ALIGN_BOTTOM, rightInfo.getId());
+        timeLeftTvParams.addRule(ALIGN_PARENT_RIGHT);
+        this.addView(timeLeftTv, timeLeftTvParams);
     }
 
     private void setTimeLeftTv(TextView timeLeftTv) {
@@ -271,7 +271,6 @@ public class AgendaViewInnerBody extends RelativeLayout {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(pic_height_width, pic_height_width);
         img.setPadding(5, 5, 5, 5);
         img.setLayoutParams(params);
-        Log.i(TAG, "addImage: " + url);
         LoadImgHelper.getInstance().bindUrlWithImageView(context, url, img);
 
         return img;

@@ -687,11 +687,9 @@ public class DayViewBody extends RelativeLayout {
                     tempDragView = null;
                     break;
                 case DragEvent.ACTION_DROP:
-
                     float actionStopX = event.getX();
                     float actionStopY = event.getY();
                     // Dropped, reassign View to ViewGroup
-
                     int newX = (int) actionStopX - dgView.getWidth() / 2;
                     int newY = (int) actionStopY - dgView.getHeight() / 2;
                     int[] reComputeResult = reComputePositionToSet(newX, newY, dgView, v);
@@ -712,11 +710,10 @@ public class DayViewBody extends RelativeLayout {
                         Log.i(TAG, "onDrop Not Called");
                     }
 
-                    if (tempDragView != null) {
-                        Log.i(TAG, "onCreate Called ");
-                        ViewGroup parent = (ViewGroup) tempDragView.getParent();
+                    if (dgView.getType() == DayDraggableEventView.TYPE_TEMP) {
+                        ViewGroup parent = (ViewGroup) dgView.getParent();
                         if(parent != null){
-                            parent.removeView(tempDragView);
+                            parent.removeView(dgView);
                         }
                         //important! update event time after drag via listener
                         if (onBodyListener != null) {

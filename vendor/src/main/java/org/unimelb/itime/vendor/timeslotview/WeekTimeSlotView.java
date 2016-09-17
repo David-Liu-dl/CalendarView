@@ -71,18 +71,6 @@ public class WeekTimeSlotView extends RelativeLayout{
 //    set time slots
     public void setTimeSlots(Map<Long,Boolean> timeSlots,int duration){
         this.pagerAdapter.setTimeSlots(timeSlots, duration);
-//        if (timeSlots!=null && timeSlots.size()>0){
-//            this.timeSlots = timeSlots;
-//            this.duration = duration;
-//            currentPageWeekViewBody.setTimeSlots(timeSlots,duration);
-//            if (preWeekTimeSlotViewBody!=null) {
-//                preWeekTimeSlotViewBody.setTimeSlots(timeSlots, duration);
-//            }
-//            if (nextWeekTimeSlotViewBody!=null) {
-//                nextWeekTimeSlotViewBody.setTimeSlots(timeSlots, duration);
-//            }
-//            requestLayout();
-//        }
     }
     //    set events
     public void setEventMap(Map<Long, List<ITimeEventInterface>> dayEventMap){
@@ -128,16 +116,6 @@ public class WeekTimeSlotView extends RelativeLayout{
 
         for (int i = 0 ; i < 4 ; i ++){
             LinearLayout linearLayout = (LinearLayout) LayoutInflater.from(getContext()).inflate(R.layout.time_slot_view_pager_page,null);
-//            calendar.set(Calendar.DAY_OF_MONTH,calendar.get(Calendar.DAY_OF_MONTH) + i*7);
-//
-//            WeekTimeSlotViewHeader weekTimeSlotViewHeader = (WeekTimeSlotViewHeader) linearLayout.getChildAt(0);
-//            weekTimeSlotViewHeader.setMyCalendar(new MyCalendar(calendar));
-//
-//            WeekTimeSlotViewBody weekTimeSlotViewBody = (WeekTimeSlotViewBody) linearLayout.getChildAt(1);
-//            if (i==0)
-//                currentPageWeekViewBody = weekTimeSlotViewBody; // assign currentPageWeekViewBody
-//            weekTimeSlotViewBody.setMyCalendar(new MyCalendar(calendar));
-////            weekTimeSlotViewBody.setOnTimeSlotClickListener(onTimeSlotClickListener);
             views.add(linearLayout);
         }
 
@@ -173,52 +151,6 @@ public class WeekTimeSlotView extends RelativeLayout{
 
             @Override
             public void onPageScrollStateChanged(int state) {
-//                if (state==1){
-//                    int size = pagerAdapter.getViews().size();
-//                    int currentPositionInViews = currentPosition % size;
-//                    LinearLayout curView = (LinearLayout)pagerAdapter.getViews().get(currentPositionInViews);
-//
-//                    currentPageWeekViewBody = (WeekTimeSlotViewBody) curView.getChildAt(1);
-//                    LinearLayout preView = (LinearLayout)pagerAdapter.getViews().get((currentPosition - 1) % size);
-//                    LinearLayout nextView = (LinearLayout)pagerAdapter.getViews().get((currentPosition + 1) % size);
-//
-//
-//                    WeekTimeSlotViewHeader currentWeekTimeSlotViewHeader = (WeekTimeSlotViewHeader) curView.getChildAt(0);
-//                    MyCalendar currentWeekViewMyCalendar = currentWeekTimeSlotViewHeader.getMyCalendar();
-//                    WeekTimeSlotViewHeader preWeekTimeSlotViewHeader = (WeekTimeSlotViewHeader) preView.getChildAt(0);
-//                    preWeekTimeSlotViewHeader.getMyCalendar().cloneFromMyCalendar(currentWeekViewMyCalendar);
-//                    preWeekTimeSlotViewHeader.getMyCalendar().setOffsetByDate(-7);
-//                    MyCalendar myCalendar = preWeekTimeSlotViewHeader.getMyCalendar();
-//                    preWeekTimeSlotViewHeader.setMyCalendar(preWeekTimeSlotViewHeader.getMyCalendar());
-//
-//
-//                    preWeekTimeSlotViewBody = (WeekTimeSlotViewBody) preView.getChildAt(1);
-//                    preWeekTimeSlotViewBody.getMyCalendar().cloneFromMyCalendar(currentWeekViewMyCalendar);
-//                    preWeekTimeSlotViewBody.getMyCalendar().setOffsetByDate(-7);
-//                    preWeekTimeSlotViewBody.setMyCalendar(preWeekTimeSlotViewBody.getMyCalendar());
-//                    preWeekTimeSlotViewBody.setTimeSlots(timeSlots,duration);
-//                    preWeekTimeSlotViewBody.setEvents(eventArrayList);
-//                    preWeekTimeSlotViewBody.setOnTimeSlotClickListener(onTimeSlotClickListener);
-//
-//
-////                    pagerAdapter.changeView(nextView,(currentPosition + 1) % size);
-//                    WeekTimeSlotViewHeader nextWeekTimeSlotViewHeader = (WeekTimeSlotViewHeader) nextView.getChildAt(0);
-//                    nextWeekTimeSlotViewHeader.getMyCalendar().cloneFromMyCalendar(currentWeekViewMyCalendar);
-//                    nextWeekTimeSlotViewHeader.getMyCalendar().setOffsetByDate(+7);
-//                    nextWeekTimeSlotViewHeader.setMyCalendar(nextWeekTimeSlotViewHeader.getMyCalendar());
-//
-//                    nextWeekTimeSlotViewBody = (WeekTimeSlotViewBody) nextView.getChildAt(1);
-//                    nextWeekTimeSlotViewBody.getMyCalendar().cloneFromMyCalendar(currentWeekViewMyCalendar);
-//                    nextWeekTimeSlotViewBody.getMyCalendar().setOffsetByDate(+7);
-//                    nextWeekTimeSlotViewBody.setMyCalendar(nextWeekTimeSlotViewBody.getMyCalendar());
-//                    nextWeekTimeSlotViewBody.setTimeSlots(timeSlots,duration);
-//                    nextWeekTimeSlotViewBody.setEvents(eventArrayList);
-//                    nextWeekTimeSlotViewBody.setOnTimeSlotClickListener(onTimeSlotClickListener);
-//
-//                    pagerAdapter.changeView(preView, (currentPosition-1)%size);
-//                    pagerAdapter.changeView(nextView,(currentPosition + 1) % size);
-//
-//                }
             }
         });
     }

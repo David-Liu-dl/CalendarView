@@ -24,7 +24,7 @@ import java.util.Map;
  */
 @BindingMethods(
         {@BindingMethod(type = WeekView.class, attribute = "app:onWeekViewChange", method="setOnWeekViewChangeListener"),
-        @BindingMethod(type = WeekView.class, attribute = "app:onClickEditEvent", method="setOnClickEventInterface")}
+        @BindingMethod(type = WeekView.class, attribute = "app:onWeekOutterListener", method="setOnWeekBodyOutterListener")}
 )
 
 public class WeekView extends RelativeLayout{
@@ -40,8 +40,6 @@ public class WeekView extends RelativeLayout{
 
     private OnWeekViewChangeListener onWeekViewChangeListener;
     private Map<Long, List<ITimeEventInterface>> dayEventMap;
-    private OnClickEventInterface onClickEventInterface;
-    private WeekViewBody currentPageWeekViewBody;
 
     public WeekView(Context context){
         super(context);
@@ -85,17 +83,6 @@ public class WeekView extends RelativeLayout{
 
         for (int i = 0 ; i < 4 ; i ++){
             LinearLayout linearLayout = (LinearLayout) LayoutInflater.from(getContext()).inflate(R.layout.week_view_pager_page,null);
-//            calendar.set(Calendar.DAY_OF_MONTH,calendar.get(Calendar.DAY_OF_MONTH) + i * 7);
-
-//            WeekViewHeader weekViewHeader = (WeekViewHeader) linearLayout.getChildAt(0);
-//            weekViewHeader.setMyCalendar(new MyCalendar(calendar));
-
-//            WeekViewBody weekViewBody = (WeekViewBody) linearLayout.getChildAt(1);
-//            if (i==0)
-//                currentPageWeekViewBody = weekViewBody;
-
-//            weekViewBody.setMyCalendar(new MyCalendar(calendar));
-//            this.addView(linearLayout);
             views.add(linearLayout);
         }
         ViewPager viewPager = new ViewPager(getContext());
@@ -129,60 +116,9 @@ public class WeekView extends RelativeLayout{
 
             @Override
             public void onPageScrollStateChanged(int state) {
-                if (state==1){
-//                    int size = pagerAdapter.getViews().size();
-//                    int currentPositionInViews = currentPosition % size;
-
-//                    LinearLayout curView = (LinearLayout)pagerAdapter.getViews().get(currentPositionInViews);
-//                    currentPageWeekViewBody = (WeekViewBody) curView.getChildAt(1);
-//                    LinearLayout preView = (LinearLayout)pagerAdapter.getViews().get((currentPosition - 1) % size);
-//                    LinearLayout nextView = (LinearLayout)pagerAdapter.getViews().get((currentPosition + 1) % size);
-//
-//                    WeekViewHeader currentWeekViewHeader = (WeekViewHeader) curView.getChildAt(0);
-//                    MyCalendar currentWeekViewMyCalendar = currentWeekViewHeader.getMyCalendar();
-
-//                    WeekViewHeader preWeekViewHeader = (WeekViewHeader) preView.getChildAt(0);
-//                    preWeekViewHeader.getMyCalendar().cloneFromMyCalendar(currentWeekViewMyCalendar);
-//                    preWeekViewHeader.getMyCalendar().setOffsetByDate(-7);
-//                    preWeekViewHeader.setMyCalendar(preWeekViewHeader.getMyCalendar());
-//
-//                    // init?
-//                    WeekViewBody preWeekViewBody = (WeekViewBody) preView.getChildAt(1);
-//                    preWeekViewBody.getMyCalendar().cloneFromMyCalendar(currentWeekViewMyCalendar);
-//                    preWeekViewBody.getMyCalendar().setOffsetByDate(-7);
-//                    preWeekViewBody.setMyCalendar(preWeekViewBody.getMyCalendar());
-////                    preWeekViewBody.setEvents(eventArrayList);
-//                    preWeekViewBody.setOnClickEventInterface(onClickEventInterface);
-//
-//                    // init?
-//                    WeekViewHeader nextWeekViewHeader = (WeekViewHeader) nextView.getChildAt(0);
-//                    nextWeekViewHeader.getMyCalendar().cloneFromMyCalendar(currentWeekViewMyCalendar);
-//                    nextWeekViewHeader.getMyCalendar().setOffsetByDate(+7);
-//                    nextWeekViewHeader.setMyCalendar(nextWeekViewHeader.getMyCalendar());
-//                    // init?
-//                    WeekViewBody nextWeekViewBody = (WeekViewBody) nextView.getChildAt(1);
-//                    nextWeekViewBody.getMyCalendar().cloneFromMyCalendar(currentWeekViewMyCalendar);
-//                    nextWeekViewBody.getMyCalendar().setOffsetByDate(+7);
-//                    nextWeekViewBody.setMyCalendar(nextWeekViewBody.getMyCalendar());
-////                    nextWeekViewBody.setEvents(eventArrayList);
-//                    nextWeekViewBody.setOnClickEventInterface(onClickEventInterface);
-//                    // init?
-//                    pagerAdapter.changeView(preView, (currentPosition-1)%size);
-//                    pagerAdapter.changeView(nextView,(currentPosition + 1) % size);
-
-                }
             }
         });
     }
-
-
-//    public ArrayList<ITimeEventInterface> getEventArrayList(){
-//        return this.eventArrayList;
-//    }
-
-//    end of setting events
-
-//    **********************************************************************************
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -191,34 +127,32 @@ public class WeekView extends RelativeLayout{
         totalWidth = MeasureSpec.getSize(widthMeasureSpec);
     }
 
-
-    public OnClickEventInterface getOnClickEventInterface() {
-        return onClickEventInterface;
-    }
-
-    public void setOnClickEventInterface(OnClickEventInterface onClickEventInterface) {
-        this.onClickEventInterface = onClickEventInterface;
-        currentPageWeekViewBody.setOnClickEventInterface(onClickEventInterface);
-    }
-
     public interface OnWeekViewChangeListener{
         void onWeekChanged(Calendar calendar);
     }
 
-    public interface OnClickEventInterface{
-        void onClickEditEvent(ITimeEventInterface iTimeEventInterface);
+    public WeekViewBody.OnWeekBodyListener getOnWeekBodyListener() {
+        return onWeekBodyListener;
     }
 
     private WeekViewBody.OnWeekBodyListener onWeekBodyListener;
+
     public void setOnWeekBodyOutterListener(WeekViewBody.OnWeekBodyListener onWeekBodyListener){
         this.onWeekBodyListener = onWeekBodyListener;
+        for (LinearLayout view:views
+             ) {
+            WeekViewBody body = (WeekViewBody) view.findViewById(R.id.week_body);
+            body.setOnWeekBodyListener(new OnWeekBodyInnerListener());
+        }
     }
+
 
     class OnWeekBodyInnerListener implements WeekViewBody.OnWeekBodyListener{
 
         @Override
         public void onEventCreate(WeekDraggableEventView eventView) {
-            if (onWeekBodyListener != null){onWeekBodyListener.onEventClick(eventView);}
+//            if (onWeekBodyListener != null){}
+            onWeekBodyListener.onEventClick(eventView);
         }
 
         @Override

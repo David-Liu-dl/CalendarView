@@ -68,8 +68,6 @@ public class WeekViewBody extends LinearLayout{
     private List<ITimeEventInterface> eventList = new ArrayList<>();
     private ArrayList<WeekDraggableEventView> eventViewArrayList = new ArrayList<>();
 
-    private WeekView.OnClickEventInterface onClickEventInterface;
-
     private TextView[] hourTextViewArr = new TextView[getHours().length];
     private TextView[] timeLineTextViewArr = new TextView[getHours().length];
     private TextView currentTimeLineTextView;
@@ -259,9 +257,9 @@ public class WeekViewBody extends LinearLayout{
                     eventView.setOnClickListener(new OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if (onWeekBodyListener != null){
+//                            if (onWeekBodyListener != null){
                                 onWeekBodyListener.onEventClick((WeekDraggableEventView) v);
-                            }
+//                            }
                         }
                     });
 //                    eventView.setOnLongClickListener(new MyLongClickListener()); // for event draggable
@@ -289,7 +287,9 @@ public class WeekViewBody extends LinearLayout{
                 eventView.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        onClickEventInterface.onClickEditEvent(eventView.getEvent());
+                        if (onWeekBodyListener != null){
+                            onWeekBodyListener.onEventClick(eventView);
+                        }
                     }
                 });
             }
@@ -311,10 +311,6 @@ public class WeekViewBody extends LinearLayout{
         firstSundayCalendar.set(Calendar.DAY_OF_MONTH, myCalendar.getDay());
         return (timeSlotCalendar.get(Calendar.WEEK_OF_YEAR) == firstSundayCalendar.get(Calendar.WEEK_OF_YEAR)
                 && timeSlotCalendar.get(Calendar.YEAR) == firstSundayCalendar.get(Calendar.YEAR));
-    }
-
-    public void setOnClickEventInterface(WeekView.OnClickEventInterface onClickEventInterface){
-        this.onClickEventInterface = onClickEventInterface;
     }
 
     private String[] getHours(){
@@ -438,7 +434,9 @@ public class WeekViewBody extends LinearLayout{
                 eventView.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        onClickEventInterface.onClickEditEvent(eventView.getEvent());
+                        if (onWeekBodyListener != null){
+                            onWeekBodyListener.onEventClick(eventView);
+                        }
                     }
                 });
             }
@@ -470,10 +468,6 @@ public class WeekViewBody extends LinearLayout{
             backGroundRelativeLayout.addView(weekBodyLinearLayout);
         }
         initCurrentTimeLine();
-    }
-
-    public WeekView.OnClickEventInterface getOnCLickEventInterface() {
-        return onClickEventInterface;
     }
 
     public static class MLayoutParams extends RelativeLayout.LayoutParams {
@@ -664,6 +658,7 @@ public class WeekViewBody extends LinearLayout{
         msgWindow.setLayoutParams(params);
         //msgWindow.setVisibility(View.VISIBLE);
     }
+
 
     public interface OnWeekBodyListener{
         void onEventCreate(WeekDraggableEventView eventView);

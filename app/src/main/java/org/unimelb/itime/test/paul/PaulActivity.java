@@ -13,6 +13,7 @@ import org.unimelb.itime.test.bean.Event;
 import org.unimelb.itime.test.bean.Invitee;
 import org.unimelb.itime.test.david.DBManager;
 import org.unimelb.itime.test.david.EventManager;
+import org.unimelb.itime.vendor.eventview.WeekDraggableEventView;
 import org.unimelb.itime.vendor.helper.MyCalendar;
 import org.unimelb.itime.vendor.timeslot.TimeSlotView;
 import org.unimelb.itime.vendor.timeslotview.WeekTimeSlotView;
@@ -39,16 +40,42 @@ public class PaulActivity extends AppCompatActivity {
         setContentView(R.layout.activity_paul);
 
         loadData();
-//        WeekView weekView = (WeekView) findViewById(R.id.week_view);
-//        weekView.setEventMap(EventManager.getInstance().getEventsMap());
-        WeekTimeSlotView weekTimeSlotView = (WeekTimeSlotView) findViewById(R.id.week_time_slot_view);
-        weekTimeSlotView.setEventMap(EventManager.getInstance().getEventsMap());
+        WeekView weekView = (WeekView) findViewById(R.id.week_view);
+        weekView.setOnWeekBodyOutterListener(new WeekViewBody.OnWeekBodyListener() {
+            @Override
+            public void onEventCreate(WeekDraggableEventView eventView) {
 
-        Calendar calendar = Calendar.getInstance();
-        Map timeslotMap = new HashMap();
-        timeslotMap.put(calendar.getTimeInMillis(),false);
-        timeslotMap.put(calendar.getTimeInMillis() + 3600000*3, false);
-        weekTimeSlotView.setTimeSlots(timeslotMap, 60);
+            }
+
+            @Override
+            public void onEventClick(WeekDraggableEventView eventView) {
+                Log.i("MyAPP", "onEventClick: ");
+            }
+
+            @Override
+            public void onEventDragStart(WeekDraggableEventView eventView) {
+
+            }
+
+            @Override
+            public void onEventDragging(WeekDraggableEventView eventView, int x, int y) {
+
+            }
+
+            @Override
+            public void onEventDragDrop(WeekDraggableEventView eventView) {
+
+            }
+        });
+        weekView.setEventMap(EventManager.getInstance().getEventsMap());
+//        WeekTimeSlotView weekTimeSlotView = (WeekTimeSlotView) findViewById(R.id.week_time_slot_view);
+//        weekTimeSlotView.setEventMap(EventManager.getInstance().getEventsMap());
+
+//        Calendar calendar = Calendar.getInstance();
+//        Map timeslotMap = new HashMap();
+//        timeslotMap.put(calendar.getTimeInMillis(),false);
+//        timeslotMap.put(calendar.getTimeInMillis() + 3600000*3, false);
+//        weekTimeSlotView.setTimeSlots(timeslotMap, 60);
 
 
 //        WeekView.OnWeekViewChangeListener onWeekViewChangeListener = new WeekView.OnWeekViewChangeListener() {

@@ -5,7 +5,7 @@
 
     <declare-styleable name="WeekView">
         <attr name="onWeekViewChange" format="string" />
-        <attr name="onClickEditEvent" format="string"/>
+        <attr name="onWeekOutterListener" format="string"/>
     </declare-styleable>
 
     <declare-styleable name="WeekTimeSlotView">

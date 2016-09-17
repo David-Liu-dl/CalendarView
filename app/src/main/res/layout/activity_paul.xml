@@ -9,10 +9,20 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     tools:context="org.unimelb.itime.test.paul.PaulActivity">
-    <FrameLayout
-        android:id="@+id/fragment"
+    <!--<FrameLayout-->
+        <!--android:id="@+id/fragment"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent">-->
+    <!--</FrameLayout>-->
+    <!--<org.unimelb.itime.vendor.weekview.WeekView-->
+        <!--android:id="@+id/week_view"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent">-->
+
+    <!--</org.unimelb.itime.vendor.weekview.WeekView>-->
+    <org.unimelb.itime.vendor.timeslotview.WeekTimeSlotView
+        android:id="@+id/week_time_slot_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    </FrameLayout>
-
+    </org.unimelb.itime.vendor.timeslotview.WeekTimeSlotView>
 </LinearLayout>

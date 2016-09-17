@@ -3,11 +3,13 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
     <org.unimelb.itime.vendor.timeslotview.WeekTimeSlotViewHeader
+        android:id="@+id/time_slot_header"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="6">
     </org.unimelb.itime.vendor.timeslotview.WeekTimeSlotViewHeader>
     <org.unimelb.itime.vendor.timeslotview.WeekTimeSlotViewBody
+        android:id="@+id/time_slot_body"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1">

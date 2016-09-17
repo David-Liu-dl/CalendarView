@@ -9,7 +9,13 @@ import android.util.Log;
 
 
 import org.unimelb.itime.test.R;
+import org.unimelb.itime.test.bean.Event;
+import org.unimelb.itime.test.bean.Invitee;
+import org.unimelb.itime.test.david.DBManager;
+import org.unimelb.itime.test.david.EventManager;
 import org.unimelb.itime.vendor.helper.MyCalendar;
+import org.unimelb.itime.vendor.timeslot.TimeSlotView;
+import org.unimelb.itime.vendor.timeslotview.WeekTimeSlotView;
 import org.unimelb.itime.vendor.weekview.WeekView;
 import org.unimelb.itime.vendor.weekview.WeekViewBody;
 import org.unimelb.itime.vendor.weekview.WeekViewHeader;
@@ -17,13 +23,12 @@ import org.unimelb.itime.vendor.weekview.WeekViewHeader;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PaulActivity extends AppCompatActivity {
 
-    WeekViewFragment weekViewFragment;
-    TestFragment testFragment;
-    TimeSlotFragment timeSlotFragment;
     private static final int PICK_PHOTO = 1;
     private List<String> mResults;
 
@@ -32,6 +37,18 @@ public class PaulActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_paul);
+
+        loadData();
+//        WeekView weekView = (WeekView) findViewById(R.id.week_view);
+//        weekView.setEventMap(EventManager.getInstance().getEventsMap());
+        WeekTimeSlotView weekTimeSlotView = (WeekTimeSlotView) findViewById(R.id.week_time_slot_view);
+        weekTimeSlotView.setEventMap(EventManager.getInstance().getEventsMap());
+
+        Calendar calendar = Calendar.getInstance();
+        Map timeslotMap = new HashMap();
+        timeslotMap.put(calendar.getTimeInMillis(),false);
+        timeslotMap.put(calendar.getTimeInMillis() + 3600000*3, false);
+        weekTimeSlotView.setTimeSlots(timeslotMap, 60);
 
 
 //        WeekView.OnWeekViewChangeListener onWeekViewChangeListener = new WeekView.OnWeekViewChangeListener() {
@@ -43,10 +60,8 @@ public class PaulActivity extends AppCompatActivity {
 
 //        testFragment = new TestFragment();
 //        getFragmentManager().beginTransaction().add(R.id.fragment,testFragment).commit();
-        weekViewFragment = new WeekViewFragment();
 //        timeSlotFragment = new TimeSlotFragment();
 
-        getFragmentManager().beginTransaction().add(R.id.fragment, weekViewFragment).commit();
 //        getFragmentManager().beginTransaction().add(R.id.fragment,timeSlotFragment).commit();
     }
 
@@ -62,5 +77,14 @@ public class PaulActivity extends AppCompatActivity {
     }
 
 
+    private void loadData(){
+        List<Event> allEvents = DBManager.getInstance(getApplicationContext()).getAllEvents();
+        EventManager.getInstance().getEventsMap().clear();
+        for (Event event: allEvents
+                ) {
+            List<Invitee> invitee = event.getInvitee();
+            EventManager.getInstance().addEvent(event);
+        }
 
+    }
 }

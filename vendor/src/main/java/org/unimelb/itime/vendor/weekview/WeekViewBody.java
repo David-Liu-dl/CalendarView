@@ -39,6 +39,7 @@ import java.util.TreeMap;
  */
 
 public class WeekViewBody extends LinearLayout{
+    private static final String TAG = "MyAPP";
     private int totalHeight = 0;
     private int totalWidth = 0;
     private int hourHeight = 0;
@@ -64,7 +65,7 @@ public class WeekViewBody extends LinearLayout{
     private MyDragListener myDragListener;
     private MyCalendar myCalendar;
     Calendar calendar = Calendar.getInstance();
-    private ArrayList<ITimeEventInterface> eventArrayList = new ArrayList<>();
+    private List<ITimeEventInterface> eventList = new ArrayList<>();
     private ArrayList<WeekDraggableEventView> eventViewArrayList = new ArrayList<>();
 
     private WeekView.OnClickEventInterface onClickEventInterface;
@@ -246,10 +247,10 @@ public class WeekViewBody extends LinearLayout{
     }
 
     public void initEvents(){
-        if (eventArrayList!=null){
+        if (eventList!=null){
             //first remove contains
             eventRelativeLayout.removeAllViews();
-            for (ITimeEventInterface event: eventArrayList){
+            for (ITimeEventInterface event: eventList){
                 Date eventDate = new Date(event.getStartTime());
                 Calendar eventCalendar = Calendar.getInstance();
                 eventCalendar.setTime(eventDate);
@@ -295,8 +296,8 @@ public class WeekViewBody extends LinearLayout{
         }
     }
 
-    public void setEvents(ArrayList<ITimeEventInterface> eventArrayList){
-        this.eventArrayList = eventArrayList;
+    public void setEvents(List<ITimeEventInterface> eventList){
+        this.eventList = eventList;
         initEvents();
         updateEvents();
         requestLayout();

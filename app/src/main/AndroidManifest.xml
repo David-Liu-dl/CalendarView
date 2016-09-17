@@ -27,13 +27,6 @@
         </activity>
         <activity android:name=".david.DavidActivity" />
         <activity android:name=".paul.PaulActivity" />
-        <activity android:name=".paul.testActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            </intent-filter>
-        </activity>
         <activity android:name=".david.YinActivity"></activity>
     </application>
 

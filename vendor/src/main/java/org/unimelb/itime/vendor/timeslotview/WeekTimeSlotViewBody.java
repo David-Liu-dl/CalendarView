@@ -26,6 +26,7 @@ import org.unimelb.itime.vendor.timeslot.TimeSlotView;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
@@ -45,7 +46,7 @@ public class WeekTimeSlotViewBody extends LinearLayout {
 
     private Map<Long, Boolean> timeSlots;
     private int duration =0;
-    private ArrayList<ITimeEventInterface> eventArrayList = new ArrayList<>();
+    private List<ITimeEventInterface> eventArrayList = new ArrayList<>();
     private ArrayList<WeekDraggableEventView> eventViewArrayList = new ArrayList<>();
 
     private TreeMap<Integer, String> timeSlotTreeMap = new TreeMap<>();
@@ -292,7 +293,19 @@ public class WeekTimeSlotViewBody extends LinearLayout {
                     TimeSlotView timeSlotView = new TimeSlotView(
                             getContext(), startTime, duration,isChoose);
                     timeSlotRelativeLayout.addView(timeSlotView);
-
+                    final long timeSlotViewStartTime = timeSlotView.getStartTime();
+                    timeSlotView.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if ( ((TimeSlotView)view).isSelect())
+                                ((TimeSlotView)view).setSelect(false);
+                            else
+                                ((TimeSlotView)view).setSelect(true);
+                            if(onTimeSlotClickListener!=null) {
+                                onTimeSlotClickListener.onTimeSlotClick(timeSlotViewStartTime);
+                            }
+                        }
+                    });
                     // add time line
                     ImageView timeSlotTimeLine = new ImageView(getContext());
                     timeSlotTimeLine.setImageResource(R.drawable.itime_dotted_line);
@@ -353,7 +366,7 @@ public class WeekTimeSlotViewBody extends LinearLayout {
 
 
 
-    public void setEvents(ArrayList<ITimeEventInterface> eventArrayList){
+    public void setEvents(List<ITimeEventInterface> eventArrayList){
         this.eventArrayList = eventArrayList;
         initEvents();
         updateEvents();
@@ -476,16 +489,7 @@ public class WeekTimeSlotViewBody extends LinearLayout {
                 timeSlotText.layout(0, topOffSet,hourWidth, topOffSet + hourHeight); // set time text
                 ImageView timeLineImage = timeSlotTimeLineArrayList.get(index);
                 timeLineImage.layout( hourWidth, topOffSet, hourWidth + oneWeekWidth, topOffSet + 3); // set time line
-                timeSlotView.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if ( ((TimeSlotView)view).isSelect())
-                            ((TimeSlotView)view).setSelect(false);
-                        else
-                            ((TimeSlotView)view).setSelect(true);
-                        onTimeSlotClickListener.onTimeSlotClick(timeSlotView.getStartTime());
-                    }
-                });
+
 
             }
         }
@@ -536,7 +540,9 @@ public class WeekTimeSlotViewBody extends LinearLayout {
                                 ((TimeSlotView)view).setSelect(false);
                             else
                                 ((TimeSlotView)view).setSelect(true);
-                        onTimeSlotClickListener.onTimeSlotClick(((TimeSlotView)view).getStartTime());
+                        if (onTimeSlotClickListener!=null) {
+                            onTimeSlotClickListener.onTimeSlotClick(((TimeSlotView) view).getStartTime());
+                        }
                     }
                 });
             }

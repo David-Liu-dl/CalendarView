@@ -68,28 +68,6 @@ public class PaulActivity extends AppCompatActivity {
             }
         });
         weekView.setEventMap(EventManager.getInstance().getEventsMap());
-//        WeekTimeSlotView weekTimeSlotView = (WeekTimeSlotView) findViewById(R.id.week_time_slot_view);
-//        weekTimeSlotView.setEventMap(EventManager.getInstance().getEventsMap());
-
-//        Calendar calendar = Calendar.getInstance();
-//        Map timeslotMap = new HashMap();
-//        timeslotMap.put(calendar.getTimeInMillis(),false);
-//        timeslotMap.put(calendar.getTimeInMillis() + 3600000*3, false);
-//        weekTimeSlotView.setTimeSlots(timeslotMap, 60);
-
-
-//        WeekView.OnWeekViewChangeListener onWeekViewChangeListener = new WeekView.OnWeekViewChangeListener() {
-//            @Override
-//            public void onWeekChanged(Calendar calendar) {
-//                Log.i("day is ", String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
-//            }
-//        };
-
-//        testFragment = new TestFragment();
-//        getFragmentManager().beginTransaction().add(R.id.fragment,testFragment).commit();
-//        timeSlotFragment = new TimeSlotFragment();
-
-//        getFragmentManager().beginTransaction().add(R.id.fragment,timeSlotFragment).commit();
     }
 
 
@@ -109,7 +87,6 @@ public class PaulActivity extends AppCompatActivity {
         EventManager.getInstance().getEventsMap().clear();
         for (Event event: allEvents
                 ) {
-            List<Invitee> invitee = event.getInvitee();
             EventManager.getInstance().addEvent(event);
         }
 

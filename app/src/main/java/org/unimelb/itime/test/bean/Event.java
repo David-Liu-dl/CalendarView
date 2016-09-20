@@ -97,6 +97,9 @@ public class Event implements ITimeEventInterface<Event>{
 
     @Override
     public List<? extends ITimeInviteeInterface> getDisplayInvitee() {
+        if (this.invitee == null){
+            this.invitee = this.getInvitee();
+        }
         return this.invitee;
     }
 

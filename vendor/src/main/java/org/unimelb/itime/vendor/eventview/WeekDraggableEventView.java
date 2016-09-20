@@ -155,8 +155,6 @@ public class WeekDraggableEventView extends RelativeLayout implements View.OnLon
         titleParams.topMargin=this.width/10;
         titleParams.leftMargin = width/3;
         title.layout(this.width/18 + this.width/10, this.width/3+this.width/10, (int)(this.width * 0.9),this.height);
-        Log.i("title height", String.valueOf(title.getHeight()));
-        Log.i("title width",String.valueOf(title.getWidth()));
         update();
     }
 

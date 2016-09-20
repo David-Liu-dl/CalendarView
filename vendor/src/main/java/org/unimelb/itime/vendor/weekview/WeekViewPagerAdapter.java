@@ -71,7 +71,7 @@ public class WeekViewPagerAdapter extends PagerAdapter {
         container.addView(view);
         doNotifyDataSetChangedOnce = true;
 
-        int dateOffset =(position - startPst) * 7;
+        int dateOffset =(position - startPst) * 7 ;
         WeekViewHeader header = (WeekViewHeader) view.findViewById(R.id.week_header);
         WeekViewBody body = (WeekViewBody) view.findViewById(R.id.week_body);
         this.updateHeader(header, dateOffset);
@@ -104,17 +104,17 @@ public class WeekViewPagerAdapter extends PagerAdapter {
     private List<ITimeEventInterface> getCurrentWeekEvents(MyCalendar cal){
         MyCalendar tempCal = new MyCalendar(cal);
         List<ITimeEventInterface> events = new ArrayList<>();
-        if (this.dayEventMap != null){
-            for (int i = 1; i < 7; i++) {
 
+        if (this.dayEventMap != null){
+            for (int i = 1; i < 8; i++) {
                 long startTimeM = tempCal.getBeginOfDayMilliseconds();
+
                 if (dayEventMap.containsKey(startTimeM)){
                     events.addAll(dayEventMap.get(startTimeM));
-                    Log.i(TAG, "dayEventMap.get(startTimeM): " + dayEventMap.get(startTimeM).size());
                 }else {
-                    Log.i(TAG, "getCurrentWeekEvents: NULL EVENT");
+                    Log.i(TAG, "current day : NULL EVENT");
                 }
-                tempCal.setOffset(i);
+                tempCal.setOffsetByDate(1);
             }
 
             return events;
@@ -126,14 +126,14 @@ public class WeekViewPagerAdapter extends PagerAdapter {
     }
 
     private void updateHeader(WeekViewHeader header, int offset){
-        MyCalendar cal = new MyCalendar(Calendar.getInstance());
-        cal.setOffset(offset);
+        MyCalendar cal = new MyCalendar(this.startCal);
+        cal.setOffsetByDate(offset);
         header.setMyCalendar(cal);
     }
 
     private void updateBody(WeekViewBody body, int offset){
-        MyCalendar cal = new MyCalendar(Calendar.getInstance());
-        cal.setOffset(offset);
+        MyCalendar cal = new MyCalendar(this.startCal);
+        cal.setOffsetByDate(offset);
         body.setMyCalendar(cal);
         body.setEvents(getCurrentWeekEvents(cal));
     }

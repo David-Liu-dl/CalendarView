@@ -301,7 +301,6 @@ public class AgendaViewInnerBody extends RelativeLayout {
         location = event.getLocation();
 
         List<? extends ITimeInviteeInterface> inviteeList = event.getDisplayInvitee();
-
         List<String> allUrls = new ArrayList<>();
 
         for (ITimeInviteeInterface invitee : inviteeList

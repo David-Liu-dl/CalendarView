@@ -24,6 +24,7 @@ import java.util.Calendar;
  * Created by yinchuandong on 22/08/2016.
  */
 public class WeekViewHeader extends LinearLayout{
+    private static final String TAG = "MyAPP";
     private int totalHeight;
     private int totalWidth;
     private int paddingTop = 0;
@@ -63,8 +64,8 @@ public class WeekViewHeader extends LinearLayout{
         dayOfMonthArrayList.clear();
 
         for (int i = 0; i<7;i++){
-            RelativeLayout dayBackgoundRelativeLayout = new RelativeLayout(getContext());//this for set red background
-            dayBackgroundRelativeLayoutArrayList.add(dayBackgoundRelativeLayout); // add to arraylist
+            RelativeLayout dayBackgroundRelativeLayout = new RelativeLayout(getContext());//this for set red background
+            dayBackgroundRelativeLayoutArrayList.add(dayBackgroundRelativeLayout); // add to arraylist
 
             RelativeLayout dayRelativeLayout = new RelativeLayout(getContext());
             dayRelativeLayout.setGravity(Gravity.CENTER);
@@ -80,8 +81,8 @@ public class WeekViewHeader extends LinearLayout{
 
             dayRelativeLayout.addView(dayOfWeek); // add to view
             dayRelativeLayout.addView(dayOfMonth); // add to view
-            dayBackgoundRelativeLayout.addView(dayRelativeLayout);
-            dateLayout.addView(dayBackgoundRelativeLayout);
+            dayBackgroundRelativeLayout.addView(dayRelativeLayout);
+            dateLayout.addView(dayBackgroundRelativeLayout);
         }
         this.addView(dateLayout);
     }
@@ -94,6 +95,7 @@ public class WeekViewHeader extends LinearLayout{
     }
 
     public void setMyCalendar(MyCalendar myCalendar) {
+        Log.i(TAG, "start day: " + myCalendar.getDay());
         this.myCalendar = myCalendar;
         Calendar calendar = Calendar.getInstance();
         calendar.set(myCalendar.getYear(),myCalendar.getMonth(),myCalendar.getDay(),myCalendar.getHour(),myCalendar.getMinute());

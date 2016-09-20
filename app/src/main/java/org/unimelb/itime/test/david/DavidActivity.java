@@ -54,7 +54,6 @@ public class DavidActivity extends AppCompatActivity {
         EventManager.getInstance().getEventsMap().clear();
         for (Event event: allEvents
              ) {
-            List<Invitee> invitee = event.getInvitee();
             EventManager.getInstance().addEvent(event);
         }
 
@@ -90,7 +89,7 @@ public class DavidActivity extends AppCompatActivity {
         int[] status = {0,1};
         long interval = 3600 * 1000;
         int alldayCount = 0;
-        for (int i = 1; i < 100; i++) {
+        for (int i = 1; i < 10000; i++) {
 
             long startTime = calendar.getTimeInMillis();
             long endTime = startTime + interval * (i%30);

@@ -101,8 +101,6 @@ public class YinActivity extends AppCompatActivity {
         EventManager.getInstance().getEventsMap().clear();
         for (Event event: allEvents
                 ) {
-            List<Invitee> invitee = event.getInvitee();
-            Log.i(TAG, "loadData: " + invitee.size());
             EventManager.getInstance().addEvent(event);
         }
 

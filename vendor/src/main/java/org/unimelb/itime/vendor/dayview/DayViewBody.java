@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import org.unimelb.itime.vendor.R;
@@ -54,7 +55,8 @@ public class DayViewBody extends RelativeLayout {
     private RelativeLayout rightContentLayout;
 
     private RelativeLayout dividerBgRLayout;
-    private RelativeLayout eventLayout;
+//    private RelativeLayout eventLayout;
+    private LinearLayout eventLayout;
 
     public MyCalendar myCalendar;
     private Context context;
@@ -81,6 +83,8 @@ public class DayViewBody extends RelativeLayout {
     private int lineHeight = 50;
     private int timeTextSize = 20;
     private int overlapGapHeight;
+
+    private int displayLen = 7;
 
     private float nowTapX = 0;
     private float nowTapY = 0;
@@ -116,6 +120,8 @@ public class DayViewBody extends RelativeLayout {
     }
 
     private void init() {
+        this.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
         scrollContainerView = new ScrollContainerView(context);
         scrollContainerView.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         this.addView(scrollContainerView);
@@ -159,7 +165,7 @@ public class DayViewBody extends RelativeLayout {
 
         rightContentLayout = new RelativeLayout(getContext());
         rightContentLayout.setId(View.generateViewId());
-        RelativeLayout.LayoutParams rightContentLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams rightContentLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         rightContentLayoutParams.addRule(RelativeLayout.BELOW, topAllDayLayout.getId());
         rightContentLayoutParams.addRule(RelativeLayout.RIGHT_OF, leftSideRLayout.getId());
         rightContentLayoutParams.addRule(RelativeLayout.ALIGN_TOP, leftSideRLayout.getId());
@@ -172,15 +178,15 @@ public class DayViewBody extends RelativeLayout {
         dividerBgRLayout.setLayoutParams(dividerBgRLayoutParams);
         rightContentLayout.addView(dividerBgRLayout);
 
-        eventLayout = new RelativeLayout(getContext());
+        eventLayout = new LinearLayout(getContext());
         eventLayout.setId(View.generateViewId());
+        eventLayout.setOrientation(LinearLayout.HORIZONTAL);
         RelativeLayout.LayoutParams eventLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         eventLayoutParams.addRule(ALIGN_LEFT, dividerBgRLayout.getId());
         eventLayoutParams.addRule(ALIGN_RIGHT, dividerBgRLayout.getId());
         eventLayoutParams.addRule(ALIGN_TOP, dividerBgRLayout.getId());
-        eventLayoutParams.addRule(ALIGN_BOTTOM, dividerBgRLayout.getId());
+        this.initEventLayouts(eventLayout);
         eventLayout.setLayoutParams(eventLayoutParams);
-        eventLayout.setOnDragListener(new EventDragListener());
         eventLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -194,12 +200,28 @@ public class DayViewBody extends RelativeLayout {
                 return false;
             }
         });
-        eventLayout.setOnLongClickListener(new CreateEventListener());
+
         rightContentLayout.addView(eventLayout);
 
         bodyContainerLayout.addView(topAllDayLayout);
         bodyContainerLayout.addView(leftSideRLayout);
         bodyContainerLayout.addView(rightContentLayout);
+
+    }
+
+    private ArrayList<DayEventLayout> eventLayouts = new ArrayList<>();
+
+    private void initEventLayouts(LinearLayout parent){
+
+        for (int i = 0; i < displayLen; i++) {
+            DayEventLayout eventLayout = new DayEventLayout(context);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,1f);
+            parent.addView(eventLayout,params);
+            eventLayout.setOnDragListener(new EventDragListener());
+
+            eventLayout.setOnLongClickListener(new CreateEventListener());
+            eventLayouts.add(eventLayout);
+        }
 
     }
 
@@ -221,33 +243,37 @@ public class DayViewBody extends RelativeLayout {
 
         dividerBgRLayout.measure(widthMeasureSpec, heightMeasureSpec);
 
-        int eventCount = eventLayout.getChildCount();
-        int layoutWidth = dividerBgRLayout.getMeasuredWidth();
+        int layoutWidthPerDay = dividerBgRLayout.getMeasuredWidth()/displayLen;
 
-        for (int i = 0; i < eventCount; i++) {
-            if (!(eventLayout.getChildAt(i) instanceof DayDraggableEventView)) {
-                continue;
-            }
-            DayDraggableEventView eventView = (DayDraggableEventView) eventLayout.getChildAt(i);
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) eventView.getLayoutParams();
-            DayDraggableEventView.PosParam pos = eventView.getPosParam();
-            if (pos == null) {
-                // for creating a new event
-                // the pos parameter is null, because we just mock it
-                continue;
-            }
-            int eventWidth = layoutWidth / pos.widthFactor;
-            int leftMargin = eventWidth * pos.startX;
-            params.width = eventWidth;
-            params.leftMargin = leftMargin + 5 * pos.startX;
-            params.topMargin = pos.topMargin;
-        }
+//        for (DayEventLayout eventLayout:eventLayouts
+//                ) {
+//            int eventCount = eventLayout.getChildCount();
+//
+//            for (int i = 0; i < eventCount; i++) {
+//                if (!(eventLayout.getChildAt(i) instanceof DayDraggableEventView)) {
+//                    continue;
+//                }
+//                DayDraggableEventView eventView = (DayDraggableEventView) eventLayout.getChildAt(i);
+//                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) eventView.getLayoutParams();
+//                DayDraggableEventView.PosParam pos = eventView.getPosParam();
+//                if (pos == null) {
+//                    // for creating a new event
+//                    // the pos parameter is null, because we just mock it
+//                    continue;
+//                }
+//                int eventWidth = layoutWidthPerDay / pos.widthFactor;
+//                int leftMargin = eventWidth * pos.startX;
+//                params.width = eventWidth;
+//                params.leftMargin = leftMargin + 5 * pos.startX;
+//                params.topMargin = pos.topMargin;
+//            }
+//        }
     }
 
-    @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        super.onLayout(changed, l, t, r, b);
-    }
+//    @Override
+//    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+//        super.onLayout(changed, l, t, r, b);
+//    }
 
     private void loadAttributes(AttributeSet attrs, Context context) {
         if (attrs != null && context != null) {
@@ -301,7 +327,7 @@ public class DayViewBody extends RelativeLayout {
         msgWindow.setTextSize(20);
         msgWindow.setGravity(Gravity.CENTER);
         msgWindow.setVisibility(View.INVISIBLE);
-        eventLayout.addView(msgWindow);
+//        eventLayout.addView(msgWindow);
     }
 
     private void initTimeText(String[] HOURS) {
@@ -387,8 +413,11 @@ public class DayViewBody extends RelativeLayout {
         }
 
         if (this.eventLayout != null) {
-            this.eventLayout.removeAllViews();
-            this.initMsgWindow();
+            for (DayEventLayout eventLayout:eventLayouts
+                 ) {
+                eventLayout.resetView();
+            }
+//            this.initMsgWindow();
         }
 
         this.regularEventModules.clear();
@@ -481,19 +510,38 @@ public class DayViewBody extends RelativeLayout {
     }
 
     private void addRegularEvent(ITimeEventInterface event) {
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-        String hourWithMinutes = sdf.format(new Date(event.getStartTime()));
-        String[] components = hourWithMinutes.split(":");
-        float trickTime = Integer.valueOf(components[0]) + (float) Integer.valueOf(components[1]) / 100;
-        int topMargin = nearestTimeSlotValue(trickTime);
-        DayDraggableEventView newDragEventView = this.createDayDraggableEventView(event, false);
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) newDragEventView.getLayoutParams();
-        params.topMargin = topMargin;
+        int offset = getEventContainerIndex(event);
+        if (offset < displayLen){
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+            String hourWithMinutes = sdf.format(new Date(event.getStartTime()));
+            String[] components = hourWithMinutes.split(":");
+            float trickTime = Integer.valueOf(components[0]) + (float) Integer.valueOf(components[1]) / 100;
+            int topMargin = nearestTimeSlotValue(trickTime);
+            DayDraggableEventView newDragEventView = this.createDayDraggableEventView(event, false);
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) newDragEventView.getLayoutParams();
+            params.topMargin = topMargin;
 
-        newDragEventView.setId(View.generateViewId());
-        this.regularEventViewMap.put(event, newDragEventView.getId());
-        this.eventLayout.addView(newDragEventView, params);
-        this.regularDayDgEventViews.add(newDragEventView);
+            newDragEventView.setId(View.generateViewId());
+            this.regularEventViewMap.put(event, newDragEventView.getId());
+
+            this.eventLayouts.get(offset).addView(newDragEventView, params);
+            this.eventLayouts.get(offset).getEvents().add(event);
+            this.eventLayouts.get(offset).getDgEvents().add(newDragEventView);
+
+            this.regularDayDgEventViews.add(newDragEventView);
+        }else {
+            Log.i(TAG, "offset error: " + offset);
+        }
+
+    }
+
+    private int getEventContainerIndex(ITimeEventInterface event){
+        long today = this.myCalendar.getBeginOfDayMilliseconds();
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(event.getStartTime());
+        long eventDay = (new MyCalendar(cal)).getBeginOfDayMilliseconds();
+
+        return (int)((eventDay - today)/(24 * 60 * 60 * 1000));
     }
 
     private void resizeAllDayEvents(int totalWidth, int marginLeft) {
@@ -526,23 +574,33 @@ public class DayViewBody extends RelativeLayout {
         return getStartY;
     }
 
-
     /**
      * set publc for other
      *
-     * @param eventList
+     * @param dayEventMap
      */
-    public void setEventList(List<ITimeEventInterface> eventList) {
+    public void setEventList(Map<Long, List<ITimeEventInterface>> dayEventMap) {
         this.clearAllEvents();
-        this.eventList = eventList;
 
-        for (ITimeEventInterface event : eventList) {
-            this.addEvent(event);
+        MyCalendar tempCal = new MyCalendar(this.myCalendar);
+
+        for (int i = 0; i < displayLen; i++) {
+            long startTime = tempCal.getBeginOfDayMilliseconds();
+            if (dayEventMap.containsKey(startTime)){
+                List<ITimeEventInterface> currentDayEvents = dayEventMap.get(startTime);
+                for (ITimeEventInterface event : currentDayEvents) {
+                    this.addEvent(event);
+                }
+            }
+            tempCal.setOffsetByDate(1);
         }
 
-        calculateEventLayout();
-        scrollViewScrollToFstEventOffset();
-        eventLayout.requestLayout();
+        for (DayEventLayout eventLayout:eventLayouts
+             ) {
+//            calculateEventLayout(eventLayout);
+        }
+//        scrollViewScrollToFstEventOffset();
+//        eventLayout.requestLayout();
     }
 
     private void scrollViewScrollToFstEventOffset(){
@@ -554,9 +612,9 @@ public class DayViewBody extends RelativeLayout {
      * calculate the position of event
      * it needs to be called when setting event or event position changed
      */
-    private void calculateEventLayout() {
+    private void calculateEventLayout(DayEventLayout eventLayout) {
         List<ArrayList<Pair<Pair<Integer, Integer>, ITimeEventInterface>>> overlapGroups
-                = xHelper.computeOverlapXForEvents(this.regularEventModules);
+                = xHelper.computeOverlapXForEvents(eventLayout.getEvents());
         boolean foundFstPos = false;
         int previousGroupExtraY = 0;
         for (ArrayList<Pair<Pair<Integer, Integer>, ITimeEventInterface>> overlapGroup : overlapGroups
@@ -569,7 +627,6 @@ public class DayViewBody extends RelativeLayout {
                 int topMargin = startY + overlapGapHeight * i + previousGroupExtraY;
                 DayDraggableEventView eventView = (DayDraggableEventView) eventLayout.findViewById(regularEventViewMap.get(overlapGroup.get(i).second));
                 eventView.setPosParam(new DayDraggableEventView.PosParam(startY, startX, widthFactor, topMargin));
-
                 if(!foundFstPos){
                     fstEventPosY = startY;
                     foundFstPos = true;
@@ -593,7 +650,7 @@ public class DayViewBody extends RelativeLayout {
         });
         if (isAllDayEvent) {
             int allDayHeight = topAllDayLayout.getWidth() - topAllDayLayout.getPaddingBottom() - topAllDayLayout.getPaddingTop();
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(0, allDayHeight);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(100, allDayHeight);
             event_view.setTag(event);
             event_view.setLayoutParams(params);
         } else {

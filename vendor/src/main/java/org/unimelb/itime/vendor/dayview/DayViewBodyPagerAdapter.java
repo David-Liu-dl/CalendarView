@@ -62,9 +62,10 @@ public class DayViewBodyPagerAdapter extends PagerAdapter {
         currentBodyView.getCalendar().setOffset(offset);
         currentBodyView.resetViews();
         long startTime = currentBodyView.getCalendar().getBeginOfDayMilliseconds();
-        if (this.dayEventMap.containsKey(startTime)){
-            currentBodyView.setEventList(this.dayEventMap.get(startTime));
-        }
+//        if (this.dayEventMap.containsKey(startTime)){
+//            currentBodyView.setEventList(this.dayEventMap.get(startTime));
+//        }
+        currentBodyView.setEventList(this.dayEventMap);
         container.addView(currentBodyView);
 //        Log.i(TAG, "instantiateItem: " + position);
         return currentBodyView;
@@ -75,7 +76,7 @@ public class DayViewBodyPagerAdapter extends PagerAdapter {
              ) {
             long startTime = bodyView.getCalendar().getBeginOfDayMilliseconds();
             if (this.dayEventMap.containsKey(startTime)){
-                bodyView.setEventList(this.dayEventMap.get(startTime));
+                bodyView.setEventList(this.dayEventMap);
             }
         }
     }

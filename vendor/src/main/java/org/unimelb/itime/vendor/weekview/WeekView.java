@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import org.unimelb.itime.vendor.R;
-import org.unimelb.itime.vendor.eventview.WeekDraggableEventView;
+import org.unimelb.itime.vendor.eventview.DayDraggableEventView;
 import org.unimelb.itime.vendor.helper.MyCalendar;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 
@@ -150,31 +150,31 @@ public class WeekView extends RelativeLayout{
     class OnWeekBodyInnerListener implements WeekViewBody.OnWeekBodyListener{
 
         @Override
-        public void onEventCreate(WeekDraggableEventView eventView) {
+        public void onEventCreate(DayDraggableEventView eventView) {
 //            if (onWeekBodyListener != null){}
             onWeekBodyListener.onEventClick(eventView);
         }
 
         @Override
-        public void onEventClick(WeekDraggableEventView eventView) {
+        public void onEventClick(DayDraggableEventView eventView) {
             if (onWeekBodyListener != null){onWeekBodyListener.onEventClick(eventView);}
 
         }
 
         @Override
-        public void onEventDragStart(WeekDraggableEventView eventView) {
+        public void onEventDragStart(DayDraggableEventView eventView) {
             if (onWeekBodyListener != null){onWeekBodyListener.onEventClick(eventView);}
 
         }
 
         @Override
-        public void onEventDragging(WeekDraggableEventView eventView, int x, int y) {
+        public void onEventDragging(DayDraggableEventView eventView, int x, int y) {
             if (onWeekBodyListener != null){onWeekBodyListener.onEventDragging(eventView, x, y);}
 
         }
 
         @Override
-        public void onEventDragDrop(WeekDraggableEventView eventView) {
+        public void onEventDragDrop(DayDraggableEventView eventView) {
             if (onWeekBodyListener != null){onWeekBodyListener.onEventDragDrop(eventView);}
 
         }

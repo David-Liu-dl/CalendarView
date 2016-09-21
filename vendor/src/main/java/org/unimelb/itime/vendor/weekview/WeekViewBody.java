@@ -208,23 +208,27 @@ public class WeekViewBody extends RelativeLayout{
         //right event
         eventRelativeLayout = new RelativeLayout(getContext());
         RelativeLayout.LayoutParams eventRelativeLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        eventRelativeLayout.setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                tapX = event.getX();
-                tapY = event.getY();
-                return false;
-            }
-        });
-        eventRelativeLayout.setOnLongClickListener(new OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                //create event here;
-
-                return false;
-            }
-        });
+//        eventRelativeLayout.setOnTouchListener(new OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                tapX = event.getX();
+//                tapY = event.getY();
+//                return false;
+//            }
+//        });
+//        eventRelativeLayout.setOnLongClickListener(new OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View v) {
+//                //create event here;
+//
+//                return false;
+//            }
+//        });
         rightContainerRelativeLayout.addView(eventRelativeLayout,eventRelativeLayoutParams);
+    }
+
+    private void initEventLayouts(){
+
     }
 
     public void initHourTextViews() {
@@ -531,7 +535,7 @@ public class WeekViewBody extends RelativeLayout{
     public void setNumOfHourShowInScreen(int number){
         this.numOfHourShowInScreen = number;
     }
-//
+
 //    @Override
 //    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 //        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -583,8 +587,8 @@ public class WeekViewBody extends RelativeLayout{
 //        }
 //    }
 
-    @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+//    @Override
+//    protected void onLayout(boolean changed, int l, int t, int r, int b) {
 //        // init events
 //        if (eventViewArrayList!=null){
 //            for (final WeekDraggableEventView eventView:eventViewArrayList){
@@ -603,9 +607,9 @@ public class WeekViewBody extends RelativeLayout{
 //            }
 //        }
 //        // for drag events
-        initTimeSlot(getHours());
-        initDaySlot();
-    }
+//        initTimeSlot(getHours());
+//        initDaySlot();
+//    }
 
     public void updateWidthHeight(int totalWidth, int totalHeight) {
         this.hourHeight = totalHeight / numOfHourShowInScreen;

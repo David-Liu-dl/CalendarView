@@ -150,7 +150,6 @@ public class MonthDayView extends LinearLayout {
                         //update header
                         bodyPagerAdapter.currentDayPos = position;
                         headerScrollToDate(body_fst_cal);
-                        Log.i(TAG, "onPageSelected: ");
                     }
                 }finally {
                     bodyCurrentPosition = position;
@@ -197,10 +196,6 @@ public class MonthDayView extends LinearLayout {
                 day_diff = day_diff <= 0 ? (7 + day_diff):day_diff;
             }
 
-//            if (row_diff > 5){
-//                Log.i(TAG, "header_current_cal: " + header_current_cal.getTime() );
-////                Log.i(TAG, "header_current_cal: " + header_current_cal.getTime() );
-//            }
             if ((row_diff != 0 || day_diff != 0)){
                 if (row_diff != 0){
                     int newRowPst = row_diff + headerRecyclerAdapter.rowPst;

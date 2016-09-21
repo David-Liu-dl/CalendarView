@@ -543,8 +543,6 @@ public class DayViewBody extends RelativeLayout {
         calculateEventLayout();
         scrollViewScrollToFstEventOffset();
         eventLayout.requestLayout();
-//        scrollContainerView.requestLayout();
-
     }
 
     private void scrollViewScrollToFstEventOffset(){

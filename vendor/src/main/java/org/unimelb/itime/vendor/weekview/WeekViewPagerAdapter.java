@@ -77,8 +77,6 @@ public class WeekViewPagerAdapter extends PagerAdapter {
         this.updateHeader(header, dateOffset);
         this.updateBody(body, dateOffset);
 
-        Log.i(TAG, "instantiateItem: " + position);
-
         return view;
     }
 

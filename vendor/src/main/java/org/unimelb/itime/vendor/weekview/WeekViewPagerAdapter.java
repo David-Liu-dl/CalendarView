@@ -107,7 +107,9 @@ public class WeekViewPagerAdapter extends PagerAdapter {
         int count = parent.getChildCount();
         for (int i = 0; i < count; i++) {
             if (parent.getChildAt(i) instanceof FlexibleLenViewBody){
-                ((FlexibleLenViewBody)parent.getChildAt(i)).getCalendar().setOffsetByDate(offset);
+                MyCalendar cal = new MyCalendar(this.startCal);
+                cal.setOffsetByDate(offset);
+                ((FlexibleLenViewBody)parent.getChildAt(i)).setCalendar(cal);
                 ((FlexibleLenViewBody)parent.getChildAt(i)).resetViews();
                 ((FlexibleLenViewBody)parent.getChildAt(i)).setEventList(this.dayEventMap);
             }

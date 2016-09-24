@@ -494,9 +494,6 @@ public class FlexibleLenViewBody extends RelativeLayout {
         if (isAllDayEvent) {
             addAllDayEvent(event);
         } else {
-            Calendar cal = Calendar.getInstance();
-            cal.setTimeInMillis(event.getStartTime());
-            Log.i(TAG, event.getTitle() + " -- " + cal.getTime());
             addRegularEvent(event);
         }
         this.msgWindow.bringToFront();
@@ -580,17 +577,16 @@ public class FlexibleLenViewBody extends RelativeLayout {
     public void setEventList(Map<Long, List<ITimeEventInterface>> dayEventMap) {
         this.clearAllEvents();
         MyCalendar tempCal = new MyCalendar(this.myCalendar);
-
+        Log.i(TAG, "tempCal: " + tempCal);
         for (int i = 0; i < displayLen; i++) {
             long startTime = tempCal.getBeginOfDayMilliseconds();
             if (dayEventMap != null && dayEventMap.containsKey(startTime)){
                 List<ITimeEventInterface> currentDayEvents = dayEventMap.get(startTime);
                 for (ITimeEventInterface event : currentDayEvents) {
                     this.addEvent(event);
-                    Log.i(TAG, tempCal.getDay() + " setEventList: " + currentDayEvents.size());
                 }
             }else {
-                Log.i(TAG, "dayEventMap null: " + tempCal.getDay());
+//                Log.i(TAG, "dayEventMap null: " + tempCal.getDay());
             }
             tempCal.setOffsetByDate(1);
         }

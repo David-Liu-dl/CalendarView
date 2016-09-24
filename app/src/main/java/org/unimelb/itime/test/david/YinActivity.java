@@ -47,7 +47,6 @@ public class YinActivity extends AppCompatActivity {
         monthDayView.setOnHeaderListener(new MonthDayView.OnHeaderListener() {
             @Override
             public void onMonthChanged(MyCalendar calendar) {
-                Log.i(TAG, "onMonthChanged: " + calendar.getCalendar().getTime());
             }
         });
         monthDayView.setOnBodyOuterListener(new FlexibleLenViewBody.OnBodyListener() {

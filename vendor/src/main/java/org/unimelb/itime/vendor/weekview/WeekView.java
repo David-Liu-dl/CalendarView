@@ -1,99 +1,136 @@
 package org.unimelb.itime.vendor.weekview;
 
 import android.content.Context;
-import android.databinding.BindingMethod;
-import android.databinding.BindingMethods;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
-import org.unimelb.itime.vendor.R;
+import org.unimelb.itime.vendor.dayview.FlexibleLenBodyViewPager;
+import org.unimelb.itime.vendor.dayview.FlexibleLenViewBody;
 import org.unimelb.itime.vendor.eventview.DayDraggableEventView;
+import org.unimelb.itime.vendor.helper.DensityUtil;
 import org.unimelb.itime.vendor.helper.MyCalendar;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
- * Created by Paul on 22/08/2016.
+ * Created by yuhaoliu on 10/08/16.
  */
-@BindingMethods(
-        {@BindingMethod(type = WeekView.class, attribute = "app:onWeekViewChange", method="setOnWeekViewChangeListener"),
-        @BindingMethod(type = WeekView.class, attribute = "app:onWeekOutterListener", method="setOnWeekBodyOutterListener")}
-)
 
-public class WeekView extends RelativeLayout{
-    private WeekViewPagerAdapter pagerAdapter;
-    private ArrayList<LinearLayout> views = new ArrayList<>();
-    private int currentPosition = 500;
-    Calendar firstSundayCalendar;
+public class WeekView extends LinearLayout {
+    private final String TAG = "MyAPP";
 
-    private int totalHeight;
-    private int totalWidth;
-    private int headerHeight;
-    private int bodyHeight;
+    private Context context;
+    final DisplayMetrics dm = getResources().getDisplayMetrics();
 
-    private OnWeekViewChangeListener onWeekViewChangeListener;
+    private int upperBoundsOffset = 1;
+    private int bodyCurrentPosition;
+
+    private MyCalendar monthDayViewCalendar = new MyCalendar(Calendar.getInstance());
+
+    ArrayList<WeekViewHeader> headerViewList;
+    ArrayList<FlexibleLenViewBody> bodyViewList;
+    ArrayList<LinearLayout> weekViewList;
+
+
+    private FlexibleLenBodyViewPager weekViewPager;
+    private WeekViewPagerAdapter adapter;
+
     private Map<Long, List<ITimeEventInterface>> dayEventMap;
 
-    public WeekView(Context context){
+    private int bodyPagerCurrentState = 0;
+
+    public WeekView(Context context) {
         super(context);
-        initAll();
+        initView();
     }
 
     public WeekView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initAll();
+        initView();
     }
 
-    public OnWeekViewChangeListener getOnWeekViewChangeListener() {
-        return onWeekViewChangeListener;
+    public WeekView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        initView();
     }
 
-    public void setOnWeekViewChangeListener(OnWeekViewChangeListener onWeekViewChangeListener) {
-        this.onWeekViewChangeListener = onWeekViewChangeListener;
+    public void reloadEvents(){
+
     }
 
-    //    set events
-    public void setEventMap(Map<Long, List<ITimeEventInterface>> dayEventMap){
+    private void initView(){
+        this.context = getContext();
+
+        bodyViewList = new ArrayList<>();
+        this.initBody();
+        headerViewList = new ArrayList<>();
+        this.initHeader();
+        weekViewList = new ArrayList<>();
+        this.initWeekViews();
+
+        this.setUpWeekView();
+    }
+
+    private void initHeader(){
+        int size = 4;
+        int padding = DensityUtil.dip2px(context,20);
+        for (int i = 0; i < size; i++) {
+            WeekViewHeader headerView = new WeekViewHeader(context);
+
+            headerView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            headerView.setPadding(padding,padding,0,padding);
+            headerViewList.add(headerView);
+
+        }
+    }
+
+    private void initWeekViews(){
+        int size = 4;
+        for (int i = 0; i < size; i++) {
+            LinearLayout weekView = new LinearLayout(context);
+            weekView.setOrientation(VERTICAL);
+            weekView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            weekView.addView(this.headerViewList.get(i));
+            weekView.addView(this.bodyViewList.get(i));
+            this.weekViewList.add(weekView);
+        }
+    }
+
+    /*--------------------*/
+
+    public void setDayEventMap(Map<Long, List<ITimeEventInterface>> dayEventMap){
         this.dayEventMap = dayEventMap;
-        if (this.pagerAdapter != null){
-            pagerAdapter.setDayEventMap(dayEventMap);
+        if (adapter != null){
+            adapter.setDayEventMap(this.dayEventMap);
+        }else {
+            Log.i(TAG, "adapter: null" );
         }
     }
 
-    public void initAll(){
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY,0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        int todayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-        calendar.add(Calendar.DATE, -(todayOfWeek - 1));
-
-        // copy this calendar to pass to itime_main_program
-        firstSundayCalendar = Calendar.getInstance();
-        firstSundayCalendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
-                calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
-
-        for (int i = 0 ; i < 4 ; i ++){
-            LinearLayout linearLayout = (LinearLayout) LayoutInflater.from(getContext()).inflate(R.layout.week_view_pager_page,null);
-            views.add(linearLayout);
+    private void setUpWeekView(){
+        weekViewPager = new FlexibleLenBodyViewPager(context);
+        weekViewPager.setScrollDurationFactor(3);
+        upperBoundsOffset = 500;
+        bodyCurrentPosition = upperBoundsOffset;
+        adapter = new WeekViewPagerAdapter(upperBoundsOffset,weekViewList);
+        if (this.dayEventMap != null){
+            adapter.setDayEventMap(this.dayEventMap);
         }
-        ViewPager viewPager = new ViewPager(getContext());
-        this.addView(viewPager);
-        pagerAdapter = new WeekViewPagerAdapter(currentPosition,views);
-        pagerAdapter.setDayEventMap(this.dayEventMap);
-        viewPager.setAdapter(pagerAdapter);
-        viewPager.setOffscreenPageLimit(1);
-        viewPager.setCurrentItem(currentPosition);
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            private int lastPosition = 500;
+        weekViewPager.setAdapter(adapter);
+        weekViewPager.setCurrentItem(upperBoundsOffset);
+        this.addView(weekViewPager,new LinearLayoutCompat.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        weekViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -101,82 +138,124 @@ public class WeekView extends RelativeLayout{
 
             @Override
             public void onPageSelected(int position) {
-                currentPosition = position;
-                int deltaPosition;
-                if (currentPosition - lastPosition>0)
-                    deltaPosition=1;
-                else
-                    deltaPosition=-1;
-                if(onWeekViewChangeListener != null){
-                    firstSundayCalendar.add(Calendar.DATE,(deltaPosition)*7);
-                    onWeekViewChangeListener.onWeekChanged(firstSundayCalendar);
-                }
-                lastPosition=position;
+                bodyCurrentPosition = position;
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
+
             }
         });
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        totalHeight = MeasureSpec.getSize(heightMeasureSpec);
-        totalWidth = MeasureSpec.getSize(widthMeasureSpec);
-    }
 
-    public interface OnWeekViewChangeListener{
-        void onWeekChanged(Calendar calendar);
-    }
+    private void initBody(){
+        int size = 4;
+        Calendar calendar = Calendar.getInstance(Locale.getDefault());
+        calendar.setTime(new Date());
+        int day_of_week = calendar.get(Calendar.DAY_OF_WEEK) - 1;
+        calendar.set(Calendar.DAY_OF_MONTH,calendar.get(Calendar.DAY_OF_MONTH) - day_of_week);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        for (int i = 0; i < size; i++) {
+            FlexibleLenViewBody bodyView = new FlexibleLenViewBody(context,3);
+            bodyView.setLayoutParams(new LinearLayoutCompat.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            bodyView.setCalendar(new MyCalendar(calendar));
+            bodyView.setOnBodyListener(new OnBodyInnerListener());
 
-    public WeekViewBody.OnWeekBodyListener getOnWeekBodyListener() {
-        return onWeekBodyListener;
-    }
-
-    private WeekViewBody.OnWeekBodyListener onWeekBodyListener;
-
-    public void setOnWeekBodyOutterListener(WeekViewBody.OnWeekBodyListener onWeekBodyListener){
-        this.onWeekBodyListener = onWeekBodyListener;
-        for (LinearLayout view:views
-             ) {
-            WeekViewBody body = (WeekViewBody) view.findViewById(R.id.week_body);
-            body.setOnWeekBodyListener(new OnWeekBodyInnerListener());
+            bodyViewList.add(bodyView);
         }
+
     }
 
 
-    class OnWeekBodyInnerListener implements WeekViewBody.OnWeekBodyListener{
+    private OnHeaderListener onHeaderListener;
+
+    public void setOnHeaderListener(OnHeaderListener onHeaderListener){
+        this.onHeaderListener = onHeaderListener;
+    }
+
+    FlexibleLenViewBody.OnBodyListener OnBodyOuterListener;
+
+    public void setOnBodyOuterListener(FlexibleLenViewBody.OnBodyListener onBodyOuterListener){
+        this.OnBodyOuterListener = onBodyOuterListener;
+    }
+
+    public interface OnHeaderListener{
+        void onMonthChanged(MyCalendar calendar);
+    }
+
+    public class OnBodyInnerListener implements FlexibleLenViewBody.OnBodyListener{
+        int parentWidth = dm.widthPixels;
 
         @Override
         public void onEventCreate(DayDraggableEventView eventView) {
-//            if (onWeekBodyListener != null){}
-            onWeekBodyListener.onEventClick(eventView);
+//            MyCalendar currentCal = (adapter.getViewByPosition(bodyCurrentPosition)).getCalendar();
+//            eventView.getNewCalendar().setDay(currentCal.getDay());
+//            eventView.getNewCalendar().setMonth(currentCal.getMonth());
+//            eventView.getNewCalendar().setYear(currentCal.getYear());
+            if (OnBodyOuterListener != null){OnBodyOuterListener.onEventCreate(eventView);}
         }
 
         @Override
         public void onEventClick(DayDraggableEventView eventView) {
-            if (onWeekBodyListener != null){onWeekBodyListener.onEventClick(eventView);}
+            if (OnBodyOuterListener != null){OnBodyOuterListener.onEventClick(eventView);}
 
         }
 
         @Override
         public void onEventDragStart(DayDraggableEventView eventView) {
-            if (onWeekBodyListener != null){onWeekBodyListener.onEventClick(eventView);}
+            if (OnBodyOuterListener != null){OnBodyOuterListener.onEventDragStart(eventView);}
 
         }
 
         @Override
         public void onEventDragging(DayDraggableEventView eventView, int x, int y) {
-            if (onWeekBodyListener != null){onWeekBodyListener.onEventDragging(eventView, x, y);}
-
+            boolean isSwiping = bodyPagerCurrentState == 0;
+            if (isSwiping){
+                this.bodyAutoSwipe(eventView, x, y);
+            }
+            if (OnBodyOuterListener != null){OnBodyOuterListener.onEventDragging(eventView, x, y);}
         }
 
         @Override
         public void onEventDragDrop(DayDraggableEventView eventView) {
-            if (onWeekBodyListener != null){onWeekBodyListener.onEventDragDrop(eventView);}
+//            MyCalendar currentCal = (adapter.getViewByPosition(bodyCurrentPosition)).getCalendar();
+//            currentCal.setOffsetByDate(eventView.getIndexInView());
+//            eventView.getNewCalendar().setDay(currentCal.getDay());
+//            eventView.getNewCalendar().setMonth(currentCal.getMonth());
+//            eventView.getNewCalendar().setYear(currentCal.getYear());
+//            Calendar cal = Calendar.getInstance();
+//            cal.setTimeInMillis(eventView.getStartTimeM());
+            if (OnBodyOuterListener != null){OnBodyOuterListener.onEventDragDrop(eventView);}
+        }
 
+        private void bodyAutoSwipe(DayDraggableEventView eventView, int x, int y){
+            Log.i(TAG, "bodyAutoSwipe: " + x);
+            Log.i(TAG, "parentWidth: " + parentWidth);
+            int offset = x > (parentWidth * 0.85) ? 1 : (x <= parentWidth * 0.05 ? -1 : 0);
+            if (offset != 0){
+                int scrollTo = bodyCurrentPosition + offset;
+                weekViewPager.setCurrentItem(scrollTo,true);
+            }
         }
     }
+
+    /**
+     *
+     * @param className
+     * @param <E>
+     */
+    public <E extends ITimeEventInterface> void setEventClassName(Class<E> className){
+
+        for (FlexibleLenViewBody view: bodyViewList){
+            view.setEventClassName(className);
+        }
+
+    }
+
 }
+
+

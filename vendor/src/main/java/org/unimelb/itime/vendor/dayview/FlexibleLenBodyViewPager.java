@@ -10,14 +10,14 @@ import java.lang.reflect.Field;
 /**
  * Created by yuhaoliu on 14/09/16.
  */
-public class DayViewBodyViewPager extends ViewPager {
+public class FlexibleLenBodyViewPager extends ViewPager {
 
-    public DayViewBodyViewPager(Context context) {
+    public FlexibleLenBodyViewPager(Context context) {
         super(context);
         postInitViewPager();
     }
 
-    public DayViewBodyViewPager(Context context, AttributeSet attrs) {
+    public FlexibleLenBodyViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
         postInitViewPager();
     }

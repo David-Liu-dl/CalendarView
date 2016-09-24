@@ -15,6 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     </org.unimelb.itime.vendor.weekview.WeekView>
+
     <!--<org.unimelb.itime.vendor.timeslotview.WeekTimeSlotView-->
         <!--android:id="@+id/week_time_slot_view"-->
         <!--android:layout_width="match_parent"-->

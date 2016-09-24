@@ -42,13 +42,13 @@ public class MonthDayView extends LinearLayout {
 
     private MyCalendar monthDayViewCalendar = new MyCalendar(Calendar.getInstance());
 
-    ArrayList<DayViewBody> bodyViewList;
+    ArrayList<FlexibleLenViewBody> bodyViewList;
 
     private LinearLayout parent;
     private LinearLayoutManager headerLinearLayoutManager;
 
-    private DayViewBodyPagerAdapter bodyPagerAdapter;
-    private DayViewBodyViewPager bodyPager;
+    private FlexibleLenBodyViewPagerAdapter bodyPagerAdapter;
+    private FlexibleLenBodyViewPager bodyPager;
     private RecyclerView headerRecyclerView;
     private DayViewHeaderRecyclerAdapter headerRecyclerAdapter;
 
@@ -82,7 +82,7 @@ public class MonthDayView extends LinearLayout {
         this.addView(parent);
 
         headerRecyclerView = (RecyclerView) parent.findViewById(R.id.headerRowList);
-        bodyPager = (DayViewBodyViewPager) parent.findViewById(R.id.pager);
+        bodyPager = (FlexibleLenBodyViewPager) parent.findViewById(R.id.pager);
         bodyPager.setScrollDurationFactor(3);
         upperBoundsOffset = 100000;
 
@@ -120,12 +120,12 @@ public class MonthDayView extends LinearLayout {
         ViewGroup.LayoutParams recycler_layoutParams = headerRecyclerView.getLayoutParams();
         recycler_layoutParams.height = init_height;
         headerRecyclerView.setLayoutParams(recycler_layoutParams);
-        headerRecyclerView.setOnScrollListener(new OnHeaderScrollListener());
+//        headerRecyclerView.setOnScrollListener(new OnHeaderScrollListener());
         move(upperBoundsOffset);
     }
 
     private void setUpBody(){
-        bodyPagerAdapter = new DayViewBodyPagerAdapter(bodyViewList, upperBoundsOffset);
+        bodyPagerAdapter = new FlexibleLenBodyViewPagerAdapter(bodyViewList, upperBoundsOffset);
 
         bodyPagerAdapter.notifyDataSetChanged();
         headerRecyclerAdapter.setBodyPager(bodyPager);
@@ -242,10 +242,10 @@ public class MonthDayView extends LinearLayout {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         for (int i = 0; i < size; i++) {
-            DayViewBody bodyView = (DayViewBody) LayoutInflater.from(this.context).inflate(R.layout.itime_day_view_body_view, null);
+            FlexibleLenViewBody bodyView = (FlexibleLenViewBody) LayoutInflater.from(this.context).inflate(R.layout.itime_day_view_body_view, null);
             bodyView.setCalendar(new MyCalendar(calendar));
             bodyViewList.add(bodyView);
-            bodyView.setOnBodyTouchListener(new DayViewBody.OnBodyTouchListener() {
+            bodyView.setOnBodyTouchListener(new FlexibleLenViewBody.OnBodyTouchListener() {
                 @Override
                 public void bodyOnTouchListener(float tapX, float tapY) {
                     final View needChangeView = headerRecyclerView;
@@ -307,9 +307,9 @@ public class MonthDayView extends LinearLayout {
         this.onHeaderListener = onHeaderListener;
     }
 
-    DayViewBody.OnBodyListener OnBodyOuterListener;
+    FlexibleLenViewBody.OnBodyListener OnBodyOuterListener;
 
-    public void setOnBodyOuterListener(DayViewBody.OnBodyListener onBodyOuterListener){
+    public void setOnBodyOuterListener(FlexibleLenViewBody.OnBodyListener onBodyOuterListener){
         this.OnBodyOuterListener = onBodyOuterListener;
     }
 
@@ -317,7 +317,7 @@ public class MonthDayView extends LinearLayout {
         void onMonthChanged(MyCalendar calendar);
     }
 
-    public class OnBodyInnerListener implements DayViewBody.OnBodyListener{
+    public class OnBodyInnerListener implements FlexibleLenViewBody.OnBodyListener{
         int parentWidth = dm.widthPixels;
 
         @Override
@@ -353,24 +353,21 @@ public class MonthDayView extends LinearLayout {
         @Override
         public void onEventDragDrop(DayDraggableEventView eventView) {
             MyCalendar currentCal = (bodyPagerAdapter.getViewByPosition(bodyCurrentPosition)).getCalendar();
+            currentCal.setOffsetByDate(eventView.getIndexInView());
             eventView.getNewCalendar().setDay(currentCal.getDay());
             eventView.getNewCalendar().setMonth(currentCal.getMonth());
             eventView.getNewCalendar().setYear(currentCal.getYear());
-            Log.i(TAG, "currentCal.getDay(): " + currentCal.getDay());
             Calendar cal = Calendar.getInstance();
             cal.setTimeInMillis(eventView.getStartTimeM());
-            Log.i(TAG, "currentCal.getDay(): " + cal.getTime());
             if (OnBodyOuterListener != null){OnBodyOuterListener.onEventDragDrop(eventView);}
         }
 
         private void bodyAutoSwipe(DayDraggableEventView eventView, int x, int y){
-            int offset = x > (parentWidth * 0.8) ? 1 : (x < (parentWidth * 0.2) ? -1 : 0);
-
+            int offset = x > (parentWidth * 0.85) ? 1 : (x <= parentWidth * 0.05 ? -1 : 0);
             if (offset != 0){
                 int scrollTo = bodyCurrentPosition + offset;
                 bodyPager.setCurrentItem(scrollTo,true);
                 bodyPagerAdapter.currentDayPos = scrollTo;
-//                (bodyPagerAdapter.getViewByPosition(scrollTo)).setCurrentTempView(eventView);
                 MyCalendar bodyMyCalendar = (bodyPagerAdapter.getViewByPosition(scrollTo)).getCalendar();
                 Calendar body_fst_cal = bodyMyCalendar.getCalendar();
                 headerScrollToDate(body_fst_cal);
@@ -385,7 +382,7 @@ public class MonthDayView extends LinearLayout {
      */
     public <E extends ITimeEventInterface> void setEventClassName(Class<E> className){
 
-        for (DayViewBody view: bodyViewList){
+        for (FlexibleLenViewBody view: bodyViewList){
             view.setEventClassName(className);
         }
 

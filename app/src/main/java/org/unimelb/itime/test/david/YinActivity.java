@@ -1,6 +1,5 @@
 package org.unimelb.itime.test.david;
 
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -9,14 +8,10 @@ import org.unimelb.itime.test.R;
 import org.unimelb.itime.test.bean.Contact;
 import org.unimelb.itime.test.bean.Event;
 import org.unimelb.itime.test.bean.Invitee;
-import org.unimelb.itime.test.databinding.ActivityYinBinding;
-import org.unimelb.itime.vendor.agendaview.AgendaViewBody;
 import org.unimelb.itime.vendor.agendaview.MonthAgendaView;
-import org.unimelb.itime.vendor.dayview.DayViewBody;
+import org.unimelb.itime.vendor.dayview.FlexibleLenViewBody;
 import org.unimelb.itime.vendor.dayview.MonthDayView;
 import org.unimelb.itime.vendor.eventview.DayDraggableEventView;
-import org.unimelb.itime.vendor.helper.MyCalendar;
-import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,7 +19,6 @@ import java.util.Calendar;
 import java.util.List;
 
 public class YinActivity extends AppCompatActivity {
-    ActivityYinBinding binding;
     private final static String TAG = "MyAPP";
     private DBManager dbManager;
     private EventManager eventManager;
@@ -34,9 +28,7 @@ public class YinActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_yin);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_yin);
-        binding.setTest(new TestViewModel());
+        setContentView(R.layout.activity_yin);
         dbManager = DBManager.getInstance(this);
         eventManager = EventManager.getInstance();
 
@@ -51,7 +43,7 @@ public class YinActivity extends AppCompatActivity {
         monthDayView = (MonthDayView) findViewById(R.id.monthDayView);
         monthDayView.setDayEventMap(eventManager.getEventsMap());
         monthDayView.setEventClassName(Event.class);
-        monthDayView.setOnBodyOuterListener(new DayViewBody.OnBodyListener() {
+        monthDayView.setOnBodyOuterListener(new FlexibleLenViewBody.OnBodyListener() {
             @Override
             public void onEventCreate(DayDraggableEventView eventView) {
 
@@ -59,7 +51,7 @@ public class YinActivity extends AppCompatActivity {
 
             @Override
             public void onEventClick(DayDraggableEventView eventView) {
-
+                Log.i(TAG, "onEventClick: " + eventView.getEvent().getTitle());
             }
 
             @Override
@@ -74,26 +66,29 @@ public class YinActivity extends AppCompatActivity {
 
             @Override
             public void onEventDragDrop(DayDraggableEventView eventView) {
+                Calendar cal = Calendar.getInstance();
+                cal.setTimeInMillis(eventView.getStartTimeM());
+                Log.i(TAG, "onEventDragDrop: " + cal.getTime());
             }
 
         });
-
-        monthDayView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Event event = new Event();
-                event.setEventUid("213123");
-                event.setTitle("new added");
-                event.setEventType(1);
-                event.setStatus(1);
-                event.setLocation("here");
-                event.setStartTime(Calendar.getInstance().getTimeInMillis());
-                event.setEndTime(Calendar.getInstance().getTimeInMillis() + 60 * 60 * 1000);
-                EventManager.getInstance().addEvent(event);
-
-                monthDayView.reloadEvents();
-            }
-        },5000);
+//
+//        monthDayView.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                Event event = new Event();
+//                event.setEventUid("213123");
+//                event.setTitle("new added");
+//                event.setEventType(1);
+//                event.setStatus(1);
+//                event.setLocation("here");
+//                event.setStartTime(Calendar.getInstance().getTimeInMillis());
+//                event.setEndTime(Calendar.getInstance().getTimeInMillis() + 60 * 60 * 1000);
+//                EventManager.getInstance().addEvent(event);
+//
+//                monthDayView.reloadEvents();
+//            }
+//        },5000);
     }
 
     private void loadData(){
@@ -103,6 +98,10 @@ public class YinActivity extends AppCompatActivity {
                 ) {
             EventManager.getInstance().addEvent(event);
         }
+
+    }
+
+    private void initAllDayDB(){
 
     }
 
@@ -116,10 +115,12 @@ public class YinActivity extends AppCompatActivity {
         int[] status = {0,1};
         long interval = 3600 * 1000;
         int alldayCount = 0;
+        String uuuid = "";
         for (int i = 1; i < 100; i++) {
 
             long startTime = calendar.getTimeInMillis();
-            long endTime = startTime + interval * (i%30);
+//            long endTime = startTime + interval * (i%30);
+            long endTime = startTime + 25*3600*1000;
             long duration = (endTime - startTime);
 
             Event event = new Event();
@@ -131,7 +132,7 @@ public class YinActivity extends AppCompatActivity {
             Calendar cal = Calendar.getInstance();
             cal.setTimeInMillis(startTime);
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-            event.setTitle("" + sdf.format(cal.getTime()));
+            event.setTitle("" + i);
 
             List<Invitee> inviteeList = new ArrayList<>();
 
@@ -162,8 +163,10 @@ public class YinActivity extends AppCompatActivity {
 
             if (duration >= 24 * 3600 * 1000 && alldayCount < 3){
                 String title = "All day";
-                for (int j = 0; j < 4; j++) {
+                for (int j = 0; j < 2; j++) {
+                    uuuid = uuuid + "a";
                     Event event_clone = new Event();
+                    event_clone.setEventUid(uuuid);
                     event_clone.setTitle(title);
                     event_clone.setEventType(0);
                     event_clone.setStatus(0);
@@ -172,6 +175,7 @@ public class YinActivity extends AppCompatActivity {
                     event_clone.setLocation("here");
 //                    event_clone.setInviteesUrls("");
                     title = title + " all day";
+                    events.add(event_clone);
                 }
                 alldayCount = 0;
             }

@@ -12,20 +12,20 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
-public class DayViewBodyPagerAdapter extends PagerAdapter {
+public class FlexibleLenBodyViewPagerAdapter extends PagerAdapter {
     public String TAG = "MyAPP";
 
-    private DayViewBody.OnBodyTouchListener onBodyTouchListener;
+    private FlexibleLenViewBody.OnBodyTouchListener onBodyTouchListener;
 
     private Calendar calendar = Calendar.getInstance();
 
-    ArrayList<DayViewBody> vLists;
+    ArrayList<FlexibleLenViewBody> vLists;
     Map<Long, List<ITimeEventInterface>> dayEventMap;
 
     int upperBounds;
     int currentDayPos;
 
-    public DayViewBodyPagerAdapter(ArrayList<DayViewBody> vLists, int upperBounds) {
+    public FlexibleLenBodyViewPagerAdapter(ArrayList<FlexibleLenViewBody> vLists, int upperBounds) {
         this.vLists = vLists;
         this.upperBounds = upperBounds;
     }
@@ -34,8 +34,8 @@ public class DayViewBodyPagerAdapter extends PagerAdapter {
 //        this.onBodyPageChanged = onBodyPageChanged;
 //    }
 
-    public DayViewBody getViewByPosition(int position){
-        DayViewBody viewAtPosition = vLists.get(position % vLists.size());
+    public FlexibleLenViewBody getViewByPosition(int position){
+        FlexibleLenViewBody viewAtPosition = vLists.get(position % vLists.size());
 
         return viewAtPosition;
     }
@@ -52,27 +52,24 @@ public class DayViewBodyPagerAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        DayViewBody currentBodyView = vLists.get(position % vLists.size());
+        FlexibleLenViewBody currentBodyView = vLists.get(position % vLists.size());
         ViewGroup parent = (ViewGroup) currentBodyView.getParent();
         if (parent != null){
             parent.removeView(currentBodyView);
         }
 
-        int offset = position - upperBounds - (calendar.get(Calendar.DAY_OF_WEEK)-1);
+        int offset = (position - upperBounds)*currentBodyView.getDisplayLen() - (calendar.get(Calendar.DAY_OF_WEEK)-1);
         currentBodyView.getCalendar().setOffset(offset);
         currentBodyView.resetViews();
-        long startTime = currentBodyView.getCalendar().getBeginOfDayMilliseconds();
-//        if (this.dayEventMap.containsKey(startTime)){
-//            currentBodyView.setEventList(this.dayEventMap.get(startTime));
-//        }
         currentBodyView.setEventList(this.dayEventMap);
         container.addView(currentBodyView);
-//        Log.i(TAG, "instantiateItem: " + position);
+        Log.i(TAG, "instantiateItem: " + position);
+
         return currentBodyView;
     }
 
     public void reloadEvents(){
-        for (DayViewBody bodyView : vLists
+        for (FlexibleLenViewBody bodyView : vLists
              ) {
             long startTime = bodyView.getCalendar().getBeginOfDayMilliseconds();
             if (this.dayEventMap.containsKey(startTime)){

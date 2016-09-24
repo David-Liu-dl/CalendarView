@@ -2,20 +2,15 @@ package org.unimelb.itime.vendor.timeslotview;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.text.Layout;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.unimelb.itime.vendor.R;
 import org.unimelb.itime.vendor.helper.MyCalendar;
-import org.unimelb.itime.vendor.weekview.WeekViewHeader;
 
 import java.util.ArrayList;
 import java.util.Calendar;

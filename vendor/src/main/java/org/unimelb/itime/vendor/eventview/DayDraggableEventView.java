@@ -30,6 +30,9 @@ public class DayDraggableEventView extends RelativeLayout {
     public static int TYPE_TEMP = 1;
     //0: default_normal, -1: temp view;
     private int type = 0;
+
+    private int indexInView = 0;
+
     private TextView title;
     private ImageView icon;
     private ImageView leftBar;
@@ -177,6 +180,14 @@ public class DayDraggableEventView extends RelativeLayout {
 
     public void setEvent(ITimeEventInterface event) {
         this.event = event;
+    }
+
+    public int getIndexInView() {
+        return indexInView;
+    }
+
+    public void setIndexInView(int indexInView) {
+        this.indexInView = indexInView;
     }
 
 

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 /**
  * Created by yuhaoliu on 21/09/16.
  */
-public class DayEventLayout extends RelativeLayout {
+public class DayInnerBodyEventLayout extends RelativeLayout {
     ArrayList<ITimeEventInterface> events = new ArrayList<>();
     ArrayList<DayDraggableEventView> dgEvents = new ArrayList<>();
 
@@ -32,11 +32,11 @@ public class DayEventLayout extends RelativeLayout {
         this.dgEvents = dgEvents;
     }
 
-    public DayEventLayout(Context context) {
+    public DayInnerBodyEventLayout(Context context) {
         super(context);
     }
 
-    public DayEventLayout(Context context, AttributeSet attrs) {
+    public DayInnerBodyEventLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 

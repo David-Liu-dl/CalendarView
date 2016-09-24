@@ -7,15 +7,12 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import org.unimelb.itime.vendor.R;
+import org.unimelb.itime.vendor.dayview.FlexibleLenViewBody;
 import org.unimelb.itime.vendor.helper.MyCalendar;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
-import org.unimelb.itime.vendor.weekview.WeekView;
-import org.unimelb.itime.vendor.weekview.WeekViewBody;
-import org.unimelb.itime.vendor.weekview.WeekViewHeader;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +25,6 @@ public class WeekViewPagerAdapter extends PagerAdapter {
     private ArrayList<LinearLayout> views;
 
     private Map<Long, List<ITimeEventInterface>> dayEventMap;
-    private boolean doNotifyDataSetChangedOnce = false;
     private int startPst = 0;
     private MyCalendar startCal;
 
@@ -55,35 +51,31 @@ public class WeekViewPagerAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        if (doNotifyDataSetChangedOnce){
-            doNotifyDataSetChangedOnce = false;
-            notifyDataSetChanged();
-        }
-        return 1000;
+        return startPst*2+1;
     }
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        View view = views.get(position%views.size());
+        LinearLayout view = views.get(position%views.size());
         ViewGroup parent = (ViewGroup) view.getParent();
-        if (parent != null)
+        if (parent != null){
             parent.removeView(view);
-        container.addView(view);
-        doNotifyDataSetChangedOnce = true;
+        }
 
         int dateOffset =(position - startPst) * 7 ;
-        WeekViewHeader header = (WeekViewHeader) view.findViewById(R.id.week_header);
-        WeekViewBody body = (WeekViewBody) view.findViewById(R.id.week_body);
-        this.updateHeader(header, dateOffset);
-        this.updateBody(body, dateOffset);
+        this.updateHeader(view, dateOffset);
+        this.updateBody(view, dateOffset);
+
+        container.addView(view);
+        Log.i(TAG, "instantiateItem: " +position);
 
         return view;
     }
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-        doNotifyDataSetChangedOnce = true;
-        container.removeView(views.get(position % views.size()));
+//        doNotifyDataSetChangedOnce = true;
+//        container.removeView(views.get(position % views.size()));
     }
 
     @Override
@@ -99,40 +91,32 @@ public class WeekViewPagerAdapter extends PagerAdapter {
         this.dayEventMap = dayEventMap;
     }
 
-    private List<ITimeEventInterface> getCurrentWeekEvents(MyCalendar cal){
-        MyCalendar tempCal = new MyCalendar(cal);
-        List<ITimeEventInterface> events = new ArrayList<>();
 
-        if (this.dayEventMap != null){
-            for (int i = 1; i < 8; i++) {
-                long startTimeM = tempCal.getBeginOfDayMilliseconds();
-
-                if (dayEventMap.containsKey(startTimeM)){
-                    events.addAll(dayEventMap.get(startTimeM));
-                }else {
-                    Log.i(TAG, "current day : NULL EVENT");
-                }
-                tempCal.setOffsetByDate(1);
+    private void updateHeader(ViewGroup parent, int offset){
+        int count = parent.getChildCount();
+        for (int i = 0; i < count; i++) {
+            if (parent.getChildAt(i) instanceof WeekViewHeader){
+                MyCalendar cal = new MyCalendar(this.startCal);
+                cal.setOffsetByDate(offset);
+                ((WeekViewHeader)parent.getChildAt(i)).setMyCalendar(cal);
             }
-
-            return events;
-        }else{
-            Log.i(TAG, "dayEventMap null: ");
         }
-
-        return null;
     }
 
-    private void updateHeader(WeekViewHeader header, int offset){
-        MyCalendar cal = new MyCalendar(this.startCal);
-        cal.setOffsetByDate(offset);
-        header.setMyCalendar(cal);
+    private void updateBody(ViewGroup parent, int offset){
+        int count = parent.getChildCount();
+        for (int i = 0; i < count; i++) {
+            if (parent.getChildAt(i) instanceof FlexibleLenViewBody){
+                ((FlexibleLenViewBody)parent.getChildAt(i)).getCalendar().setOffsetByDate(offset);
+                ((FlexibleLenViewBody)parent.getChildAt(i)).resetViews();
+                ((FlexibleLenViewBody)parent.getChildAt(i)).setEventList(this.dayEventMap);
+            }
+        }
     }
 
-    private void updateBody(WeekViewBody body, int offset){
-        MyCalendar cal = new MyCalendar(this.startCal);
-        cal.setOffsetByDate(offset);
-        body.setMyCalendar(cal);
-        body.setEvents(getCurrentWeekEvents(cal));
+    public LinearLayout getViewByPosition(int position){
+        LinearLayout viewAtPosition = views.get(position % views.size());
+
+        return viewAtPosition;
     }
 }

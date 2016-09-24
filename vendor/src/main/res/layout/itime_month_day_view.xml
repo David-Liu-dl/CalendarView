@@ -33,10 +33,10 @@
         <!--android:layout_height="match_parent">-->
     <!--</android.support.v4.view.ViewPager>-->
 
-    <org.unimelb.itime.vendor.dayview.DayViewBodyViewPager
+    <org.unimelb.itime.vendor.dayview.FlexibleLenBodyViewPager
     android:id="@+id/pager"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    </org.unimelb.itime.vendor.dayview.DayViewBodyViewPager>
+    </org.unimelb.itime.vendor.dayview.FlexibleLenBodyViewPager>
 
 </LinearLayout>

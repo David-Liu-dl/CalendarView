@@ -72,7 +72,7 @@ public class FloderAdapter extends BaseAdapter {
             holder.selectIV.setVisibility(View.VISIBLE);
         }
         holder.floderNameTV.setText(floder.getName());
-        holder.photoNumTV.setText(floder.getPhotoList().size() + "张");
+        holder.photoNumTV.setText(floder.getPhotoList().size() + "photos");
         ImageLoader.getInstance(mContext).display(floder.getPhotoList().get(0).getPath(), holder.photoIV,
                 mWidth, mWidth);
         return convertView;

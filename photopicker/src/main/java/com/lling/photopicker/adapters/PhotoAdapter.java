@@ -39,7 +39,7 @@ public class PhotoAdapter extends BaseAdapter {
     //照片选择模式，默认单选
     private int mSelectMode = 0;
     //图片选择数量
-    private int mMaxNum = 9;
+    private int mMaxNum = 3;
 
     private View.OnClickListener mOnPhotoClick;
     private PhotoClickCallBack mCallBack;

@@ -44,7 +44,7 @@
                     android:paddingLeft="12dp"
                     android:paddingRight="12dp"
                     android:drawableRight="@drawable/text_indicator_selector"
-                    android:text="全部图片"/>
+                    android:text="@string/all_photos"/>
 
                 <TextView
                     android:id="@+id/photo_num"
@@ -55,7 +55,7 @@
                     android:textColor="#A9ffffff"
                     android:textSize="16sp"
                     android:layout_marginRight="12dp"
-                    android:text="1024张"/>
+                    android:text="1024 photos"/>
             </RelativeLayout>
             <ViewStub
                 android:id="@+id/floder_stub"

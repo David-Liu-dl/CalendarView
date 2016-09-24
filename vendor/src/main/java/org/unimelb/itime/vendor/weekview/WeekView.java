@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import org.unimelb.itime.vendor.dayview.DayViewHeader;
 import org.unimelb.itime.vendor.dayview.FlexibleLenBodyViewPager;
 import org.unimelb.itime.vendor.dayview.FlexibleLenViewBody;
 import org.unimelb.itime.vendor.eventview.DayDraggableEventView;
@@ -66,7 +67,7 @@ public class WeekView extends LinearLayout {
     }
 
     public void reloadEvents(){
-
+        adapter.reloadEvents();
     }
 
     private void initView(){
@@ -133,12 +134,15 @@ public class WeekView extends LinearLayout {
         weekViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
             }
 
             @Override
             public void onPageSelected(int position) {
                 bodyCurrentPosition = position;
+                monthDayViewCalendar = adapter.getViewBodyByPosition(position).getCalendar();
+                if (onHeaderListener != null){
+                    onHeaderListener.onMonthChanged(monthDayViewCalendar);
+                }
             }
 
             @Override
@@ -160,7 +164,7 @@ public class WeekView extends LinearLayout {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         for (int i = 0; i < size; i++) {
-            FlexibleLenViewBody bodyView = new FlexibleLenViewBody(context,3);
+            FlexibleLenViewBody bodyView = new FlexibleLenViewBody(context,7);
             bodyView.setLayoutParams(new LinearLayoutCompat.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             bodyView.setCalendar(new MyCalendar(calendar));
             bodyView.setOnBodyListener(new OnBodyInnerListener());
@@ -169,7 +173,6 @@ public class WeekView extends LinearLayout {
         }
 
     }
-
 
     private OnHeaderListener onHeaderListener;
 
@@ -192,10 +195,10 @@ public class WeekView extends LinearLayout {
 
         @Override
         public void onEventCreate(DayDraggableEventView eventView) {
-//            MyCalendar currentCal = (adapter.getViewByPosition(bodyCurrentPosition)).getCalendar();
-//            eventView.getNewCalendar().setDay(currentCal.getDay());
-//            eventView.getNewCalendar().setMonth(currentCal.getMonth());
-//            eventView.getNewCalendar().setYear(currentCal.getYear());
+            MyCalendar currentCal = (adapter.getViewBodyByPosition(bodyCurrentPosition)).getCalendar();
+            eventView.getNewCalendar().setDay(currentCal.getDay());
+            eventView.getNewCalendar().setMonth(currentCal.getMonth());
+            eventView.getNewCalendar().setYear(currentCal.getYear());
             if (OnBodyOuterListener != null){OnBodyOuterListener.onEventCreate(eventView);}
         }
 
@@ -222,13 +225,13 @@ public class WeekView extends LinearLayout {
 
         @Override
         public void onEventDragDrop(DayDraggableEventView eventView) {
-//            MyCalendar currentCal = (adapter.getViewByPosition(bodyCurrentPosition)).getCalendar();
-//            currentCal.setOffsetByDate(eventView.getIndexInView());
-//            eventView.getNewCalendar().setDay(currentCal.getDay());
-//            eventView.getNewCalendar().setMonth(currentCal.getMonth());
-//            eventView.getNewCalendar().setYear(currentCal.getYear());
-//            Calendar cal = Calendar.getInstance();
-//            cal.setTimeInMillis(eventView.getStartTimeM());
+            MyCalendar currentCal = (adapter.getViewBodyByPosition(bodyCurrentPosition)).getCalendar();
+            currentCal.setOffsetByDate(eventView.getIndexInView());
+            eventView.getNewCalendar().setDay(currentCal.getDay());
+            eventView.getNewCalendar().setMonth(currentCal.getMonth());
+            eventView.getNewCalendar().setYear(currentCal.getYear());
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(eventView.getStartTimeM());
             if (OnBodyOuterListener != null){OnBodyOuterListener.onEventDragDrop(eventView);}
         }
 

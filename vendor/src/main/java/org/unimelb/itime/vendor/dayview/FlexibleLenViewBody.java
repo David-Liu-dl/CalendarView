@@ -256,9 +256,8 @@ public class FlexibleLenViewBody extends RelativeLayout {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        layoutWidthPerDay = eventLayout.getMeasuredWidth()/displayLen;
-        Log.i(TAG, "layoutWidthPerDay: " + layoutWidthPerDay);
-        layoutHeightPerDay = eventLayout.getMeasuredHeight();
+        layoutWidthPerDay = MeasureSpec.getSize(eventLayout.getMeasuredWidth()/displayLen);
+        layoutHeightPerDay = MeasureSpec.getSize(eventLayout.getMeasuredHeight());
 
         for (DayInnerBodyEventLayout eventLayout:eventLayouts
                 ) {
@@ -282,7 +281,6 @@ public class FlexibleLenViewBody extends RelativeLayout {
                 int eventWidth = layoutWidthPerDay / pos.widthFactor;
                 int leftMargin = eventWidth * pos.startX;
                 params.width = eventWidth;
-                Log.i(TAG, "eventWidth: " + eventWidth);
                 params.leftMargin = leftMargin + 5 * pos.startX;
                 params.topMargin = pos.topMargin;
             }

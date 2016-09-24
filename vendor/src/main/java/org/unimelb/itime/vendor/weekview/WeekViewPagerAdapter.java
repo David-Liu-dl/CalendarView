@@ -114,9 +114,20 @@ public class WeekViewPagerAdapter extends PagerAdapter {
         }
     }
 
-    public LinearLayout getViewByPosition(int position){
+    public FlexibleLenViewBody getViewBodyByPosition(int position){
         LinearLayout viewAtPosition = views.get(position % views.size());
 
-        return viewAtPosition;
+        return (FlexibleLenViewBody) viewAtPosition.getChildAt(1);
+    }
+
+    public void reloadEvents(){
+        for (LinearLayout weekView : views
+                ) {
+            FlexibleLenViewBody bodyView = (FlexibleLenViewBody)weekView.getChildAt(1);
+            long startTime = bodyView.getCalendar().getBeginOfDayMilliseconds();
+            if (this.dayEventMap.containsKey(startTime)){
+                bodyView.setEventList(this.dayEventMap);
+            }
+        }
     }
 }

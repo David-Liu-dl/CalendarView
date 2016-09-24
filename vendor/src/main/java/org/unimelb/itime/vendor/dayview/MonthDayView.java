@@ -120,7 +120,7 @@ public class MonthDayView extends LinearLayout {
         ViewGroup.LayoutParams recycler_layoutParams = headerRecyclerView.getLayoutParams();
         recycler_layoutParams.height = init_height;
         headerRecyclerView.setLayoutParams(recycler_layoutParams);
-//        headerRecyclerView.setOnScrollListener(new OnHeaderScrollListener());
+        headerRecyclerView.setOnScrollListener(new OnHeaderScrollListener());
         move(upperBoundsOffset);
     }
 
@@ -166,6 +166,10 @@ public class MonthDayView extends LinearLayout {
                 }else {
                     //after executed selected, reset to false;
                     slideByUser = false;
+                    if (onHeaderListener != null){
+                        monthDayViewCalendar = bodyPagerAdapter.getViewByPosition(bodyCurrentPosition).getCalendar();
+                        onHeaderListener.onMonthChanged(monthDayViewCalendar);
+                    }
                 }
             }
         });
@@ -292,10 +296,11 @@ public class MonthDayView extends LinearLayout {
                 }
             }
             //for now header date
-            int index = headerLinearLayoutManager.findFirstCompletelyVisibleItemPosition();
-            DayViewHeader fstVisibleHeader = (DayViewHeader) headerLinearLayoutManager.findViewByPosition(index);
-            monthDayViewCalendar = fstVisibleHeader.getCalendar();
+
             if (onHeaderListener != null){
+                int index = headerLinearLayoutManager.findFirstCompletelyVisibleItemPosition();
+                DayViewHeader fstVisibleHeader = (DayViewHeader) headerLinearLayoutManager.findViewByPosition(index);
+                monthDayViewCalendar = fstVisibleHeader.getCalendar();
                 onHeaderListener.onMonthChanged(monthDayViewCalendar);
             }
         }

@@ -12,6 +12,7 @@ import org.unimelb.itime.vendor.agendaview.MonthAgendaView;
 import org.unimelb.itime.vendor.dayview.FlexibleLenViewBody;
 import org.unimelb.itime.vendor.dayview.MonthDayView;
 import org.unimelb.itime.vendor.eventview.DayDraggableEventView;
+import org.unimelb.itime.vendor.helper.MyCalendar;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,6 +44,12 @@ public class YinActivity extends AppCompatActivity {
         monthDayView = (MonthDayView) findViewById(R.id.monthDayView);
         monthDayView.setDayEventMap(eventManager.getEventsMap());
         monthDayView.setEventClassName(Event.class);
+        monthDayView.setOnHeaderListener(new MonthDayView.OnHeaderListener() {
+            @Override
+            public void onMonthChanged(MyCalendar calendar) {
+                Log.i(TAG, "onMonthChanged: " + calendar.getCalendar().getTime());
+            }
+        });
         monthDayView.setOnBodyOuterListener(new FlexibleLenViewBody.OnBodyListener() {
             @Override
             public void onEventCreate(DayDraggableEventView eventView) {

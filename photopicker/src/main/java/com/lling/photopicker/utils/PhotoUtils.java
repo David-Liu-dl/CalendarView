@@ -27,7 +27,7 @@ public class PhotoUtils {
     public static Map<String, PhotoFloder> getPhotos(Context context) {
         Map<String, PhotoFloder> floderMap = new HashMap<String, PhotoFloder>();
 
-        String allPhotosKey = "所有图片";
+        String allPhotosKey = "All Photos";
         PhotoFloder allFloder = new PhotoFloder();
         allFloder.setName(allPhotosKey);
         allFloder.setDirPath(allPhotosKey);

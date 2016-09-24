@@ -24,7 +24,7 @@
             android:id="@+id/textview_floder_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="所有图片"
+            android:text="@string/all_photos"
             android:textSize="16sp"
             android:textColor="#757575"/>
 

@@ -15,5 +15,5 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:textColor="#E0E0E0"
-        android:text="拍摄照片"/>
+        android:text="Camera"/>
 </LinearLayout>

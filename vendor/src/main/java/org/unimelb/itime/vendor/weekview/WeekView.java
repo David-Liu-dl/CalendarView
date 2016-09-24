@@ -233,8 +233,6 @@ public class WeekView extends LinearLayout {
         }
 
         private void bodyAutoSwipe(DayDraggableEventView eventView, int x, int y){
-            Log.i(TAG, "bodyAutoSwipe: " + x);
-            Log.i(TAG, "parentWidth: " + parentWidth);
             int offset = x > (parentWidth * 0.85) ? 1 : (x <= parentWidth * 0.05 ? -1 : 0);
             if (offset != 0){
                 int scrollTo = bodyCurrentPosition + offset;

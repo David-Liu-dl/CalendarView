@@ -131,8 +131,8 @@ public class YinActivity extends AppCompatActivity {
             event.setStartTime(startTime);
             Calendar cal = Calendar.getInstance();
             cal.setTimeInMillis(startTime);
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-            event.setTitle("" + i);
+            SimpleDateFormat sdf = new SimpleDateFormat("dd HH:mm");
+            event.setTitle(sdf.format(cal.getTime()) + "");
 
             List<Invitee> inviteeList = new ArrayList<>();
 

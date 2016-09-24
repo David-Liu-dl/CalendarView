@@ -77,6 +77,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
     private int timeTextSize = 20;
     private int overlapGapHeight;
     private int layoutWidthPerDay;
+    private int layoutHeightPerDay;
 
     private int displayLen = 7;
 
@@ -227,7 +228,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
                     if (onBodyTouchListener != null) {
                         onBodyTouchListener.bodyOnTouchListener(nowTapX, nowTapY);
                     } else {
-                        Log.i(TAG, "controller:  onBodyTouchListener null ");
+//                        Log.i(TAG, "controller:  onBodyTouchListener null ");
                     }
                     return false;
                 }
@@ -256,9 +257,14 @@ public class FlexibleLenViewBody extends RelativeLayout {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         layoutWidthPerDay = eventLayout.getMeasuredWidth()/displayLen;
+        Log.i(TAG, "layoutWidthPerDay: " + layoutWidthPerDay);
+        layoutHeightPerDay = eventLayout.getMeasuredHeight();
 
         for (DayInnerBodyEventLayout eventLayout:eventLayouts
                 ) {
+            eventLayout.getLayoutParams().width = layoutWidthPerDay;
+            eventLayout.getLayoutParams().height = layoutHeightPerDay;
+
             int eventCount = eventLayout.getChildCount();
 
             for (int i = 0; i < eventCount; i++) {
@@ -276,6 +282,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
                 int eventWidth = layoutWidthPerDay / pos.widthFactor;
                 int leftMargin = eventWidth * pos.startX;
                 params.width = eventWidth;
+                Log.i(TAG, "eventWidth: " + eventWidth);
                 params.leftMargin = leftMargin + 5 * pos.startX;
                 params.topMargin = pos.topMargin;
             }
@@ -425,11 +432,8 @@ public class FlexibleLenViewBody extends RelativeLayout {
             }
         }
 
-//        this.regularEventModules.clear();
-//        this.regularDayDgEventViews.clear();
         this.regularEventViewMap.clear();
         this.allDayDgEventViews.clear();
-//        this.allDayEventModules.clear();
     }
 
     public void addNowTimeLine() {
@@ -577,7 +581,6 @@ public class FlexibleLenViewBody extends RelativeLayout {
      */
     public void setEventList(Map<Long, List<ITimeEventInterface>> dayEventMap) {
         this.clearAllEvents();
-
         MyCalendar tempCal = new MyCalendar(this.myCalendar);
 
         for (int i = 0; i < displayLen; i++) {
@@ -586,9 +589,10 @@ public class FlexibleLenViewBody extends RelativeLayout {
                 List<ITimeEventInterface> currentDayEvents = dayEventMap.get(startTime);
                 for (ITimeEventInterface event : currentDayEvents) {
                     this.addEvent(event);
+                    Log.i(TAG, tempCal.getDay() + " setEventList: " + currentDayEvents.size());
                 }
             }else {
-//                Log.i(TAG, "dayEventMap null: ");
+                Log.i(TAG, "dayEventMap null: " + tempCal.getDay());
             }
             tempCal.setOffsetByDate(1);
         }
@@ -596,6 +600,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
         for (DayInnerBodyEventLayout eventLayout:eventLayouts
              ) {
             calculateEventLayout(eventLayout);
+            eventLayout.requestLayout();
         }
     }
 
@@ -635,6 +640,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
             @Override
             public void onClick(View view) {
                 if (onBodyListener != null) {
+                    Log.i(TAG, "view: " + view.getWidth());
                     onBodyListener.onEventClick((DayDraggableEventView) view);
                 }
             }
@@ -704,16 +710,13 @@ public class FlexibleLenViewBody extends RelativeLayout {
 
         @Override
         public boolean onDrag(View v, DragEvent event) {
-            Log.i(TAG, "onDrag: ");
             DayDraggableEventView dgView = (DayDraggableEventView) event.getLocalState();
             int rawX = (int) (layoutWidthPerDay * index + event.getX());
 
             switch (event.getAction()) {
                 case DragEvent.ACTION_DRAG_STARTED:
-                    Log.i(TAG, "ACTION_DRAG_STARTED: ");
                     break;
                 case DragEvent.ACTION_DRAG_LOCATION:
-                    Log.i(TAG, "ACTION_DRAG_LOCATION: ");
                     scrollViewAutoScroll(event);
                     if (onBodyListener != null) {
                         onBodyListener.onEventDragging(dgView, rawX, (int) event.getY());
@@ -723,7 +726,6 @@ public class FlexibleLenViewBody extends RelativeLayout {
                     msgWindowFollow(rawX, (int) event.getY(), index, (View) event.getLocalState());
                     break;
                 case DragEvent.ACTION_DRAG_ENTERED:
-                    Log.i(TAG, "ACTION_DRAG_ENTERED: ");
                     msgWindow.setVisibility(View.VISIBLE);
                     if (dgView.getType() == DayDraggableEventView.TYPE_TEMP){
                         tempDragView = dgView;
@@ -738,7 +740,6 @@ public class FlexibleLenViewBody extends RelativeLayout {
                     tempDragView = null;
                     break;
                 case DragEvent.ACTION_DROP:
-                    Log.i(TAG, "ACTION_DROP: ");
                     //handler ended things in here, because ended some time is not triggered
                     dgView.getBackground().setAlpha(128);
                     View finalView = (View) event.getLocalState();
@@ -788,7 +789,6 @@ public class FlexibleLenViewBody extends RelativeLayout {
 
                     break;
                 case DragEvent.ACTION_DRAG_ENDED:
-                    Log.i(TAG, "ACTION_DRAG_ENDED: ");
                     break;
                 default:
                     break;

@@ -47,6 +47,7 @@ public class YinActivity extends AppCompatActivity {
         monthDayView.setOnHeaderListener(new MonthDayView.OnHeaderListener() {
             @Override
             public void onMonthChanged(MyCalendar calendar) {
+                Log.i(TAG, "onMonthChanged: " + calendar.getCalendar().getTime());
             }
         });
         monthDayView.setOnBodyOuterListener(new FlexibleLenViewBody.OnBodyListener() {
@@ -57,7 +58,9 @@ public class YinActivity extends AppCompatActivity {
 
             @Override
             public void onEventClick(DayDraggableEventView eventView) {
-                Log.i(TAG, "onEventClick: " + eventView.getEvent().getTitle());
+                Calendar cal = Calendar.getInstance();
+                cal.setTimeInMillis(eventView.getStartTimeM());
+//                Log.i(TAG, "click: " + cal.getTime() + " title: " + eventView.getEvent().getTitle());
             }
 
             @Override
@@ -74,7 +77,7 @@ public class YinActivity extends AppCompatActivity {
             public void onEventDragDrop(DayDraggableEventView eventView) {
                 Calendar cal = Calendar.getInstance();
                 cal.setTimeInMillis(eventView.getStartTimeM());
-                Log.i(TAG, "onEventDragDrop: " + cal.getTime());
+//                Log.i(TAG, "onEventDragDrop: " + cal.getTime());
             }
 
         });

@@ -39,6 +39,8 @@ public class DayDraggableEventView extends RelativeLayout {
 
     private boolean isAllDayEvent = false;
 
+    private MyCalendar newCalendar = new MyCalendar(Calendar.getInstance());
+
     private ITimeEventInterface event;
     private PosParam posParam;
 
@@ -50,7 +52,6 @@ public class DayDraggableEventView extends RelativeLayout {
         this.newCalendar = newCalendar;
     }
 
-    private MyCalendar newCalendar = new MyCalendar(Calendar.getInstance());
 
     public DayDraggableEventView(Context context, @Nullable ITimeEventInterface event, boolean isAllDayEvent) {
         super(context);

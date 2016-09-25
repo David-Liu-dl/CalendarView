@@ -126,8 +126,7 @@ public class WeekViewPagerAdapter extends PagerAdapter {
         for (LinearLayout weekView : views
                 ) {
             FlexibleLenViewBody bodyView = (FlexibleLenViewBody)weekView.getChildAt(1);
-            long startTime = bodyView.getCalendar().getBeginOfDayMilliseconds();
-            if (this.dayEventMap.containsKey(startTime)){
+            if (this.dayEventMap != null){
                 bodyView.setEventList(this.dayEventMap);
             }
         }

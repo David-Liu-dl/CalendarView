@@ -3,6 +3,7 @@ package org.unimelb.itime.vendor.dayview;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -73,6 +74,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
     //tag: false-> moving, true, done
     private DayDraggableEventView tempDragView = null;
 
+    private int leftSideWidth = 40;
     private int lineHeight = 50;
     private int timeTextSize = 20;
     private int overlapGapHeight;
@@ -90,10 +92,9 @@ public class FlexibleLenViewBody extends RelativeLayout {
 
     public FlexibleLenViewBody(Context context, int displayLen) {
         super(context);
-        this.displayLen = displayLen;
         this.context = context;
-        this.overlapGapHeight = DensityUtil.dip2px(context, 1);
-        lineHeight = DensityUtil.dip2px(context, lineHeight);
+        this.displayLen = displayLen;
+        initLayoutParams();
         init();
         initBackgroundView();
     }
@@ -101,8 +102,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
     public FlexibleLenViewBody(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
-        this.overlapGapHeight = DensityUtil.dip2px(context, 1);
-        lineHeight = DensityUtil.dip2px(context, lineHeight);
+        initLayoutParams();
         loadAttributes(attrs, context);
         init();
         initBackgroundView();
@@ -111,11 +111,16 @@ public class FlexibleLenViewBody extends RelativeLayout {
     public FlexibleLenViewBody(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.context = context;
-        this.overlapGapHeight = DensityUtil.dip2px(context, 1);
-        lineHeight = DensityUtil.dip2px(context, lineHeight);
+        initLayoutParams();
         loadAttributes(attrs, context);
         init();
         initBackgroundView();
+    }
+
+    private void initLayoutParams(){
+        this.overlapGapHeight = DensityUtil.dip2px(context, 1);
+        this.lineHeight = DensityUtil.dip2px(context, lineHeight);
+        this.leftSideWidth = DensityUtil.dip2px(context,leftSideWidth);
     }
 
     private void init() {
@@ -130,16 +135,21 @@ public class FlexibleLenViewBody extends RelativeLayout {
         scrollContainerView.addView(bodyContainerLayout);
 
         topAllDayLayout = new LinearLayout(getContext());
+        topAllDayLayout.setBackgroundColor(Color.parseColor("#EBEBEB"));
         topAllDayLayout.setId(View.generateViewId());
         RelativeLayout.LayoutParams topAllDayLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         topAllDayLayout.setLayoutParams(topAllDayLayoutParams);
 
-        ImageView divider = getDivider();
-        ((RelativeLayout.LayoutParams) divider.getLayoutParams()).addRule(BELOW, topAllDayLayout.getId());
-        bodyContainerLayout.addView(divider);
+        ImageView dividerTop = getDivider();
+        ((RelativeLayout.LayoutParams) dividerTop.getLayoutParams()).addRule(ALIGN_PARENT_TOP);
+        this.addView(dividerTop);
+
+        ImageView dividerBottom = getDivider();
+        ((RelativeLayout.LayoutParams) dividerBottom.getLayoutParams()).addRule(BELOW, topAllDayLayout.getId());
+        bodyContainerLayout.addView(dividerBottom);
 
         TextView allDayTitleTv = new TextView(context);
-        LinearLayout.LayoutParams allDayTitleTvParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        LinearLayout.LayoutParams allDayTitleTvParams = new LinearLayout.LayoutParams(leftSideWidth, ViewGroup.LayoutParams.MATCH_PARENT);
         int allDayTitleTvPadding = DensityUtil.dip2px(context, 3);
         allDayTitleTv.setPadding(allDayTitleTvPadding, allDayTitleTvPadding, allDayTitleTvPadding, allDayTitleTvPadding);
         allDayTitleTv.setTextSize(10);
@@ -147,9 +157,14 @@ public class FlexibleLenViewBody extends RelativeLayout {
         allDayTitleTv.setTextColor(context.getResources().getColor(R.color.text_enable));
         allDayTitleTv.setGravity(Gravity.CENTER_VERTICAL);
         allDayTitleTv.setLayoutParams(allDayTitleTvParams);
+        allDayTitleTv.measure(0,0);
+        leftSideWidth = allDayTitleTv.getMeasuredWidth();
         topAllDayLayout.addView(allDayTitleTv);
 
         topAllDayEventLayouts = new LinearLayout(getContext());
+        int topAllDayEventLayoutsPadding = DensityUtil.dip2px(context, 3);
+        topAllDayEventLayouts.setPadding(0,topAllDayEventLayoutsPadding,0,topAllDayEventLayoutsPadding);
+
         topAllDayEventLayouts.setId(View.generateViewId());
         LinearLayout.LayoutParams topAllDayEventLayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DensityUtil.dip2px(context, 40));
         topAllDayEventLayouts.setLayoutParams(topAllDayEventLayoutParams);
@@ -158,9 +173,10 @@ public class FlexibleLenViewBody extends RelativeLayout {
 
         leftSideRLayout = new RelativeLayout(getContext());
         leftSideRLayout.setId(View.generateViewId());
-        RelativeLayout.LayoutParams leftSideRLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        RelativeLayout.LayoutParams leftSideRLayoutParams = new RelativeLayout.LayoutParams(leftSideWidth, ViewGroup.LayoutParams.MATCH_PARENT);
         leftSideRLayoutParams.addRule(RelativeLayout.BELOW, topAllDayLayout.getId());
-        leftSideRLayout.setPadding(DensityUtil.dip2px(context, 10), 0, DensityUtil.dip2px(context, 10), 0);
+        leftSideRLayout.setGravity(Gravity.CENTER);
+        leftSideRLayout.setPadding(0, 0, 0, 0);
         leftSideRLayout.setLayoutParams(leftSideRLayoutParams);
 
         rightContentLayout = new RelativeLayout(getContext());
@@ -205,6 +221,8 @@ public class FlexibleLenViewBody extends RelativeLayout {
     private void initInnerHeaderEventLayouts(LinearLayout parent){
         for (int i = 0; i < displayLen; i++) {
             DayInnerHeaderEventLayout allDayEventLayout = new DayInnerHeaderEventLayout(context);
+            int allDayEventLayoutPadding = DensityUtil.dip2px(context, 1);
+            allDayEventLayout.setPadding(allDayEventLayoutPadding,0,allDayEventLayoutPadding,0);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,1f);
             parent.addView(allDayEventLayout,params);
 
@@ -216,6 +234,8 @@ public class FlexibleLenViewBody extends RelativeLayout {
         for (int i = 0; i < displayLen; i++) {
             DayInnerBodyEventLayout eventLayout = new DayInnerBodyEventLayout(context);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,1f);
+            int eventLayoutPadding = DensityUtil.dip2px(context, 1);
+            eventLayout.setPadding(eventLayoutPadding,0,eventLayoutPadding,0);
             parent.addView(eventLayout,params);
             eventLayout.setOnDragListener(new EventDragListener(i));
 
@@ -576,8 +596,8 @@ public class FlexibleLenViewBody extends RelativeLayout {
      */
     public void setEventList(Map<Long, List<ITimeEventInterface>> dayEventMap) {
         this.clearAllEvents();
+
         MyCalendar tempCal = new MyCalendar(this.myCalendar);
-        Log.i(TAG, "tempCal: " + tempCal);
         for (int i = 0; i < displayLen; i++) {
             long startTime = tempCal.getBeginOfDayMilliseconds();
             if (dayEventMap != null && dayEventMap.containsKey(startTime)){
@@ -634,7 +654,6 @@ public class FlexibleLenViewBody extends RelativeLayout {
             @Override
             public void onClick(View view) {
                 if (onBodyListener != null) {
-                    Log.i(TAG, "view: " + view.getWidth());
                     onBodyListener.onEventClick((DayDraggableEventView) view);
                 }
             }
@@ -707,11 +726,13 @@ public class FlexibleLenViewBody extends RelativeLayout {
             DayDraggableEventView dgView = (DayDraggableEventView) event.getLocalState();
             int rawX = (int) (layoutWidthPerDay * index + event.getX());
 
+
             switch (event.getAction()) {
                 case DragEvent.ACTION_DRAG_STARTED:
                     break;
                 case DragEvent.ACTION_DRAG_LOCATION:
                     scrollViewAutoScroll(event);
+
                     if (onBodyListener != null) {
                         onBodyListener.onEventDragging(dgView, rawX, (int) event.getY());
                     } else {
@@ -729,7 +750,6 @@ public class FlexibleLenViewBody extends RelativeLayout {
 
                     break;
                 case DragEvent.ACTION_DRAG_EXITED:
-                    Log.i(TAG, "ACTION_DRAG_EXITED: ");
                     msgWindow.setVisibility(View.INVISIBLE);
                     tempDragView = null;
                     break;
@@ -741,8 +761,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
                     finalView.setVisibility(View.VISIBLE);
                     msgWindow.setVisibility(View.INVISIBLE);
                     msgWindow.invalidate();
-
-
+//
                     float actionStopX = event.getX();
                     float actionStopY = event.getY();
                     // Dropped, reassign View to ViewGroup
@@ -756,10 +775,10 @@ public class FlexibleLenViewBody extends RelativeLayout {
                     String[] time_parts = new_time.split(":");
                     currentEventNewHour = Integer.valueOf(time_parts[0]);
                     currentEventNewMinutes = Integer.valueOf(time_parts[1]);
-
+//
                     dgView.getNewCalendar().setHour(currentEventNewHour);
                     dgView.getNewCalendar().setMinute(currentEventNewMinutes);
-                    //set dropped container index
+//                    //set dropped container index
                     dgView.setIndexInView(index);
 
                     if (tempDragView == null && onBodyListener != null) {
@@ -874,15 +893,16 @@ public class FlexibleLenViewBody extends RelativeLayout {
         Rect scrollBounds = new Rect();
         scrollContainerView.getDrawingRect(scrollBounds);
         float heightOfView = ((View) event.getLocalState()).getHeight();
+        float allDayLayoutHeight = this.topAllDayLayout.getHeight();
         float needPositionY_top = event.getY() - heightOfView / 2;
         float needPositionY_bottom = event.getY() + heightOfView / 2;
 
-        if (scrollBounds.top > needPositionY_top) {
-            int offsetY = (int) (scrollContainerView.getScrollY() - DensityUtil.dip2px(context, 10));//(needPositionY_top-scrollBounds.top)
-            scrollContainerView.scrollTo(scrollContainerView.getScrollX(), offsetY);
-        } else if (scrollBounds.bottom < needPositionY_bottom) {
-            int offsetY = (int) (scrollContainerView.getScrollY() + DensityUtil.dip2px(context, 10));//(needPositionY_bottom-scrollBounds.bottom)
-            scrollContainerView.scrollTo(scrollContainerView.getScrollX(), offsetY);
+        if ((scrollBounds.top - allDayLayoutHeight) > needPositionY_top) {
+            int offsetY = scrollContainerView.getScrollY() - DensityUtil.dip2px(context, 10);
+            scrollContainerView.smoothScrollTo(scrollContainerView.getScrollX(), offsetY);
+        } else if ((scrollBounds.bottom - allDayLayoutHeight) < needPositionY_bottom) {
+            int offsetY = scrollContainerView.getScrollY() + DensityUtil.dip2px(context, 10);
+            scrollContainerView.smoothScrollTo(scrollContainerView.getScrollX(), offsetY);
         }
     }
 

@@ -144,12 +144,14 @@ public class MonthDayView extends LinearLayout {
             @Override
             public void onPageSelected(int position) {
                 try{
+                    //slideByUser
                     if (slideByUser) {
                         MyCalendar bodyMyCalendar = (bodyPagerAdapter.getViewByPosition(position)).getCalendar();
                         Calendar body_fst_cal = bodyMyCalendar.getCalendar();
                         //update header
                         bodyPagerAdapter.currentDayPos = position;
                         headerScrollToDate(body_fst_cal);
+
                     }
                 }finally {
                     bodyCurrentPosition = position;
@@ -166,6 +168,7 @@ public class MonthDayView extends LinearLayout {
                 }else {
                     //after executed selected, reset to false;
                     slideByUser = false;
+                    //notify header info by interface
                     if (onHeaderListener != null){
                         monthDayViewCalendar = bodyPagerAdapter.getViewByPosition(bodyCurrentPosition).getCalendar();
                         onHeaderListener.onMonthChanged(monthDayViewCalendar);
@@ -280,6 +283,7 @@ public class MonthDayView extends LinearLayout {
         @Override
         public void onScrollStateChanged(RecyclerView v, int newState) {
             super.onScrollStateChanged(headerRecyclerView, newState);
+
             if (newState == 1){
                 if (v.getHeight() == init_height){
                     final View view = v;
@@ -297,12 +301,12 @@ public class MonthDayView extends LinearLayout {
             }
             //for now header date
 
-            if (onHeaderListener != null){
-                int index = headerLinearLayoutManager.findFirstCompletelyVisibleItemPosition();
-                DayViewHeader fstVisibleHeader = (DayViewHeader) headerLinearLayoutManager.findViewByPosition(index);
-                monthDayViewCalendar = fstVisibleHeader.getCalendar();
-                onHeaderListener.onMonthChanged(monthDayViewCalendar);
-            }
+//            if (onHeaderListener != null){
+//                int index = headerLinearLayoutManager.findFirstCompletelyVisibleItemPosition();
+//                DayViewHeader fstVisibleHeader = (DayViewHeader) headerLinearLayoutManager.findViewByPosition(index);
+//                monthDayViewCalendar = fstVisibleHeader.getCalendar();
+//                onHeaderListener.onMonthChanged(monthDayViewCalendar);
+//            }
         }
     }
 
@@ -374,8 +378,13 @@ public class MonthDayView extends LinearLayout {
                 bodyPager.setCurrentItem(scrollTo,true);
                 bodyPagerAdapter.currentDayPos = scrollTo;
                 MyCalendar bodyMyCalendar = (bodyPagerAdapter.getViewByPosition(scrollTo)).getCalendar();
-                Calendar body_fst_cal = bodyMyCalendar.getCalendar();
-                headerScrollToDate(body_fst_cal);
+                final Calendar body_fst_cal = bodyMyCalendar.getCalendar();
+                postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        headerScrollToDate(body_fst_cal);
+                    }
+                },10);
             }
         }
     }

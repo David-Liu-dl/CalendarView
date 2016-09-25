@@ -85,14 +85,14 @@ public class WeekView extends LinearLayout {
 
     private void initHeader(){
         int size = 4;
-        int padding = DensityUtil.dip2px(context,20);
+        int padding = DensityUtil.dip2px(context,5);
+        //must be consistent with width of left bar in body part.
+        int leftBarPadding = DensityUtil.dip2px(context,40);
         for (int i = 0; i < size; i++) {
             WeekViewHeader headerView = new WeekViewHeader(context);
-
             headerView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            headerView.setPadding(padding,padding,0,padding);
+            headerView.setPadding(leftBarPadding,padding,0,padding);
             headerViewList.add(headerView);
-
         }
     }
 
@@ -147,7 +147,7 @@ public class WeekView extends LinearLayout {
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
+                bodyPagerCurrentState = state;
             }
         });
     }
@@ -196,9 +196,11 @@ public class WeekView extends LinearLayout {
         @Override
         public void onEventCreate(DayDraggableEventView eventView) {
             MyCalendar currentCal = (adapter.getViewBodyByPosition(bodyCurrentPosition)).getCalendar();
-            eventView.getNewCalendar().setDay(currentCal.getDay());
-            eventView.getNewCalendar().setMonth(currentCal.getMonth());
-            eventView.getNewCalendar().setYear(currentCal.getYear());
+            MyCalendar eventNewCal = new MyCalendar(currentCal);
+            eventNewCal.setOffsetByDate(eventView.getIndexInView());
+            eventView.getNewCalendar().setDay(eventNewCal.getDay());
+            eventView.getNewCalendar().setMonth(eventNewCal.getMonth());
+            eventView.getNewCalendar().setYear(eventNewCal.getYear());
             if (OnBodyOuterListener != null){OnBodyOuterListener.onEventCreate(eventView);}
         }
 
@@ -226,12 +228,13 @@ public class WeekView extends LinearLayout {
         @Override
         public void onEventDragDrop(DayDraggableEventView eventView) {
             MyCalendar currentCal = (adapter.getViewBodyByPosition(bodyCurrentPosition)).getCalendar();
-            currentCal.setOffsetByDate(eventView.getIndexInView());
-            eventView.getNewCalendar().setDay(currentCal.getDay());
-            eventView.getNewCalendar().setMonth(currentCal.getMonth());
-            eventView.getNewCalendar().setYear(currentCal.getYear());
-            Calendar cal = Calendar.getInstance();
-            cal.setTimeInMillis(eventView.getStartTimeM());
+            MyCalendar eventNewCal = new MyCalendar(currentCal);
+
+            eventNewCal.setOffsetByDate(eventView.getIndexInView());
+            eventView.getNewCalendar().setDay(eventNewCal.getDay());
+            eventView.getNewCalendar().setMonth(eventNewCal.getMonth());
+            eventView.getNewCalendar().setYear(eventNewCal.getYear());
+
             if (OnBodyOuterListener != null){OnBodyOuterListener.onEventDragDrop(eventView);}
         }
 

@@ -1,6 +1,8 @@
 package org.unimelb.itime.vendor.weekview;
 
 import android.content.Context;
+import android.databinding.BindingMethod;
+import android.databinding.BindingMethods;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.util.AttributeSet;
@@ -28,6 +30,9 @@ import java.util.Map;
  * Created by yuhaoliu on 10/08/16.
  */
 
+@BindingMethods(
+        {@BindingMethod(type = WeekView.class, attribute = "app:onWeekViewChange", method="setOnHeaderListener")}
+)
 public class WeekView extends LinearLayout {
     private final String TAG = "MyAPP";
 

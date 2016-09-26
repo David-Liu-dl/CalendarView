@@ -283,9 +283,8 @@ public class FlexibleLenViewBody extends RelativeLayout {
                     nowTapY = event.getY();
                     if (onBodyTouchListener != null) {
                         onBodyTouchListener.bodyOnTouchListener(nowTapX, nowTapY);
-                    } else {
-//                        Log.i(TAG, "controller:  onBodyTouchListener null ");
                     }
+
                     return false;
                 }
             });
@@ -596,7 +595,6 @@ public class FlexibleLenViewBody extends RelativeLayout {
      * @param dayEventMap
      */
     public void setEventList(Map<Long, List<ITimeEventInterface>> dayEventMap) {
-        Date startDate = new Date();
         this.clearAllEvents();
 
         MyCalendar tempCal = new MyCalendar(this.myCalendar);
@@ -616,12 +614,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
         for (DayInnerBodyEventLayout eventLayout:eventLayouts
              ) {
             calculateEventLayout(eventLayout);
-//            eventLayout.requestLayout();
         }
-
-//        Date endDate = new Date();
-//        long diff = endDate.getTime() - startDate.getTime();
-//        Log.i(TAG,  this.myCalendar.getDay() + " diff: " + diff + " ~= " + (float)diff/1000);
     }
 
     /**
@@ -731,7 +724,6 @@ public class FlexibleLenViewBody extends RelativeLayout {
         public boolean onDrag(View v, DragEvent event) {
             DayDraggableEventView dgView = (DayDraggableEventView) event.getLocalState();
             int rawX = (int) (layoutWidthPerDay * index + event.getX());
-
 
             switch (event.getAction()) {
                 case DragEvent.ACTION_DRAG_STARTED:
@@ -1069,22 +1061,6 @@ public class FlexibleLenViewBody extends RelativeLayout {
                 slotHeight,
                 params.height
         );
-        resizeAnimation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                params.height = slotHeight;
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
 
         resizeAnimation.setDuration(600);
         timeSlotView.startAnimation(resizeAnimation);
@@ -1101,4 +1077,12 @@ public class FlexibleLenViewBody extends RelativeLayout {
             resizeTimeSlot(tsV);
         }
     }
+
+    /************************** Time Slot Listener *************************************************/
+//    private class TimeSlotViewLongClickListener implements View.OnLongClickListener {
+//    }
+//
+//    private class EventDragListener implements View.OnDragListener {
+//
+//    }
 }

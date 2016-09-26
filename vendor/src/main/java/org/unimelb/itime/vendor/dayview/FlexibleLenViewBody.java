@@ -45,8 +45,9 @@ import java.util.TreeMap;
  */
 public class FlexibleLenViewBody extends RelativeLayout {
     public final String TAG = "MyAPP";
-
     private final long allDayMilliseconds = 24 * 60 * 60 * 1000;
+
+    private boolean isTimeSlotEnable = false;
 
     private ScrollContainerView scrollContainerView;
     private RelativeLayout bodyContainerLayout;
@@ -64,6 +65,8 @@ public class FlexibleLenViewBody extends RelativeLayout {
     private Context context;
 
     private ArrayList<DayDraggableEventView> allDayDgEventViews = new ArrayList<>();
+    private ArrayList<DayDraggableEventView> regularDgEventViews = new ArrayList<>();
+
     private ArrayList<DayInnerHeaderEventLayout> allDayEventLayouts = new ArrayList<>();
     private ArrayList<DayInnerBodyEventLayout> eventLayouts = new ArrayList<>();
 
@@ -77,7 +80,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
     private TextView nowTime;
     private ImageView nowTimeLine;
     //tag: false-> moving, true, done
-    private DayDraggableEventView tempDragView = null;
+    private View tempDragView = null;
 
     private int leftSideWidth = 40;
     private int lineHeight = 50;
@@ -273,9 +276,14 @@ public class FlexibleLenViewBody extends RelativeLayout {
             int eventLayoutPadding = DensityUtil.dip2px(context, 1);
             eventLayout.setPadding(eventLayoutPadding,0,eventLayoutPadding,0);
             parent.addView(eventLayout,params);
-            eventLayout.setOnDragListener(new EventDragListener(i));
+            if (!isTimeSlotEnable){
+                eventLayout.setOnDragListener(new EventDragListener(i));
+                eventLayout.setOnLongClickListener(new CreateEventListener());
+            }else {
+                eventLayout.setOnDragListener(new TimeSlotDragListener(i));
+                eventLayout.setOnLongClickListener(new CreateTimeSlotListener());
+            }
 
-            eventLayout.setOnLongClickListener(new CreateEventListener());
             eventLayout.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
@@ -594,7 +602,10 @@ public class FlexibleLenViewBody extends RelativeLayout {
      *
      * @param dayEventMap
      */
+    Date startDate = new Date();
     public void setEventList(Map<Long, List<ITimeEventInterface>> dayEventMap) {
+        startDate = new Date();
+
         this.clearAllEvents();
 
         MyCalendar tempCal = new MyCalendar(this.myCalendar);
@@ -645,18 +656,28 @@ public class FlexibleLenViewBody extends RelativeLayout {
         }
     }
 
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+
+        Date endDate = new Date();
+        Log.i(TAG, "onLayout time used: " + this.myCalendar.getDay() + " --- " + (endDate.getTime() - startDate.getTime()));
+    }
+
     private DayDraggableEventView createDayDraggableEventView(ITimeEventInterface event, boolean isAllDayEvent) {
         DayDraggableEventView event_view = new DayDraggableEventView(context, event, isAllDayEvent);
 
         event_view.setType(DayDraggableEventView.TYPE_NORMAL);
-        event_view.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (onBodyListener != null) {
-                    onBodyListener.onEventClick((DayDraggableEventView) view);
+        if (!isTimeSlotEnable){
+            event_view.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (onBodyListener != null) {
+                        onBodyListener.onEventClick((DayDraggableEventView) view);
+                    }
                 }
-            }
-        });
+            });
+        }
 
         if (isAllDayEvent) {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,1f);
@@ -667,7 +688,9 @@ public class FlexibleLenViewBody extends RelativeLayout {
             int eventHeight = (int) (((float) duration / (3600 * 1000)) * lineHeight);
 
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(eventHeight, eventHeight);
-            event_view.setOnLongClickListener(new EventLongClickListener());
+            if (!isTimeSlotEnable){
+                event_view.setOnLongClickListener(new EventLongClickListener());
+            }
             event_view.setTag(event);
             event_view.setLayoutParams(params);
         }
@@ -1022,27 +1045,35 @@ public class FlexibleLenViewBody extends RelativeLayout {
         int offset = this.getEventContainerIndex(struct.startTime);
 
         if (offset < displayLen && offset > -1){
-            TimeSlotView timeSlotView = new TimeSlotView(context);
-            timeSlotView.setTimes(struct.startTime, struct.endTime);
-            timeSlotView.setStatus(struct.status);
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 0);
-            timeSlotView.setLayoutParams(params);
-            timeSlotView.setTag(struct);
-            resizeTimeSlot(timeSlotView);
-            eventLayouts.get(offset).addView(timeSlotView,params);
+            TimeSlotView timeSlotView = createTimeSlotView(struct);
+            eventLayouts.get(offset).addView(timeSlotView);
             slotViews.add(timeSlotView);
-
-            timeSlotView.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    TimeSlotView timeSlotView = (TimeSlotView) v;
-                    boolean newStatus = !timeSlotView.isSelect();
-                    timeSlotView.setStatus(newStatus);
-                    ((WeekView.TimeSlotStruct)timeSlotView.getTag()).status = newStatus;
-
-                }
-            });
         }
+    }
+
+    private TimeSlotView createTimeSlotView(WeekView.TimeSlotStruct struct){
+        TimeSlotView timeSlotView = new TimeSlotView(context);
+        timeSlotView.setTimes(struct.startTime, struct.endTime);
+        timeSlotView.setStatus(struct.status);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 0);
+        timeSlotView.setLayoutParams(params);
+        timeSlotView.setTag(struct);
+        resizeTimeSlot(timeSlotView);
+
+        timeSlotView.setOnLongClickListener(new TimeSlotLongClickListener());
+//        timeSlotView.setOnDragListener();
+        timeSlotView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TimeSlotView timeSlotView = (TimeSlotView) v;
+                boolean newStatus = !timeSlotView.isSelect();
+                timeSlotView.setStatus(newStatus);
+                ((WeekView.TimeSlotStruct)timeSlotView.getTag()).status = newStatus;
+
+            }
+        });
+
+        return timeSlotView;
     }
 
     private void resizeTimeSlot(TimeSlotView timeSlotView){
@@ -1055,14 +1086,19 @@ public class FlexibleLenViewBody extends RelativeLayout {
         float trickTime = Integer.valueOf(components[0]) + (float) Integer.valueOf(components[1]) / 100;
         final int topMargin = nearestTimeSlotValue(trickTime);
         params.topMargin = topMargin;
+//        params.height = slotHeight;
 
+
+        Log.i(TAG, "slotHeight: " + slotHeight);
+        Log.i(TAG, "params.height: " + params.height);
         ResizeAnimation resizeAnimation = new ResizeAnimation(
                 timeSlotView,
+                params.height,
                 slotHeight,
-                params.height
+                false
         );
 
-        resizeAnimation.setDuration(600);
+        resizeAnimation.setDuration(2000);
         timeSlotView.startAnimation(resizeAnimation);
 
     }
@@ -1070,19 +1106,168 @@ public class FlexibleLenViewBody extends RelativeLayout {
     public void updateTimeSlotsDuration(long duration){
         for (TimeSlotView tsV : this.slotViews
              ) {
-            long startTime = tsV.getStartTime();
+            int offset = this.getEventContainerIndex(tsV.getStartTime());
 
-            tsV.setTimes(startTime, startTime + duration);
-            ((WeekView.TimeSlotStruct)tsV.getTag()).endTime = startTime + duration;
-            resizeTimeSlot(tsV);
+            if (offset < displayLen && offset > -1){
+                long startTime = tsV.getStartTime();
+
+                tsV.setTimes(startTime, startTime + duration);
+                ((WeekView.TimeSlotStruct)tsV.getTag()).endTime = startTime + duration;
+                resizeTimeSlot(tsV);
+            }
         }
     }
 
     /************************** Time Slot Listener *************************************************/
-//    private class TimeSlotViewLongClickListener implements View.OnLongClickListener {
-//    }
+    private class TimeSlotLongClickListener implements View.OnLongClickListener {
+        @Override
+        public boolean onLongClick(View view) {
+            ClipData data = ClipData.newPlainText("", "");
+            View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(
+                    view);
+            view.startDrag(data, shadowBuilder, view, 0);
+            if (tempDragView != null) {
+                view.setVisibility(View.INVISIBLE);
+            } else {
+                view.setVisibility(View.VISIBLE);
+            }
+            view.getBackground().setAlpha(255);
+            return false;
+        }
+    }
+
+    private class TimeSlotDragListener implements View.OnDragListener {
+        int index = 0;
+        int currentEventNewHour = -1;
+        int currentEventNewMinutes = -1;
+
+        public TimeSlotDragListener(int index) {
+            this.index = index;
+        }
+
+        @Override
+        public boolean onDrag(View v, DragEvent event) {
+            TimeSlotView tsView = (TimeSlotView) event.getLocalState();
+            int rawX = (int) (layoutWidthPerDay * index + event.getX());
+
+            switch (event.getAction()) {
+                case DragEvent.ACTION_DRAG_STARTED:
+                    break;
+                case DragEvent.ACTION_DRAG_LOCATION:
+                    scrollViewAutoScroll(event);
+
+//                    if (onBodyListener != null) {
+//                        onBodyListener.onEventDragging(dgView, rawX, (int) event.getY());
+//                    } else {
+//                        Log.i(TAG, "onDrag: null onEventDragListener");
+//                    }
+                    msgWindowFollow(rawX, (int) event.getY(), index, (View) event.getLocalState());
+                    break;
+                case DragEvent.ACTION_DRAG_ENTERED:
+                    msgWindow.setVisibility(View.VISIBLE);
+//                    if (dgView.getType() == DayDraggableEventView.TYPE_TEMP){
+//                        tempDragView = dgView;
+//                    }else{
+//                        tempDragView= null;
+//                    }
+
+                    break;
+                case DragEvent.ACTION_DRAG_EXITED:
+                    msgWindow.setVisibility(View.INVISIBLE);
+                    tempDragView = null;
+                    break;
+                case DragEvent.ACTION_DROP:
+                    //handler ended things in here, because ended some time is not triggered
+                    tsView.getBackground().setAlpha(128);
+                    View finalView = (View) event.getLocalState();
+                    finalView.getBackground().setAlpha(128);
+                    finalView.setVisibility(View.VISIBLE);
+                    msgWindow.setVisibility(View.INVISIBLE);
+//                    msgWindow.invalidate();
 //
-//    private class EventDragListener implements View.OnDragListener {
+                    float actionStopX = event.getX();
+                    float actionStopY = event.getY();
+                    // Dropped, reassign View to ViewGroup
+                    int newX = (int) actionStopX - tsView.getWidth() / 2;
+                    int newY = (int) actionStopY - tsView.getHeight() / 2;
+                    int[] reComputeResult = reComputePositionToSet(newX, newY, tsView, v);
+
+                    //update the event time
+                    String new_time = positionToTimeTreeMap.get(reComputeResult[1]);
+                    //important! update event time after drag
+                    String[] time_parts = new_time.split(":");
+                    currentEventNewHour = Integer.valueOf(time_parts[0]);
+                    currentEventNewMinutes = Integer.valueOf(time_parts[1]);
 //
-//    }
+                    tsView.getCalendar().setHour(currentEventNewHour);
+                    tsView.getCalendar().setMinute(currentEventNewMinutes);
+//                    //set dropped container index
+                    tsView.setIndexInView(index);
+
+//                    if (tempDragView == null && onBodyListener != null) {
+//                        onBodyListener.onEventDragDrop(dgView);
+//                    } else {
+//                        Log.i(TAG, "onDrop Not Called");
+//                    }
+
+//                    if (dgView.getType() == DayDraggableEventView.TYPE_TEMP) {
+//                        ViewGroup parent = (ViewGroup) dgView.getParent();
+//                        if(parent != null){
+//                            parent.removeView(dgView);
+//                        }
+//                        //important! update event time after drag via listener
+//                        if (onBodyListener != null) {
+//                            onBodyListener.onEventCreate(dgView);
+//                        }
+//                        //finally reset tempDragView to NULL.
+//                        tempDragView = null;
+//                    }
+
+                    break;
+                case DragEvent.ACTION_DRAG_ENDED:
+                    break;
+                default:
+                    break;
+            }
+
+            return true;
+        }
+    }
+
+    private class CreateTimeSlotListener implements View.OnLongClickListener {
+
+        @Override
+        public boolean onLongClick(View v) {
+            if (tempDragView == null) {
+//                DayInnerBodyEventLayout container = (DayInnerBodyEventLayout) v;
+//                tempDragView = createTimeSlotView(nowTapX, nowTapY);
+//                container.addView(tempDragView);
+//
+//                tempDragView.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        tempDragView.performLongClick();
+//                    }
+//                }, 100);
+            }
+
+            return true;
+        }
+    }
+
+    public void enableTimeSlot(){
+        this.isTimeSlotEnable = true;
+        for (int i = 0; i < displayLen; i++) {
+            //remove previous listeners
+            eventLayouts.get(i).setOnDragListener(new TimeSlotDragListener(i));
+            eventLayouts.get(i).setOnLongClickListener(new CreateTimeSlotListener());
+
+            for (int j = 0; j < eventLayouts.get(i).getChildCount(); j++) {
+                if (eventLayouts.get(i).getChildAt(j) instanceof DayDraggableEventView){
+                    eventLayouts.get(i).getChildAt(j).setOnLongClickListener(null);
+
+                }
+            }
+        }
+    }
 }

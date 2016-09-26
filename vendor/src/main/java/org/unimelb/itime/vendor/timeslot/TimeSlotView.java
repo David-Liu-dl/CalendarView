@@ -8,12 +8,18 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import org.unimelb.itime.vendor.R;
+import org.unimelb.itime.vendor.helper.MyCalendar;
+
+import java.util.Calendar;
 
 /**
  * Created by Paul on 26/08/2016.
  */
 public class TimeSlotView extends RelativeLayout {
+    private MyCalendar calendar = new MyCalendar(Calendar.getInstance());
+
     private int duration;
+    private int indexInView = 0;
 
     private long startTime = 0;
     private long endTime = 0;
@@ -54,6 +60,9 @@ public class TimeSlotView extends RelativeLayout {
     public void setTimes(long startTime, long endTime){
         this.startTime = startTime;
         this.endTime = endTime;
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(startTime);
+        this.calendar.cloneFromCalendar(cal);
     }
 
     public void setStatus(boolean isSelect){
@@ -85,4 +94,15 @@ public class TimeSlotView extends RelativeLayout {
         }
     }
 
+    public MyCalendar getCalendar() {
+        return calendar;
+    }
+
+    public void setCalendar(MyCalendar calendar) {
+        this.calendar = calendar;
+    }
+
+    public void setIndexInView(int indexInView) {
+        this.indexInView = indexInView;
+    }
 }

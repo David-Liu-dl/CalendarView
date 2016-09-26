@@ -63,28 +63,28 @@ public class PaulActivity extends AppCompatActivity {
                 weekView.reloadEvents();
             }
         });
-        weekView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Calendar cal = Calendar.getInstance();
-                long interval = 24 * 60 * 60 * 1000;
-                long duration = 60 * 60 * 1000;
-                for (int i = 0; i < 3; i++) {
-                    WeekView.TimeSlotStruct struct = new WeekView.TimeSlotStruct();
-                    struct.startTime = cal.getTimeInMillis() + i * interval;
-                    struct.endTime = struct.startTime + duration;
-                    weekView.addTimeSlot(struct);
-                }
-                Log.i(TAG, "run: done");
-                weekView.reloadTimeSlots();
-            }
-        },2000);
-        weekView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                weekView.updateTimeSlotsDuration(2 * 3600 * 1000);
-            }
-        },10000);
+//        weekView.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                Calendar cal = Calendar.getInstance();
+//                long interval = 24 * 60 * 60 * 1000;
+//                long duration = 60 * 60 * 1000;
+//                for (int i = 0; i < 3; i++) {
+//                    WeekView.TimeSlotStruct struct = new WeekView.TimeSlotStruct();
+//                    struct.startTime = cal.getTimeInMillis() + i * interval;
+//                    struct.endTime = struct.startTime + duration;
+//                    weekView.addTimeSlot(struct);
+//                }
+//                Log.i(TAG, "run: done");
+//                weekView.reloadTimeSlots();
+//            }
+//        },2000);
+//        weekView.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                weekView.updateTimeSlotsDuration(1800 * 1000);
+//            }
+//        },6000);
         weekView.setDayEventMap(EventManager.getInstance().getEventsMap());
     }
 

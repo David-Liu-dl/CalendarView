@@ -33,9 +33,9 @@ public class YinActivity extends AppCompatActivity {
         dbManager = DBManager.getInstance(this);
         eventManager = EventManager.getInstance();
 
-//        initDB();
+        initDB();
 
-        init();
+//        init();
 
     }
 
@@ -122,14 +122,14 @@ public class YinActivity extends AppCompatActivity {
 
         int[] type = {0,1,2};
         int[] status = {0,1};
-        long interval = 3600 * 1000;
+        long interval = 3400 * 1000;
         int alldayCount = 0;
         String uuuid = "";
-        for (int i = 1; i < 100; i++) {
+        for (int i = 1; i < 1000; i++) {
 
             long startTime = calendar.getTimeInMillis();
 //            long endTime = startTime + interval * (i%30);
-            long endTime = startTime + 25*3600*1000;
+            long endTime = startTime + interval;
             long duration = (endTime - startTime);
 
             Event event = new Event();

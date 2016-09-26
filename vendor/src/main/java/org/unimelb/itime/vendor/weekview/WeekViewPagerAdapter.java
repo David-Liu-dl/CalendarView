@@ -50,6 +50,11 @@ public class WeekViewPagerAdapter extends PagerAdapter {
 
     public void setSlotsInfo(ArrayList<WeekView.TimeSlotStruct> slotsInfo) {
         this.slotsInfo = slotsInfo;
+        for (LinearLayout weekView : views
+                ) {
+            FlexibleLenViewBody bodyView = (FlexibleLenViewBody)weekView.getChildAt(1);
+            bodyView.enableTimeSlot();
+        }
     }
 
     public void changeView(LinearLayout newView,int position){

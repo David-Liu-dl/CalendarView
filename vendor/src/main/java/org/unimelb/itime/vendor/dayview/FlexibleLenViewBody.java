@@ -14,6 +14,7 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -25,6 +26,8 @@ import org.unimelb.itime.vendor.helper.CalendarEventOverlapHelper;
 import org.unimelb.itime.vendor.helper.DensityUtil;
 import org.unimelb.itime.vendor.helper.MyCalendar;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
+import org.unimelb.itime.vendor.timeslot.TimeSlotView;
+import org.unimelb.itime.vendor.weekview.WeekView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -61,6 +64,8 @@ public class FlexibleLenViewBody extends RelativeLayout {
     private Context context;
 
     private ArrayList<DayDraggableEventView> allDayDgEventViews = new ArrayList<>();
+    private ArrayList<DayInnerHeaderEventLayout> allDayEventLayouts = new ArrayList<>();
+    private ArrayList<DayInnerBodyEventLayout> eventLayouts = new ArrayList<>();
 
     private TreeMap<Integer, String> positionToTimeTreeMap = new TreeMap<>();
     private TreeMap<Float, Integer> timeToPositionTreeMap = new TreeMap<>();
@@ -115,6 +120,40 @@ public class FlexibleLenViewBody extends RelativeLayout {
         loadAttributes(attrs, context);
         init();
         initBackgroundView();
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        layoutWidthPerDay = MeasureSpec.getSize(eventLayout.getMeasuredWidth()/displayLen);
+        layoutHeightPerDay = MeasureSpec.getSize(eventLayout.getMeasuredHeight());
+
+        for (DayInnerBodyEventLayout eventLayout:eventLayouts
+                ) {
+            eventLayout.getLayoutParams().width = layoutWidthPerDay;
+            eventLayout.getLayoutParams().height = layoutHeightPerDay;
+
+            int eventCount = eventLayout.getChildCount();
+
+            for (int i = 0; i < eventCount; i++) {
+                if (!(eventLayout.getChildAt(i) instanceof DayDraggableEventView)) {
+                    continue;
+                }
+                DayDraggableEventView eventView = (DayDraggableEventView) eventLayout.getChildAt(i);
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) eventView.getLayoutParams();
+                DayDraggableEventView.PosParam pos = eventView.getPosParam();
+                if (pos == null) {
+                    // for creating a new event
+                    // the pos parameter is null, because we just mock it
+                    continue;
+                }
+                int eventWidth = layoutWidthPerDay / pos.widthFactor;
+                int leftMargin = eventWidth * pos.startX;
+                params.width = eventWidth;
+                params.leftMargin = leftMargin + 5 * pos.startX;
+                params.topMargin = pos.topMargin;
+            }
+        }
     }
 
     private void initLayoutParams(){
@@ -215,9 +254,6 @@ public class FlexibleLenViewBody extends RelativeLayout {
 
     }
 
-    private ArrayList<DayInnerHeaderEventLayout> allDayEventLayouts = new ArrayList<>();
-    private ArrayList<DayInnerBodyEventLayout> eventLayouts = new ArrayList<>();
-
     private void initInnerHeaderEventLayouts(LinearLayout parent){
         for (int i = 0; i < displayLen; i++) {
             DayInnerHeaderEventLayout allDayEventLayout = new DayInnerHeaderEventLayout(context);
@@ -271,40 +307,6 @@ public class FlexibleLenViewBody extends RelativeLayout {
 
     public int getDisplayLen() {
         return displayLen;
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        layoutWidthPerDay = MeasureSpec.getSize(eventLayout.getMeasuredWidth()/displayLen);
-        layoutHeightPerDay = MeasureSpec.getSize(eventLayout.getMeasuredHeight());
-
-        for (DayInnerBodyEventLayout eventLayout:eventLayouts
-                ) {
-            eventLayout.getLayoutParams().width = layoutWidthPerDay;
-            eventLayout.getLayoutParams().height = layoutHeightPerDay;
-
-            int eventCount = eventLayout.getChildCount();
-
-            for (int i = 0; i < eventCount; i++) {
-                if (!(eventLayout.getChildAt(i) instanceof DayDraggableEventView)) {
-                    continue;
-                }
-                DayDraggableEventView eventView = (DayDraggableEventView) eventLayout.getChildAt(i);
-                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) eventView.getLayoutParams();
-                DayDraggableEventView.PosParam pos = eventView.getPosParam();
-                if (pos == null) {
-                    // for creating a new event
-                    // the pos parameter is null, because we just mock it
-                    continue;
-                }
-                int eventWidth = layoutWidthPerDay / pos.widthFactor;
-                int leftMargin = eventWidth * pos.startX;
-                params.width = eventWidth;
-                params.leftMargin = leftMargin + 5 * pos.startX;
-                params.topMargin = pos.topMargin;
-            }
-        }
     }
 
     private void loadAttributes(AttributeSet attrs, Context context) {
@@ -381,7 +383,6 @@ public class FlexibleLenViewBody extends RelativeLayout {
             leftSideRLayout.addView(timeView);
         }
     }
-
 
     private void initDividerLine(String[] HOURS) {
         for (int numOfDottedLine = 0; numOfDottedLine < HOURS.length; numOfDottedLine++) {
@@ -520,7 +521,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
     }
 
     private void addAllDayEvent(ITimeEventInterface event) {
-        int offset = getEventContainerIndex(event);
+        int offset = getEventContainerIndex(event.getStartTime());
         if (offset < displayLen) {
             DayDraggableEventView new_dgEvent = this.createDayDraggableEventView(event, true);
             DayInnerHeaderEventLayout allDayEventLayout = this.allDayEventLayouts.get(offset);
@@ -533,7 +534,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
     }
 
     private void addRegularEvent(ITimeEventInterface event) {
-        int offset = getEventContainerIndex(event);
+        int offset = getEventContainerIndex(event.getStartTime());
         if (offset < displayLen){
             DayInnerBodyEventLayout eventLayout = this.eventLayouts.get(offset);
 
@@ -560,10 +561,10 @@ public class FlexibleLenViewBody extends RelativeLayout {
 
     }
 
-    private int getEventContainerIndex(ITimeEventInterface event){
+    private int getEventContainerIndex(long startTime){
         long today = this.myCalendar.getBeginOfDayMilliseconds();
         Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(event.getStartTime());
+        cal.setTimeInMillis(startTime);
 
         long eventDay = (new MyCalendar(cal)).getBeginOfDayMilliseconds();
         long dayLong = (24 * 60 * 60 * 1000);
@@ -595,6 +596,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
      * @param dayEventMap
      */
     public void setEventList(Map<Long, List<ITimeEventInterface>> dayEventMap) {
+        Date startDate = new Date();
         this.clearAllEvents();
 
         MyCalendar tempCal = new MyCalendar(this.myCalendar);
@@ -614,8 +616,12 @@ public class FlexibleLenViewBody extends RelativeLayout {
         for (DayInnerBodyEventLayout eventLayout:eventLayouts
              ) {
             calculateEventLayout(eventLayout);
-            eventLayout.requestLayout();
+//            eventLayout.requestLayout();
         }
+
+//        Date endDate = new Date();
+//        long diff = endDate.getTime() - startDate.getTime();
+//        Log.i(TAG,  this.myCalendar.getDay() + " diff: " + diff + " ~= " + (float)diff/1000);
     }
 
     /**
@@ -760,7 +766,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
                     finalView.getBackground().setAlpha(128);
                     finalView.setVisibility(View.VISIBLE);
                     msgWindow.setVisibility(View.INVISIBLE);
-                    msgWindow.invalidate();
+//                    msgWindow.invalidate();
 //
                     float actionStopX = event.getX();
                     float actionStopY = event.getY();
@@ -964,7 +970,6 @@ public class FlexibleLenViewBody extends RelativeLayout {
         void bodyOnTouchListener(float tapX, float tapY);
     }
 
-
     public void setOnBodyTouchListener(OnBodyTouchListener onBodyTouchListener) {
         this.onBodyTouchListener = onBodyTouchListener;
     }
@@ -1008,4 +1013,92 @@ public class FlexibleLenViewBody extends RelativeLayout {
         this.tempDragView = tempDragView;
     }
 
+    /************************** For time slot view *************************************************/
+    private ArrayList<TimeSlotView> slotViews = new ArrayList<>();
+
+    public void clearTimeSlots(){
+        for (TimeSlotView timeSlotView:slotViews
+             ) {
+            ViewGroup parent = (ViewGroup)timeSlotView.getParent();
+            if (parent != null){
+                parent.removeView(timeSlotView);
+            }
+        }
+    }
+
+    public void addSlot(WeekView.TimeSlotStruct struct){
+        int offset = this.getEventContainerIndex(struct.startTime);
+
+        if (offset < displayLen && offset > -1){
+            TimeSlotView timeSlotView = new TimeSlotView(context);
+            timeSlotView.setTimes(struct.startTime, struct.endTime);
+            timeSlotView.setStatus(struct.status);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 0);
+            timeSlotView.setLayoutParams(params);
+            timeSlotView.setTag(struct);
+            resizeTimeSlot(timeSlotView);
+            eventLayouts.get(offset).addView(timeSlotView,params);
+            slotViews.add(timeSlotView);
+
+            timeSlotView.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    TimeSlotView timeSlotView = (TimeSlotView) v;
+                    boolean newStatus = !timeSlotView.isSelect();
+                    timeSlotView.setStatus(newStatus);
+                    ((WeekView.TimeSlotStruct)timeSlotView.getTag()).status = newStatus;
+
+                }
+            });
+        }
+    }
+
+    private void resizeTimeSlot(TimeSlotView timeSlotView){
+        final RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) timeSlotView.getLayoutParams();
+        long duration = timeSlotView.getDuration();
+        final int slotHeight = (int) (((float) duration / (3600 * 1000)) * lineHeight);
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        String hourWithMinutes = sdf.format(new Date(timeSlotView.getStartTime()));
+        String[] components = hourWithMinutes.split(":");
+        float trickTime = Integer.valueOf(components[0]) + (float) Integer.valueOf(components[1]) / 100;
+        final int topMargin = nearestTimeSlotValue(trickTime);
+        params.topMargin = topMargin;
+
+        ResizeAnimation resizeAnimation = new ResizeAnimation(
+                timeSlotView,
+                slotHeight,
+                params.height
+        );
+        resizeAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                params.height = slotHeight;
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        resizeAnimation.setDuration(600);
+        timeSlotView.startAnimation(resizeAnimation);
+
+    }
+
+    public void updateTimeSlotsDuration(long duration){
+        for (TimeSlotView tsV : this.slotViews
+             ) {
+            long startTime = tsV.getStartTime();
+
+            tsV.setTimes(startTime, startTime + duration);
+            ((WeekView.TimeSlotStruct)tsV.getTag()).endTime = startTime + duration;
+            resizeTimeSlot(tsV);
+        }
+    }
 }

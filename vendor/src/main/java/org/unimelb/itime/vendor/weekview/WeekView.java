@@ -70,6 +70,10 @@ public class WeekView extends LinearLayout {
         adapter.reloadEvents();
     }
 
+    public void reloadTimeSlots(){
+        adapter.reloadTimeSlots();
+    }
+
     private void initView(){
         this.context = getContext();
 
@@ -128,6 +132,7 @@ public class WeekView extends LinearLayout {
         if (this.dayEventMap != null){
             adapter.setDayEventMap(this.dayEventMap);
         }
+        adapter.setSlotsInfo(this.slotsInfo);
         weekViewPager.setAdapter(adapter);
         weekViewPager.setCurrentItem(upperBoundsOffset);
         this.addView(weekViewPager,new LinearLayoutCompat.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -258,6 +263,18 @@ public class WeekView extends LinearLayout {
             view.setEventClassName(className);
         }
 
+    }
+
+    private ArrayList<TimeSlotStruct> slotsInfo = new ArrayList<>();
+
+    public void addTimeSlot(TimeSlotStruct slotInfo){
+        slotsInfo.add(slotInfo);
+    }
+
+    public static class TimeSlotStruct{
+        public long startTime = 0;
+        public long endTime = 0;
+        public boolean status = false;
     }
 
 }

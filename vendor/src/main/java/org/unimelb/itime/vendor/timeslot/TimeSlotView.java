@@ -14,19 +14,16 @@ import org.unimelb.itime.vendor.R;
  */
 public class TimeSlotView extends RelativeLayout {
     private int duration;
-    private Long startTime;
-    private int width =0;
-    private int height =0;
+
+    private long startTime = 0;
+    private long endTime = 0;
 
     private ImageView icon;
 
-    private boolean isSelect;
+    private boolean isSelect = false;
 
-    public TimeSlotView(Context context, Long startTime, int duration, boolean isSelect) {
+    public TimeSlotView(Context context) {
         super(context);
-        this.startTime = startTime;
-        this.duration = duration;
-        this.isSelect = isSelect;
         init();
     }
 
@@ -41,35 +38,30 @@ public class TimeSlotView extends RelativeLayout {
 
     public void initIcon(){
         icon = new ImageView(getContext());
-        if (!isSelect)
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.addRule(ALIGN_PARENT_TOP);
+        params.addRule(ALIGN_PARENT_RIGHT);
+
+        if (!isSelect){
             icon.setImageResource(R.drawable.icon_event_timeslot_unselected);
-        else
+        }else{
             icon.setImageResource(R.drawable.icon_event_attendee_selected);
-        this.addView(icon);
+        }
+
+        this.addView(icon,params);
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        this.width = (View.MeasureSpec.getSize(widthMeasureSpec));
-        this.height = (View.MeasureSpec.getSize(heightMeasureSpec));
-        setMeasuredDimension(width,height);
+    public void setTimes(long startTime, long endTime){
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
-
-    @Override
-    protected void onLayout(boolean b, int i, int i1, int i2, int i3) {
-        this.width = i2 - i;
-        int iconWidth = this.width/3;
-        int top = iconWidth/3;
-        int left = this.width - iconWidth - iconWidth/3;
-        icon.layout(left , top, left + iconWidth, top + iconWidth);
-//        icon.layout(left, 20 ,110, 60);
+    public void setStatus(boolean isSelect){
+        this.isSelect = isSelect;
+        updateIcon();
     }
 
-
-
-    public Long getStartTime() {
+    public long getStartTime() {
         return startTime;
     }
 
@@ -77,22 +69,12 @@ public class TimeSlotView extends RelativeLayout {
         this.startTime = startTime;
     }
 
-    public int getDuration() {
-        return duration;
+    public long getDuration() {
+        return endTime - startTime;
     }
-
-    public void setDuration(int duration) {
-        this.duration = duration;
-    }
-
 
     public boolean isSelect() {
         return isSelect;
-    }
-
-    public void setSelect(boolean select) {
-        isSelect = select;
-        updateIcon();
     }
 
     private void updateIcon(){
@@ -102,4 +84,5 @@ public class TimeSlotView extends RelativeLayout {
             icon.setImageDrawable(getResources().getDrawable(R.drawable.icon_event_timeslot_unselected));
         }
     }
+
 }

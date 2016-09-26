@@ -13,6 +13,7 @@ import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +25,9 @@ public class WeekViewPagerAdapter extends PagerAdapter {
     private static final String TAG = "MyAPP";
     private ArrayList<LinearLayout> views;
 
+    private List<WeekView.TimeSlotStruct> slotsInfo;
     private Map<Long, List<ITimeEventInterface>> dayEventMap;
+
     private int startPst = 0;
     private MyCalendar startCal;
 
@@ -45,6 +48,10 @@ public class WeekViewPagerAdapter extends PagerAdapter {
         return views;
     }
 
+    public void setSlotsInfo(ArrayList<WeekView.TimeSlotStruct> slotsInfo) {
+        this.slotsInfo = slotsInfo;
+    }
+
     public void changeView(LinearLayout newView,int position){
         views.set(position,newView);
     }
@@ -56,6 +63,7 @@ public class WeekViewPagerAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
+        Date startDate = new Date();
         LinearLayout view = views.get(position%views.size());
         ViewGroup parent = (ViewGroup) view.getParent();
         if (parent != null){
@@ -67,7 +75,10 @@ public class WeekViewPagerAdapter extends PagerAdapter {
         this.updateBody(view, dateOffset);
 
         container.addView(view);
-        Log.i(TAG, "instantiateItem: " +position);
+
+        Date endDate = new Date();
+        long diff = endDate.getTime() - startDate.getTime();
+        Log.i(TAG, position + " diff: " + diff + " ~= " + (float)diff/1000);
 
         return view;
     }
@@ -109,9 +120,27 @@ public class WeekViewPagerAdapter extends PagerAdapter {
             if (parent.getChildAt(i) instanceof FlexibleLenViewBody){
                 MyCalendar cal = new MyCalendar(this.startCal);
                 cal.setOffsetByDate(offset);
-                ((FlexibleLenViewBody)parent.getChildAt(i)).setCalendar(cal);
-                ((FlexibleLenViewBody)parent.getChildAt(i)).resetViews();
-                ((FlexibleLenViewBody)parent.getChildAt(i)).setEventList(this.dayEventMap);
+                final FlexibleLenViewBody nowBody = ((FlexibleLenViewBody)parent.getChildAt(i));
+                nowBody.setCalendar(cal);
+                nowBody.resetViews();
+                nowBody.setEventList(this.dayEventMap);
+
+                nowBody.clearTimeSlots();
+                if (this.slotsInfo != null && this.slotsInfo.size() != 0){
+                    for (int j = 0; j < this.slotsInfo.size(); j++) {
+                        WeekView.TimeSlotStruct struct = this.slotsInfo.get(j);
+                        nowBody.addSlot(struct);
+                    }
+                }else {
+                    Log.i(TAG, "slotsInfo: " + ((this.slotsInfo != null) ? "size 0":"null"));
+                }
+
+                nowBody.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        nowBody.updateTimeSlotsDuration(2 * 3600 * 1000);
+                    }
+                },6000);
             }
         }
     }
@@ -122,12 +151,29 @@ public class WeekViewPagerAdapter extends PagerAdapter {
         return (FlexibleLenViewBody) viewAtPosition.getChildAt(1);
     }
 
+
     public void reloadEvents(){
         for (LinearLayout weekView : views
                 ) {
             FlexibleLenViewBody bodyView = (FlexibleLenViewBody)weekView.getChildAt(1);
             if (this.dayEventMap != null){
                 bodyView.setEventList(this.dayEventMap);
+            }
+        }
+    }
+
+    public void reloadTimeSlots(){
+        for (LinearLayout weekView : views
+                ) {
+            FlexibleLenViewBody bodyView = (FlexibleLenViewBody)weekView.getChildAt(1);
+            bodyView.clearTimeSlots();
+            if (this.slotsInfo != null && this.slotsInfo.size() != 0){
+                for (int j = 0; j < this.slotsInfo.size(); j++) {
+                    WeekView.TimeSlotStruct struct = this.slotsInfo.get(j);
+                    bodyView.addSlot(struct);
+                }
+            }else {
+                Log.i(TAG, "slotsInfo: " + ((this.slotsInfo != null) ? "size 0":"null"));
             }
         }
     }

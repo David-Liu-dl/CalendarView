@@ -135,12 +135,12 @@ public class WeekViewPagerAdapter extends PagerAdapter {
                     Log.i(TAG, "slotsInfo: " + ((this.slotsInfo != null) ? "size 0":"null"));
                 }
 
-                nowBody.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        nowBody.updateTimeSlotsDuration(2 * 3600 * 1000);
-                    }
-                },6000);
+//                nowBody.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        nowBody.updateTimeSlotsDuration(2 * 3600 * 1000);
+//                    }
+//                },6000);
             }
         }
     }
@@ -159,6 +159,14 @@ public class WeekViewPagerAdapter extends PagerAdapter {
             if (this.dayEventMap != null){
                 bodyView.setEventList(this.dayEventMap);
             }
+        }
+    }
+
+    public void updateTimeSlotsDuration(long duration){
+        for (LinearLayout weekView : views
+                ) {
+            FlexibleLenViewBody bodyView = (FlexibleLenViewBody)weekView.getChildAt(1);
+            bodyView.updateTimeSlotsDuration(duration);
         }
     }
 

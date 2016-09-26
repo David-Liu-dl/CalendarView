@@ -271,6 +271,12 @@ public class WeekView extends LinearLayout {
         slotsInfo.add(slotInfo);
     }
 
+    public void updateTimeSlotsDuration(long duration){
+        if (adapter != null){
+            adapter.updateTimeSlotsDuration(duration);
+        }
+    }
+
     public static class TimeSlotStruct{
         public long startTime = 0;
         public long endTime = 0;

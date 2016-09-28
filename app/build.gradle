@@ -28,7 +28,7 @@ android {
 }
 
 greendao {
-    schemaVersion 18
+    schemaVersion 19
     daoPackage "org.unimelb.itime.test.bean"
 }
 
@@ -38,6 +38,8 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:24.0.0'
     compile 'com.android.support:recyclerview-v7:23.2.1'
+    compile 'com.google.code.gson:gson:2.6.1'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
     compile 'org.greenrobot:greendao:3.1.0'
     compile 'org.greenrobot:greendao-generator:3.0.0'
     compile 'net.zetetic:android-database-sqlcipher:3.5.2'

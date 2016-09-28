@@ -29,6 +29,46 @@ public class PaulActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_paul);
         loadData();
+
+        final WeekView weekView2 = (WeekView) findViewById(R.id.week_view2);
+        weekView2.setEventClassName(Event.class);
+        weekView2.setOnBodyOuterListener(new FlexibleLenViewBody.OnBodyListener() {
+            @Override
+            public void onEventCreate(DayDraggableEventView eventView) {
+                Calendar cal = Calendar.getInstance();
+                cal.setTimeInMillis(eventView.getStartTimeM());
+                Log.i(TAG, "cal: " + cal.getTime());
+            }
+
+            @Override
+            public void onEventClick(DayDraggableEventView eventView) {
+                Calendar cal = Calendar.getInstance();
+                cal.setTimeInMillis(eventView.getEvent().getStartTime());
+                Log.i(TAG, "onEventClick: " + cal.getTime());
+//                Log.i(TAG, "click2: " + " title: " + eventView.getEvent().getTitle());
+//                weekView.reloadEvents();
+            }
+
+            @Override
+            public void onEventDragStart(DayDraggableEventView eventView) {
+
+            }
+
+            @Override
+            public void onEventDragging(DayDraggableEventView eventView, int x, int y) {
+
+            }
+
+            @Override
+            public void onEventDragDrop(DayDraggableEventView eventView) {
+                Calendar cal = Calendar.getInstance();
+                cal.setTimeInMillis(eventView.getStartTimeM());
+                Log.i(TAG, "onEventDragDrop: " + cal.getTime());
+                weekView2.reloadEvents();
+            }
+        });
+        weekView2.setDayEventMap(EventManager.getInstance().getEventsMap());
+
         final WeekView weekView = (WeekView) findViewById(R.id.week_view);
         weekView.setEventClassName(Event.class);
         weekView.setOnBodyOuterListener(new FlexibleLenViewBody.OnBodyListener() {
@@ -41,8 +81,11 @@ public class PaulActivity extends AppCompatActivity {
 
             @Override
             public void onEventClick(DayDraggableEventView eventView) {
-                Log.i(TAG, "click2: " + " title: " + eventView.getEvent().getTitle());
-                weekView.reloadEvents();
+                Calendar cal = Calendar.getInstance();
+                cal.setTimeInMillis(eventView.getEvent().getStartTime());
+                Log.i(TAG, "onEventClick: " + cal.getTime());
+//                Log.i(TAG, "click2: " + " title: " + eventView.getEvent().getTitle());
+//                weekView.reloadEvents();
             }
 
             @Override
@@ -63,28 +106,29 @@ public class PaulActivity extends AppCompatActivity {
                 weekView.reloadEvents();
             }
         });
-//        weekView.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                Calendar cal = Calendar.getInstance();
-//                long interval = 24 * 60 * 60 * 1000;
-//                long duration = 60 * 60 * 1000;
-//                for (int i = 0; i < 3; i++) {
-//                    WeekView.TimeSlotStruct struct = new WeekView.TimeSlotStruct();
-//                    struct.startTime = cal.getTimeInMillis() + i * interval;
-//                    struct.endTime = struct.startTime + duration;
-//                    weekView.addTimeSlot(struct);
-//                }
-//                Log.i(TAG, "run: done");
-//                weekView.reloadTimeSlots();
-//            }
-//        },2000);
-//        weekView.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                weekView.updateTimeSlotsDuration(1800 * 1000);
-//            }
-//        },6000);
+        weekView.enableTimeSlot();
+        weekView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Calendar cal = Calendar.getInstance();
+                long interval = 24 * 60 * 60 * 1000;
+                long duration = 60 * 60 * 1000;
+                for (int i = 0; i < 3; i++) {
+                    WeekView.TimeSlotStruct struct = new WeekView.TimeSlotStruct();
+                    struct.startTime = cal.getTimeInMillis() + i * interval;
+                    struct.endTime = struct.startTime + duration;
+                    weekView.addTimeSlot(struct);
+                }
+                Log.i(TAG, "run: done");
+                weekView.reloadTimeSlots(true);
+            }
+        },2000);
+        weekView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                weekView.updateTimeSlotsDuration(4*1800 * 1000,false);
+            }
+        },6000);
         weekView.setDayEventMap(EventManager.getInstance().getEventsMap());
     }
 

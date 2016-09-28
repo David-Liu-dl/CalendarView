@@ -2,17 +2,20 @@ package org.unimelb.itime.vendor.dayview;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.RelativeLayout;
 
 import org.unimelb.itime.vendor.eventview.DayDraggableEventView;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Created by yuhaoliu on 21/09/16.
  */
 public class DayInnerBodyEventLayout extends RelativeLayout {
+    private static final String TAG = "MyAPP";
     ArrayList<ITimeEventInterface> events = new ArrayList<>();
     ArrayList<DayDraggableEventView> dgEvents = new ArrayList<>();
 
@@ -45,4 +48,40 @@ public class DayInnerBodyEventLayout extends RelativeLayout {
         events.clear();
         dgEvents.clear();
     }
+
+//    @Override
+//    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+//        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+//        int layoutWidthPerDay =  MeasureSpec.getSize(this.getMeasuredWidth());
+//        int layoutHeightPerDay = MeasureSpec.getSize(this.getMeasuredHeight());
+//
+//        int eventCount = this.getChildCount();
+//
+//        for (int i = 0; i < eventCount; i++) {
+//            if (!(this.getChildAt(i) instanceof DayDraggableEventView)) {
+//                continue;
+//            }
+//            DayDraggableEventView eventView = (DayDraggableEventView) this.getChildAt(i);
+//            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) eventView.getLayoutParams();
+//            DayDraggableEventView.PosParam pos = eventView.getPosParam();
+//            if (pos == null) {
+//                // for creating a new event
+//                // the pos parameter is null, because we just mock it
+//                continue;
+//            }
+////                int eventWidth = layoutWidthPerDay / pos.widthFactor;
+//            int eventWidth = 100;
+//            Calendar cal = Calendar.getInstance();
+//            cal.setTimeInMillis(eventView.getEvent().getStartTime());
+//            Log.i(TAG, "calculateEventLayout: " + cal.getTime() + " widthFactor: " + pos.widthFactor );
+////                Log.i(TAG, "pos.widthFactor: " + pos.widthFactor);
+//            int leftMargin = eventWidth * pos.startX;
+//            params.width = eventWidth;
+//            eventView.setX(leftMargin + 5 * pos.startX);
+//            eventView.setY(pos.topMargin);
+////                params.leftMargin = leftMargin + 5 * pos.startX;
+////                params.topMargin = pos.topMargin;
+//        }
+//
+//    }
 }

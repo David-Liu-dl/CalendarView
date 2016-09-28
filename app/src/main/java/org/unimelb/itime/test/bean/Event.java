@@ -1,28 +1,29 @@
 package org.unimelb.itime.test.bean;
 
-import android.util.Log;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Keep;
 import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.Property;
 import org.greenrobot.greendao.annotation.ToMany;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
-
-import java.util.List;
-
-import org.greenrobot.greendao.annotation.Generated;
 import org.unimelb.itime.vendor.listener.ITimeInviteeInterface;
-import org.greenrobot.greendao.DaoException;
-import org.unimelb.itime.vendor.listener.ITimeTimeSlotInterface;
+
+import java.io.Serializable;
+import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by yinchuandong on 22/08/2016.
  */
 
-@Entity(active = true)
-public class Event implements ITimeEventInterface<Event>{
+@Entity
+public class Event implements ITimeEventInterface<Event>, Serializable {
     @Id
     private String eventUid;
     // for other calendars
@@ -32,10 +33,26 @@ public class Event implements ITimeEventInterface<Event>{
     private String recurringEventId;
     private String calendarUid;
     private String iCalUID;
+    private String hostUserUid; // add by paul
     private String recurrence;
     private String summary;
     private String url;
-    private String location;
+    private String location = "";
+    private String locationNote;
+    private double locationLatitude;
+    private double locationLongitude;
+    private String note;
+
+
+    private transient List<PhotoUrl> photoList = null;
+    private String photo = "[]";
+
+    @ToMany(referencedJoinProperty = "eventUid")
+    private List<TimeSlot> timeslots = null;
+
+    // later delete
+    private transient long repeatEndsTime;
+    private transient boolean isHost;
 
     @Property
     @NotNull
@@ -63,26 +80,35 @@ public class Event implements ITimeEventInterface<Event>{
     }
 
 
-    @Generated(hash = 640668368)
-    public Event(String eventUid, String eventId, String recurringEventUid,
-            String recurringEventId, String calendarUid, String iCalUID,
-            String recurrence, String summary, String url, String location,
-            long startTime, long endTime, int eventType, int status) {
+
+    @Generated(hash = 1130552805)
+    public Event(String eventUid, String eventId, String recurringEventUid, String recurringEventId,
+                 String calendarUid, String iCalUID, String hostUserUid, String recurrence, String summary,
+                 String url, String location, String locationNote, double locationLatitude,
+                 double locationLongitude, String note, String photo, long startTime, long endTime,
+                 int eventType, int status) {
         this.eventUid = eventUid;
         this.eventId = eventId;
         this.recurringEventUid = recurringEventUid;
         this.recurringEventId = recurringEventId;
         this.calendarUid = calendarUid;
         this.iCalUID = iCalUID;
+        this.hostUserUid = hostUserUid;
         this.recurrence = recurrence;
         this.summary = summary;
         this.url = url;
         this.location = location;
+        this.locationNote = locationNote;
+        this.locationLatitude = locationLatitude;
+        this.locationLongitude = locationLongitude;
+        this.note = note;
+        this.photo = photo;
         this.startTime = startTime;
         this.endTime = endTime;
         this.eventType = eventType;
         this.status = status;
     }
+
 
 
     @Override
@@ -97,7 +123,7 @@ public class Event implements ITimeEventInterface<Event>{
 
     @Override
     public List<? extends ITimeInviteeInterface> getDisplayInvitee() {
-        if (this.invitee == null){
+        if (this.invitee==null){
             this.invitee = this.getInvitee();
         }
         return this.invitee;
@@ -131,7 +157,7 @@ public class Event implements ITimeEventInterface<Event>{
         this.status = status;
     }
 
-    public int getDurationInMinute(){
+    public int getDuration(){
         return (int)((endTime - startTime) /(1000*60));
     }
 
@@ -159,10 +185,6 @@ public class Event implements ITimeEventInterface<Event>{
 
 
 
-    public List<ITimeTimeSlotInterface> getTimeSlots() {
-        return null;
-    }
-
     @Override
     public void setLocation(String location) {
         this.location = location;
@@ -171,82 +193,6 @@ public class Event implements ITimeEventInterface<Event>{
     public void setInvitee(List<Invitee> invitee) {
         this.invitee = invitee;
     }
-
-
-    public String getUrl() {
-        return this.url;
-    }
-
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-
-    public String getSummary() {
-        return this.summary;
-    }
-
-
-    public void setSummary(String summary) {
-        this.summary = summary;
-    }
-
-
-    public String getRecurrence() {
-        return this.recurrence;
-    }
-
-
-    public void setRecurrence(String recurrence) {
-        this.recurrence = recurrence;
-    }
-
-
-    public String getICalUID() {
-        return this.iCalUID;
-    }
-
-
-    public void setICalUID(String iCalUID) {
-        this.iCalUID = iCalUID;
-    }
-
-
-    public String getCalendarUid() {
-        return this.calendarUid;
-    }
-
-
-    public void setCalendarUid(String calendarUid) {
-        this.calendarUid = calendarUid;
-    }
-
-
-    public String getRecurringEventId() {
-        return this.recurringEventId;
-    }
-
-
-    public void setRecurringEventId(String recurringEventId) {
-        this.recurringEventId = recurringEventId;
-    }
-
-
-    public String getRecurringEventUid() {
-        return this.recurringEventUid;
-    }
-
-
-    public void setRecurringEventUid(String recurringEventUid) {
-        this.recurringEventUid = recurringEventUid;
-    }
-
-
-    public String getEventId() {
-        return this.eventId;
-    }
-
 
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
@@ -324,5 +270,221 @@ public class Event implements ITimeEventInterface<Event>{
         myDao = daoSession != null ? daoSession.getEventDao() : null;
     }
 
+
+    public String getUrl() {
+        return this.url;
+    }
+
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+
+    public String getSummary() {
+        return this.summary;
+    }
+
+
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+
+
+    public String getRecurrence() {
+        return this.recurrence;
+    }
+
+
+    public void setRecurrence(String recurrence) {
+        this.recurrence = recurrence;
+    }
+
+
+    public String getICalUID() {
+        return this.iCalUID;
+    }
+
+
+    public void setICalUID(String iCalUID) {
+        this.iCalUID = iCalUID;
+    }
+
+
+    public String getCalendarUid() {
+        return this.calendarUid;
+    }
+
+
+    public void setCalendarUid(String calendarUid) {
+        this.calendarUid = calendarUid;
+    }
+
+
+    public String getRecurringEventId() {
+        return this.recurringEventId;
+    }
+
+
+    public void setRecurringEventId(String recurringEventId) {
+        this.recurringEventId = recurringEventId;
+    }
+
+
+    public String getRecurringEventUid() {
+        return this.recurringEventUid;
+    }
+
+
+    public void setRecurringEventUid(String recurringEventUid) {
+        this.recurringEventUid = recurringEventUid;
+    }
+
+
+    public String getEventId() {
+        return this.eventId;
+    }
+
+    public String getiCalUID() {
+        return iCalUID;
+    }
+
+    public void setiCalUID(String iCalUID) {
+        this.iCalUID = iCalUID;
+    }
+
+
+
+    public String getLocationNote() {
+        return locationNote;
+    }
+
+    public void setLocationNote(String locationNote) {
+        this.locationNote = locationNote;
+    }
+
+    public double getLocationLatitude() {
+        return locationLatitude;
+    }
+
+    public void setLocationLatitude(double locationLatitude) {
+        this.locationLatitude = locationLatitude;
+    }
+
+    public double getLocationLongitude() {
+        return locationLongitude;
+    }
+
+    public void setLocationLongitude(double locationLongitude) {
+        this.locationLongitude = locationLongitude;
+    }
+
+
+    public long getRepeatEndsTime() {
+        return repeatEndsTime;
+    }
+
+    public void setRepeatEndsTime(long repeatEndsTime) {
+        this.repeatEndsTime = repeatEndsTime;
+    }
+
+    /**
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
+     */
+    @Generated(hash = 1734061039)
+    public List<TimeSlot> getTimeslots() {
+        if (timeslots == null) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            TimeSlotDao targetDao = daoSession.getTimeSlotDao();
+            List<TimeSlot> timeslotsNew = targetDao._queryEvent_Timeslots(eventUid);
+            synchronized (this) {
+                if(timeslots == null) {
+                    timeslots = timeslotsNew;
+                }
+            }
+        }
+        return timeslots;
+    }
+
+
+
+
+
+    public void setTimeslots(List<TimeSlot> timeslots) {
+        this.timeslots = timeslots;
+    }
+
+
+
+
+
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    @Generated(hash = 481094641)
+    public synchronized void resetTimeslots() {
+        timeslots = null;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public boolean hasAttendee(){
+        return invitee!=null;
+    }
+
+    public boolean hasTimeslots(){
+        return timeslots!=null;
+    }
+
+    public boolean isHost() {
+        return isHost;
+    }
+
+    public void setHost(boolean host) {
+        isHost = host;
+    }
+
+    public String getHostUserUid() {
+        return hostUserUid;
+    }
+
+    public void setHostUserUid(String hostUserUid) {
+        this.hostUserUid = hostUserUid;
+    }
+
+
+    public List<PhotoUrl> getPhotoList() {
+            Gson gson = new Gson();
+            Type collectionType = new TypeToken<Collection<PhotoUrl>>(){}.getType();
+
+
+        return gson.fromJson(photo, collectionType);
+    }
+
+    public void setPhoto(List<PhotoUrl> photoUrls) {
+        Gson gson = new Gson();
+        this.photo = gson.toJson(photoUrls);
+        this.photoList = photoUrls;
+    }
+
+
+
+    public String getPhoto() {
+        return this.photo;
+    }
+
+
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
 
 }

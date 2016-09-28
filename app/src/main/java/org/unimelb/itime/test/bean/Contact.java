@@ -1,18 +1,17 @@
 package org.unimelb.itime.test.bean;
 
-import android.support.annotation.Nullable;
-
 import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Keep;
-import org.unimelb.itime.vendor.listener.ITimeContactInterface;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Id;
+import org.unimelb.itime.vendor.listener.ITimeContactInterface;
+
+import java.io.Serializable;
 
 /**
  * Created by yuhaoliu on 17/08/16.
  */
 @Entity
-public class Contact implements ITimeContactInterface {
+public class Contact implements ITimeContactInterface, Serializable {
     @Id()
     private String contactUid;
     private String photo = null;

@@ -18,11 +18,15 @@ import java.util.Calendar;
 public class TimeSlotView extends RelativeLayout {
     private MyCalendar calendar = new MyCalendar(Calendar.getInstance());
 
-    private int duration;
+    public static int TYPE_NORMAL = 0;
+    public static int TYPE_TEMP = 1;
+    private int type = 0;
+
     private int indexInView = 0;
 
     private long startTime = 0;
     private long endTime = 0;
+    private long duration;
 
     private ImageView icon;
 
@@ -79,7 +83,11 @@ public class TimeSlotView extends RelativeLayout {
     }
 
     public long getDuration() {
-        return endTime - startTime;
+        return endTime - startTime == 0 ? duration : (endTime - startTime);
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
     }
 
     public boolean isSelect() {
@@ -104,5 +112,31 @@ public class TimeSlotView extends RelativeLayout {
 
     public void setIndexInView(int indexInView) {
         this.indexInView = indexInView;
+    }
+
+    public int getIndexInView() {
+        return indexInView;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public MyCalendar getNewCalendar() {
+        return calendar;
+    }
+
+    public long getStartTimeM(){
+//        MyCalendar tempCal = new MyCalendar(this.calendar);
+//        tempCal.setOffsetByDate(indexInView);
+        return this.calendar.getCalendar().getTimeInMillis();
+    }
+
+    public long getEndTimeM(){
+        return this.getStartTimeM() + getDuration();
     }
 }

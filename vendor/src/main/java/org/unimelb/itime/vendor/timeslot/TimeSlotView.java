@@ -1,8 +1,6 @@
 package org.unimelb.itime.vendor.timeslot;
 
 import android.content.Context;
-import android.util.AttributeSet;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -131,8 +129,6 @@ public class TimeSlotView extends RelativeLayout {
     }
 
     public long getStartTimeM(){
-//        MyCalendar tempCal = new MyCalendar(this.calendar);
-//        tempCal.setOffsetByDate(indexInView);
         return this.calendar.getCalendar().getTimeInMillis();
     }
 

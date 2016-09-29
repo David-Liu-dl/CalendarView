@@ -375,6 +375,7 @@ public class WeekView extends LinearLayout {
         public long startTime = 0;
         public long endTime = 0;
         public boolean status = false;
+        public Object object = null;
     }
 
 }

@@ -30,44 +30,44 @@ public class PaulActivity extends AppCompatActivity {
         setContentView(R.layout.activity_paul);
         loadData();
 
-        final WeekView weekView2 = (WeekView) findViewById(R.id.week_view2);
-        weekView2.setEventClassName(Event.class);
-        weekView2.setOnBodyOuterListener(new FlexibleLenViewBody.OnBodyListener() {
-            @Override
-            public void onEventCreate(DayDraggableEventView eventView) {
-                Calendar cal = Calendar.getInstance();
-                cal.setTimeInMillis(eventView.getStartTimeM());
-                Log.i(TAG, "cal: " + cal.getTime());
-            }
-
-            @Override
-            public void onEventClick(DayDraggableEventView eventView) {
-                Calendar cal = Calendar.getInstance();
-                cal.setTimeInMillis(eventView.getEvent().getStartTime());
-                Log.i(TAG, "onEventClick: " + cal.getTime());
-//                Log.i(TAG, "click2: " + " title: " + eventView.getEvent().getTitle());
-//                weekView.reloadEvents();
-            }
-
-            @Override
-            public void onEventDragStart(DayDraggableEventView eventView) {
-
-            }
-
-            @Override
-            public void onEventDragging(DayDraggableEventView eventView, int x, int y) {
-
-            }
-
-            @Override
-            public void onEventDragDrop(DayDraggableEventView eventView) {
-                Calendar cal = Calendar.getInstance();
-                cal.setTimeInMillis(eventView.getStartTimeM());
-                Log.i(TAG, "onEventDragDrop: " + cal.getTime());
-                weekView2.reloadEvents();
-            }
-        });
-        weekView2.setDayEventMap(EventManager.getInstance().getEventsMap());
+//        final WeekView weekView2 = (WeekView) findViewById(R.id.week_view2);
+//        weekView2.setEventClassName(Event.class);
+//        weekView2.setOnBodyOuterListener(new FlexibleLenViewBody.OnBodyListener() {
+//            @Override
+//            public void onEventCreate(DayDraggableEventView eventView) {
+//                Calendar cal = Calendar.getInstance();
+//                cal.setTimeInMillis(eventView.getStartTimeM());
+//                Log.i(TAG, "cal: " + cal.getTime());
+//            }
+//
+//            @Override
+//            public void onEventClick(DayDraggableEventView eventView) {
+//                Calendar cal = Calendar.getInstance();
+//                cal.setTimeInMillis(eventView.getEvent().getStartTime());
+//                Log.i(TAG, "onEventClick: " + cal.getTime());
+////                Log.i(TAG, "click2: " + " title: " + eventView.getEvent().getTitle());
+////                weekView.reloadEvents();
+//            }
+//
+//            @Override
+//            public void onEventDragStart(DayDraggableEventView eventView) {
+//
+//            }
+//
+//            @Override
+//            public void onEventDragging(DayDraggableEventView eventView, int x, int y) {
+//
+//            }
+//
+//            @Override
+//            public void onEventDragDrop(DayDraggableEventView eventView) {
+//                Calendar cal = Calendar.getInstance();
+//                cal.setTimeInMillis(eventView.getStartTimeM());
+//                Log.i(TAG, "onEventDragDrop: " + cal.getTime());
+//                weekView2.reloadEvents();
+//            }
+//        });
+//        weekView2.setDayEventMap(EventManager.getInstance().getEventsMap());
 
         final WeekView weekView = (WeekView) findViewById(R.id.week_view);
         weekView.setEventClassName(Event.class);

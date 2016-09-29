@@ -62,7 +62,6 @@ public class WeekView extends LinearLayout {
 
     private FlexibleLenViewBody.OnTimeSlotListener onTimeSlotOuterListener;
 
-
     public WeekView(Context context) {
         super(context);
         initView();
@@ -264,7 +263,7 @@ public class WeekView extends LinearLayout {
     }
 
 
-    public void setOnTimeSlotInnerListener(FlexibleLenViewBody.OnTimeSlotListener onTimeSlotOuterListener){
+    public void setOnTimeSlotOuterListener(FlexibleLenViewBody.OnTimeSlotListener onTimeSlotOuterListener){
         this.onTimeSlotOuterListener = onTimeSlotOuterListener;
     }
 

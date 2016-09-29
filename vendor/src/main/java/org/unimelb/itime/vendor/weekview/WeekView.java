@@ -330,11 +330,12 @@ public class WeekView extends LinearLayout {
             struct.startTime = timeSlotView.getStartTimeM();
             struct.endTime = timeSlotView.getEndTimeM();
 
-            adapter.reloadTimeSlots(false);
-
             if (onTimeSlotOuterListener != null){
                 onTimeSlotOuterListener.onTimeSlotDragDrop(timeSlotView);
             }
+
+            adapter.reloadTimeSlots(false);
+
         }
     }
 

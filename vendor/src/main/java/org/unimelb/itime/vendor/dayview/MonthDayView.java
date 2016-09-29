@@ -361,7 +361,7 @@ public class MonthDayView extends LinearLayout {
 
         @Override
         public void onEventDragDrop(DayDraggableEventView eventView) {
-            MyCalendar currentCal = (bodyPagerAdapter.getViewByPosition(bodyCurrentPosition)).getCalendar();
+            MyCalendar currentCal = new MyCalendar((bodyPagerAdapter.getViewByPosition(bodyCurrentPosition)).getCalendar());
             currentCal.setOffsetByDate(eventView.getIndexInView());
             eventView.getNewCalendar().setDay(currentCal.getDay());
             eventView.getNewCalendar().setMonth(currentCal.getMonth());

@@ -1,22 +1,19 @@
 package org.unimelb.itime.test.bean;
 
-import android.support.annotation.Nullable;
-
+import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.JoinProperty;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Keep;
-import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.ToOne;
 import org.unimelb.itime.vendor.listener.ITimeInviteeInterface;
-import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.DaoException;
+
+import java.io.Serializable;
 
 /**
  * Created by yuhaoliu on 10/09/2016.
  */
 @Entity
-public class Invitee implements ITimeInviteeInterface{
+public class Invitee implements ITimeInviteeInterface, Serializable {
     @ToOne(joinProperty = "inviteeUid")
     private Contact contact;
 

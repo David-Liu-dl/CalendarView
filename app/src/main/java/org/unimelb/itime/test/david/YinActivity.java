@@ -122,10 +122,10 @@ public class YinActivity extends AppCompatActivity {
 
         int[] type = {0,1,2};
         int[] status = {0,1};
-        long interval = 3400 * 1000;
+        long interval = 3500 * 1000;
         int alldayCount = 0;
         String uuuid = "";
-        for (int i = 1; i < 1000; i++) {
+        for (int i = 1; i < 10; i++) {
 
             long startTime = calendar.getTimeInMillis();
 //            long endTime = startTime + interval * (i%30);
@@ -189,7 +189,7 @@ public class YinActivity extends AppCompatActivity {
                 alldayCount = 0;
             }
 
-            calendar.setTimeInMillis(endTime);
+            calendar.setTimeInMillis(endTime - 1000);
 
         }
 

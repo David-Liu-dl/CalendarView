@@ -50,6 +50,10 @@ public class WeekViewPagerAdapter extends PagerAdapter {
 
     public void setSlotsInfo(ArrayList<WeekView.TimeSlotStruct> slotsInfo) {
         this.slotsInfo = slotsInfo;
+
+    }
+
+    public void enableTimeSlot(){
         for (LinearLayout weekView : views
                 ) {
             FlexibleLenViewBody bodyView = (FlexibleLenViewBody)weekView.getChildAt(1);
@@ -134,7 +138,7 @@ public class WeekViewPagerAdapter extends PagerAdapter {
                 if (this.slotsInfo != null && this.slotsInfo.size() != 0){
                     for (int j = 0; j < this.slotsInfo.size(); j++) {
                         WeekView.TimeSlotStruct struct = this.slotsInfo.get(j);
-                        nowBody.addSlot(struct);
+                        nowBody.addSlot(struct,true);
                     }
                 }else {
                     Log.i(TAG, "slotsInfo: " + ((this.slotsInfo != null) ? "size 0":"null"));
@@ -167,15 +171,15 @@ public class WeekViewPagerAdapter extends PagerAdapter {
         }
     }
 
-    public void updateTimeSlotsDuration(long duration){
+    public void updateTimeSlotsDuration(long duration, boolean animate){
         for (LinearLayout weekView : views
                 ) {
             FlexibleLenViewBody bodyView = (FlexibleLenViewBody)weekView.getChildAt(1);
-            bodyView.updateTimeSlotsDuration(duration);
+            bodyView.updateTimeSlotsDuration(duration, animate);
         }
     }
 
-    public void reloadTimeSlots(){
+    public void reloadTimeSlots(boolean animate){
         for (LinearLayout weekView : views
                 ) {
             FlexibleLenViewBody bodyView = (FlexibleLenViewBody)weekView.getChildAt(1);
@@ -183,7 +187,7 @@ public class WeekViewPagerAdapter extends PagerAdapter {
             if (this.slotsInfo != null && this.slotsInfo.size() != 0){
                 for (int j = 0; j < this.slotsInfo.size(); j++) {
                     WeekView.TimeSlotStruct struct = this.slotsInfo.get(j);
-                    bodyView.addSlot(struct);
+                    bodyView.addSlot(struct,animate);
                 }
             }else {
                 Log.i(TAG, "slotsInfo: " + ((this.slotsInfo != null) ? "size 0":"null"));

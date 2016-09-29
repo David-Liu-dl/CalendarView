@@ -157,6 +157,9 @@ public class FlexibleLenViewBody extends RelativeLayout {
                 params.topMargin = pos.topMargin;
             }
         }
+
+        Date endDate = new Date();
+        Log.i(TAG, "onmeasure time used: " + this.myCalendar.getDay() + " --- " + (endDate.getTime() - startDate.getTime()));
     }
 
     private void initLayoutParams(){
@@ -544,7 +547,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
         int offset = getEventContainerIndex(event.getStartTime());
         if (offset < displayLen){
             DayInnerBodyEventLayout eventLayout = this.eventLayouts.get(offset);
-
+//
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
             String hourWithMinutes = sdf.format(new Date(event.getStartTime()));
             String[] components = hourWithMinutes.split(":");
@@ -556,6 +559,11 @@ public class FlexibleLenViewBody extends RelativeLayout {
 
             newDragEventView.setId(View.generateViewId());
             this.regularEventViewMap.put(event, newDragEventView.getId());
+
+//            TextView textView = new TextView(getContext());
+////            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(100,100);
+//            textView.setText("textview");
+//            eventLayout.addView(textView);
 
             eventLayout.addView(newDragEventView, params);
             eventLayout.getEvents().add(event);
@@ -680,7 +688,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
         }
 
         if (isAllDayEvent) {
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,1f);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, 0,1f);
             event_view.setTag(event);
             event_view.setLayoutParams(params);
         } else {

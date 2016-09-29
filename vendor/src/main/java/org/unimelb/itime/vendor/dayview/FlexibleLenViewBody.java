@@ -1094,10 +1094,10 @@ public class FlexibleLenViewBody extends RelativeLayout {
                     600
             );
 
-//            timeSlotView.startAnimation(resizeAnimation);
+            timeSlotView.startAnimation(resizeAnimation);
         }else {
             params.height = slotHeight;
-//            timeSlotView.requestLayout();
+            timeSlotView.requestLayout();
         }
     }
 

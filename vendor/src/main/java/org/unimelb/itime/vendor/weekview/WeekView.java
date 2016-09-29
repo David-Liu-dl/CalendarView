@@ -216,6 +216,7 @@ public class WeekView extends LinearLayout {
             eventView.getNewCalendar().setDay(eventNewCal.getDay());
             eventView.getNewCalendar().setMonth(eventNewCal.getMonth());
             eventView.getNewCalendar().setYear(eventNewCal.getYear());
+
             if (OnBodyOuterListener != null){OnBodyOuterListener.onEventCreate(eventView);}
         }
 
@@ -282,6 +283,7 @@ public class WeekView extends LinearLayout {
             newStruct.endTime = timeSlotView.getStartTimeM() + timeSlotView.getDuration();
             newStruct.status = false;
 
+            timeSlotView.setTag(newStruct);
             addTimeSlot(newStruct);
             reloadTimeSlots(true);
 
@@ -372,7 +374,6 @@ public class WeekView extends LinearLayout {
         public long startTime = 0;
         public long endTime = 0;
         public boolean status = false;
-//        public Object object = null;
     }
 
 }

@@ -287,7 +287,6 @@ public class WeekView extends LinearLayout {
             addTimeSlot(newStruct);
             reloadTimeSlots(true);
 
-            Log.i(TAG, "onTimeSlotCreate: ");
             if (onTimeSlotOuterListener != null){
                 onTimeSlotOuterListener.onTimeSlotCreate(timeSlotView);
             }
@@ -295,10 +294,6 @@ public class WeekView extends LinearLayout {
 
         @Override
         public void onTimeSlotClick(TimeSlotView timeSlotView) {
-//            boolean newStatus = !timeSlotView.isSelect();
-//            timeSlotView.setStatus(newStatus);
-//            ((WeekView.TimeSlotStruct)timeSlotView.getTag()).status = newStatus;
-
             if (onTimeSlotOuterListener != null){
                 onTimeSlotOuterListener.onTimeSlotClick(timeSlotView);
             }

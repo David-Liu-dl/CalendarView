@@ -83,7 +83,7 @@ public class PaulActivity extends AppCompatActivity {
                 }
                 weekView.reloadTimeSlots(true);
             }
-        },2000);
+        },0);
         weekView.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -92,7 +92,6 @@ public class PaulActivity extends AppCompatActivity {
         },6000);
         weekView.setDayEventMap(EventManager.getInstance().getEventsMap());
     }
-
 
     private void showResult(ArrayList<String> paths){
         if(mResults == null){

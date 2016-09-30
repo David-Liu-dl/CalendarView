@@ -30,7 +30,6 @@ public class SortAdapter extends BaseAdapter implements SectionIndexer{
 	private Map<String, ITimeContactInterface> contactsMap = new HashMap<>();
 	private Context mContext;
 	private CircleCheckOnClickListener circleCheckOnClickListener;
-//	private int currentClickPst = -1;
 
 	public SortAdapter(Context mContext, List<SortModel> list, Map<String, ITimeContactInterface> contactsMap) {
 		this.mContext = mContext;
@@ -108,8 +107,9 @@ public class SortAdapter extends BaseAdapter implements SectionIndexer{
 		String nameKey = this.list.get(position).getName();
 		viewHolder.tvTitle.setText(nameKey);
 		viewHolder.contact = contactsMap.get(this.list.get(position).getId());
-		viewHolder.check_circle.setOnClickListener(
-				new CircleClickListener(viewHolder.contact, viewHolder.check_circle));
+		view.setOnClickListener(new CircleClickListener(viewHolder.contact, viewHolder.check_circle));
+
+//		viewHolder.check_circle.setOnClickListener(new CircleClickListener(viewHolder.contact, viewHolder.check_circle));
 		LoadImgHelper.getInstance().bindContactWithImageView(mContext, viewHolder.contact, viewHolder.icon);
 		return view;
 	}
@@ -204,8 +204,8 @@ public class SortAdapter extends BaseAdapter implements SectionIndexer{
 
 		@Override
 		public void onClick(View view) {
-			ImageView circle_view = (ImageView) view;
-			checked = checked ? false : true;
+			ImageView circle_view = (ImageView) view.findViewById(R.id.check_circle);
+			checked = !checked;
 			if (checked){
 				circle_view.setImageDrawable(mContext.getResources().getDrawable(R.drawable.invitee_selected_event_attendee_selected));
 			}else {

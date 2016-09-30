@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.text.LoginFilter;
 import android.util.AttributeSet;
+import android.util.EventLog;
 import android.util.Log;
 import android.util.Pair;
 import android.util.TypedValue;
@@ -1003,7 +1004,6 @@ public class FlexibleLenViewBody extends RelativeLayout {
      * @return
      */
     private ITimeEventInterface initializeEvent() {
-
         try {
             ITimeEventInterface t = (ITimeEventInterface) eventClassName.newInstance();
             return t;

@@ -63,7 +63,6 @@ public class FlexibleLenBodyViewPagerAdapter extends PagerAdapter {
         currentBodyView.resetViews();
         currentBodyView.setEventList(this.dayEventMap);
         container.addView(currentBodyView);
-        Log.i(TAG, "instantiateItem: " + position);
 
         return currentBodyView;
     }

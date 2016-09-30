@@ -31,17 +31,16 @@ public class DavidActivity extends AppCompatActivity {
 
 //        initData();
         loadData();
-//        doInviteesThings();
+        doInviteesThings();
 
-        doMonthAgendaViewThings();
+//        doMonthAgendaViewThings();
 //        displayAllInvitee();
 //        doMonthDayViewThings();
     }
 
     private void doInviteesThings(){
         InviteeFragment inviteeFragment = new InviteeFragment();
-
-//        getFragmentManager().beginTransaction().add(R.id.fragment, inviteeFragment).commit();
+        getFragmentManager().beginTransaction().add(R.id.fragment, inviteeFragment).commit();
     }
 
     private void initData(){

@@ -33,9 +33,9 @@ public class YinActivity extends AppCompatActivity {
         dbManager = DBManager.getInstance(this);
         eventManager = EventManager.getInstance();
 
-        initDB();
-
-//        init();
+//        initDB();
+//
+        init();
 
     }
 
@@ -60,7 +60,9 @@ public class YinActivity extends AppCompatActivity {
             public void onEventClick(DayDraggableEventView eventView) {
                 Calendar cal = Calendar.getInstance();
                 cal.setTimeInMillis(eventView.getStartTimeM());
-//                Log.i(TAG, "click: " + cal.getTime() + " title: " + eventView.getEvent().getTitle());
+
+                EventManager.getInstance().updateEvent((Event) eventView.getEvent(),10,10);
+
             }
 
             @Override

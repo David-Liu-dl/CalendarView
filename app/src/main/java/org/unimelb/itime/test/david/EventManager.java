@@ -3,6 +3,7 @@ package org.unimelb.itime.test.david;
 import android.util.Log;
 
 import org.unimelb.itime.test.bean.Event;
+import org.unimelb.itime.vendor.listener.ITimeContactInterface;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 
 import java.util.ArrayList;
@@ -55,5 +56,21 @@ public class EventManager {
         calendar.set(Calendar.MILLISECOND,0);
 
         return calendar.getTimeInMillis();
+    }
+
+    public void updateEvent(Event oldEvent, long newStartTime, long newEndTime){
+        // problem here
+        long oldBeginTime = this.getDayBeginMilliseconds(oldEvent.getStartTime());
+        if (this.eventMap.containsKey(oldBeginTime)){
+            Log.i(TAG, "oldEvent: " + oldEvent);
+            for (ITimeEventInterface event :this.eventMap.get(oldBeginTime)
+                 ) {
+                Log.i(TAG, "event: " + event);
+            }
+            this.eventMap.get(oldBeginTime).remove(oldEvent);
+            oldEvent.setStartTime(newStartTime);
+            oldEvent.setEndTime(newEndTime);
+            this.addEvent(oldEvent);
+        }
     }
 }

@@ -29,6 +29,7 @@ import org.unimelb.itime.vendor.contact.SortAdapter;
 import org.unimelb.itime.vendor.contact.helper.CharacterParser;
 import org.unimelb.itime.vendor.contact.helper.ClearEditText;
 import org.unimelb.itime.vendor.contact.helper.PublicEntity;
+import org.unimelb.itime.vendor.helper.DensityUtil;
 import org.unimelb.itime.vendor.helper.LoadImgHelper;
 import org.unimelb.itime.vendor.contact.helper.PinyinComparator;
 import org.unimelb.itime.vendor.contact.widgets.SideBar;
@@ -225,9 +226,14 @@ public class InviteeFragment extends Fragment{
 							ImageView img_v = new ImageView(context);
 							img_v.setOnClickListener(new ContactViewTouchListener());
 							img_v.setTag(contact);
-							LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(width / 8, width / 8);
+
+							int imgParam = (int) context.getResources().getDimension(R.dimen.invitee_icon_width);
+							LinearLayout.LayoutParams params =
+									new LinearLayout.LayoutParams(imgParam, imgParam);
 							params.setMargins(margin, margin / 2, 0, margin / 2);
+							params.gravity = Gravity.CENTER_VERTICAL;
 							img_v.setLayoutParams(params);
+
 							if (!(contact instanceof PublicEntity)) {
 								LoadImgHelper.getInstance().bindContactWithImageView(
 										context, contact, img_v);

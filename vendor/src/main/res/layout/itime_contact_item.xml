@@ -35,8 +35,8 @@
             android:src="@drawable/invitee_selected_event_attendee_unselected"/>
         <ImageView
             android:id="@+id/icon"
-            android:layout_height="33dp"
-            android:layout_width="33dp"
+            android:layout_height="@dimen/invitee_icon_height"
+            android:layout_width="@dimen/invitee_icon_width"
             android:layout_marginTop="2dp"
             android:layout_marginBottom="2dp"
             android:src="@drawable/invitee_selected_default_picture"

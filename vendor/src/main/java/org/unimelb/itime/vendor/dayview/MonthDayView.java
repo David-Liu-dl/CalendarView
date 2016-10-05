@@ -372,7 +372,7 @@ public class MonthDayView extends LinearLayout {
         }
 
         private void bodyAutoSwipe(DayDraggableEventView eventView, int x, int y){
-            int offset = x > (parentWidth * 0.85) ? 1 : (x <= parentWidth * 0.05 ? -1 : 0);
+            int offset = x > (parentWidth * 0.7) ? 1 : (x <= parentWidth * 0.05 ? -1 : 0);
             if (offset != 0){
                 int scrollTo = bodyCurrentPosition + offset;
                 bodyPager.setCurrentItem(scrollTo,true);

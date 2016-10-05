@@ -72,22 +72,17 @@ public class SortAdapter extends BaseAdapter implements SectionIndexer{
 
 			viewHolder.tvLetter = (TextView) view.findViewById(R.id.catalog);
 			LinearLayout.LayoutParams tvLetterParams = (LinearLayout.LayoutParams) viewHolder.tvLetter.getLayoutParams();
-			int tvLetterPadding = width/60;
-			viewHolder.tvLetter.setPadding(tvLetterPadding,tvLetterPadding,tvLetterPadding,tvLetterPadding);
 			viewHolder.tvLetter.setTextSize(12);
 			viewHolder.tvLetter.setTextColor(mContext.getResources().getColor(R.color.text_enable));
 			viewHolder.tvLetter.setBackgroundColor(mContext.getResources().getColor(R.color.page_bg_color));
 			viewHolder.tvLetter.setLayoutParams(tvLetterParams);
 
 			viewHolder.icon = (ImageView) view.findViewById(R.id.icon);
-			LinearLayout.LayoutParams iconParams = new LinearLayout.LayoutParams(width/7,width/7);
+			LinearLayout.LayoutParams iconParams = (LinearLayout.LayoutParams) viewHolder.icon.getLayoutParams();
 			viewHolder.icon.setLayoutParams(iconParams);
-			int padding = width/30;
-			viewHolder.icon.setPadding(padding,padding,padding,padding);
 
 			viewHolder.check_circle = (ImageView) view.findViewById(R.id.check_circle);
-			LinearLayout.LayoutParams circleParams = new LinearLayout.LayoutParams(width/14,width/14);
-			circleParams.setMargins(padding/2,0,0,0);
+			LinearLayout.LayoutParams circleParams = (LinearLayout.LayoutParams) viewHolder.check_circle.getLayoutParams();
 			viewHolder.check_circle.setLayoutParams(circleParams);
 			view.setTag(viewHolder);
 		} else {
@@ -192,7 +187,7 @@ public class SortAdapter extends BaseAdapter implements SectionIndexer{
 		return null;
 	}
 
-	class CircleClickListener implements View.OnClickListener {
+	public class CircleClickListener implements View.OnClickListener {
 		ITimeContactInterface contact;
 		boolean checked = false;
 
@@ -216,13 +211,14 @@ public class SortAdapter extends BaseAdapter implements SectionIndexer{
 		}
 
 		public void updateChecked(){
-			Map map = circleCheckOnClickListener.getMapInContactsList();
-			this.checked = map.containsKey(contact)?true:false;
+			if (circleCheckOnClickListener != null){
+				Map map = circleCheckOnClickListener.getMapInContactsList();
+				this.checked = map.containsKey(contact)?true:false;
+			}
 		}
 
 		public void updateCircleBg(ImageView img_v){
 			ImageView circle_view = img_v;
-//			GradientDrawable db = (GradientDrawable)circle_view.getDrawable();
 			if (checked){
 				circle_view.setImageDrawable(mContext.getResources().getDrawable(R.drawable.invitee_selected_event_attendee_selected));
 			}else {

@@ -28,6 +28,8 @@ import org.unimelb.itime.test.bean.Invitee;
 import org.unimelb.itime.vendor.contact.SortAdapter;
 import org.unimelb.itime.vendor.contact.helper.CharacterParser;
 import org.unimelb.itime.vendor.contact.helper.ClearEditText;
+import org.unimelb.itime.vendor.contact.helper.PublicEntity;
+import org.unimelb.itime.vendor.helper.DensityUtil;
 import org.unimelb.itime.vendor.helper.LoadImgHelper;
 import org.unimelb.itime.vendor.contact.helper.PinyinComparator;
 import org.unimelb.itime.vendor.contact.widgets.SideBar;
@@ -61,6 +63,8 @@ public class InviteeFragment extends Fragment{
 	private View root;
 	private Context context;
 
+	private View thePublicView;
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {
@@ -81,11 +85,45 @@ public class InviteeFragment extends Fragment{
     }
 
 	private void initView() {
-
 		sideBar = (SideBar) root.findViewById(R.id.sidrbar);
 		dialog = (TextView) root.findViewById(R.id.dialog);
 
 		sortListView = (ListView) root.findViewById(R.id.sortlist);
+	}
+
+	private void addPublicHeaderView(){
+		TextView tvLetter;
+		TextView tvTitle;
+		ImageView icon;
+		ImageView check_circle;
+
+		thePublicView = LayoutInflater.from(context).inflate(org.unimelb.itime.vendor.R.layout.itime_contact_item, null);
+		int width = context.getResources().getDisplayMetrics().widthPixels;
+
+		tvTitle = (TextView) thePublicView.findViewById(org.unimelb.itime.vendor.R.id.title);
+		tvTitle.setText("The Public");
+
+		tvLetter = (TextView) thePublicView.findViewById(org.unimelb.itime.vendor.R.id.catalog);
+		((ViewGroup) thePublicView).removeView(tvLetter);
+
+		icon = (ImageView) thePublicView.findViewById(org.unimelb.itime.vendor.R.id.icon);
+		LinearLayout.LayoutParams iconParams = (LinearLayout.LayoutParams) icon.getLayoutParams();
+		icon.setLayoutParams(iconParams);
+		icon.setImageResource(R.drawable.invitee_selected_default_picture);
+
+		check_circle = (ImageView) thePublicView.findViewById(org.unimelb.itime.vendor.R.id.check_circle);
+		LinearLayout.LayoutParams circleParams = (LinearLayout.LayoutParams) check_circle.getLayoutParams();;
+		check_circle.setLayoutParams(circleParams);
+		check_circle.setImageResource(R.drawable.invitee_selected_check_circle);
+
+		PublicEntity publicEntity = new PublicEntity();
+
+		SortAdapter.CircleClickListener publicCircleCheckOnClickListener;
+		publicCircleCheckOnClickListener = adapter.new CircleClickListener(publicEntity, check_circle);
+		thePublicView.setOnClickListener(publicCircleCheckOnClickListener);
+
+		sortListView.addHeaderView(thePublicView);
+
 	}
 
 	private void initData() {
@@ -133,6 +171,7 @@ public class InviteeFragment extends Fragment{
                  ) {
                 contacts.put(contact_model.getContactUid(), contact_model);
             }
+
 			result = 1;
 
 			return result;
@@ -144,6 +183,7 @@ public class InviteeFragment extends Fragment{
 				SourceDateList = filledData(contacts);
 
 				Collections.sort(SourceDateList, pinyinComparator);
+
 				adapter = new SortAdapter(getActivity().getApplicationContext(), SourceDateList, contacts);
 				sortListView.setAdapter(adapter);
 
@@ -182,24 +222,42 @@ public class InviteeFragment extends Fragment{
 					int margin = width/40;
 					@Override
 					public void synCheckedContactsList(ITimeContactInterface contact, boolean add) {
-						if (add){
+						if (add) {
 							ImageView img_v = new ImageView(context);
-                            img_v.setOnClickListener(new ContactViewTouchListener());
-                            img_v.setTag(contact);
-                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(width/8,width/8);
-							params.setMargins(margin, margin/2, 0, margin/2);
+							img_v.setOnClickListener(new ContactViewTouchListener());
+							img_v.setTag(contact);
+
+							int imgParam = (int) context.getResources().getDimension(R.dimen.invitee_icon_width);
+							LinearLayout.LayoutParams params =
+									new LinearLayout.LayoutParams(imgParam, imgParam);
+							params.setMargins(margin, margin / 2, 0, margin / 2);
+							params.gravity = Gravity.CENTER_VERTICAL;
 							img_v.setLayoutParams(params);
+
+							if (!(contact instanceof PublicEntity)) {
+								LoadImgHelper.getInstance().bindContactWithImageView(
+										context, contact, img_v);
+							}else {
+								//if The Public is selected
+								ll_checkedList.removeAllViews();
+								contacts_list.clear();
+								img_v.setImageResource(R.drawable.invitee_selected_default_picture);
+								adapter.updateListView(new ArrayList<SortModel>());
+								mClearEditText.setVisibility(View.GONE);
+							}
 							contacts_list.put(contact, img_v);
-							LoadImgHelper.getInstance().bindContactWithImageView(
-									context, contact, img_v);
 							ll_checkedList.addView(img_v);
 							ll_checkedList.invalidate();
-							Log.i(TAG, "add: ");
-						}else {
+						} else {
+							if (!(contact instanceof PublicEntity)){
+
+							}else {
+								mClearEditText.setVisibility(View.VISIBLE);
+								filterData("");
+							}
 							ll_checkedList.removeView(contacts_list.get(contact));
 							contacts_list.remove(contact);
 							ll_checkedList.invalidate();
-							Log.i(TAG, "remove: ");
 						}
 					}
 
@@ -208,6 +266,8 @@ public class InviteeFragment extends Fragment{
 						return contacts_list;
 					}
 				});
+				addPublicHeaderView();
+
 			}
 		}
 
@@ -215,7 +275,6 @@ public class InviteeFragment extends Fragment{
 		protected void onPreExecute() {
 			super.onPreExecute();
 		}
-
 	}
 
 	private List<SortModel> filledData(Map<String,ITimeContactInterface> map) {
@@ -262,8 +321,6 @@ public class InviteeFragment extends Fragment{
 		adapter.updateListView(filterDateList);
 	}
 
-
-
     class ContactViewTouchListener implements View.OnClickListener {
 
         @Override
@@ -288,7 +345,6 @@ public class InviteeFragment extends Fragment{
 
 		for (int i = 0; i < 5; i++) {
 			contacts.add(new Contact("" + i ,"http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg","周二珂 " + i));
-
 		}
 
         return contacts;

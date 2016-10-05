@@ -341,7 +341,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
         initMsgWindow();
         initTimeText(getHours());
         initDividerLine(getHours());
-        addNowTimeLine();
+//        addNowTimeLine();
     }
 
     private void initTimeSlot() {
@@ -433,13 +433,18 @@ public class FlexibleLenViewBody extends RelativeLayout {
     public void resetViews() {
         clearAllEvents();
 
-        if (this.myCalendar.isToday()) {
-            nowTime.setVisibility(VISIBLE);
-            nowTimeLine.setVisibility(VISIBLE);
-        } else {
-            nowTime.setVisibility(GONE);
-            nowTimeLine.setVisibility(GONE);
+        bodyContainerLayout.removeView(nowTime);
+        bodyContainerLayout.removeView(nowTimeLine);
+
+        MyCalendar tempCal = new MyCalendar(this.myCalendar);
+        for (int dayOffset = 0; dayOffset < this.getDisplayLen(); dayOffset++) {
+            if (tempCal.isToday()) {
+                addNowTimeLine();
+                break;
+            }
+            tempCal.setOffsetByDate(1);
         }
+
     }
 
     /**
@@ -602,10 +607,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
      *
      * @param dayEventMap
      */
-    Date startDate = new Date();
     public void setEventList(Map<Long, List<ITimeEventInterface>> dayEventMap) {
-        startDate = new Date();
-
         this.clearAllEvents();
 
         MyCalendar tempCal = new MyCalendar(this.myCalendar);

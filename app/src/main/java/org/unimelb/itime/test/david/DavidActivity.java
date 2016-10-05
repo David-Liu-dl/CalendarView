@@ -73,11 +73,11 @@ public class DavidActivity extends AppCompatActivity {
 ////        },5000);
 //    }
 
-    private void doMonthAgendaViewThings(){
-        MonthAgendaView monthDayFragment = (MonthAgendaView) findViewById(R.id.monthAgendaView);
-
-        monthDayFragment.setDayEventMap(EventManager.getInstance().getEventsMap());
-    }
+//    private void doMonthAgendaViewThings(){
+//        MonthAgendaView monthDayFragment = (MonthAgendaView) findViewById(R.id.monthAgendaView);
+//
+//        monthDayFragment.setDayEventMap(EventManager.getInstance().getEventsMap());
+//    }
 
     private void initDB(){
         Calendar calendar = Calendar.getInstance();

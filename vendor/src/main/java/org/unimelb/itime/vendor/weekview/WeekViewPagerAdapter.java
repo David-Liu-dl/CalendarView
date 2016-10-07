@@ -184,7 +184,7 @@ public class WeekViewPagerAdapter extends PagerAdapter {
                 ) {
             FlexibleLenViewBody bodyView = (FlexibleLenViewBody)weekView.getChildAt(1);
             bodyView.clearTimeSlots();
-            if (this.slotsInfo != null && this.slotsInfo.size() != 0){
+            if (this.slotsInfo != null){    // && this.slotsInfo.size() != 0
                 for (int j = 0; j < this.slotsInfo.size(); j++) {
                     WeekView.TimeSlotStruct struct = this.slotsInfo.get(j);
                     bodyView.addSlot(struct,animate);

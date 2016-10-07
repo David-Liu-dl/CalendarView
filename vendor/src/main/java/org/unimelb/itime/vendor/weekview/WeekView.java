@@ -363,6 +363,7 @@ public class WeekView extends LinearLayout {
 
     public void resetTimeSlots(){
         slotsInfo.clear();
+        reloadTimeSlots(false);
     }
 
     public void updateTimeSlotsDuration(long duration, boolean animate){

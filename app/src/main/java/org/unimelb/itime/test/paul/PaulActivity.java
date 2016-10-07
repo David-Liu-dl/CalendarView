@@ -89,7 +89,14 @@ public class PaulActivity extends AppCompatActivity {
             public void run() {
                 weekView.updateTimeSlotsDuration(4*1800 * 1000,false);
             }
-        },6000);
+        },3000);
+
+        weekView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                weekView.resetTimeSlots();
+            }
+        },5000);
         weekView.setDayEventMap(EventManager.getInstance().getEventsMap());
     }
 

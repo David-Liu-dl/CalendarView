@@ -50,6 +50,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
     private final long allDayMilliseconds = 24 * 60 * 60 * 1000;
 
     private boolean isTimeSlotEnable = false;
+    private boolean isRemoveOptListener = false;
 
     private ScrollContainerView scrollContainerView;
     private RelativeLayout bodyContainerLayout;
@@ -1255,6 +1256,8 @@ public class FlexibleLenViewBody extends RelativeLayout {
         }
     }
 
+
+
     public void enableTimeSlot(){
         this.isTimeSlotEnable = true;
         for (int i = 0; i < displayLen; i++) {
@@ -1287,4 +1290,23 @@ public class FlexibleLenViewBody extends RelativeLayout {
     public void setOnTimeSlotListener(OnTimeSlotListener onTimeSlotListener) {
         this.onTimeSlotListener = onTimeSlotListener;
     }
+
+    public void removeOptListener(){
+        isRemoveOptListener = true;
+        for (int i = 0; i < displayLen; i++) {
+            //remove previous listeners
+            eventLayouts.get(i).setOnDragListener(null);
+            eventLayouts.get(i).setOnLongClickListener(null);
+
+            for (int j = 0; j < eventLayouts.get(i).getChildCount(); j++) {
+                if (eventLayouts.get(i).getChildAt(j) instanceof DayDraggableEventView
+                        ||
+                        eventLayouts.get(i).getChildAt(j) instanceof TimeSlotView
+                        ){
+                    eventLayouts.get(i).getChildAt(j).setOnLongClickListener(null);
+                }
+            }
+        }
+    }
+
 }

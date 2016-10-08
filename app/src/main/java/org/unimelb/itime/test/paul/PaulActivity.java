@@ -94,7 +94,7 @@ public class PaulActivity extends AppCompatActivity {
         weekView.postDelayed(new Runnable() {
             @Override
             public void run() {
-                weekView.resetTimeSlots();
+                weekView.removeAllOptListener();
             }
         },5000);
         weekView.setDayEventMap(EventManager.getInstance().getEventsMap());

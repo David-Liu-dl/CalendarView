@@ -357,6 +357,12 @@ public class WeekView extends LinearLayout {
         }
     }
 
+    public void removeAllOptListener(){
+        if (adapter != null){
+            adapter.removeAllOptListener();
+        }
+    }
+
     public void addTimeSlot(TimeSlotStruct slotInfo){
         slotsInfo.add(slotInfo);
     }

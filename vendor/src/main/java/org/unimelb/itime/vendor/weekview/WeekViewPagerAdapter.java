@@ -61,6 +61,14 @@ public class WeekViewPagerAdapter extends PagerAdapter {
         }
     }
 
+    public void removeAllOptListener(){
+        for (LinearLayout weekView : views
+                ) {
+            FlexibleLenViewBody bodyView = (FlexibleLenViewBody)weekView.getChildAt(1);
+            bodyView.removeOptListener();
+        }
+    }
+
     public void changeView(LinearLayout newView,int position){
         views.set(position,newView);
     }

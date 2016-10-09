@@ -303,12 +303,21 @@ public class MonthAgendaView extends RelativeLayout{
                 va.start();
             }
 
+            int index = headerLinearLayoutManager.findFirstCompletelyVisibleItemPosition();
+            DayViewHeader fstVisibleHeader = (DayViewHeader) headerLinearLayoutManager.findViewByPosition(index);
+            monthAgendaViewCalendar = fstVisibleHeader.getCalendar();
+            if (onHeaderListener != null){
+                onHeaderListener.onMonthChanged(monthAgendaViewCalendar);
+            }
+
             if (newState == 1){
                 //because 1->2->selected->0
                 slideByUser = true;
             }else if (newState == 2){
             }else {
                 //after executed selected, reset to false;
+                //for now header date
+
                 slideByUser = false;
             }
         }

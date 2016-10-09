@@ -193,6 +193,7 @@ public class MonthAgendaView extends RelativeLayout{
     public void setDayEventMap(Map<Long, List<ITimeEventInterface>> dayEventMap){
         this.dayEventMap = dayEventMap;
         this.bodyRecyclerAdapter.setDayEventMap(dayEventMap);
+        this.headerRecyclerAdapter.notifyDataSetChanged();
     }
 
     public interface OnHeaderListener{

@@ -134,6 +134,7 @@ public class WeekView extends LinearLayout {
         }else {
             Log.i(TAG, "adapter: null" );
         }
+        this.reloadEvents();
     }
 
     private void setUpWeekView(){

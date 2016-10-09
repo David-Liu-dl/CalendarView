@@ -98,6 +98,7 @@ public class MonthDayView extends LinearLayout {
     public void setDayEventMap(Map<Long, List<ITimeEventInterface>> dayEventMap){
         this.dayEventMap = dayEventMap;
         this.bodyPagerAdapter.setDayEventMap(dayEventMap);
+        this.reloadEvents();
     }
 
     private void setUpHeader(){

@@ -6,6 +6,7 @@
     <declare-styleable name="WeekView">
         <attr name="onWeekViewChange" format="string" />
         <attr name="onWeekOuterListener" format="string"/>
+        <attr name="timeslot" format="string"/>
     </declare-styleable>
 
     <declare-styleable name="WeekTimeSlotView">

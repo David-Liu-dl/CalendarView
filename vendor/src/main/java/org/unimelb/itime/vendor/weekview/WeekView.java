@@ -34,8 +34,8 @@ import java.util.Map;
 
 @BindingMethods(
         {@BindingMethod(type = WeekView.class, attribute = "app:onWeekViewChange", method="setOnHeaderListener"),
-        @BindingMethod(type = WeekView.class, attribute = "app:onTimeSlotOuterListener", method = "setOnTimeSlotOuterListener")}
-
+        @BindingMethod(type = WeekView.class, attribute = "app:onTimeSlotOuterListener", method = "setOnTimeSlotOuterListener"),
+        @BindingMethod(type = WeekView.class, attribute = "app:timeslot" ,method = "addTimeSlot")}
 )
 public class WeekView extends LinearLayout {
     private final String TAG = "MyAPP";

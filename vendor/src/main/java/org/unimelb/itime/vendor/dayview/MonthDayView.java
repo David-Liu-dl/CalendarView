@@ -106,7 +106,7 @@ public class MonthDayView extends LinearLayout {
         headerRecyclerAdapter.setOnCheckIfHasEvent(new DayViewHeader.OnCheckIfHasEvent() {
             @Override
             public boolean todayHasEvent(long startOfDay) {
-                return dayEventMap.containsKey(startOfDay);
+                return dayEventMap.containsKey(startOfDay) && (dayEventMap.get(startOfDay).size() != 0);
             }
         });
         headerRecyclerView.setHasFixedSize(true);

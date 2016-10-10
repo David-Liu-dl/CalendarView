@@ -141,19 +141,19 @@ public class Event implements ITimeEventInterface<Event>, Serializable {
 
     public long getEndTime(){return endTime;}
 
-    public void setEventType(int eventType) {
+    public void setDisplayEventType(int eventType) {
         this.eventType = eventType;
     }
 
-    public int getEventType() {
+    public int getDisplayEventType() {
         return eventType;
     }
 
-    public int getStatus() {
+    public int getDisplayStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setDisplayStatus(int status) {
         this.status = status;
     }
 

@@ -5,8 +5,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.telecom.Connection;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,8 +73,8 @@ public class WeekDraggableEventView extends RelativeLayout implements View.OnLon
     }
 
     public void update(){
-        int type = event.getEventType();
-        int status = event.getStatus();
+        int type = event.getDisplayEventType();
+        int status = event.getDisplayStatus();
         int color = Color.RED;
         switch (type){
             case PRIVATE:
@@ -125,7 +123,7 @@ public class WeekDraggableEventView extends RelativeLayout implements View.OnLon
 
 
     private void initIcon(){
-        if (event.getStatus()!=0) {
+        if (event.getDisplayStatus()!=0) {
             icon = new ImageView(getContext());
             icon.setImageResource(R.drawable.itime_question_mark);
             this.addView(icon);
@@ -141,7 +139,7 @@ public class WeekDraggableEventView extends RelativeLayout implements View.OnLon
         RelativeLayout.LayoutParams leftBarParams = (RelativeLayout.LayoutParams)leftBar.getLayoutParams();
         leftBar.layout(0,0,leftBarWidth,height);
 
-        if (event.getStatus()!=0) {
+        if (event.getDisplayStatus()!=0) {
             int iconWidth = this.width / 3;
             int iconLeft = this.width / 3 * 2 - this.width / 10;
             int iconTop = this.width / 10;

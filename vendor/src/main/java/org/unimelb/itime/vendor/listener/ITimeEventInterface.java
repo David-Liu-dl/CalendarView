@@ -17,11 +17,11 @@ public interface ITimeEventInterface<T> extends Comparable<T> {
     void setEndTime(long endTime);
     long getEndTime();
 
-    void setEventType(int typeId);
-    int getEventType();
+//    void setDisplayEventType(int typeId);
+    int getDisplayEventType();
 
-    void setStatus(int statusId);
-    int getStatus();
+//    void setDisplayStatus(int statusId);
+    int getDisplayStatus();
 
     /**
      * Note: Display status:

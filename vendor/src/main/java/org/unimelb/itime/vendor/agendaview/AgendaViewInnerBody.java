@@ -3,10 +3,8 @@ package org.unimelb.itime.vendor.agendaview;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.media.Image;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -183,7 +181,7 @@ public class AgendaViewInnerBody extends RelativeLayout {
         eventStatusView = new ImageView(context);
         eventStatusView.setId(generateViewId());
         eventStatusView.setPadding(0, DensityUtil.dip2px(context, 10), DensityUtil.dip2px(context, 10), 0);
-        int iconId = getStatusIcon(this.event.getStatus(), true);
+        int iconId = getStatusIcon(this.event.getDisplayStatus(), true);
         if (iconId != -1) {
             eventStatusView.setImageDrawable(context.getResources().getDrawable(iconId));
         }
@@ -282,8 +280,8 @@ public class AgendaViewInnerBody extends RelativeLayout {
 //    }
 
     private void initEventShowAttrs(ITimeEventInterface event) {
-        type = event.getEventType();
-        status = event.getStatus();
+        type = event.getDisplayEventType();
+        status = event.getDisplayStatus();
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(event.getStartTime());

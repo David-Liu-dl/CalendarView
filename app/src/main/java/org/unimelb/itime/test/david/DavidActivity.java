@@ -2,17 +2,11 @@ package org.unimelb.itime.test.david;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import org.unimelb.itime.test.R;
 import org.unimelb.itime.test.bean.Contact;
 import org.unimelb.itime.test.bean.Event;
 import org.unimelb.itime.test.bean.Invitee;
-import org.unimelb.itime.vendor.agendaview.AgendaViewBody;
-import org.unimelb.itime.vendor.agendaview.MonthAgendaView;
-import org.unimelb.itime.vendor.dayview.DayViewHeader;
-import org.unimelb.itime.vendor.dayview.MonthDayView;
-import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -97,8 +91,8 @@ public class DavidActivity extends AppCompatActivity {
             Event event = new Event();
             event.setEventUid("" + i);
             event.setTitle("" + i);
-            event.setEventType(i%type.length);
-            event.setStatus(i%status.length);
+            event.setDisplayEventType(i%type.length);
+            event.setDisplayStatus(i%status.length);
             event.setLocation("here");
             event.setStartTime(startTime);
 
@@ -134,8 +128,8 @@ public class DavidActivity extends AppCompatActivity {
                 for (int j = 0; j < 4; j++) {
                     Event event_clone = new Event();
                     event_clone.setTitle(title);
-                    event_clone.setEventType(0);
-                    event_clone.setStatus(0);
+                    event_clone.setDisplayEventType(0);
+                    event_clone.setDisplayStatus(0);
                     event_clone.setStartTime(startTime);
                     event_clone.setEndTime(endTime);
                     event_clone.setLocation("here");

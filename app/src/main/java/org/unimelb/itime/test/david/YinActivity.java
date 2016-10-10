@@ -90,8 +90,8 @@ public class YinActivity extends AppCompatActivity {
 //                Event event = new Event();
 //                event.setEventUid("213123");
 //                event.setTitle("new added");
-//                event.setEventType(1);
-//                event.setStatus(1);
+//                event.setDisplayEventType(1);
+//                event.setDisplayStatus(1);
 //                event.setLocation("here");
 //                event.setStartTime(Calendar.getInstance().getTimeInMillis());
 //                event.setEndTime(Calendar.getInstance().getTimeInMillis() + 60 * 60 * 1000);
@@ -136,8 +136,8 @@ public class YinActivity extends AppCompatActivity {
 
             Event event = new Event();
             event.setEventUid("" + i);
-            event.setEventType(i%type.length);
-            event.setStatus(i%status.length);
+            event.setDisplayEventType(i%type.length);
+            event.setDisplayStatus(i%status.length);
             event.setLocation("here");
             event.setStartTime(startTime);
             Calendar cal = Calendar.getInstance();
@@ -179,8 +179,8 @@ public class YinActivity extends AppCompatActivity {
                     Event event_clone = new Event();
                     event_clone.setEventUid(uuuid);
                     event_clone.setTitle(title);
-                    event_clone.setEventType(0);
-                    event_clone.setStatus(0);
+                    event_clone.setDisplayEventType(0);
+                    event_clone.setDisplayStatus(0);
                     event_clone.setStartTime(startTime);
                     event_clone.setEndTime(endTime);
                     event_clone.setLocation("here");

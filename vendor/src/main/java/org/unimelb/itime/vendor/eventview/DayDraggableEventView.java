@@ -88,7 +88,7 @@ public class DayDraggableEventView extends RelativeLayout {
     private void setType(){
         int color = Color.RED;
 
-        switch (this.event.getEventType()){
+        switch (this.event.getDisplayEventType()){
             case 0:
                 color = getContext().getResources().getColor(R.color.private_et);
                 break;
@@ -110,7 +110,7 @@ public class DayDraggableEventView extends RelativeLayout {
     private void setStatus(){
         long duration = this.event.getEndTime() - this.event.getStartTime();
         boolean useSmallIcon = ((duration <= (15 * 60 * 1000)) || isAllDayEvent);
-        this.resetIcon(getStatusIcon(this.event.getStatus(), useSmallIcon));
+        this.resetIcon(getStatusIcon(this.event.getDisplayStatus(), useSmallIcon));
     }
 
     private int getStatusIcon(int status, boolean useSmallIcon){

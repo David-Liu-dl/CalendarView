@@ -1206,7 +1206,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
                     tsView.setIndexInView(index);
 
                     if (tempDragView == null && onTimeSlotListener != null) {
-                        onTimeSlotListener.onTimeSlotDragDrop(tsView);
+                        onTimeSlotListener.onTimeSlotDragDrop(tsView, 0, 0);
                     } else {
                         Log.i(TAG, "onDrop Not Called");
                     }
@@ -1285,7 +1285,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
 
         void onTimeSlotDragging(TimeSlotView timeSlotView, int x, int y);
 
-        void onTimeSlotDragDrop(TimeSlotView timeSlotView);
+        void onTimeSlotDragDrop(TimeSlotView timeSlotView, long startTime, long endTime);
     }
 
     public void setOnTimeSlotListener(OnTimeSlotListener onTimeSlotListener) {

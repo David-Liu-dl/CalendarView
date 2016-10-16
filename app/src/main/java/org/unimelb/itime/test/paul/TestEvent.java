@@ -50,18 +50,8 @@ public class TestEvent implements ITimeEventInterface {
     }
 
     @Override
-    public void setDisplayEventType(int typeId) {
-        this.eventType = typeId;
-    }
-
-    @Override
     public int getDisplayEventType() {
         return eventType;
-    }
-
-    @Override
-    public void setDisplayStatus(int statusId) {
-        this.eventStatus = statusId;
     }
 
     @Override

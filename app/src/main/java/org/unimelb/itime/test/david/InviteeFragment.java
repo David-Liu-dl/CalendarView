@@ -41,6 +41,7 @@ import org.unimelb.itime.vendor.listener.ITimeInviteeInterface;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -55,6 +56,9 @@ public class InviteeFragment extends Fragment{
 	private TextView dialog;
 	private SortAdapter adapter;
 	private ClearEditText mClearEditText;
+
+	private LinearLayout ll_checkedList;
+
 
 	private CharacterParser characterParser;
 	private List<SortModel> SourceDateList;
@@ -78,16 +82,33 @@ public class InviteeFragment extends Fragment{
 		return root;
 	}
 
-	public Map<ITimeContactInterface, ImageView> getAllSelectedContacts(){
-		List<ITimeInviteeInterface> inviteeList = new ArrayList<>();
+	public List<ITimeContactInterface> getAllSelectedContacts(){
+		ArrayList<ITimeContactInterface> result = new ArrayList<>();
 
-        return this.contacts_list;
+        Iterator it = this.contacts_list.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+            if (pair.getKey() instanceof PublicEntity){
+				result.clear();
+                result.add((ITimeContactInterface)pair.getKey());
+                return result;
+            }
+			result.add((ITimeContactInterface)pair.getKey());
+        }
+
+        return result;
     }
+
+    public void resetAll(){
+
+        this.contacts_list.clear();
+    }
+
 
 	private void initView() {
 		sideBar = (SideBar) root.findViewById(R.id.sidrbar);
 		dialog = (TextView) root.findViewById(R.id.dialog);
-
+		ll_checkedList = (LinearLayout) root.findViewById(R.id.checked_contacts_list);
 		sortListView = (ListView) root.findViewById(R.id.sortlist);
 	}
 
@@ -217,7 +238,6 @@ public class InviteeFragment extends Fragment{
 
 				//connect checked list
 				adapter.setCircleCheckOnClickListener(new SortAdapter.CircleCheckOnClickListener() {
-					LinearLayout ll_checkedList = (LinearLayout) root.findViewById(R.id.checked_contacts_list);
 					int width = getActivity().getWindowManager().getDefaultDisplay().getWidth();
 					int margin = width/40;
 					@Override
@@ -239,8 +259,10 @@ public class InviteeFragment extends Fragment{
 										context, contact, img_v);
 							}else {
 								//if The Public is selected
-								ll_checkedList.removeAllViews();
-								contacts_list.clear();
+                                int count = ll_checkedList.getChildCount();
+                                for (int i = 0; i < count; i++) {
+                                    ll_checkedList.getChildAt(i).setVisibility(View.GONE);
+                                }
 								img_v.setImageResource(R.drawable.invitee_selected_default_picture);
 								adapter.updateListView(new ArrayList<SortModel>());
 								mClearEditText.setVisibility(View.GONE);
@@ -252,6 +274,10 @@ public class InviteeFragment extends Fragment{
 							if (!(contact instanceof PublicEntity)){
 
 							}else {
+                                int count = ll_checkedList.getChildCount();
+                                for (int i = 0; i < count; i++) {
+                                    ll_checkedList.getChildAt(i).setVisibility(View.VISIBLE);
+                                }
 								mClearEditText.setVisibility(View.VISIBLE);
 								filterData("");
 							}
@@ -259,7 +285,7 @@ public class InviteeFragment extends Fragment{
 							contacts_list.remove(contact);
 							ll_checkedList.invalidate();
 						}
-					}
+                    }
 
 					@Override
 					public Map getMapInContactsList() {

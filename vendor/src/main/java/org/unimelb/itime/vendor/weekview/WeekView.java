@@ -316,7 +316,7 @@ public class WeekView extends LinearLayout {
         }
 
         @Override
-        public void onTimeSlotDragDrop(TimeSlotView timeSlotView) {
+        public void onTimeSlotDragDrop(TimeSlotView timeSlotView, long start, long end) {
             MyCalendar currentCal = new MyCalendar((adapter.getViewBodyByPosition(bodyCurrentPosition)).getCalendar());
             currentCal.setOffsetByDate(timeSlotView.getIndexInView());
             timeSlotView.getNewCalendar().setDay(currentCal.getDay());
@@ -324,14 +324,18 @@ public class WeekView extends LinearLayout {
             timeSlotView.getNewCalendar().setYear(currentCal.getYear());
 
             TimeSlotStruct struct = (TimeSlotStruct)timeSlotView.getTag();
-            struct.startTime = timeSlotView.getStartTimeM();
-            struct.endTime = timeSlotView.getEndTimeM();
+            /**
+             *
+             */
+
+//            struct.startTime = timeSlotView.getStartTimeM();
+//            struct.endTime = timeSlotView.getEndTimeM();
 
             if (onTimeSlotOuterListener != null){
-                onTimeSlotOuterListener.onTimeSlotDragDrop(timeSlotView);
+                onTimeSlotOuterListener.onTimeSlotDragDrop(timeSlotView, timeSlotView.getStartTimeM(), timeSlotView.getEndTimeM());
             }
 
-            adapter.reloadTimeSlots(false);
+//            adapter.reloadTimeSlots(false);
 
         }
     }
@@ -384,6 +388,8 @@ public class WeekView extends LinearLayout {
         public long endTime = 0;
         public boolean status = false;
         public Object object = null;
+
+
     }
 
 }

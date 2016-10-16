@@ -410,17 +410,9 @@ public class Event implements ITimeEventInterface<Event>, Serializable {
         return timeslots;
     }
 
-
-
-
-
     public void setTimeslots(List<TimeSlot> timeslots) {
         this.timeslots = timeslots;
     }
-
-
-
-
 
     /** Resets a to-many relationship, making the next get call to query for a fresh result. */
     @Generated(hash = 481094641)
@@ -485,6 +477,30 @@ public class Event implements ITimeEventInterface<Event>, Serializable {
 
     public void setPhoto(String photo) {
         this.photo = photo;
+    }
+
+
+
+    public int getStatus() {
+        return this.status;
+    }
+
+
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+
+
+    public int getEventType() {
+        return this.eventType;
+    }
+
+
+
+    public void setEventType(int eventType) {
+        this.eventType = eventType;
     }
 
 }

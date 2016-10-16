@@ -333,6 +333,7 @@ public class WeekView extends LinearLayout {
 
             if (onTimeSlotOuterListener != null){
                 onTimeSlotOuterListener.onTimeSlotDragDrop(timeSlotView, timeSlotView.getStartTimeM(), timeSlotView.getEndTimeM());
+                reloadTimeSlots(false);
             }
 
 //            adapter.reloadTimeSlots(false);
@@ -388,8 +389,6 @@ public class WeekView extends LinearLayout {
         public long endTime = 0;
         public boolean status = false;
         public Object object = null;
-
-
     }
 
 }

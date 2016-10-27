@@ -73,6 +73,7 @@ public class MonthDayView extends LinearLayout {
 
     public void reloadEvents(){
         bodyPagerAdapter.reloadEvents();
+        headerRecyclerAdapter.notifyDataSetChanged();
     }
 
     private void initView(){

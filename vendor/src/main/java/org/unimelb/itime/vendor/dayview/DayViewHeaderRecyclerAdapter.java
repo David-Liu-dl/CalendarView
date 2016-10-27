@@ -129,4 +129,8 @@ public class DayViewHeaderRecyclerAdapter extends RecyclerView.Adapter<DayViewHe
             headerRow.setOnCheckIfHasEvent(onCheckIfHasEvent);
         }
     }
+
+//    public void refresh(){
+//
+//    }
 }

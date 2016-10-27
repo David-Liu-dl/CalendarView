@@ -1,12 +1,10 @@
 package org.unimelb.itime.vendor.helper;
 
-import android.util.Log;
 import android.util.Pair;
 
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -84,6 +82,8 @@ public class CalendarEventOverlapHelper {
         ArrayList<Pair<Integer, ArrayList<EventSlot>>> columnEvents = new ArrayList<>();
         int column_now = 0;
 
+        //iterate all events
+        //init the very first event as root.
         for (int i = 0; i < group.size(); i++) {
             if (columnEvents.size() == 0){
                 EventSlot rootSlot = new EventSlot();
@@ -97,6 +97,8 @@ public class CalendarEventOverlapHelper {
 
             long currentEventStartTime = group.get(i).getStartTime();
             boolean foundRoot = false;
+
+            //finding the root for current event
             for (Pair<Integer, ArrayList<EventSlot>> columnEvent:columnEvents
                  ) {
                 //compare with last event in column event
@@ -110,6 +112,8 @@ public class CalendarEventOverlapHelper {
                     break;
                 }
             }
+
+            //if root not found, this event is a new root for new column.
             if (!foundRoot){
                 EventSlot rootSlot = new EventSlot();
                 rootSlot.event = group.get(i);
@@ -123,18 +127,12 @@ public class CalendarEventOverlapHelper {
 
         ArrayList<Pair<Pair<Integer,Integer>,ITimeEventInterface>> param_event_list = new ArrayList<>();
 
+        //compose the event with its parameters
         for (Pair<Integer, ArrayList<EventSlot>> columnEvent:columnEvents
              ) {
             Pair<Integer,Integer> param = new Pair<>(column_now, columnEvent.first);
             for (EventSlot event:columnEvent.second
                  ) {
-//                Log.i(TAG, "title: " + event.event.getTitle());
-//                Calendar calendar = Calendar.getInstance();
-//                calendar.setTimeInMillis(event.event.getStartTime());
-//                Log.i(TAG, "start time: " + calendar.getTime());
-//                calendar.setTimeInMillis(event.event.getEndTime());
-//                Log.i(TAG, "end time: " + calendar.getTime());
-
                 Pair<Pair<Integer,Integer>, ITimeEventInterface> param_event = new Pair<>(param, event.event);
                 param_event_list.add(param_event);
             }

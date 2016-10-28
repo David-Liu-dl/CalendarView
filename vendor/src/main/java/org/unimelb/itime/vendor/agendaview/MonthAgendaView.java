@@ -304,9 +304,9 @@ public class MonthAgendaView extends RelativeLayout{
                 va.start();
             }
 
-            int index = headerLinearLayoutManager.findFirstCompletelyVisibleItemPosition();
-            DayViewHeader fstVisibleHeader = (DayViewHeader) headerLinearLayoutManager.findViewByPosition(index);
-            monthAgendaViewCalendar = fstVisibleHeader.getCalendar();
+            int index = bodyLinearLayoutManager.findFirstVisibleItemPosition();
+            AgendaViewBody fstVisibleBody = (AgendaViewBody) bodyLinearLayoutManager.findViewByPosition(index);
+            monthAgendaViewCalendar = fstVisibleBody.getCalendar();
             if (onHeaderListener != null){
                 onHeaderListener.onMonthChanged(monthAgendaViewCalendar);
             }
@@ -320,6 +320,7 @@ public class MonthAgendaView extends RelativeLayout{
                 //for now header date
 
                 slideByUser = false;
+
             }
         }
     }

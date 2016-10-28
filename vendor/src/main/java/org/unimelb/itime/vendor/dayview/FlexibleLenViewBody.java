@@ -1239,7 +1239,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
 
         @Override
         public boolean onLongClick(View v) {
-            if (tempDragView == null) {
+//            if (tempDragView == null) {
                 DayInnerBodyEventLayout container = (DayInnerBodyEventLayout) v;
                 tempDragView = createTimeSlotView(null);
                 tempDragView.setY(nowTapY);
@@ -1251,7 +1251,9 @@ public class FlexibleLenViewBody extends RelativeLayout {
                         tempDragView.performLongClick();
                     }
                 }, 100);
-            }
+//            }else{
+//                Log.i(TAG, "onLongClitempDragView  not null ");
+//            }
 
             return true;
         }

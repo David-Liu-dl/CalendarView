@@ -2,11 +2,15 @@ package org.unimelb.itime.test.david;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 
 import org.unimelb.itime.test.R;
 import org.unimelb.itime.test.bean.Contact;
 import org.unimelb.itime.test.bean.Event;
 import org.unimelb.itime.test.bean.Invitee;
+import org.unimelb.itime.vendor.agendaview.MonthAgendaView;
+import org.unimelb.itime.vendor.dayview.MonthDayView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -14,28 +18,52 @@ import java.util.List;
 
 public class DavidActivity extends AppCompatActivity {
     private final String TAG= "MyAPP";
-    DBManager dbManager;
-
+    private DBManager dbManager;
+    private EventManager eventManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_david);
 
-        dbManager = DBManager.getInstance(this.getApplicationContext());
-
-//        initData();
+        dbManager = DBManager.getInstance(this);
+        eventManager = EventManager.getInstance();
+        initData();
         loadData();
-        doInviteesThings();
+//        doInviteesThings();
 
-//        doMonthAgendaViewThings();
+        doMonthDayViewThings();
 //        displayAllInvitee();
 //        doMonthDayViewThings();
     }
 
-    private void doInviteesThings(){
-        InviteeFragment inviteeFragment = new InviteeFragment();
-        getFragmentManager().beginTransaction().add(R.id.fragment, inviteeFragment).commit();
+    private void doMonthDayViewThings(){
+        Button back = (Button) findViewById(R.id.back);
+        final MonthDayView mv = (MonthDayView) findViewById(R.id.monthDayView);
+        mv.setDayEventMap(eventManager.getEventsMap());
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mv.backToToday();
+            }
+        });
     }
+
+//    private void doMonthAgendaViewThings(){
+//        Button back = (Button) findViewById(R.id.back);
+//        final MonthDayView mv = (MonthDayView) findViewById(R.id.monthDayView);
+//        mv.setDayEventMap(eventManager.getEventsMap());
+//        back.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                mv.backToToday();
+//            }
+//        });
+//    }
+
+//    private void doInviteesThings(){
+//        InviteeFragment inviteeFragment = new InviteeFragment();
+//        getFragmentManager().beginTransaction().add(R.id.fragment, inviteeFragment).commit();
+//    }
 
     private void initData(){
         this.dbManager.clearDB();
@@ -82,7 +110,7 @@ public class DavidActivity extends AppCompatActivity {
         int[] status = {0,1};
         long interval = 3600 * 1000;
         int alldayCount = 0;
-        for (int i = 1; i < 10000; i++) {
+        for (int i = 1; i < 1000; i++) {
 
             long startTime = calendar.getTimeInMillis();
             long endTime = startTime + interval * (i%30);

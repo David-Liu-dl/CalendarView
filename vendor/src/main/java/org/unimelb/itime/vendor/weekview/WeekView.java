@@ -33,9 +33,12 @@ import java.util.Map;
  */
 
 @BindingMethods(
-        {@BindingMethod(type = WeekView.class, attribute = "app:onWeekViewChange", method="setOnHeaderListener"),
-        @BindingMethod(type = WeekView.class, attribute = "app:onTimeSlotOuterListener", method = "setOnTimeSlotOuterListener"),
-        @BindingMethod(type = WeekView.class, attribute = "app:timeslot" ,method = "addTimeSlot")}
+        {
+                @BindingMethod(type = WeekView.class, attribute = "app:onWeekViewChange", method="setOnHeaderListener"),
+                @BindingMethod(type = WeekView.class, attribute = "app:onTimeSlotOuterListener", method = "setOnTimeSlotOuterListener"),
+                @BindingMethod(type = WeekView.class, attribute = "app:timeslot" ,method = "addTimeSlot"),
+                @BindingMethod(type = WeekView.class, attribute = "app:backToday" ,method = "backToToday")
+        }
 )
 public class WeekView extends LinearLayout {
     private final String TAG = "MyAPP";
@@ -125,6 +128,9 @@ public class WeekView extends LinearLayout {
         }
     }
 
+    public void backToToday(){
+        weekViewPager.setCurrentItem(upperBoundsOffset,false);
+    }
     /*--------------------*/
 
     public void setDayEventMap(Map<Long, List<ITimeEventInterface>> dayEventMap){

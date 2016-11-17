@@ -2,6 +2,8 @@ package org.unimelb.itime.vendor.agendaview;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.databinding.BindingMethod;
+import android.databinding.BindingMethods;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -26,6 +28,13 @@ import java.util.Map;
 /**
  * Created by yuhaoliu on 31/08/16.
  */
+
+@BindingMethods(
+        {
+                @BindingMethod(type = MonthAgendaView.class, attribute = "app:backToday", method = "backToToday"),
+        }
+)
+
 public class MonthAgendaView extends RelativeLayout{
     private final String TAG = "AgendaHeader";
 
@@ -196,8 +205,16 @@ public class MonthAgendaView extends RelativeLayout{
         this.headerRecyclerAdapter.notifyDataSetChanged();
     }
 
+    public void backToToday(){
+        this.headerRecyclerView.stopScroll();
+        this.bodyRecyclerView.stopScroll();
+        this.headerScrollToDate(Calendar.getInstance());
+        this.bodyLinearLayoutManager.scrollToPosition(0);
+    }
+
     public interface OnHeaderListener{
         void onMonthChanged(MyCalendar calendar);
+        void backToToday();
     }
     public void headerScrollToDate(Calendar body_fst_cal){
         DayViewHeader headerView =
@@ -256,9 +273,8 @@ public class MonthAgendaView extends RelativeLayout{
         @Override
         public void onScrolled(RecyclerView v, int dx, int dy) {
             super.onScrolled(v, dx, dy);
-
             int fst_visible_pst = bodyLinearLayoutManager.findFirstVisibleItemPosition();
-            if (slideByUser && (fst_visible_pst != last_pst) && (fst_visible_pst != -1)) {
+            if ((fst_visible_pst != last_pst) && (fst_visible_pst != -1)) {
                 MyCalendar bodyMyCalendar = ((AgendaViewBody) bodyLinearLayoutManager.findViewByPosition(fst_visible_pst)).getCalendar();
                 Calendar body_fst_cal = bodyMyCalendar.getCalendar();
 
@@ -268,7 +284,9 @@ public class MonthAgendaView extends RelativeLayout{
                 bodyHeader.setTranslationY(0);
 
                 //update header
-                headerScrollToDate(body_fst_cal);
+                if (slideByUser){
+                    headerScrollToDate(body_fst_cal);
+                }
                 last_pst = fst_visible_pst;
             }
 

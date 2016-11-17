@@ -3,6 +3,8 @@ package org.unimelb.itime.test.paul;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 
 import org.unimelb.itime.test.R;
@@ -30,8 +32,14 @@ public class PaulActivity extends AppCompatActivity {
         setContentView(R.layout.activity_paul);
         loadData();
 
-
+        Button back = (Button) findViewById(R.id.back);
         final WeekView weekView = (WeekView) findViewById(R.id.week_view);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                weekView.backToToday();
+            }
+        });
         weekView.setEventClassName(Event.class);
         weekView.setOnBodyOuterListener(new FlexibleLenViewBody.OnBodyListener() {
             @Override

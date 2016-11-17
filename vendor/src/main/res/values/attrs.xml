@@ -2,13 +2,22 @@
 <resources>
 
     <attr name="page_text_size" format="dimension"></attr>
-
+    <!-- for binding -->
     <declare-styleable name="WeekView">
         <attr name="onWeekViewChange" format="string" />
         <attr name="onWeekOuterListener" format="string"/>
         <attr name="timeslot" format="string"/>
+        <attr name="backToday" format="string"/>
     </declare-styleable>
 
+    <declare-styleable name="MonthDayView">
+        <attr name="backToday" format="string"/>
+    </declare-styleable>
+
+    <declare-styleable name="MonthAgendaView">
+        <attr name="backToday" format="string"/>
+    </declare-styleable>
+    <!-- end binding -->
     <declare-styleable name="WeekTimeSlotView">
         <attr name="onTimeSlotWeekViewChange" format="string"/>
         <attr name="onTimeSlotClick" format="string"/>

@@ -27,11 +27,12 @@ public class DavidActivity extends AppCompatActivity {
 
         dbManager = DBManager.getInstance(this);
         eventManager = EventManager.getInstance();
-        initData();
+//        initData();
         loadData();
 //        doInviteesThings();
 
         doMonthDayViewThings();
+//        doMonthAgendaViewThings();
 //        displayAllInvitee();
 //        doMonthDayViewThings();
     }
@@ -50,7 +51,7 @@ public class DavidActivity extends AppCompatActivity {
 
 //    private void doMonthAgendaViewThings(){
 //        Button back = (Button) findViewById(R.id.back);
-//        final MonthDayView mv = (MonthDayView) findViewById(R.id.monthDayView);
+//        final MonthAgendaView mv = (MonthAgendaView) findViewById(R.id.monthAgendaView);
 //        mv.setDayEventMap(eventManager.getEventsMap());
 //        back.setOnClickListener(new View.OnClickListener() {
 //            @Override

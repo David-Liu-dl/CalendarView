@@ -221,12 +221,16 @@ public class MonthAgendaView extends RelativeLayout{
             (DayViewHeader) headerLinearLayoutManager.findViewByPosition(headerRecyclerAdapter.rowPst);
         if (headerView != null){
             Calendar header_current_cal = headerView.getCalendar().getCalendar();
-
-            int date_offset = body_fst_cal.get(Calendar.DAY_OF_YEAR)
-                    - (header_current_cal.get(Calendar.DAY_OF_YEAR) + headerRecyclerAdapter.indexInRow);
-            if(body_fst_cal.get(Calendar.YEAR) != header_current_cal.get(Calendar.YEAR)){
-                date_offset = date_offset > 0 ? -1 : 1;
-            }
+//            int date_offset = body_fst_cal.get(Calendar.DAY_OF_YEAR)
+//                    - (header_current_cal.get(Calendar.DAY_OF_YEAR) + headerRecyclerAdapter.indexInRow);
+//            if(body_fst_cal.get(Calendar.YEAR) != header_current_cal.get(Calendar.YEAR)){
+////                date_offset = date_offset > 0 ? -1 : 1;
+//                date_offset = date_offset > 0 ? -1 : 1;
+//            }
+            MyCalendar tempH = new MyCalendar(headerView.getCalendar());
+            MyCalendar tempB = new MyCalendar(body_fst_cal);
+            tempH.setOffsetByDate(headerRecyclerAdapter.indexInRow);
+            int date_offset = (int) ((tempB.getBeginOfDayMilliseconds() - tempH.getBeginOfDayMilliseconds()) / (1000*60*60*24));
 
             int row_diff = date_offset/7;
             int day_diff = ((headerRecyclerAdapter.indexInRow+1) + date_offset%7);
@@ -256,7 +260,7 @@ public class MonthAgendaView extends RelativeLayout{
                                 need_set_index_header.performNthDayClick(new_index);
                             }
                         }
-                    },10);
+                    },50);
                     headerRecyclerAdapter.indexInRow = new_index;
                 }
             }

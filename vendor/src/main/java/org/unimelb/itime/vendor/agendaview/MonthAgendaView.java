@@ -31,7 +31,7 @@ import java.util.Map;
 
 @BindingMethods(
         {
-                @BindingMethod(type = MonthAgendaView.class, attribute = "app:backToday", method = "backToToday"),
+                @BindingMethod(type = MonthAgendaView.class, attribute = "app:MonthAgendaViewBackToday", method = "backToToday"),
         }
 )
 

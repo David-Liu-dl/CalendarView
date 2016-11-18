@@ -33,7 +33,7 @@ import java.util.Map;
  */
 @BindingMethods(
         {
-                @BindingMethod(type = MonthDayView.class, attribute = "app:backToday", method = "backToToday"),
+                @BindingMethod(type = MonthDayView.class, attribute = "app:MonthDayViewBackToday", method = "backToToday"),
         }
 )
 public class MonthDayView extends LinearLayout {

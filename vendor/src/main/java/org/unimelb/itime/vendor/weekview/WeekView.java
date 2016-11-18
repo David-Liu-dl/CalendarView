@@ -37,7 +37,7 @@ import java.util.Map;
                 @BindingMethod(type = WeekView.class, attribute = "app:onWeekViewChange", method="setOnHeaderListener"),
                 @BindingMethod(type = WeekView.class, attribute = "app:onTimeSlotOuterListener", method = "setOnTimeSlotOuterListener"),
                 @BindingMethod(type = WeekView.class, attribute = "app:timeslot" ,method = "addTimeSlot"),
-                @BindingMethod(type = WeekView.class, attribute = "app:backToday" ,method = "backToToday")
+                @BindingMethod(type = WeekView.class, attribute = "app:WeekViewBackToday" ,method = "backToToday")
         }
 )
 public class WeekView extends LinearLayout {

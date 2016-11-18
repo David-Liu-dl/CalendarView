@@ -293,7 +293,7 @@ public class WeekView extends LinearLayout {
 
             timeSlotView.setTag(newStruct);
             addTimeSlot(newStruct);
-            reloadTimeSlots(true);
+            reloadTimeSlots(false);
 
             if (onTimeSlotOuterListener != null){
                 onTimeSlotOuterListener.onTimeSlotCreate(timeSlotView);

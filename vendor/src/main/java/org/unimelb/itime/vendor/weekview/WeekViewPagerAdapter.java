@@ -146,7 +146,7 @@ public class WeekViewPagerAdapter extends PagerAdapter {
                 if (this.slotsInfo != null && this.slotsInfo.size() != 0){
                     for (int j = 0; j < this.slotsInfo.size(); j++) {
                         WeekView.TimeSlotStruct struct = this.slotsInfo.get(j);
-                        nowBody.addSlot(struct,true);
+                        nowBody.addSlot(struct,false);
                     }
                 }else {
                     Log.i(TAG, "slotsInfo: " + ((this.slotsInfo != null) ? "size 0":"null"));

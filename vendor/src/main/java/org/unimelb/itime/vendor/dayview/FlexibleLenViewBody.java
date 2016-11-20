@@ -1061,9 +1061,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
             timeSlotView.setLayoutParams(params);
         }
 
-
         timeSlotView.setOnLongClickListener(new TimeSlotLongClickListener());
-//        timeSlotView.setOnDragListener();
         timeSlotView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

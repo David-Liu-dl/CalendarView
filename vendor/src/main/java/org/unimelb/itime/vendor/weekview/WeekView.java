@@ -297,6 +297,7 @@ public class WeekView extends LinearLayout {
                     reloadTimeSlots(false);
                 }
             }
+            return false;
         }
 
         @Override

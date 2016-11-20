@@ -2,7 +2,6 @@ package org.unimelb.itime.vendor.dayview;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.databinding.BindingBuildInfo;
 import android.databinding.BindingMethod;
 import android.databinding.BindingMethods;
 import android.support.v4.view.ViewPager;
@@ -10,7 +9,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +29,7 @@ import java.util.Map;
 /**
  * Created by yuhaoliu on 10/08/16.
  */
+
 @BindingMethods(
         {
                 @BindingMethod(type = MonthDayView.class, attribute = "app:MonthDayViewBackToday", method = "backToToday"),

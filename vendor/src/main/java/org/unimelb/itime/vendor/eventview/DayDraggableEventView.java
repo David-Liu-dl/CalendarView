@@ -119,7 +119,7 @@ public class DayDraggableEventView extends RelativeLayout {
                 if (useSmallIcon){
                     return R.drawable.itime_question_mark_small;
                 }else {
-                    return R.drawable.itime_question_mark;
+                    return R.drawable.itime_question_mark_small;
                 }
             default:
                 return -1;
@@ -134,10 +134,10 @@ public class DayDraggableEventView extends RelativeLayout {
     }
 
     private void initIcon(){
-        int margin = DensityUtil.dip2px(getContext(),isAllDayEvent ? 1 : 3);
+        int margin = DensityUtil.dip2px(getContext(),1);
         icon = new ImageView(getContext());
         icon.setImageResource(R.drawable.itime_question_mark_small);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(DensityUtil.dip2px(getContext(), 20), DensityUtil.dip2px(getContext(), 20));
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(DensityUtil.dip2px(getContext(), 15), DensityUtil.dip2px(getContext(), 15));
         params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         params.rightMargin = margin;
         params.topMargin = margin;
@@ -157,9 +157,8 @@ public class DayDraggableEventView extends RelativeLayout {
     private void initEventTitle(){
         int padding = DensityUtil.dip2px(getContext(), isAllDayEvent ? 1 : 3);
         title = new TextView(getContext());
-//        title.setText(summary);
         title.setMaxLines(1);
-        title.setEllipsize(TextUtils.TruncateAt.END);
+//        title.setEllipsize(TextUtils.TruncateAt.END);
         title.setGravity(Gravity.CENTER_VERTICAL);
         title.setTextColor(Color.WHITE);
         title.setIncludeFontPadding(false);

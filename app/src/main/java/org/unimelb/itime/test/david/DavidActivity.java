@@ -27,7 +27,7 @@ public class DavidActivity extends AppCompatActivity {
 
         dbManager = DBManager.getInstance(this);
         eventManager = EventManager.getInstance();
-//        initData();
+        initData();
         loadData();
 //        doInviteesThings();
 
@@ -119,7 +119,7 @@ public class DavidActivity extends AppCompatActivity {
 
             Event event = new Event();
             event.setEventUid("" + i);
-            event.setTitle("" + i);
+            event.setTitle("adawdwadwadaw" + i);
             event.setDisplayEventType(i%type.length);
             event.setDisplayStatus(i%status.length);
             event.setLocation("here");

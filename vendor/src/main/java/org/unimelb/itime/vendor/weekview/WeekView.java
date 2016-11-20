@@ -277,9 +277,8 @@ public class WeekView extends LinearLayout {
     }
 
     public class OnTimeSlotInnerListener implements FlexibleLenViewBody.OnTimeSlotListener{
-
         @Override
-        public void onTimeSlotCreate(TimeSlotView timeSlotView) {
+        public boolean onTimeSlotCreate(TimeSlotView timeSlotView) {
             MyCalendar currentCal = new MyCalendar((adapter.getViewBodyByPosition(bodyCurrentPosition)).getCalendar());
             currentCal.setOffsetByDate(timeSlotView.getIndexInView());
             timeSlotView.getNewCalendar().setDay(currentCal.getDay());
@@ -292,11 +291,11 @@ public class WeekView extends LinearLayout {
             newStruct.status = false;
 
             timeSlotView.setTag(newStruct);
-            addTimeSlot(newStruct);
-            reloadTimeSlots(false);
-
             if (onTimeSlotOuterListener != null){
-                onTimeSlotOuterListener.onTimeSlotCreate(timeSlotView);
+                if(onTimeSlotOuterListener.onTimeSlotCreate(timeSlotView)){
+                    addTimeSlot(newStruct);
+                    reloadTimeSlots(false);
+                }
             }
         }
 

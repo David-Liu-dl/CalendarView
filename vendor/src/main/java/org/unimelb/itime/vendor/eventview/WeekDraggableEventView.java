@@ -69,7 +69,7 @@ public class WeekDraggableEventView extends RelativeLayout implements View.OnLon
         title.setGravity(Gravity.CENTER_VERTICAL);
         title.setTextColor(Color.WHITE);
         title.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        this.addView(title);
+//        this.addView(title);
     }
 
     public void update(){
@@ -103,7 +103,7 @@ public class WeekDraggableEventView extends RelativeLayout implements View.OnLon
     private int getStatusIcon(int status){
         switch (status){
             case PENDING:
-                return R.drawable.itime_question_mark;
+                return R.drawable.itime_question_mark_small;
 //            case CONFIRM:
 //                return R.drawable.itime_icon_tick;
             default:
@@ -125,7 +125,7 @@ public class WeekDraggableEventView extends RelativeLayout implements View.OnLon
     private void initIcon(){
         if (event.getDisplayStatus()!=0) {
             icon = new ImageView(getContext());
-            icon.setImageResource(R.drawable.itime_question_mark);
+            icon.setImageResource(R.drawable.itime_question_mark_small);
             this.addView(icon);
         }
     }

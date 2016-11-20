@@ -278,7 +278,7 @@ public class WeekView extends LinearLayout {
 
     public class OnTimeSlotInnerListener implements FlexibleLenViewBody.OnTimeSlotListener{
         @Override
-        public boolean onTimeSlotCreate(TimeSlotView timeSlotView) {
+        public void onTimeSlotCreate(TimeSlotView timeSlotView) {
             MyCalendar currentCal = new MyCalendar((adapter.getViewBodyByPosition(bodyCurrentPosition)).getCalendar());
             currentCal.setOffsetByDate(timeSlotView.getIndexInView());
             timeSlotView.getNewCalendar().setDay(currentCal.getDay());
@@ -292,12 +292,12 @@ public class WeekView extends LinearLayout {
 
             timeSlotView.setTag(newStruct);
             if (onTimeSlotOuterListener != null){
-                if(onTimeSlotOuterListener.onTimeSlotCreate(timeSlotView)){
-                    addTimeSlot(newStruct);
-                    reloadTimeSlots(false);
-                }
+                onTimeSlotOuterListener.onTimeSlotCreate(timeSlotView);
+//                ){
+//                    addTimeSlot(newStruct);
+//                    reloadTimeSlots(false);
+//                }
             }
-            return false;
         }
 
         @Override
@@ -329,25 +329,11 @@ public class WeekView extends LinearLayout {
             timeSlotView.getNewCalendar().setMonth(currentCal.getMonth());
             timeSlotView.getNewCalendar().setYear(currentCal.getYear());
 
-            TimeSlotStruct struct = (TimeSlotStruct)timeSlotView.getTag();
-            /**
-             *
-             */
-
-//            struct.startTime = timeSlotView.getStartTimeM();
-//            struct.endTime = timeSlotView.getEndTimeM();
-
             if (onTimeSlotOuterListener != null){
                 onTimeSlotOuterListener.onTimeSlotDragDrop(timeSlotView, timeSlotView.getStartTimeM(), timeSlotView.getEndTimeM());
-//                adapter.reloadTimeSlots(false);
-//                Log.i(TAG, "adapter.reloadTimeSlots(false) done: ");
             }
-
-//            adapter.reloadTimeSlots(false);
-
         }
     }
-
 
     /**
      *
@@ -359,7 +345,6 @@ public class WeekView extends LinearLayout {
         for (FlexibleLenViewBody view: bodyViewList){
             view.setEventClassName(className);
         }
-
     }
 
     private ArrayList<TimeSlotStruct> slotsInfo = new ArrayList<>();

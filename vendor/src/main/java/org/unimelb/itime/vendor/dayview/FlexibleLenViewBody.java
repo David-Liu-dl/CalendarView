@@ -1277,7 +1277,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
 
     private OnTimeSlotListener onTimeSlotListener;
     public interface OnTimeSlotListener {
-        boolean onTimeSlotCreate(TimeSlotView timeSlotView);
+        void onTimeSlotCreate(TimeSlotView timeSlotView);
 
         void onTimeSlotClick(TimeSlotView timeSlotView);
 

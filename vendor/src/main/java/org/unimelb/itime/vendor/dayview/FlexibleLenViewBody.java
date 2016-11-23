@@ -3,6 +3,7 @@ package org.unimelb.itime.vendor.dayview;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.text.LoginFilter;
@@ -131,7 +132,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        Log.i(TAG, "onMeasure: ");
+//        Log.i(TAG, "onMeasure: -start" + System.currentTimeMillis());
         layoutWidthPerDay = MeasureSpec.getSize(eventLayout.getMeasuredWidth()/displayLen);
         layoutHeightPerDay = MeasureSpec.getSize(eventLayout.getMeasuredHeight());
 
@@ -162,8 +163,16 @@ public class FlexibleLenViewBody extends RelativeLayout {
                 eventView.setY(pos.topMargin);
             }
         }
-
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        Log.i(TAG, "onLayout: --start: " + System.currentTimeMillis());
+        super.onLayout(changed, l, t, r, b);
+        Log.i(TAG, "onLayout: --end: " + System.currentTimeMillis());
+
     }
 
     private void initLayoutParams(){
@@ -305,6 +314,14 @@ public class FlexibleLenViewBody extends RelativeLayout {
             });
             eventLayouts.add(eventLayout);
         }
+
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        Log.i(TAG, "onDraw: --start: " + System.currentTimeMillis());
+        super.onDraw(canvas);
+        Log.i(TAG, "onDraw: --end: " + System.currentTimeMillis());
 
     }
 
@@ -633,23 +650,6 @@ public class FlexibleLenViewBody extends RelativeLayout {
                 }
             }
 
-//            for (ITimeEventInterface event: repeatedList
-//                 ) {
-//                if (event.isInclude(startTime)){
-//                    ITimeEventInterface dup_event = event.deepCopy(event);
-//                    long duration = dup_event.getEndTime() - dup_event.getStartTime();
-//                    Calendar cal = Calendar.getInstance();
-//                    cal.setTimeInMillis(dup_event.getStartTime());
-//                    MyCalendar myCal = new MyCalendar(tempCal);
-//                    myCal.setHour(cal.get(Calendar.HOUR));
-//                    myCal.setMinute(cal.get(Calendar.MINUTE));
-//                    dup_event.setStartTime(myCal.getCalendar().getTimeInMillis());
-//                    dup_event.setEndTime(myCal.getCalendar().getTimeInMillis() + duration);
-//
-//                    this.addEvent(dup_event);
-//                }
-//            }
-
             tempCal.setOffsetByDate(1);
         }
 
@@ -664,6 +664,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
      * it needs to be called when setting event or event position changed
      */
     private void calculateEventLayout(DayInnerBodyEventLayout eventLayout) {
+        Log.i(TAG, "calculateEventLayout: start " + System.currentTimeMillis());
         List<ArrayList<Pair<Pair<Integer, Integer>, ITimeEventInterface>>> overlapGroups
                 = xHelper.computeOverlapXForEvents(eventLayout.getEvents());
         int previousGroupExtraY = 0;
@@ -683,6 +684,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
             }
             previousGroupExtraY += overlapGapHeight * overlapGroup.size();
         }
+        Log.i(TAG, "calculateEventLayout: end " + System.currentTimeMillis());
     }
 
     private DayDraggableEventView createDayDraggableEventView(ITimeEventInterface event, boolean isAllDayEvent) {

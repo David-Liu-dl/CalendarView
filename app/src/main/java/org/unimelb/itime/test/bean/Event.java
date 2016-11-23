@@ -147,20 +147,6 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
         return this.invitee;
     }
 
-    @Override
-    public boolean isInclude(long dateM) {
-        return rule.isInclude(dateM);
-    }
-
-    @Override
-    public ITimeEventInterface deepCopy(ITimeEventInterface orgEvent) {
-        Gson gson = new Gson();
-        String eventStr = gson.toJson(orgEvent);
-        Event copyEvent = gson.fromJson(eventStr, Event.class);
-
-        return copyEvent;
-    }
-
     public void setEventId(String id){ this.eventUid = id;}
 
     public void setStartTime(long startTime){ this.startTime = startTime; }

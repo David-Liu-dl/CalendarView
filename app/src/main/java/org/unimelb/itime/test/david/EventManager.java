@@ -50,8 +50,8 @@ public class EventManager {
     }
 
     private EventManager() {
-        nowRepeatedStartAt.add(Calendar.DATE, -500);
-        nowRepeatedEndAt.add(Calendar.DATE, 500);
+        nowRepeatedStartAt.add(Calendar.DATE, -defaultRepeatedRange);
+        nowRepeatedEndAt.add(Calendar.DATE, defaultRepeatedRange);
 
         eventsPackage.setRepeatedEventMap(repeatedEventMap);
         eventsPackage.setRegularEventMap(regularEventMap);

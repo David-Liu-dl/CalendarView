@@ -80,7 +80,7 @@ public class AgendaBodyViewRecyclerAdapter extends RecyclerView.Adapter<AgendaBo
         }else{
             holder.bodyRow.setEventList(new ArrayList<ITimeEventInterface>());
         }
-        
+
         holder.bodyRow.setEventList(allEvents);
 
         holder.bodyRow.postInvalidate();

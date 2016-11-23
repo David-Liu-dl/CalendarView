@@ -1,62 +1,148 @@
 package org.unimelb.itime.test.david;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
 import org.unimelb.itime.test.R;
+import org.unimelb.itime.test.RuleFactory.RuleFactory;
+import org.unimelb.itime.test.RuleFactory.RuleModel;
 import org.unimelb.itime.test.bean.Contact;
 import org.unimelb.itime.test.bean.Event;
 import org.unimelb.itime.test.bean.Invitee;
-import org.unimelb.itime.vendor.agendaview.MonthAgendaView;
+import org.unimelb.itime.vendor.dayview.FlexibleLenViewBody;
 import org.unimelb.itime.vendor.dayview.MonthDayView;
+import org.unimelb.itime.vendor.eventview.DayDraggableEventView;
+import org.unimelb.itime.vendor.helper.MyCalendar;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class DavidActivity extends AppCompatActivity {
     private final String TAG= "MyAPP";
     private DBManager dbManager;
     private EventManager eventManager;
+    private MonthDayView monthDayView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_david);
 
+//        Calendar cal1 = Calendar.getInstance();
+//
+//        SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
+//        Date startDate = new Date();
+//        try {
+//            startDate = df.parse("20150611");
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//
+//        cal1.setTime(startDate);
+//
+//        Calendar cal2 = Calendar.getInstance();
+////        cal2.add(Calendar.DATE,3);
+//
+//        Calendar cal3 = Calendar.getInstance();
+//        cal3.add(Calendar.MONTH,1);
+//
+//        String[] recurrence = {"RRULE:FREQ=WEEKLY;INTERVAL=1"
+//        };
+//
+//        RuleModel module = RuleFactory.getInstance().getRuleModel(cal1.getTimeInMillis(), cal2.getTimeInMillis(), recurrence);
+//        ArrayList<Long> result = module.getOccurenceDates(cal2.getTimeInMillis(),cal3.getTimeInMillis());
+//        Calendar printCal = Calendar.getInstance();
+//        for (Long timeM:result
+//             ) {
+//            printCal.setTimeInMillis(timeM);
+//            Log.i(TAG, "Date: " + printCal.getTime());
+//        }
+
+
+        eventThing();
+    }
+    private void eventThing(){
         dbManager = DBManager.getInstance(this);
         eventManager = EventManager.getInstance();
         initData();
         loadData();
 //        doInviteesThings();
 
-        doMonthDayViewThings();
 //        doMonthAgendaViewThings();
 //        displayAllInvitee();
-//        doMonthDayViewThings();
+        doMonthDayViewThings();
     }
 
     private void doMonthDayViewThings(){
         Button back = (Button) findViewById(R.id.back);
-        final MonthDayView mv = (MonthDayView) findViewById(R.id.monthDayView);
-        mv.setDayEventMap(eventManager.getEventsMap());
+        monthDayView = (MonthDayView) findViewById(R.id.monthDayView);
+        monthDayView.setDayEventMap(eventManager.getEventsMap());
+        monthDayView.setEventClassName(Event.class);
+        monthDayView.setOnHeaderListener(new MonthDayView.OnHeaderListener() {
+            @Override
+            public void onMonthChanged(MyCalendar calendar) {
+                Log.i(TAG, "onMonthChanged: " + calendar.getCalendar().getTime());
+            }
+        });
+        monthDayView.setOnBodyOuterListener(new FlexibleLenViewBody.OnBodyListener() {
+            @Override
+            public void onEventCreate(DayDraggableEventView eventView) {
+
+            }
+
+            @Override
+            public void onEventClick(DayDraggableEventView eventView) {
+                Calendar cal = Calendar.getInstance();
+                cal.setTimeInMillis(eventView.getStartTimeM());
+
+                EventManager.getInstance().updateEvent((Event) eventView.getEvent(),10,10);
+
+            }
+
+            @Override
+            public void onEventDragStart(DayDraggableEventView eventView) {
+                eventView.setEvent(new Event());
+            }
+
+            @Override
+            public void onEventDragging(DayDraggableEventView eventView, int x, int y) {
+
+            }
+
+            @Override
+            public void onEventDragDrop(DayDraggableEventView eventView) {
+                Calendar cal = Calendar.getInstance();
+                cal.setTimeInMillis(eventView.getStartTimeM());
+//                Log.i(TAG, "onEventDragDrop: " + cal.getTime());
+            }
+
+        });
+
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mv.backToToday();
+                monthDayView.backToToday();
             }
         });
     }
 
 //    private void doMonthAgendaViewThings(){
 //        Button back = (Button) findViewById(R.id.back);
-//        final MonthAgendaView mv = (MonthAgendaView) findViewById(R.id.monthAgendaView);
-//        mv.setDayEventMap(eventManager.getEventsMap());
+//        final MonthAgendaView monthDayView = (MonthAgendaView) findViewById(R.id.monthAgendaView);
+//        monthDayView.setDayEventMap(eventManager.getEventsMap());
 //        back.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
-//                mv.backToToday();
+//                monthDayView.backToToday();
 //            }
 //        });
 //    }
@@ -71,13 +157,35 @@ public class DavidActivity extends AppCompatActivity {
         this.initDB();
     }
 
+    final Handler handler = new Handler();
     private void loadData(){
         List<Event> allEvents = dbManager.getAllEvents();
-        EventManager.getInstance().getEventsMap().clear();
+        EventManager.getInstance().getEventsMap().clearPackage();
+        Event testE = null;
         for (Event event: allEvents
              ) {
+            String[] rec = {"RRULE:FREQ=DAILY;INTERVAL=1"};
+            event.setRecurrence(rec);
             EventManager.getInstance().addEvent(event);
+            testE = event;
         }
+        final Event e=testE;
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Event newE = (Event) e.clone();
+                    newE.setEndTime(newE.getStartTime() + 60*3600);
+                    EventManager.getInstance().updateRepeatedEvent(newE);
+
+                } catch (CloneNotSupportedException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }, 5000);
+
+//        EventManager.getInstance().loadRepeatedEvent(nowRepeatedStartAt.getTimeInMillis(),nowRepeatedEndAt.getTimeInMillis());
+
 
     }
 
@@ -111,7 +219,7 @@ public class DavidActivity extends AppCompatActivity {
         int[] status = {0,1};
         long interval = 3600 * 1000;
         int alldayCount = 0;
-        for (int i = 1; i < 1000; i++) {
+        for (int i = 1; i < 3; i++) {
 
             long startTime = calendar.getTimeInMillis();
             long endTime = startTime + interval * (i%30);

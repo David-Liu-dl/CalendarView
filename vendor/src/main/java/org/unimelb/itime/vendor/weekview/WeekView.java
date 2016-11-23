@@ -18,6 +18,7 @@ import org.unimelb.itime.vendor.eventview.DayDraggableEventView;
 import org.unimelb.itime.vendor.helper.DensityUtil;
 import org.unimelb.itime.vendor.helper.MyCalendar;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
+import org.unimelb.itime.vendor.listener.ITimeEventPackageInterface;
 import org.unimelb.itime.vendor.timeslot.TimeSlotView;
 
 import java.sql.Time;
@@ -59,7 +60,7 @@ public class WeekView extends LinearLayout {
     private FlexibleLenBodyViewPager weekViewPager;
     private WeekViewPagerAdapter adapter;
 
-    private Map<Long, List<ITimeEventInterface>> dayEventMap;
+    private ITimeEventPackageInterface eventPackage;
 
     private int bodyPagerCurrentState = 0;
 
@@ -133,10 +134,10 @@ public class WeekView extends LinearLayout {
     }
     /*--------------------*/
 
-    public void setDayEventMap(Map<Long, List<ITimeEventInterface>> dayEventMap){
-        this.dayEventMap = dayEventMap;
+    public void setDayEventMap(ITimeEventPackageInterface eventPackage){
+        this.eventPackage = eventPackage;
         if (adapter != null){
-            adapter.setDayEventMap(this.dayEventMap);
+            adapter.setDayEventMap(this.eventPackage);
         }else {
             Log.i(TAG, "adapter: null" );
         }
@@ -149,8 +150,8 @@ public class WeekView extends LinearLayout {
         upperBoundsOffset = 500;
         bodyCurrentPosition = upperBoundsOffset;
         adapter = new WeekViewPagerAdapter(upperBoundsOffset,weekViewList);
-        if (this.dayEventMap != null){
-            adapter.setDayEventMap(this.dayEventMap);
+        if (this.eventPackage != null){
+            adapter.setDayEventMap(this.eventPackage);
         }
         adapter.setSlotsInfo(this.slotsInfo);
         weekViewPager.setAdapter(adapter);

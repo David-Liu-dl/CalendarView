@@ -36,5 +36,8 @@ public interface ITimeEventInterface<T> extends Comparable<T> {
 
     List<? extends ITimeInviteeInterface> getDisplayInvitee();
 
+    //for the repeated event
+    boolean isInclude(long dateM);
 
+    ITimeEventInterface deepCopy(ITimeEventInterface orgEvent);
 }

@@ -28,6 +28,7 @@ import org.unimelb.itime.vendor.helper.CalendarEventOverlapHelper;
 import org.unimelb.itime.vendor.helper.DensityUtil;
 import org.unimelb.itime.vendor.helper.MyCalendar;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
+import org.unimelb.itime.vendor.listener.ITimeEventPackageInterface;
 import org.unimelb.itime.vendor.timeslot.TimeSlotView;
 import org.unimelb.itime.vendor.weekview.WeekView;
 
@@ -606,10 +607,12 @@ public class FlexibleLenViewBody extends RelativeLayout {
     /**
      * set publc for other
      *
-     * @param dayEventMap
+     * @param eventPackage
      */
-    public void setEventList(Map<Long, List<ITimeEventInterface>> dayEventMap) {
+    public void setEventList(ITimeEventPackageInterface eventPackage) {
         this.clearAllEvents();
+        Map<Long, List<ITimeEventInterface>> dayEventMap = eventPackage.getRegularEventDayMap();
+        Map<Long, List<ITimeEventInterface>> repeatedDayEventMap = eventPackage.getRepeatedEventDayMap();
 
         MyCalendar tempCal = new MyCalendar(this.myCalendar);
         for (int i = 0; i < displayLen; i++) {
@@ -622,6 +625,31 @@ public class FlexibleLenViewBody extends RelativeLayout {
             }else {
 //                Log.i(TAG, "dayEventMap null: " + tempCal.getDay());
             }
+
+            if (repeatedDayEventMap != null && repeatedDayEventMap.containsKey(startTime)){
+                List<ITimeEventInterface> currentDayEvents = repeatedDayEventMap.get(startTime);
+                for (ITimeEventInterface event : currentDayEvents) {
+                    this.addEvent(event);
+                }
+            }
+
+//            for (ITimeEventInterface event: repeatedList
+//                 ) {
+//                if (event.isInclude(startTime)){
+//                    ITimeEventInterface dup_event = event.deepCopy(event);
+//                    long duration = dup_event.getEndTime() - dup_event.getStartTime();
+//                    Calendar cal = Calendar.getInstance();
+//                    cal.setTimeInMillis(dup_event.getStartTime());
+//                    MyCalendar myCal = new MyCalendar(tempCal);
+//                    myCal.setHour(cal.get(Calendar.HOUR));
+//                    myCal.setMinute(cal.get(Calendar.MINUTE));
+//                    dup_event.setStartTime(myCal.getCalendar().getTimeInMillis());
+//                    dup_event.setEndTime(myCal.getCalendar().getTimeInMillis() + duration);
+//
+//                    this.addEvent(dup_event);
+//                }
+//            }
+
             tempCal.setOffsetByDate(1);
         }
 

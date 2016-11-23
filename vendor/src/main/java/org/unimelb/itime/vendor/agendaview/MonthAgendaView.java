@@ -20,6 +20,7 @@ import org.unimelb.itime.vendor.dayview.DayViewHeader;
 import org.unimelb.itime.vendor.dayview.DayViewHeaderRecyclerDivider;
 import org.unimelb.itime.vendor.helper.MyCalendar;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
+import org.unimelb.itime.vendor.listener.ITimeEventPackageInterface;
 
 import java.util.Calendar;
 import java.util.List;
@@ -62,7 +63,7 @@ public class MonthAgendaView extends RelativeLayout{
     private MyCalendar monthAgendaViewCalendar;
     private OnHeaderListener onHeaderListener;
 
-    private Map<Long, List<ITimeEventInterface>> dayEventMap;
+    private ITimeEventPackageInterface eventPackage;
 
     public MonthAgendaView(Context context) {
         super(context);
@@ -108,8 +109,8 @@ public class MonthAgendaView extends RelativeLayout{
         headerRecyclerAdapter.setOnCheckIfHasEvent(new DayViewHeader.OnCheckIfHasEvent() {
             @Override
             public boolean todayHasEvent(long startOfDay) {
-                if (dayEventMap != null){
-                    return dayEventMap.containsKey(startOfDay) && (dayEventMap.get(startOfDay).size() != 0);
+                if (eventPackage != null){
+                    return eventPackage.getRegularEventDayMap().containsKey(startOfDay) && (eventPackage.getRegularEventDayMap().get(startOfDay).size() != 0);
                 }
                 return false;
             }
@@ -199,9 +200,9 @@ public class MonthAgendaView extends RelativeLayout{
         this.onHeaderListener = onHeaderListener;
     }
 
-    public void setDayEventMap(Map<Long, List<ITimeEventInterface>> dayEventMap){
-        this.dayEventMap = dayEventMap;
-        this.bodyRecyclerAdapter.setDayEventMap(dayEventMap);
+    public void setDayEventMap(ITimeEventPackageInterface eventPackage){
+        this.eventPackage = eventPackage;
+        this.bodyRecyclerAdapter.setDayEventMap(eventPackage);
         this.headerRecyclerAdapter.notifyDataSetChanged();
     }
 

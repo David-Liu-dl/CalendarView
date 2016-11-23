@@ -22,7 +22,8 @@
     <org.unimelb.itime.vendor.dayview.MonthDayView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/monthDayView">
+        android:id="@+id/monthDayView"
+        >
     </org.unimelb.itime.vendor.dayview.MonthDayView>
 
     <!--<FrameLayout-->

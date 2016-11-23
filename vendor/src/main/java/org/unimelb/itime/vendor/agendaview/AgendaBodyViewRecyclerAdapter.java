@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import org.unimelb.itime.vendor.R;
 import org.unimelb.itime.vendor.helper.MyCalendar;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
+import org.unimelb.itime.vendor.listener.ITimeEventPackageInterface;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -28,9 +29,7 @@ public class AgendaBodyViewRecyclerAdapter extends RecyclerView.Adapter<AgendaBo
     public int todayOfWeek;
     public int indexInRow = 0;
 
-
-
-    private Map<Long, List<ITimeEventInterface>> dayEventMap;
+    private ITimeEventPackageInterface eventPackage;
 
     public AgendaBodyViewRecyclerAdapter(Context context, int upperBoundsOffset) {
         inflater = LayoutInflater.from(context);
@@ -49,8 +48,8 @@ public class AgendaBodyViewRecyclerAdapter extends RecyclerView.Adapter<AgendaBo
         this.onEventClickListener = onEventClickListener;
     }
 
-    public void setDayEventMap(Map<Long, List<ITimeEventInterface>> dayEventMap) {
-        this.dayEventMap = dayEventMap;
+    public void setDayEventMap(ITimeEventPackageInterface eventPackage) {
+        this.eventPackage = eventPackage;
     }
 
     @Override
@@ -69,11 +68,20 @@ public class AgendaBodyViewRecyclerAdapter extends RecyclerView.Adapter<AgendaBo
 
         long startTime = holder.bodyRow.getCalendar().getBeginOfDayMilliseconds();
 
-        if (this.dayEventMap.containsKey(startTime)){
-            holder.bodyRow.setEventList(this.dayEventMap.get(startTime));
+        List<ITimeEventInterface> allEvents = new ArrayList<>();
+        if (this.eventPackage.getRegularEventDayMap().containsKey(startTime)){
+            allEvents.addAll(this.eventPackage.getRegularEventDayMap().get(startTime));
         }else{
             holder.bodyRow.setEventList(new ArrayList<ITimeEventInterface>());
         }
+
+        if (this.eventPackage.getRepeatedEventDayMap().containsKey(startTime)){
+            allEvents.addAll(this.eventPackage.getRepeatedEventDayMap().get(startTime));
+        }else{
+            holder.bodyRow.setEventList(new ArrayList<ITimeEventInterface>());
+        }
+        
+        holder.bodyRow.setEventList(allEvents);
 
         holder.bodyRow.postInvalidate();
     }

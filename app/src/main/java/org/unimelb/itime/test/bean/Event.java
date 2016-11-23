@@ -10,6 +10,7 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.Property;
 import org.greenrobot.greendao.annotation.ToMany;
+import org.unimelb.itime.test.RuleFactory.RuleModel;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 import org.unimelb.itime.vendor.listener.ITimeInviteeInterface;
 
@@ -23,7 +24,7 @@ import java.util.List;
  */
 
 @Entity
-public class Event implements ITimeEventInterface<Event>, Serializable {
+public class Event implements ITimeEventInterface<Event>, Serializable, Cloneable {
     @Id
     private String eventUid;
     // for other calendars
@@ -34,7 +35,6 @@ public class Event implements ITimeEventInterface<Event>, Serializable {
     private String calendarUid;
     private String iCalUID;
     private String hostUserUid; // add by paul
-    private String recurrence;
     private String summary;
     private String url;
     private String location = "";
@@ -45,6 +45,8 @@ public class Event implements ITimeEventInterface<Event>, Serializable {
 
 
     private transient List<PhotoUrl> photoList = null;
+    private transient String[] recurrence = {};
+
     private String photo = "[]";
 
     @ToMany(referencedJoinProperty = "eventUid")
@@ -53,6 +55,28 @@ public class Event implements ITimeEventInterface<Event>, Serializable {
     // later delete
     private transient long repeatEndsTime;
     private transient boolean isHost;
+
+    public RuleModel getRule() {
+        return rule;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        Event event = null;
+        try
+        {
+            event = (Event) super.clone();
+        } catch (CloneNotSupportedException e){
+            e.printStackTrace();
+        }
+        return event;
+    }
+
+    public void setRule(RuleModel rule) {
+        this.rule = rule;
+    }
+
+    private transient RuleModel rule;
 
     @Property
     @NotNull
@@ -79,14 +103,11 @@ public class Event implements ITimeEventInterface<Event>, Serializable {
     public Event() {
     }
 
-
-
-    @Generated(hash = 1130552805)
+    @Generated(hash = 1257694514)
     public Event(String eventUid, String eventId, String recurringEventUid, String recurringEventId,
-                 String calendarUid, String iCalUID, String hostUserUid, String recurrence, String summary,
-                 String url, String location, String locationNote, double locationLatitude,
-                 double locationLongitude, String note, String photo, long startTime, long endTime,
-                 int eventType, int status) {
+            String calendarUid, String iCalUID, String hostUserUid, String summary, String url,
+            String location, String locationNote, double locationLatitude, double locationLongitude,
+            String note, String photo, long startTime, long endTime, int eventType, int status) {
         this.eventUid = eventUid;
         this.eventId = eventId;
         this.recurringEventUid = recurringEventUid;
@@ -94,7 +115,6 @@ public class Event implements ITimeEventInterface<Event>, Serializable {
         this.calendarUid = calendarUid;
         this.iCalUID = iCalUID;
         this.hostUserUid = hostUserUid;
-        this.recurrence = recurrence;
         this.summary = summary;
         this.url = url;
         this.location = location;
@@ -108,8 +128,6 @@ public class Event implements ITimeEventInterface<Event>, Serializable {
         this.eventType = eventType;
         this.status = status;
     }
-
-
 
     @Override
     public void setTitle(String summary) {
@@ -127,6 +145,20 @@ public class Event implements ITimeEventInterface<Event>, Serializable {
             this.invitee = this.getInvitee();
         }
         return this.invitee;
+    }
+
+    @Override
+    public boolean isInclude(long dateM) {
+        return rule.isInclude(dateM);
+    }
+
+    @Override
+    public ITimeEventInterface deepCopy(ITimeEventInterface orgEvent) {
+        Gson gson = new Gson();
+        String eventStr = gson.toJson(orgEvent);
+        Event copyEvent = gson.fromJson(eventStr, Event.class);
+
+        return copyEvent;
     }
 
     public void setEventId(String id){ this.eventUid = id;}
@@ -159,6 +191,10 @@ public class Event implements ITimeEventInterface<Event>, Serializable {
 
     public int getDuration(){
         return (int)((endTime - startTime) /(1000*60));
+    }
+
+    public long getDurationMilliseconds(){
+        return (endTime - startTime);
     }
 
     @Override
@@ -291,12 +327,12 @@ public class Event implements ITimeEventInterface<Event>, Serializable {
     }
 
 
-    public String getRecurrence() {
+    public String[] getRecurrence() {
         return this.recurrence;
     }
 
 
-    public void setRecurrence(String recurrence) {
+    public void setRecurrence(String[] recurrence) {
         this.recurrence = recurrence;
     }
 

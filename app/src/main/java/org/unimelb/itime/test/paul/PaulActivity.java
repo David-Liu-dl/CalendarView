@@ -121,7 +121,7 @@ public class PaulActivity extends AppCompatActivity {
 
     private void loadData(){
         List<Event> allEvents = DBManager.getInstance(getApplicationContext()).getAllEvents();
-        EventManager.getInstance().getEventsMap().clear();
+        EventManager.getInstance().getEventsMap().clearPackage();
         for (Event event: allEvents
                 ) {
             EventManager.getInstance().addEvent(event);

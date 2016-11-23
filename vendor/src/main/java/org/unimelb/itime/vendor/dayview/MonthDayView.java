@@ -18,6 +18,7 @@ import org.unimelb.itime.vendor.R;
 import org.unimelb.itime.vendor.eventview.DayDraggableEventView;
 import org.unimelb.itime.vendor.helper.MyCalendar;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
+import org.unimelb.itime.vendor.listener.ITimeEventPackageInterface;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -58,7 +59,7 @@ public class MonthDayView extends LinearLayout {
     private RecyclerView headerRecyclerView;
     private DayViewHeaderRecyclerAdapter headerRecyclerAdapter;
 
-    private Map<Long, List<ITimeEventInterface>> dayEventMap;
+    private ITimeEventPackageInterface eventPackage;
 
     private int bodyPagerCurrentState = 0;
 
@@ -102,9 +103,9 @@ public class MonthDayView extends LinearLayout {
 
     /*--------------------*/
 
-    public void setDayEventMap(Map<Long, List<ITimeEventInterface>> dayEventMap){
-        this.dayEventMap = dayEventMap;
-        this.bodyPagerAdapter.setDayEventMap(dayEventMap);
+    public void setDayEventMap(ITimeEventPackageInterface eventPackage){
+        this.eventPackage = eventPackage;
+        this.bodyPagerAdapter.setEventPackage(eventPackage);
         this.reloadEvents();
     }
 
@@ -113,7 +114,9 @@ public class MonthDayView extends LinearLayout {
         headerRecyclerAdapter.setOnCheckIfHasEvent(new DayViewHeader.OnCheckIfHasEvent() {
             @Override
             public boolean todayHasEvent(long startOfDay) {
-                return dayEventMap.containsKey(startOfDay) && (dayEventMap.get(startOfDay).size() != 0);
+                boolean hasRegular = eventPackage.getRegularEventDayMap().containsKey(startOfDay) && (eventPackage.getRegularEventDayMap().get(startOfDay).size() != 0);
+                boolean hasRepeated = eventPackage.getRepeatedEventDayMap().containsKey(startOfDay) && (eventPackage.getRepeatedEventDayMap().get(startOfDay).size() != 0);
+                return hasRegular || hasRepeated;
             }
         });
         headerRecyclerView.setHasFixedSize(true);

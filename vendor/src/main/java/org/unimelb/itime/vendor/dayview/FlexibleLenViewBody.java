@@ -170,7 +170,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         Log.i(TAG, "onLayout: --start: " + System.currentTimeMillis());
-        super.onLayout(changed, l, t, r, b);
+//        super.onLayout(changed, l, t, r, b);
         Log.i(TAG, "onLayout: --end: " + System.currentTimeMillis());
 
     }

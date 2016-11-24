@@ -1,11 +1,16 @@
 package org.unimelb.itime.vendor.timeslot;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import org.unimelb.itime.vendor.R;
+import org.unimelb.itime.vendor.helper.DensityUtil;
 import org.unimelb.itime.vendor.helper.MyCalendar;
 
 import java.util.Calendar;
@@ -13,7 +18,8 @@ import java.util.Calendar;
 /**
  * Created by Paul on 26/08/2016.
  */
-public class TimeSlotView extends RelativeLayout {
+public class TimeSlotView extends ViewGroup {
+    private static final String TAG = "MyAPP";
     private MyCalendar calendar = new MyCalendar(Calendar.getInstance());
 
     public static int TYPE_NORMAL = 0;
@@ -46,9 +52,7 @@ public class TimeSlotView extends RelativeLayout {
 
     public void initIcon(){
         icon = new ImageView(getContext());
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.addRule(ALIGN_PARENT_TOP);
-        params.addRule(ALIGN_PARENT_RIGHT);
+        LayoutParams params = new LayoutParams(50, 50);
 
         if (!isSelect){
             icon.setImageResource(R.drawable.icon_event_timeslot_unselected);
@@ -134,5 +138,40 @@ public class TimeSlotView extends RelativeLayout {
 
     public long getEndTimeM(){
         return this.getStartTimeM() + getDuration();
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        int cCount = getChildCount();
+        int width = r - l;
+        int margin = DensityUtil.dip2px(getContext(),5);
+        for (int i = 0; i < cCount; i++) {
+            int cW = getChildAt(i).getLayoutParams().width;
+            int cH = getChildAt(i).getLayoutParams().height;
+            getChildAt(i).layout(width - cW - margin,margin, width, cH+margin);
+        }
+    }
+
+    public static class LayoutParams extends ViewGroup.LayoutParams {
+        public int left = 0;
+        public int top = 0;
+
+        public LayoutParams(Context arg0, AttributeSet arg1) {
+            super(arg0, arg1);
+        }
+
+        public LayoutParams(int arg0, int arg1) {
+            super(arg0, arg1);
+        }
+
+        public LayoutParams(android.view.ViewGroup.LayoutParams arg0) {
+            super(arg0);
+        }
+
     }
 }

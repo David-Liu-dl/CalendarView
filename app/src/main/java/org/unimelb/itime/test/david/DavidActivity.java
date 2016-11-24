@@ -73,7 +73,7 @@ public class DavidActivity extends AppCompatActivity {
     private void eventThing(){
         dbManager = DBManager.getInstance(this);
         eventManager = EventManager.getInstance();
-//        initData();
+        initData();
         loadData();
 //        doInviteesThings();
 

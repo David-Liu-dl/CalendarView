@@ -103,6 +103,8 @@ public class FlexibleLenViewBody extends RelativeLayout {
     private OnBodyTouchListener onBodyTouchListener;
     private OnBodyListener onBodyListener;
 
+    private float heightPerMillisd = 0;
+
     public FlexibleLenViewBody(Context context, int displayLen) {
         super(context);
         this.context = context;
@@ -178,6 +180,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
     private void initLayoutParams(){
         this.overlapGapHeight = DensityUtil.dip2px(context, 1);
         this.lineHeight = DensityUtil.dip2px(context, lineHeight);
+        this.heightPerMillisd = (float)lineHeight/(3600*1000);
         this.leftSideWidth = DensityUtil.dip2px(context,leftSideWidth);
     }
 
@@ -317,14 +320,6 @@ public class FlexibleLenViewBody extends RelativeLayout {
 
     }
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        Log.i(TAG, "onDraw: --start: " + System.currentTimeMillis());
-        super.onDraw(canvas);
-        Log.i(TAG, "onDraw: --end: " + System.currentTimeMillis());
-
-    }
-
     private ImageView getDivider() {
         ImageView dividerImgV;
         //divider
@@ -360,7 +355,6 @@ public class FlexibleLenViewBody extends RelativeLayout {
         initMsgWindow();
         initTimeText(getHours());
         initDividerLine(getHours());
-//        addNowTimeLine();
     }
 
     private void initTimeSlot() {
@@ -573,15 +567,8 @@ public class FlexibleLenViewBody extends RelativeLayout {
         int offset = getEventContainerIndex(event.getStartTime());
         if (offset < displayLen){
             DayInnerBodyEventLayout eventLayout = this.eventLayouts.get(offset);
-
-            String hourWithMinutes = sdf.format(new Date(event.getStartTime()));
-            String[] components = hourWithMinutes.split(":");
-            float trickTime = Integer.valueOf(components[0]) + (float) Integer.valueOf(components[1]) / 100;
-//            int topMargin = nearestTimeSlotValue(trickTime);
             DayDraggableEventView newDragEventView = this.createDayDraggableEventView(event, false);
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) newDragEventView.getLayoutParams();
-//            params.topMargin = topMargin;
-//            newDragEventView.setY(topMargin);
             Calendar cal = Calendar.getInstance();
             cal.setTimeInMillis(event.getStartTime());
 
@@ -590,6 +577,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
             this.regularEventViewMap.put(event, newDragEventView.getId());
 
             eventLayout.addView(newDragEventView, params);
+//            eventLayout.addView(newDragEventView);
             eventLayout.getEvents().add(event);
             eventLayout.getDgEvents().add(newDragEventView);
         }else {
@@ -680,7 +668,6 @@ public class FlexibleLenViewBody extends RelativeLayout {
                 eventView.setPosParam(new DayDraggableEventView.PosParam(startY, startX, widthFactor, topMargin));
                 Calendar cal = Calendar.getInstance();
                 cal.setTimeInMillis(eventView.getEvent().getStartTime());
-//                Log.i(TAG, "calculateEventLayout: " + cal.getTime() + " widthFactor: " + widthFactor );
             }
             previousGroupExtraY += overlapGapHeight * overlapGroup.size();
         }
@@ -707,7 +694,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
             event_view.setLayoutParams(params);
         } else {
             long duration = event.getEndTime() - event.getStartTime();
-            int eventHeight = (int) (((float) duration / (3600 * 1000)) * lineHeight);
+            int eventHeight =(int) (duration * heightPerMillisd);
 
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(eventHeight, eventHeight);
             if (!isTimeSlotEnable){

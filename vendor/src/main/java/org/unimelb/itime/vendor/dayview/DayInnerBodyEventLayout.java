@@ -3,6 +3,8 @@ package org.unimelb.itime.vendor.dayview;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import org.unimelb.itime.vendor.eventview.DayDraggableEventView;
@@ -14,7 +16,7 @@ import java.util.Calendar;
 /**
  * Created by yuhaoliu on 21/09/16.
  */
-public class DayInnerBodyEventLayout extends RelativeLayout {
+public class DayInnerBodyEventLayout extends ViewGroup {
     private static final String TAG = "MyAPP";
     ArrayList<ITimeEventInterface> events = new ArrayList<>();
     ArrayList<DayDraggableEventView> dgEvents = new ArrayList<>();
@@ -41,6 +43,29 @@ public class DayInnerBodyEventLayout extends RelativeLayout {
 
     public DayInnerBodyEventLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
+    }
+
+    public static class LayoutParams extends ViewGroup.LayoutParams {
+        public int left = 0;
+        public int top = 0;
+
+        public LayoutParams(Context arg0, AttributeSet arg1) {
+            super(arg0, arg1);
+        }
+
+        public LayoutParams(int arg0, int arg1) {
+            super(arg0, arg1);
+        }
+
+        public LayoutParams(android.view.ViewGroup.LayoutParams arg0) {
+            super(arg0);
+        }
+
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+
     }
 
     public void resetView(){

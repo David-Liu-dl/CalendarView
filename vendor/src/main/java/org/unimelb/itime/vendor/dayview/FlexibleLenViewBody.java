@@ -105,6 +105,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
 
     public FlexibleLenViewBody(Context context, int displayLen) {
         super(context);
+        Log.i(TAG, "FlexibleLenViewBody: " + System.currentTimeMillis());
         this.context = context;
         this.displayLen = displayLen;
         initLayoutParams();
@@ -132,7 +133,8 @@ public class FlexibleLenViewBody extends RelativeLayout {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-//        Log.i(TAG, "onMeasure: -start" + System.currentTimeMillis());
+        Log.i(TAG,this.myCalendar.getCalendar().getTime() +  "--onMeasure: --start: " + System.currentTimeMillis());
+
         layoutWidthPerDay = MeasureSpec.getSize(eventLayout.getMeasuredWidth()/displayLen);
         layoutHeightPerDay = MeasureSpec.getSize(eventLayout.getMeasuredHeight());
 
@@ -164,14 +166,15 @@ public class FlexibleLenViewBody extends RelativeLayout {
             }
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        Log.i(TAG,this.myCalendar.getCalendar().getTime() +  "--onMeasure: --end: " + System.currentTimeMillis());
 
     }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        Log.i(TAG, "onLayout: --start: " + System.currentTimeMillis());
-//        super.onLayout(changed, l, t, r, b);
-        Log.i(TAG, "onLayout: --end: " + System.currentTimeMillis());
+        Log.i(TAG,this.myCalendar.getCalendar().getTime() +  "--onLayout: --start: " + System.currentTimeMillis());
+        super.onLayout(changed, l, t, r, b);
+        Log.i(TAG,this.myCalendar.getCalendar().getTime() +  "--onLayout: --end: " + System.currentTimeMillis());
 
     }
 
@@ -664,7 +667,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
      * it needs to be called when setting event or event position changed
      */
     private void calculateEventLayout(DayInnerBodyEventLayout eventLayout) {
-        Log.i(TAG, "calculateEventLayout: start " + System.currentTimeMillis());
+        Log.i(TAG, this.myCalendar.getCalendar().getTime() +  "--calculateEventLayout: start " + System.currentTimeMillis());
         List<ArrayList<Pair<Pair<Integer, Integer>, ITimeEventInterface>>> overlapGroups
                 = xHelper.computeOverlapXForEvents(eventLayout.getEvents());
         int previousGroupExtraY = 0;
@@ -684,7 +687,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
             }
             previousGroupExtraY += overlapGapHeight * overlapGroup.size();
         }
-        Log.i(TAG, "calculateEventLayout: end " + System.currentTimeMillis());
+        Log.i(TAG,this.myCalendar.getCalendar().getTime() +  "--calculateEventLayout: end " + System.currentTimeMillis());
     }
 
     private DayDraggableEventView createDayDraggableEventView(ITimeEventInterface event, boolean isAllDayEvent) {

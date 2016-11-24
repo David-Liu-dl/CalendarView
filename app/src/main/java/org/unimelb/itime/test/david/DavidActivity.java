@@ -164,25 +164,25 @@ public class DavidActivity extends AppCompatActivity {
         Event testE = null;
         for (Event event: allEvents
              ) {
-            String[] rec = {"RRULE:FREQ=DAILY;INTERVAL=1"};
-            event.setRecurrence(rec);
+//            String[] rec = {"RRULE:FREQ=DAILY;INTERVAL=1"};
+//            event.setRecurrence(rec);
             EventManager.getInstance().addEvent(event);
-            testE = event;
+//            testE = event;
         }
-        final Event e=testE;
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Event newE = (Event) e.clone();
-                    newE.setEndTime(newE.getStartTime() + 60*3600);
-                    EventManager.getInstance().updateRepeatedEvent(newE);
-
-                } catch (CloneNotSupportedException e1) {
-                    e1.printStackTrace();
-                }
-            }
-        }, 5000);
+//        final Event e=testE;
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    Event newE = (Event) e.clone();
+//                    newE.setEndTime(newE.getStartTime() + 60*3600);
+//                    EventManager.getInstance().updateRepeatedEvent(newE);
+//
+//                } catch (CloneNotSupportedException e1) {
+//                    e1.printStackTrace();
+//                }
+//            }
+//        }, 5000);
 
 //        EventManager.getInstance().loadRepeatedEvent(nowRepeatedStartAt.getTimeInMillis(),nowRepeatedEndAt.getTimeInMillis());
 
@@ -219,10 +219,10 @@ public class DavidActivity extends AppCompatActivity {
         int[] status = {0,1};
         long interval = 3600 * 1000;
         int alldayCount = 0;
-        for (int i = 1; i < 3; i++) {
+        for (int i = 1; i < 1000; i++) {
 
             long startTime = calendar.getTimeInMillis();
-            long endTime = startTime + interval * (i%30);
+            long endTime = startTime + interval;
             long duration = (endTime - startTime);
 
             Event event = new Event();
@@ -250,31 +250,9 @@ public class DavidActivity extends AppCompatActivity {
             dbManager.insertInviteeList(inviteeList);
             event.setInvitee(inviteeList);
 
-            long realEnd = endTime;
-            long temp = duration;
-            while (temp > 3 * 60 * 60 * 1000 ){
-                temp = temp/2;
-                realEnd -= temp;
-            }
 
-            event.setEndTime(realEnd);
+            event.setEndTime(endTime);
             events.add(event);
-
-            if (duration >= 24 * 3600 * 1000 && alldayCount < 3){
-                String title = "All day";
-                for (int j = 0; j < 4; j++) {
-                    Event event_clone = new Event();
-                    event_clone.setTitle(title);
-                    event_clone.setDisplayEventType(0);
-                    event_clone.setDisplayStatus(0);
-                    event_clone.setStartTime(startTime);
-                    event_clone.setEndTime(endTime);
-                    event_clone.setLocation("here");
-//                    event_clone.setInviteesUrls("");
-                    title = title + " all day";
-                }
-                alldayCount = 0;
-            }
 
             calendar.setTimeInMillis(endTime);
 

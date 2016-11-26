@@ -86,7 +86,7 @@ public class DayInnerBodyEventLayout extends ViewGroup {
             int leftMargin = eventWidth * pos.startX;
             params.width = eventWidth;
             eventView.measure(0,0);
-            eventView.setX(leftMargin + 5 * pos.startX);
+            eventView.setX(leftMargin + 1 * pos.startX);
             eventView.setY(pos.topMargin);
         }
     }

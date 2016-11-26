@@ -10,6 +10,7 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.Property;
 import org.greenrobot.greendao.annotation.ToMany;
+import org.unimelb.itime.test.RuleFactory.RuleInterface;
 import org.unimelb.itime.test.RuleFactory.RuleModel;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 import org.unimelb.itime.vendor.listener.ITimeInviteeInterface;
@@ -24,7 +25,7 @@ import java.util.List;
  */
 
 @Entity
-public class Event implements ITimeEventInterface<Event>, Serializable, Cloneable {
+public class Event implements ITimeEventInterface<Event>, Serializable, Cloneable,RuleInterface {
     @Id
     private String eventUid;
     // for other calendars

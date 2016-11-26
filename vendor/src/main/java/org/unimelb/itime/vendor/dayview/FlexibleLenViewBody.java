@@ -616,7 +616,6 @@ public class FlexibleLenViewBody extends RelativeLayout {
      * it needs to be called when setting event or event position changed
      */
     private void calculateEventLayout(DayInnerBodyEventLayout eventLayout) {
-//        Log.i(TAG, "calculateEventLayout: start " + System.currentTimeMillis());
         List<ArrayList<Pair<Pair<Integer, Integer>, ITimeEventInterface>>> overlapGroups
                 = xHelper.computeOverlapXForEvents(eventLayout.getEvents());
         int previousGroupExtraY = 0;
@@ -627,13 +626,15 @@ public class FlexibleLenViewBody extends RelativeLayout {
                 int startY = getEventY(overlapGroup.get(i).second);
                 int widthFactor = overlapGroup.get(i).first.first;
                 int startX = overlapGroup.get(i).first.second;
-                int topMargin = startY + overlapGapHeight * i + previousGroupExtraY;
+//                int topMargin = startY + overlapGapHeight * i + previousGroupExtraY;
+//                int topMargin = startY + previousGroupExtraY;
+                int topMargin = startY;
                 DayDraggableEventView eventView = (DayDraggableEventView) eventLayout.findViewById(regularEventViewMap.get(overlapGroup.get(i).second));
                 eventView.setPosParam(new DayDraggableEventView.PosParam(startY, startX, widthFactor, topMargin));
                 Calendar cal = Calendar.getInstance();
                 cal.setTimeInMillis(eventView.getEvent().getStartTime());
             }
-            previousGroupExtraY += overlapGapHeight * overlapGroup.size();
+//            previousGroupExtraY += overlapGapHeight * overlapGroup.size();
         }
 //        Log.i(TAG, "calculateEventLayout: end " + System.currentTimeMillis());
     }
@@ -1110,9 +1111,9 @@ public class FlexibleLenViewBody extends RelativeLayout {
             view.startDrag(data, shadowBuilder, view, 0);
             view.setVisibility(View.VISIBLE);
             if (tempDragView != null) {
-//                view.setVisibility(View.INVISIBLE);
+                view.setVisibility(View.INVISIBLE);
             } else {
-//                view.setVisibility(View.VISIBLE);
+                view.setVisibility(View.VISIBLE);
             }
             view.getBackground().setAlpha(255);
             return false;
@@ -1240,8 +1241,6 @@ public class FlexibleLenViewBody extends RelativeLayout {
             return true;
         }
     }
-
-
 
     public void enableTimeSlot(){
         this.isTimeSlotEnable = true;

@@ -80,7 +80,7 @@ public class EventManager {
     }
 
     private void addRepeatedEvent(Event event, long rangeStart, long rangeEnd){
-        RuleModel rule = RuleFactory.getInstance().getRuleModel(event.getStartTime(),event.getEndTime(),event.getRecurrence());
+        RuleModel rule = RuleFactory.getInstance().getRuleModel(event);
         event.setRule(rule);
 
         ArrayList<Long> repeatedEventsTimes = rule.getOccurenceDates(rangeStart,rangeEnd);

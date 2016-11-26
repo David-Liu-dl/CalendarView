@@ -2,6 +2,8 @@ package org.unimelb.itime.test.RuleFactory;
 
 import android.util.Log;
 
+import org.antlr.v4.tool.Rule;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -20,8 +22,6 @@ public class RuleModel {
     private SimpleDateFormat format = new SimpleDateFormat("yyyymmdd");
     private long dayLongM = 86400000;
 
-    private long startTime = 0;
-    private long endTime = 0;
     //Recurrence Rule
     private FrequencyEnum frequencyEnum = null;
     private Date until;
@@ -46,6 +46,13 @@ public class RuleModel {
     public List<Integer> getBy_BYMONTH() {
         return by_BYMONTH;
     }
+
+    private RuleInterface ruleInterface;
+
+    public RuleModel(RuleInterface ruleInterface){
+        this.ruleInterface = ruleInterface;
+    }
+
 
     public void setBy_BYMONTH(List<Integer> by_BYMONTH) {
         this.by_BYMONTH = by_BYMONTH;
@@ -131,22 +138,6 @@ public class RuleModel {
         this.WKST = WKST;
     }
 
-    public long getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(long startTime) {
-        this.startTime = startTime;
-    }
-
-    public long getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(long endTime) {
-        this.endTime = endTime;
-    }
-
     public FrequencyEnum getFrequencyEnum() {
         return frequencyEnum;
     }
@@ -207,6 +198,7 @@ public class RuleModel {
     public boolean isInclude(long dateM){
         Date compareDate = new Date(dateM);
 
+        long startTime = this.ruleInterface.getStartTime();
         //cmpDate less then start of creating
         if (dateM < startTime){
             return false;
@@ -295,7 +287,7 @@ public class RuleModel {
     //ensure compareDateM's hour minutes seconds equals 0
     private int getDayDiffer(long compareDateM){
         Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(startTime);
+        cal.setTimeInMillis(this.ruleInterface.getStartTime());
         setCalToDayBegin(cal);
         long differM = compareDateM - cal.getTimeInMillis();
 
@@ -348,7 +340,7 @@ public class RuleModel {
         cal.setTimeInMillis(dateM);
 
         Calendar orCal = Calendar.getInstance();
-        orCal.setTimeInMillis(startTime);
+        orCal.setTimeInMillis(this.ruleInterface.getStartTime());
 
         int orgDayOfMonth = orCal.get(Calendar.DAY_OF_MONTH);
         int compareDayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
@@ -370,7 +362,7 @@ public class RuleModel {
         cal.setTimeInMillis(dateM);
 
         Calendar orCal = Calendar.getInstance();
-        orCal.setTimeInMillis(startTime);
+        orCal.setTimeInMillis(this.ruleInterface.getStartTime());
 
         int orMonthOfYear =  orCal.get(Calendar.MONTH);
         int calMonthOfYear =  cal.get(Calendar.MONTH);
@@ -407,11 +399,16 @@ public class RuleModel {
     //range: [startRange, endRange)
     public ArrayList<Long> getOccurenceDates(long startRange, long endRange){
         ArrayList<Long> availableDates = new ArrayList<>();
+        long startTime = this.ruleInterface.getStartTime();
+
         if (startTime > endRange){
             return  availableDates;
         }else if (until != null && (startRange > until.getTime())){
             return  availableDates;
         }else{
+            if (startRange < startTime){
+                startRange = startTime;
+            }
             int dayDiffer = getDayDiffer(startRange);
             Calendar cal = Calendar.getInstance();
             cal.setTimeInMillis(startRange);

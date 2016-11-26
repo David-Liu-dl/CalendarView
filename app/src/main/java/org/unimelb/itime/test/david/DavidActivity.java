@@ -67,7 +67,8 @@ public class DavidActivity extends AppCompatActivity {
 //            Log.i(TAG, "Date: " + printCal.getTime());
 //        }
 
-
+//        Cloner cloner=new Cloner();
+//        Object cloned = cloner.deepClone(someObject);
         eventThing();
     }
     private void eventThing(){
@@ -133,6 +134,7 @@ public class DavidActivity extends AppCompatActivity {
                 monthDayView.backToToday();
             }
         });
+
     }
 
 //    private void doMonthAgendaViewThings(){
@@ -164,8 +166,8 @@ public class DavidActivity extends AppCompatActivity {
         Event testE = null;
         for (Event event: allEvents
              ) {
-//            String[] rec = {"RRULE:FREQ=DAILY;INTERVAL=1"};
-//            event.setRecurrence(rec);
+            String[] rec = {"RRULE:FREQ=WEEKLY;INTERVAL=1"};
+            event.setRecurrence(rec);
             EventManager.getInstance().addEvent(event);
             testE = event;
         }
@@ -214,11 +216,11 @@ public class DavidActivity extends AppCompatActivity {
         Calendar calendar = Calendar.getInstance();
         List<Event> events = new ArrayList<>();
         List<Contact> contacts = initContact();
-
+        calendar.add(Calendar.DATE, -699);
         int[] type = {0,1,2};
         int[] status = {0,1};
         long interval = 3600 * 1000;
-        for (int i = 1; i < 1000; i++) {
+        for (int i = 1; i < 2; i++) {
 
             long startTime = calendar.getTimeInMillis();
             long endTime = startTime + interval;

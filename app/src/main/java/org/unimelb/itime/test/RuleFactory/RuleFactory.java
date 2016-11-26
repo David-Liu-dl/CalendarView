@@ -30,13 +30,11 @@ public class RuleFactory {
     private RuleFactory() {
     }
 
-    public RuleModel getRuleModel(long startTime, long endTime, String[] recurrence){
-        RuleModel rule = new RuleModel();
-        rule.setStartTime(startTime);
-        rule.setEndTime(endTime);
-
-        for (int i = 0; i < recurrence.length; i++) {
-            String value = recurrence[i];
+    public RuleModel getRuleModel(RuleInterface ruleInterface){
+        RuleModel rule = new RuleModel(ruleInterface);
+        
+        for (int i = 0; i < ruleInterface.getRecurrence().length; i++) {
+            String value = ruleInterface.getRecurrence()[i];
             valueAnalyzer(value, rule);
         }
         return rule;

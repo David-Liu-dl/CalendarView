@@ -62,7 +62,7 @@ public class MonthAgendaView extends RelativeLayout{
 
     private MyCalendar monthAgendaViewCalendar;
     private OnHeaderListener onHeaderListener;
-
+    private AgendaHeaderViewRecyclerAdapter.OnHeaderListener adapterHeaderListener;
     private ITimeEventPackageInterface eventPackage;
 
     public MonthAgendaView(Context context) {
@@ -100,6 +100,14 @@ public class MonthAgendaView extends RelativeLayout{
 
     private void setUpHeader(){
         headerRecyclerAdapter = new AgendaHeaderViewRecyclerAdapter(context, upperBoundsOffset);
+        headerRecyclerAdapter.setOnHeaderListener(new AgendaHeaderViewRecyclerAdapter.OnHeaderListener() {
+            @Override
+            public void onClick(MyCalendar myCalendar) {
+                if (onHeaderListener != null){
+                    onHeaderListener.onMonthChanged(myCalendar);
+                }
+            }
+        });
         headerRecyclerAdapter.setOnSynBodyListener(new AgendaHeaderViewRecyclerAdapter.OnSynBodyListener() {
             @Override
             public void synBody(int scrollTo) {
@@ -221,13 +229,6 @@ public class MonthAgendaView extends RelativeLayout{
         DayViewHeader headerView =
             (DayViewHeader) headerLinearLayoutManager.findViewByPosition(headerRecyclerAdapter.rowPst);
         if (headerView != null){
-            Calendar header_current_cal = headerView.getCalendar().getCalendar();
-//            int date_offset = body_fst_cal.get(Calendar.DAY_OF_YEAR)
-//                    - (header_current_cal.get(Calendar.DAY_OF_YEAR) + headerRecyclerAdapter.indexInRow);
-//            if(body_fst_cal.get(Calendar.YEAR) != header_current_cal.get(Calendar.YEAR)){
-////                date_offset = date_offset > 0 ? -1 : 1;
-//                date_offset = date_offset > 0 ? -1 : 1;
-//            }
             MyCalendar tempH = new MyCalendar(headerView.getCalendar());
             MyCalendar tempB = new MyCalendar(body_fst_cal);
             tempH.setOffsetByDate(headerRecyclerAdapter.indexInRow);
@@ -347,5 +348,4 @@ public class MonthAgendaView extends RelativeLayout{
             }
         }
     }
-
 }

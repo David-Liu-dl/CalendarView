@@ -101,10 +101,7 @@ public class DayInnerBodyEventLayout extends ViewGroup {
             }
             
             if (child instanceof TimeSlotView){
-                int a = child.getLayoutParams().width;
-                int d = child.getLayoutParams().height;
                 child.layout(0, 0, child.getLayoutParams().width, child.getLayoutParams().height);
-                Log.i(TAG, "onLayout: ");
             }
         }
     }

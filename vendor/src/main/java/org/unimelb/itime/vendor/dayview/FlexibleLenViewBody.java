@@ -107,6 +107,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
 
     public FlexibleLenViewBody(Context context, int displayLen) {
         super(context);
+        Log.i(TAG, "FlexibleLenViewBody: " + System.currentTimeMillis());
         this.context = context;
         this.displayLen = displayLen;
         initLayoutParams();
@@ -636,7 +637,6 @@ public class FlexibleLenViewBody extends RelativeLayout {
             }
 //            previousGroupExtraY += overlapGapHeight * overlapGroup.size();
         }
-//        Log.i(TAG, "calculateEventLayout: end " + System.currentTimeMillis());
     }
 
     private DayDraggableEventView createDayDraggableEventView(ITimeEventInterface event, boolean isAllDayEvent) {
@@ -694,16 +694,19 @@ public class FlexibleLenViewBody extends RelativeLayout {
     private class EventLongClickListener implements View.OnLongClickListener {
         @Override
         public boolean onLongClick(View view) {
-            ClipData data = ClipData.newPlainText("", "");
-            View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(
-                    view);
-            view.startDrag(data, shadowBuilder, view, 0);
-            if (tempDragView != null) {
-                view.setVisibility(View.INVISIBLE);
-            } else {
-                view.setVisibility(View.VISIBLE);
+
+            if (tempDragView != null || onBodyListener!=null && onBodyListener.isDraggable((DayDraggableEventView) view)){
+                ClipData data = ClipData.newPlainText("", "");
+                View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(
+                        view);
+                view.startDrag(data, shadowBuilder, view, 0);
+                if (tempDragView != null) {
+                    view.setVisibility(View.INVISIBLE);
+                } else {
+                    view.setVisibility(View.VISIBLE);
+                }
+                view.getBackground().setAlpha(255);
             }
-            view.getBackground().setAlpha(255);
             return false;
         }
     }
@@ -962,6 +965,8 @@ public class FlexibleLenViewBody extends RelativeLayout {
     }
 
     public interface OnBodyListener {
+        boolean isDraggable(DayDraggableEventView eventView);
+
         void onEventCreate(DayDraggableEventView eventView);
 
         void onEventClick(DayDraggableEventView eventView);

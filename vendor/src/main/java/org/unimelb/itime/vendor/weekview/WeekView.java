@@ -219,6 +219,16 @@ public class WeekView extends LinearLayout {
         int parentWidth = dm.widthPixels;
 
         @Override
+        public boolean isDraggable(DayDraggableEventView eventView) {
+            if (OnBodyOuterListener!=null){
+                return OnBodyOuterListener.isDraggable(eventView);
+            }else{
+                return false;
+            }
+
+        }
+
+        @Override
         public void onEventCreate(DayDraggableEventView eventView) {
             MyCalendar currentCal = (adapter.getViewBodyByPosition(bodyCurrentPosition)).getCalendar();
             MyCalendar eventNewCal = new MyCalendar(currentCal);

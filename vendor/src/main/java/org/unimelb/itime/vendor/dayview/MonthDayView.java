@@ -319,12 +319,12 @@ public class MonthDayView extends LinearLayout {
             }
             //for now header date
 
-//            if (onHeaderListener != null){
-//                int index = headerLinearLayoutManager.findFirstCompletelyVisibleItemPosition();
-//                DayViewHeader fstVisibleHeader = (DayViewHeader) headerLinearLayoutManager.findViewByPosition(index);
-//                monthDayViewCalendar = fstVisibleHeader.getCalendar();
-//                onHeaderListener.onMonthChanged(monthDayViewCalendar);
-//            }
+            if (onHeaderListener != null){
+                int index = headerLinearLayoutManager.findFirstCompletelyVisibleItemPosition();
+                DayViewHeader fstVisibleHeader = (DayViewHeader) headerLinearLayoutManager.findViewByPosition(index);
+                monthDayViewCalendar = fstVisibleHeader.getCalendar();
+                onHeaderListener.onMonthChanged(monthDayViewCalendar);
+            }
         }
     }
 
@@ -346,6 +346,16 @@ public class MonthDayView extends LinearLayout {
 
     public class OnBodyInnerListener implements FlexibleLenViewBody.OnBodyListener{
         int parentWidth = dm.widthPixels;
+
+        @Override
+        public boolean isDraggable(DayDraggableEventView eventView) {
+            if (OnBodyOuterListener!=null){
+                return OnBodyOuterListener.isDraggable(eventView);
+            }else{
+                return false;
+            }
+
+        }
 
         @Override
         public void onEventCreate(DayDraggableEventView eventView) {

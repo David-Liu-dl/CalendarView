@@ -52,6 +52,11 @@ public class YinActivity extends AppCompatActivity {
         });
         monthDayView.setOnBodyOuterListener(new FlexibleLenViewBody.OnBodyListener() {
             @Override
+            public boolean isDraggable(DayDraggableEventView eventView) {
+                return false;
+            }
+
+            @Override
             public void onEventCreate(DayDraggableEventView eventView) {
 
             }

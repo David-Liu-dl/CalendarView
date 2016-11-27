@@ -96,6 +96,11 @@ public class DavidActivity extends AppCompatActivity {
         });
         monthDayView.setOnBodyOuterListener(new FlexibleLenViewBody.OnBodyListener() {
             @Override
+            public boolean isDraggable(DayDraggableEventView eventView) {
+                return false;
+            }
+
+            @Override
             public void onEventCreate(DayDraggableEventView eventView) {
 
             }
@@ -166,10 +171,15 @@ public class DavidActivity extends AppCompatActivity {
         Event testE = null;
         for (Event event: allEvents
              ) {
+<<<<<<< HEAD
             String[] rec = {"RRULE:FREQ=WEEKLY;INTERVAL=1"};
             event.setRecurrence(rec);
+=======
+//            String[] rec = {"RRULE:FREQ=DAILY;INTERVAL=1"};
+//            event.setRecurrence(rec);
+>>>>>>> alpha
             EventManager.getInstance().addEvent(event);
-            testE = event;
+//            testE = event;
         }
 //        final Event e=testE;
 //        handler.postDelayed(new Runnable() {
@@ -220,7 +230,12 @@ public class DavidActivity extends AppCompatActivity {
         int[] type = {0,1,2};
         int[] status = {0,1};
         long interval = 3600 * 1000;
+<<<<<<< HEAD
         for (int i = 1; i < 2; i++) {
+=======
+        int alldayCount = 0;
+        for (int i = 1; i < 1000; i++) {
+>>>>>>> alpha
 
             long startTime = calendar.getTimeInMillis();
             long endTime = startTime + interval;
@@ -255,7 +270,11 @@ public class DavidActivity extends AppCompatActivity {
             event.setEndTime(endTime);
             events.add(event);
 
+<<<<<<< HEAD
             calendar.setTimeInMillis(endTime - interval/2);
+=======
+            calendar.setTimeInMillis(endTime);
+>>>>>>> alpha
 
         }
 

@@ -164,20 +164,14 @@ public class DavidActivity extends AppCompatActivity {
         this.initDB();
     }
 
-    final Handler handler = new Handler();
     private void loadData(){
         List<Event> allEvents = dbManager.getAllEvents();
         EventManager.getInstance().getEventsMap().clearPackage();
         Event testE = null;
         for (Event event: allEvents
              ) {
-<<<<<<< HEAD
             String[] rec = {"RRULE:FREQ=WEEKLY;INTERVAL=1"};
             event.setRecurrence(rec);
-=======
-//            String[] rec = {"RRULE:FREQ=DAILY;INTERVAL=1"};
-//            event.setRecurrence(rec);
->>>>>>> alpha
             EventManager.getInstance().addEvent(event);
 //            testE = event;
         }
@@ -230,13 +224,7 @@ public class DavidActivity extends AppCompatActivity {
         int[] type = {0,1,2};
         int[] status = {0,1};
         long interval = 3600 * 1000;
-<<<<<<< HEAD
-        for (int i = 1; i < 2; i++) {
-=======
-        int alldayCount = 0;
         for (int i = 1; i < 1000; i++) {
->>>>>>> alpha
-
             long startTime = calendar.getTimeInMillis();
             long endTime = startTime + interval;
             long duration = (endTime - startTime);
@@ -266,16 +254,10 @@ public class DavidActivity extends AppCompatActivity {
             dbManager.insertInviteeList(inviteeList);
             event.setInvitee(inviteeList);
 
-
             event.setEndTime(endTime);
             events.add(event);
 
-<<<<<<< HEAD
-            calendar.setTimeInMillis(endTime - interval/2);
-=======
             calendar.setTimeInMillis(endTime);
->>>>>>> alpha
-
         }
 
         dbManager.insertEventList(events);

@@ -35,7 +35,7 @@ public class LoadImgHelper {
     }
 
     public void bindUrlWithImageView(Context mContext, String url, ImageView img_v){
-        if (url != null){
+        if (url != null && !url.equals("")){
             Picasso.with(mContext).load(url).placeholder(R.drawable.invitee_selected_loading).into(img_v);
         }else {
             Picasso.with(mContext).load(R.drawable.invitee_selected_default_picture).into(img_v);

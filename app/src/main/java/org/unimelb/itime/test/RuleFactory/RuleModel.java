@@ -2,24 +2,19 @@ package org.unimelb.itime.test.RuleFactory;
 
 import android.util.Log;
 
-import org.antlr.v4.tool.Rule;
-
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.EnumSet;
-import java.util.IllegalFormatCodePointException;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by yuhaoliu on 20/11/16.
  */
-public class RuleModel {
-    private static final String TAG = "Rule";
+public class RuleModel<T extends RuleInterface> implements Serializable {
+    private static String TAG = "Rule";
 
-    private SimpleDateFormat format = new SimpleDateFormat("yyyymmdd");
     private long dayLongM = 86400000;
 
     //Recurrence Rule
@@ -47,12 +42,14 @@ public class RuleModel {
         return by_BYMONTH;
     }
 
-    private RuleInterface ruleInterface;
+    private T ruleInterface;
 
-    public RuleModel(RuleInterface ruleInterface){
-        this.ruleInterface = ruleInterface;
+    public RuleModel() {
     }
 
+    public RuleModel(T ruleInterface){
+        this.ruleInterface = ruleInterface;
+    }
 
     public void setBy_BYMONTH(List<Integer> by_BYMONTH) {
         this.by_BYMONTH = by_BYMONTH;
@@ -193,7 +190,6 @@ public class RuleModel {
     public void removerDate(Date date){
         this.RDates.remove(date);
     }
-
 
     public boolean isInclude(long dateM){
         Date compareDate = new Date(dateM);
@@ -390,8 +386,8 @@ public class RuleModel {
         Calendar cal2 = Calendar.getInstance();
         cal1.setTime(d1);
         cal2.setTime(d2);
-        boolean sameDay = cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
-                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
+        boolean sameDay = (cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR)) &&
+                (cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR));
 
         return sameDay;
     }
@@ -412,6 +408,7 @@ public class RuleModel {
             int dayDiffer = getDayDiffer(startRange);
             Calendar cal = Calendar.getInstance();
             cal.setTimeInMillis(startRange);
+            Date dt = new Date();
 
             switch (frequencyEnum){
                 case DAILY: {
@@ -422,7 +419,8 @@ public class RuleModel {
                     long currentAvailableDate = cal.getTimeInMillis();
                     while(currentAvailableDate < endRange){
                         currentAvailableDate = cal.getTimeInMillis();
-                        if (currentAvailableDate >= startRange){
+                        dt.setTime(currentAvailableDate);
+                        if (isInRDate(dt) || (currentAvailableDate >= startRange && !isInEXDate(dt))){
                             availableDates.add(currentAvailableDate);
                         }
                         cal.add(Calendar.DATE, interval);
@@ -437,7 +435,8 @@ public class RuleModel {
                     long currentAvailableDate = cal.getTimeInMillis();
                     while(currentAvailableDate < endRange){
                         currentAvailableDate = cal.getTimeInMillis();
-                        if (currentAvailableDate >= startRange){
+                        dt.setTime(currentAvailableDate);
+                        if (isInRDate(dt) || (currentAvailableDate >= startRange && !isInEXDate(dt))){
                             availableDates.add(currentAvailableDate);
                         }
                         cal.add(Calendar.DATE, interval * 7);
@@ -463,7 +462,9 @@ public class RuleModel {
                     long currentAvailableDate = cal.getTimeInMillis();
                     while(currentAvailableDate < endRange){
                         currentAvailableDate = cal.getTimeInMillis();
-                        if (currentAvailableDate >= startRange){
+                        dt.setTime(currentAvailableDate);
+
+                        if (isInRDate(dt) || (currentAvailableDate >= startRange && !isInEXDate(dt))){
                             availableDates.add(currentAvailableDate);
                         }
                         cal.add(Calendar.MONTH, interval);
@@ -493,7 +494,9 @@ public class RuleModel {
                     long currentAvailableDate = cal.getTimeInMillis();
                     while(currentAvailableDate < endRange){
                         currentAvailableDate = cal.getTimeInMillis();
-                        if (currentAvailableDate >= startRange){
+                        dt.setTime(currentAvailableDate);
+
+                        if (isInRDate(dt) || (currentAvailableDate >= startRange && !isInEXDate(dt))){
                             availableDates.add(currentAvailableDate);
                         }
                         cal.add(Calendar.YEAR, interval);
@@ -510,7 +513,8 @@ public class RuleModel {
     }
 
 
-    public List<String> getRecurrence(){
+    public String[] getRecurrence(){
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
 
         String exDate = "EXDATE;VALUE=DATE:";
         for (int i = 0; i < EXDates.size(); i++) {
@@ -538,7 +542,9 @@ public class RuleModel {
             result.add(rRule);
         }
 
-        return result;
+        String[] rst=  result.toArray(new String[result.size()]);
+
+        return rst;
     }
 
 

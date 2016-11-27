@@ -98,6 +98,11 @@ public class DayViewHeaderRecyclerAdapter extends RecyclerView.Adapter<DayViewHe
                 @Override
                 public void setCurrentSelectIndexInRow(int indexInRowIn) {
                     indexInRow = indexInRowIn;
+                    if (onHeaderListener != null){
+                        MyCalendar calendar = new MyCalendar(headerRow.getCalendar());
+                        calendar.setOffsetByDate(indexInRowIn);
+                        onHeaderListener.onClick(calendar);
+                    }
                 }
 
                 @Override
@@ -130,7 +135,12 @@ public class DayViewHeaderRecyclerAdapter extends RecyclerView.Adapter<DayViewHe
         }
     }
 
-//    public void refresh(){
-//
-//    }
+    private OnHeaderListener onHeaderListener;
+
+    public void setOnHeaderListener(OnHeaderListener onHeaderListener){
+        this.onHeaderListener = onHeaderListener;
+    }
+    public interface OnHeaderListener{
+        void onClick(MyCalendar myCalendar);
+    }
 }

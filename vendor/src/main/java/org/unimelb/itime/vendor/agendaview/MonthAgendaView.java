@@ -62,7 +62,6 @@ public class MonthAgendaView extends RelativeLayout{
 
     private MyCalendar monthAgendaViewCalendar;
     private OnHeaderListener onHeaderListener;
-    private AgendaHeaderViewRecyclerAdapter.OnHeaderListener adapterHeaderListener;
     private ITimeEventPackageInterface eventPackage;
 
     public MonthAgendaView(Context context) {

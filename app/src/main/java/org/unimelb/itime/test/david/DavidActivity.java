@@ -97,7 +97,7 @@ public class DavidActivity extends AppCompatActivity {
         monthDayView.setOnBodyOuterListener(new FlexibleLenViewBody.OnBodyListener() {
             @Override
             public boolean isDraggable(DayDraggableEventView eventView) {
-                return false;
+                return true;
             }
 
             @Override
@@ -128,7 +128,9 @@ public class DavidActivity extends AppCompatActivity {
             public void onEventDragDrop(DayDraggableEventView eventView) {
                 Calendar cal = Calendar.getInstance();
                 cal.setTimeInMillis(eventView.getStartTimeM());
-//                Log.i(TAG, "onEventDragDrop: " + cal.getTime());
+                Log.i(TAG, "onEventDragDrop: s" + cal.getTime());
+                cal.setTimeInMillis(eventView.getEndTimeM());
+                Log.i(TAG, "onEventDragDrop: e" + cal.getTime());
             }
 
         });
@@ -224,7 +226,7 @@ public class DavidActivity extends AppCompatActivity {
         int[] type = {0,1,2};
         int[] status = {0,1};
         long interval = 3600 * 1000;
-        for (int i = 1; i < 1000; i++) {
+        for (int i = 1; i < 5; i++) {
             long startTime = calendar.getTimeInMillis();
             long endTime = startTime + interval;
             long duration = (endTime - startTime);

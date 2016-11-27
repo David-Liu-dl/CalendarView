@@ -53,7 +53,6 @@ public class DayDraggableEventView extends ViewGroup {
         this.newCalendar = newCalendar;
     }
 
-
     public DayDraggableEventView(Context context, @Nullable ITimeEventInterface event, boolean isAllDayEvent) {
         super(context);
         this.event = event;
@@ -213,9 +212,6 @@ public class DayDraggableEventView extends ViewGroup {
     public void setIndexInView(int indexInView) {
         this.indexInView = indexInView;
     }
-
-
-
 
     /**
      * the display position of draggable event,

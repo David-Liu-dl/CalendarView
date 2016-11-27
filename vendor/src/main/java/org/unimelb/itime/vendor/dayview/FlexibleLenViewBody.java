@@ -748,7 +748,6 @@ public class FlexibleLenViewBody extends RelativeLayout {
                     }else{
                         tempDragView= null;
                     }
-
                     break;
                 case DragEvent.ACTION_DRAG_EXITED:
                     msgWindow.setVisibility(View.INVISIBLE);

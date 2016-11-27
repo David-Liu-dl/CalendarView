@@ -172,7 +172,6 @@ public class MonthDayView extends LinearLayout {
                         //update header
                         bodyPagerAdapter.currentDayPos = position;
                         headerScrollToDate(body_fst_cal);
-
                     }
                 }finally {
                     bodyCurrentPosition = position;
@@ -217,7 +216,7 @@ public class MonthDayView extends LinearLayout {
             int day_diff = ((headerRecyclerAdapter.indexInRow+1) + date_offset%7);
 
             if (date_offset > 0){
-                row_diff = row_diff + (day_diff > 7 ? 1:0);
+                row_diff = row_diff + (day_diff >= 7 ? 1:0);
                 day_diff = day_diff > 7 ? day_diff%7 : day_diff;
             }else if(date_offset < 0){
                 row_diff = row_diff + (day_diff <= 0 ? -1:0);
@@ -231,7 +230,7 @@ public class MonthDayView extends LinearLayout {
                 if (row_diff != 0){
                     int newRowPst = row_diff + headerRecyclerAdapter.rowPst;
                     headerRecyclerView.stopScroll();
-                    headerRecyclerView.getLayoutManager().smoothScrollToPosition(headerRecyclerView,null,newRowPst);
+                    headerRecyclerView.scrollToPosition(newRowPst);
                     headerRecyclerAdapter.rowPst = newRowPst;
                 }
                 if (day_diff != 0){
@@ -250,7 +249,9 @@ public class MonthDayView extends LinearLayout {
             }
         }else {
             headerRecyclerView.stopScroll();
-            headerRecyclerView.getLayoutManager().scrollToPosition(headerRecyclerAdapter.rowPst);
+//            headerRecyclerView.getLayoutManager().scrollToPosition(headerRecyclerAdapter.rowPst);
+            headerRecyclerView.scrollToPosition(headerRecyclerAdapter.rowPst);
+//            headerScrollToDate(body_fst_cal);
         }
     }
 

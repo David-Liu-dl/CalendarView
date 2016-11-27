@@ -319,12 +319,12 @@ public class MonthDayView extends LinearLayout {
             }
             //for now header date
 
-//            if (onHeaderListener != null){
-//                int index = headerLinearLayoutManager.findFirstCompletelyVisibleItemPosition();
-//                DayViewHeader fstVisibleHeader = (DayViewHeader) headerLinearLayoutManager.findViewByPosition(index);
-//                monthDayViewCalendar = fstVisibleHeader.getCalendar();
-//                onHeaderListener.onMonthChanged(monthDayViewCalendar);
-//            }
+            if (onHeaderListener != null){
+                int index = headerLinearLayoutManager.findFirstCompletelyVisibleItemPosition();
+                DayViewHeader fstVisibleHeader = (DayViewHeader) headerLinearLayoutManager.findViewByPosition(index);
+                monthDayViewCalendar = fstVisibleHeader.getCalendar();
+                onHeaderListener.onMonthChanged(monthDayViewCalendar);
+            }
         }
     }
 

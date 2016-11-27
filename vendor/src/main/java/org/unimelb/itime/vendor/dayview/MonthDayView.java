@@ -348,6 +348,16 @@ public class MonthDayView extends LinearLayout {
         int parentWidth = dm.widthPixels;
 
         @Override
+        public boolean isDraggable(DayDraggableEventView eventView) {
+            if (OnBodyOuterListener!=null){
+                return OnBodyOuterListener.isDraggable(eventView);
+            }else{
+                return false;
+            }
+
+        }
+
+        @Override
         public void onEventCreate(DayDraggableEventView eventView) {
             MyCalendar currentCal = (bodyPagerAdapter.getViewByPosition(bodyCurrentPosition)).getCalendar();
             eventView.getNewCalendar().setDay(currentCal.getDay());

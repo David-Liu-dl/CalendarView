@@ -214,10 +214,8 @@ public class MonthDayView extends LinearLayout {
             int date_offset = (int) ((tempB.getBeginOfDayMilliseconds() - tempH.getBeginOfDayMilliseconds()) / (1000*60*60*24));
 
             int row_diff = date_offset/7;
-            int day_diff = headerRecyclerAdapter.indexInRow + (date_offset%7);
-            Log.i(TAG, "org-date_offset: " + date_offset);
-            Log.i(TAG, "org-row_diff: " + row_diff);
-            Log.i(TAG, "org-day_diff: " + day_diff);
+            int day_diff = ((headerRecyclerAdapter.indexInRow+1) + date_offset%7);
+
             if (date_offset > 0){
                 row_diff = row_diff + (day_diff > 7 ? 1:0);
                 day_diff = day_diff > 7 ? day_diff%7 : day_diff;
@@ -237,7 +235,7 @@ public class MonthDayView extends LinearLayout {
                     headerRecyclerAdapter.rowPst = newRowPst;
                 }
                 if (day_diff != 0){
-                    final int new_index = day_diff;
+                    final int new_index = day_diff - 1;
                     postDelayed(new Runnable() {
                         @Override
                         public void run() {

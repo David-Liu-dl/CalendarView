@@ -70,6 +70,10 @@ public class DayInnerBodyEventLayout extends ViewGroup {
         int width = MeasureSpec.getSize(widthMeasureSpec);
         int cCount = getChildCount();
         for (int i = 0; i < cCount; i++) {
+            if (getChildAt(i) instanceof TimeSlotView) {
+                getChildAt(i).getLayoutParams().width = width;
+            }
+
             if (!(getChildAt(i) instanceof DayDraggableEventView)) {
                 continue;
             }

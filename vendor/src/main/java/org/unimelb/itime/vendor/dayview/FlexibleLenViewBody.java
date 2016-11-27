@@ -137,6 +137,10 @@ public class FlexibleLenViewBody extends RelativeLayout {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         layoutWidthPerDay = MeasureSpec.getSize(eventLayout.getMeasuredWidth()/displayLen);
+        int cCount = getChildCount();
+        for (int i = 0; i < cCount; i++) {
+            measureChildren(widthMeasureSpec,heightMeasureSpec);
+        }
     }
 
     @Override
@@ -1022,22 +1026,22 @@ public class FlexibleLenViewBody extends RelativeLayout {
 
         if (offset < displayLen && offset > -1){
             TimeSlotView timeSlotView = createTimeSlotView(struct);
-            eventLayouts.get(offset).addView(timeSlotView);
+            eventLayouts.get(offset).addView(timeSlotView,timeSlotView.getLayoutParams());
             timeSlotView.bringToFront();
             timeSlotView.setVisibility(VISIBLE);
             resizeTimeSlot(timeSlotView,animate);
             slotViews.add(timeSlotView);
+            timeSlotView.requestLayout();
         }
     }
 
     private TimeSlotView createTimeSlotView(WeekView.TimeSlotStruct struct){
         TimeSlotView timeSlotView = new TimeSlotView(context);
-//        timeSlotView.setBackgroundColor(Color.RED);
         if (struct != null){
             timeSlotView.setType(TimeSlotView.TYPE_NORMAL);
             timeSlotView.setTimes(struct.startTime, struct.endTime);
             timeSlotView.setStatus(struct.status);
-            DayInnerBodyEventLayout.LayoutParams params = new DayInnerBodyEventLayout.LayoutParams(layoutWidthPerDay, 0);
+            DayInnerBodyEventLayout.LayoutParams params = new DayInnerBodyEventLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, layoutWidthPerDay);
             timeSlotView.setLayoutParams(params);
             timeSlotView.setTag(struct);
         }else {
@@ -1045,7 +1049,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
             timeSlotView.setDuration(duration);
             int tempViewHeight = (int)(duration/((float)(3600*1000)) * lineHeight);
             timeSlotView.setType(TimeSlotView.TYPE_TEMP);
-            DayInnerBodyEventLayout.LayoutParams params = new DayInnerBodyEventLayout.LayoutParams(layoutWidthPerDay, tempViewHeight);
+            DayInnerBodyEventLayout.LayoutParams params = new DayInnerBodyEventLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, tempViewHeight);
             timeSlotView.setLayoutParams(params);
         }
 
@@ -1087,7 +1091,6 @@ public class FlexibleLenViewBody extends RelativeLayout {
             timeSlotView.startAnimation(resizeAnimation);
         }else {
             params.height = slotHeight;
-            timeSlotView.requestLayout();
         }
     }
 

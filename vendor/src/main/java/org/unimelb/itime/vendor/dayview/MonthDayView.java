@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -213,8 +214,10 @@ public class MonthDayView extends LinearLayout {
             int date_offset = (int) ((tempB.getBeginOfDayMilliseconds() - tempH.getBeginOfDayMilliseconds()) / (1000*60*60*24));
 
             int row_diff = date_offset/7;
-            int day_diff = ((headerRecyclerAdapter.indexInRow+1) + date_offset%7);
-
+            int day_diff = headerRecyclerAdapter.indexInRow + (date_offset%7);
+            Log.i(TAG, "org-date_offset: " + date_offset);
+            Log.i(TAG, "org-row_diff: " + row_diff);
+            Log.i(TAG, "org-day_diff: " + day_diff);
             if (date_offset > 0){
                 row_diff = row_diff + (day_diff > 7 ? 1:0);
                 day_diff = day_diff > 7 ? day_diff%7 : day_diff;
@@ -222,6 +225,9 @@ public class MonthDayView extends LinearLayout {
                 row_diff = row_diff + (day_diff <= 0 ? -1:0);
                 day_diff = day_diff <= 0 ? (7 + day_diff):day_diff;
             }
+
+            Log.i(TAG, "row_diff: " + row_diff);
+            Log.i(TAG, "day_diff: " + day_diff);
 
             if ((row_diff != 0 || day_diff != 0)){
                 if (row_diff != 0){
@@ -231,7 +237,7 @@ public class MonthDayView extends LinearLayout {
                     headerRecyclerAdapter.rowPst = newRowPst;
                 }
                 if (day_diff != 0){
-                    final int new_index = day_diff - 1;
+                    final int new_index = day_diff;
                     postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -240,7 +246,7 @@ public class MonthDayView extends LinearLayout {
                                 need_set_index_header.performNthDayClick(new_index);
                             }
                         }
-                    },50);
+                    },100);
                     headerRecyclerAdapter.indexInRow = new_index;
                 }
             }

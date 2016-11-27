@@ -25,7 +25,6 @@ public class LoadImgHelper {
     }
 
     public void bindContactWithImageView(Context mContext, ITimeContactInterface contact, ImageView img_v){
-        Log.i(TAG, "bindContactWithImageView: " + contact);
         if (contact.getPhoto() != null){
             Log.i(TAG, "url: " + contact.getPhoto());
             Picasso.with(mContext).load(contact.getPhoto()).placeholder(R.drawable.invitee_selected_loading).into(img_v);

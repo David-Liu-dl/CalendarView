@@ -746,7 +746,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
         @Override
         public boolean onLongClick(View view) {
 
-            if (onBodyListener!=null && onBodyListener.isDraggable((DayDraggableEventView) view)){
+            if (tempDragView != null || onBodyListener!=null && onBodyListener.isDraggable((DayDraggableEventView) view)){
                 ClipData data = ClipData.newPlainText("", "");
                 View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(
                         view);

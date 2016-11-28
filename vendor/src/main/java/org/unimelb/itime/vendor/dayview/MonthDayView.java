@@ -200,31 +200,31 @@ public class MonthDayView extends LinearLayout {
 
     public void backToToday(){
         this.headerRecyclerView.stopScroll();
+        this.headerRecyclerView.scrollToPosition(upperBoundsOffset);
         this.headerScrollToDate(Calendar.getInstance());
     }
 
     public void headerScrollToDate(Calendar body_fst_cal){
+
         DayViewHeader headerView =
                 (DayViewHeader) headerLinearLayoutManager.findViewByPosition(headerRecyclerAdapter.rowPst);
         if (headerView != null){
             MyCalendar tempH = new MyCalendar(headerView.getCalendar());
             MyCalendar tempB = new MyCalendar(body_fst_cal);
             tempH.setOffsetByDate(headerRecyclerAdapter.indexInRow);
-            int date_offset = (int) ((tempB.getBeginOfDayMilliseconds() - tempH.getBeginOfDayMilliseconds()) / (1000*60*60*24));
+
+            int date_offset =  Math.round((float)(tempB.getCalendar().getTimeInMillis() - tempH.getCalendar().getTimeInMillis()) / (float)(1000*60*60*24));
 
             int row_diff = date_offset/7;
             int day_diff = ((headerRecyclerAdapter.indexInRow+1) + date_offset%7);
 
             if (date_offset > 0){
-                row_diff = row_diff + (day_diff >= 7 ? 1:0);
+                row_diff = row_diff + (day_diff > 7 ? 1:0);
                 day_diff = day_diff > 7 ? day_diff%7 : day_diff;
             }else if(date_offset < 0){
                 row_diff = row_diff + (day_diff <= 0 ? -1:0);
                 day_diff = day_diff <= 0 ? (7 + day_diff):day_diff;
             }
-
-            Log.i(TAG, "row_diff: " + row_diff);
-            Log.i(TAG, "day_diff: " + day_diff);
 
             if ((row_diff != 0 || day_diff != 0)){
                 if (row_diff != 0){
@@ -249,9 +249,7 @@ public class MonthDayView extends LinearLayout {
             }
         }else {
             headerRecyclerView.stopScroll();
-//            headerRecyclerView.getLayoutManager().scrollToPosition(headerRecyclerAdapter.rowPst);
             headerRecyclerView.scrollToPosition(headerRecyclerAdapter.rowPst);
-//            headerScrollToDate(body_fst_cal);
         }
     }
 

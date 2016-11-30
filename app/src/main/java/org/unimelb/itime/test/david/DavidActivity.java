@@ -130,7 +130,7 @@ public class DavidActivity extends AppCompatActivity {
                 cal.setTimeInMillis(eventView.getStartTimeM());
                 Log.i(TAG, "onEventDragDrop: s" + cal.getTime());
                 cal.setTimeInMillis(eventView.getEndTimeM());
-                Log.i(TAG, "onEventDragDrop: e" + cal.getTime());
+                Log.i(TAG, "onEventDragDrop: " + cal.getTime());
             }
 
         });

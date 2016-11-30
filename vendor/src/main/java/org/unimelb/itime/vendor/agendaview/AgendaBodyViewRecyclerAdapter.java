@@ -65,7 +65,6 @@ public class AgendaBodyViewRecyclerAdapter extends RecyclerView.Adapter<AgendaBo
     public void onBindViewHolder(AgendaBodyViewRecyclerAdapter.MyViewHolder holder, int position) {
         holder.bodyRow.getCalendar().setOffset(position-startPosition);
         holder.bodyRow.updateHeaderView();
-
         long startTime = holder.bodyRow.getCalendar().getBeginOfDayMilliseconds();
 
         List<ITimeEventInterface> allEvents = new ArrayList<>();

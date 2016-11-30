@@ -149,7 +149,7 @@ public class MonthAgendaView extends RelativeLayout{
     private void setUpBody(){
         bodyRecyclerAdapter = new AgendaBodyViewRecyclerAdapter(context, upperBoundsOffset);
         setOnEventClickListener(this.onEventClickListener);
-        bodyRecyclerView.setFlingScale(0.3f);
+        bodyRecyclerView.setFlingScale(0.6f);
         bodyRecyclerView.setHasFixedSize(false);
         bodyRecyclerView.setAdapter(bodyRecyclerAdapter);
         bodyLinearLayoutManager = new LinearLayoutManager(context);
@@ -211,6 +211,7 @@ public class MonthAgendaView extends RelativeLayout{
         this.eventPackage = eventPackage;
         this.bodyRecyclerAdapter.setDayEventMap(eventPackage);
         this.headerRecyclerAdapter.notifyDataSetChanged();
+        this.bodyRecyclerAdapter.notifyDataSetChanged();
     }
 
     public void backToToday(){

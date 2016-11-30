@@ -221,6 +221,12 @@ public class MonthAgendaView extends RelativeLayout{
         this.bodyLinearLayoutManager.scrollToPosition(0);
     }
 
+    public void scrollTo(Calendar calendar){
+        this.headerRecyclerView.stopScroll();
+        this.bodyRecyclerView.stopScroll();
+        this.headerScrollToDate(calendar);
+    }
+
     public interface OnHeaderListener{
         void onMonthChanged(MyCalendar calendar);
         void backToToday();

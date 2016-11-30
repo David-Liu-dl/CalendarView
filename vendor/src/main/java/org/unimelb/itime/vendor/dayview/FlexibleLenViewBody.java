@@ -17,10 +17,12 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import org.unimelb.itime.vendor.R;
@@ -104,6 +106,8 @@ public class FlexibleLenViewBody extends RelativeLayout {
     private OnBodyListener onBodyListener;
 
     private float heightPerMillisd = 0;
+
+    private ViewTreeObserver.OnScrollChangedListener onScrollChangeListener;
 
     public FlexibleLenViewBody(Context context, int displayLen) {
         super(context);
@@ -275,18 +279,18 @@ public class FlexibleLenViewBody extends RelativeLayout {
                 eventLayout.setOnLongClickListener(new CreateTimeSlotListener());
             }
 
-            eventLayout.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    nowTapX = event.getX();
-                    nowTapY = event.getY();
-                    if (onBodyTouchListener != null) {
-                        onBodyTouchListener.bodyOnTouchListener(nowTapX, nowTapY);
-                    }
-
-                    return false;
-                }
-            });
+//            eventLayout.setOnTouchListener(new View.OnTouchListener() {
+//                @Override
+//                public boolean onTouch(View v, MotionEvent event) {
+//                    nowTapX = event.getX();
+//                    nowTapY = event.getY();
+//                    if (onBodyTouchListener != null) {
+//                        onBodyTouchListener.bodyOnTouchListener(nowTapX, nowTapY);
+//                    }
+//
+//                    return false;
+//                }
+//            });
             eventLayouts.add(eventLayout);
         }
 
@@ -631,15 +635,15 @@ public class FlexibleLenViewBody extends RelativeLayout {
                 int startY = getEventY(overlapGroup.get(i).second);
                 int widthFactor = overlapGroup.get(i).first.first;
                 int startX = overlapGroup.get(i).first.second;
-//                int topMargin = startY + overlapGapHeight * i + previousGroupExtraY;
+                int topMargin = startY + overlapGapHeight * i + previousGroupExtraY;
 //                int topMargin = startY + previousGroupExtraY;
-                int topMargin = startY;
+//                int topMargin = startY;
                 DayDraggableEventView eventView = (DayDraggableEventView) eventLayout.findViewById(regularEventViewMap.get(overlapGroup.get(i).second));
                 eventView.setPosParam(new DayDraggableEventView.PosParam(startY, startX, widthFactor, topMargin));
                 Calendar cal = Calendar.getInstance();
                 cal.setTimeInMillis(eventView.getEvent().getStartTime());
             }
-//            previousGroupExtraY += overlapGapHeight * overlapGroup.size();
+            previousGroupExtraY += overlapGapHeight * overlapGroup.size();
         }
     }
 
@@ -960,7 +964,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
      ******************************************/
 
     public interface OnBodyTouchListener {
-        void bodyOnTouchListener(float tapX, float tapY);
+        boolean bodyOnTouchListener(float tapX, float tapY);
     }
 
     public void setOnBodyTouchListener(OnBodyTouchListener onBodyTouchListener) {
@@ -979,10 +983,16 @@ public class FlexibleLenViewBody extends RelativeLayout {
         void onEventDragging(DayDraggableEventView eventView, int x, int y);
 
         void onEventDragDrop(DayDraggableEventView eventView);
+
+//        ViewTreeObserver.OnScrollChangedListener setScrollChangeListener( );
     }
 
     public void setOnBodyListener(OnBodyListener onBodyListener) {
         this.onBodyListener = onBodyListener;
+//        this.onScrollChangeListener = onBodyListener.setScrollChangeListener();
+//        if (this.onScrollChangeListener != null){
+//            this.scrollContainerView.getViewTreeObserver().addOnScrollChangedListener(this.onScrollChangeListener);
+//        }
     }
 
     Class<?> eventClassName;
@@ -1280,6 +1290,14 @@ public class FlexibleLenViewBody extends RelativeLayout {
 
     public void setOnTimeSlotListener(OnTimeSlotListener onTimeSlotListener) {
         this.onTimeSlotListener = onTimeSlotListener;
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (onBodyTouchListener != null){
+            return onBodyTouchListener.bodyOnTouchListener(ev.getX(),ev.getY());
+        }
+        return false;
     }
 
     public void removeOptListener(){

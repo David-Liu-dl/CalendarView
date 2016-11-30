@@ -9,6 +9,7 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 
 import org.unimelb.itime.vendor.dayview.DayViewHeader;
@@ -131,6 +132,39 @@ public class WeekView extends LinearLayout {
 
     public void backToToday(){
         weekViewPager.setCurrentItem(upperBoundsOffset,false);
+    }
+
+    public void scrollTo(final Calendar toDate){
+        ViewTreeObserver vto = this.getViewTreeObserver();
+        final ViewGroup self = this;
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                self.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                weekViewPager.setCurrentItem(upperBoundsOffset + getRowDiff(toDate),false);
+            }
+        });
+    }
+
+    public int getRowDiff(Calendar body_fst_cal){
+
+            MyCalendar tempH = new MyCalendar(Calendar.getInstance());
+            MyCalendar tempB = new MyCalendar(body_fst_cal);
+
+            int date_offset =  Math.round((float)(tempB.getCalendar().getTimeInMillis() - tempH.getCalendar().getTimeInMillis()) / (float)(1000*60*60*24));
+
+            int row_diff = date_offset/7;
+            int day_diff = (tempH.getDayOfWeek() + date_offset%7);
+
+            if (date_offset > 0){
+                row_diff = row_diff + (day_diff > 7 ? 1:0);
+                day_diff = day_diff > 7 ? day_diff%7 : day_diff;
+            }else if(date_offset < 0){
+                row_diff = row_diff + (day_diff <= 0 ? -1:0);
+                day_diff = day_diff <= 0 ? (7 + day_diff):day_diff;
+            }
+
+        return row_diff;
     }
     /*--------------------*/
 
@@ -273,6 +307,11 @@ public class WeekView extends LinearLayout {
 
             if (OnBodyOuterListener != null){OnBodyOuterListener.onEventDragDrop(eventView);}
         }
+
+//        @Override
+//        public ViewTreeObserver.OnScrollChangedListener setScrollChangeListener() {
+//            return null;
+//        }
 
         private void bodyAutoSwipe(DayDraggableEventView eventView, int x, int y){
             int offset = x > (parentWidth * 0.85) ? 1 : (x <= parentWidth * 0.05 ? -1 : 0);

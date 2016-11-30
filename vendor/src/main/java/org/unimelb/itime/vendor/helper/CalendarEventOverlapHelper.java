@@ -13,6 +13,7 @@ import java.util.List;
  */
 public class CalendarEventOverlapHelper {
     private static final String TAG = "Helper";
+    private final long overlapTolerance = (15/2) * 60 * 1000;
     private ArrayList<ITimeEventInterface> eventModules = new ArrayList<>();
     private List<ArrayList<Pair<Pair<Integer,Integer>,ITimeEventInterface>>> param_events = new ArrayList<>();
 
@@ -61,7 +62,7 @@ public class CalendarEventOverlapHelper {
             long startTime = event.getStartTime();
             long endTime = event.getEndTime();
 
-            if (startTime >= endFlag){
+            if (startTime >= (endFlag - overlapTolerance)){
                 //means no overlap with previous group, then create new group
                 ArrayList<ITimeEventInterface> new_group = new ArrayList<>();
                 new_group.add(event);
@@ -102,7 +103,7 @@ public class CalendarEventOverlapHelper {
             for (Pair<Integer, ArrayList<EventSlot>> columnEvent:columnEvents
                  ) {
                 //compare with last event in column event
-                if (currentEventStartTime >= columnEvent.second.get(columnEvent.second.size() -1).event.getEndTime()){
+                if (currentEventStartTime >= (columnEvent.second.get(columnEvent.second.size() -1).event.getEndTime() - overlapTolerance)){
                     EventSlot childSlot = new EventSlot();
                     childSlot.event = group.get(i);
                     childSlot.row = columnEvent.second.size();

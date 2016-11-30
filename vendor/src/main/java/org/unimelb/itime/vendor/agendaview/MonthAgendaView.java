@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -221,10 +222,18 @@ public class MonthAgendaView extends RelativeLayout{
         this.bodyLinearLayoutManager.scrollToPosition(0);
     }
 
-    public void scrollTo(Calendar calendar){
-        this.headerRecyclerView.stopScroll();
-        this.bodyRecyclerView.stopScroll();
-        this.headerScrollToDate(calendar);
+    public void scrollTo(final Calendar calendar){
+        ViewTreeObserver vto = this.getViewTreeObserver();
+        final ViewGroup self = this;
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                self.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                headerRecyclerView.stopScroll();
+                bodyRecyclerView.stopScroll();
+                headerScrollToDate(calendar);
+            }
+        });
     }
 
     public interface OnHeaderListener{

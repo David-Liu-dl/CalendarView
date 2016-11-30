@@ -3,6 +3,7 @@ package org.unimelb.itime.test.david;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.ViewTreeObserver;
 
 import org.unimelb.itime.test.R;
 import org.unimelb.itime.test.bean.Contact;

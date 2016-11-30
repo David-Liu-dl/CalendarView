@@ -81,7 +81,6 @@ public class WeekViewPagerAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        Date startDate = new Date();
         LinearLayout view = views.get(position%views.size());
         ViewGroup parent = (ViewGroup) view.getParent();
         if (parent != null){
@@ -93,10 +92,6 @@ public class WeekViewPagerAdapter extends PagerAdapter {
         this.updateBody(view, dateOffset);
 
         container.addView(view);
-
-        Date endDate = new Date();
-        long diff = endDate.getTime() - startDate.getTime();
-        Log.i(TAG, position + " diff: " + diff + " ~= " + (float)diff/1000);
 
         return view;
     }

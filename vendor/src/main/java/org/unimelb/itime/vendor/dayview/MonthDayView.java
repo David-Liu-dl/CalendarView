@@ -1,5 +1,7 @@
 package org.unimelb.itime.vendor.dayview;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.databinding.BindingMethod;
@@ -13,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 
 import org.unimelb.itime.vendor.R;
@@ -64,6 +67,8 @@ public class MonthDayView extends LinearLayout {
     private ITimeEventPackageInterface eventPackage;
 
     private int bodyPagerCurrentState = 0;
+
+    private boolean isAnimating = false;
 
     public MonthDayView(Context context) {
         super(context);
@@ -196,6 +201,20 @@ public class MonthDayView extends LinearLayout {
                 }
             }
         });
+
+    }
+
+    public void scrollTo(final Calendar calendar){
+        ViewTreeObserver vto = this.getViewTreeObserver();
+        final ViewGroup self = this;
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                self.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                headerRecyclerView.stopScroll();
+                headerScrollToDate(calendar);
+            }
+        });
     }
 
     public void backToToday(){
@@ -277,13 +296,12 @@ public class MonthDayView extends LinearLayout {
             bodyViewList.add(bodyView);
             bodyView.setOnBodyTouchListener(new FlexibleLenViewBody.OnBodyTouchListener() {
                 @Override
-                public void bodyOnTouchListener(float tapX, float tapY) {
-                    final View needChangeView = headerRecyclerView;
-
-                    if (needChangeView.getHeight() == scroll_height){
+                public boolean bodyOnTouchListener(float tapX, float tapY) {
+                    if (headerRecyclerView.getHeight() != init_height){
                         headerRecyclerView.stopScroll();
                         headerLinearLayoutManager.scrollToPositionWithOffset(headerRecyclerAdapter.getCurrentSelectPst(), 0);
-                        final View view = needChangeView;
+
+                        final View view = headerRecyclerView;
                         ValueAnimator va = ValueAnimator.ofInt(scroll_height, init_height);
                         va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                             public void onAnimationUpdate(ValueAnimator animation) {
@@ -294,6 +312,10 @@ public class MonthDayView extends LinearLayout {
                         });
                         va.setDuration(200);
                         va.start();
+
+                        return true;
+                    }else{
+                        return false;
                     }
                 }
             });
@@ -318,7 +340,21 @@ public class MonthDayView extends LinearLayout {
                             view.requestLayout();
                         }
                     });
+//                    va.addListener(new AnimatorListenerAdapter()
+//                    {
+//                        @Override
+//                        public void onAnimationEnd(Animator animation)
+//                        {
+//                            postDelayed(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    isAnimating = false;
+//                                }
+//                            },10);
+//                        }
+//                    });
                     va.setDuration(200);
+//                    isAnimating = true;
                     va.start();
                 }
             }
@@ -403,6 +439,53 @@ public class MonthDayView extends LinearLayout {
             cal.setTimeInMillis(eventView.getStartTimeM());
             if (OnBodyOuterListener != null){OnBodyOuterListener.onEventDragDrop(eventView);}
         }
+
+//        @Override
+//        public ViewTreeObserver.OnScrollChangedListener setScrollChangeListener() {
+//
+//            if (OnBodyOuterListener != null && OnBodyOuterListener.setScrollChangeListener() != null){
+//                return OnBodyOuterListener.setScrollChangeListener();
+//            }else{
+//                ViewTreeObserver.OnScrollChangedListener onScrollChangedListener = new ViewTreeObserver.OnScrollChangedListener() {
+//                    @Override
+//                    public void onScrollChanged() {
+//                        final View needChangeView = headerRecyclerView;
+//
+//                        if (!isAnimating && needChangeView.getHeight() == scroll_height){
+//                            headerRecyclerView.stopScroll();
+//                            headerLinearLayoutManager.scrollToPositionWithOffset(headerRecyclerAdapter.getCurrentSelectPst(), 0);
+//                            final View view = needChangeView;
+//                            ValueAnimator va = ValueAnimator.ofInt(scroll_height, init_height);
+//                            va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//                                public void onAnimationUpdate(ValueAnimator animation) {
+//                                    Integer value = (Integer) animation.getAnimatedValue();
+//                                    view.getLayoutParams().height = value.intValue();
+//                                    view.requestLayout();
+//                                }
+//                            });
+//                            va.setDuration(200);
+//                            va.addListener(new AnimatorListenerAdapter()
+//                            {
+//                                @Override
+//                                public void onAnimationEnd(Animator animation)
+//                                {
+//                                    postDelayed(new Runnable() {
+//                                        @Override
+//                                        public void run() {
+//                                            isAnimating = false;
+//                                        }
+//                                    },10);
+//                                }
+//                            });
+//                            isAnimating = true;
+//                            va.start();
+//                        }
+//                    }
+//                };
+//
+//                return onScrollChangedListener;
+//            }
+//        }
 
         private void bodyAutoSwipe(DayDraggableEventView eventView, int x, int y){
             int offset = x > (parentWidth * 0.7) ? 1 : (x <= parentWidth * 0.05 ? -1 : 0);

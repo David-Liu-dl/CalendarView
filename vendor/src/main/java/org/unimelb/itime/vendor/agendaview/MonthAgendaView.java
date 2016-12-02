@@ -115,12 +115,24 @@ public class MonthAgendaView extends RelativeLayout{
             }
         });
         headerRecyclerAdapter.setOnCheckIfHasEvent(new DayViewHeader.OnCheckIfHasEvent() {
+
             @Override
             public boolean todayHasEvent(long startOfDay) {
-                if (eventPackage != null){
-                    return eventPackage.getRegularEventDayMap().containsKey(startOfDay) && (eventPackage.getRegularEventDayMap().get(startOfDay).size() != 0);
+                Map<Long, List<ITimeEventInterface>> regularMap = eventPackage.getRegularEventDayMap();
+                Map<Long, List<ITimeEventInterface>> repeatedMap = eventPackage.getRepeatedEventDayMap();
+
+                boolean hasRegular = regularMap.containsKey(startOfDay) && (regularMap.get(startOfDay).size() != 0);
+                if (hasRegular){
+                    return true;
+                }else{
+                    return repeatedMap.containsKey(startOfDay) && (repeatedMap.get(startOfDay).size() != 0);
                 }
-                return false;
+
+//
+//                if (eventPackage != null){
+//                    return eventPackage.getRegularEventDayMap().containsKey(startOfDay) && (eventPackage.getRegularEventDayMap().get(startOfDay).size() != 0);
+//                }
+//                return false;
             }
         });
         headerRecyclerView.setHasFixedSize(true);

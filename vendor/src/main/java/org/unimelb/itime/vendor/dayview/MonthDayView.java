@@ -68,8 +68,6 @@ public class MonthDayView extends LinearLayout {
 
     private int bodyPagerCurrentState = 0;
 
-    private boolean isAnimating = false;
-
     public MonthDayView(Context context) {
         super(context);
         initView();

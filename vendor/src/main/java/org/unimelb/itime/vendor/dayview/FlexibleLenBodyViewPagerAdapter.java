@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
+import org.unimelb.itime.vendor.listener.ITimeEventPackageInterface;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -20,7 +21,7 @@ public class FlexibleLenBodyViewPagerAdapter extends PagerAdapter {
     private Calendar calendar = Calendar.getInstance();
 
     ArrayList<FlexibleLenViewBody> vLists;
-    Map<Long, List<ITimeEventInterface>> dayEventMap;
+    ITimeEventPackageInterface eventPackage;
 
     int upperBounds;
     int currentDayPos;
@@ -61,7 +62,7 @@ public class FlexibleLenBodyViewPagerAdapter extends PagerAdapter {
         int offset = (position - upperBounds)*currentBodyView.getDisplayLen() - (calendar.get(Calendar.DAY_OF_WEEK)-1);
         currentBodyView.getCalendar().setOffset(offset);
         currentBodyView.resetViews();
-        currentBodyView.setEventList(this.dayEventMap);
+        currentBodyView.setEventList(this.eventPackage);
         container.addView(currentBodyView);
 
         return currentBodyView;
@@ -71,8 +72,8 @@ public class FlexibleLenBodyViewPagerAdapter extends PagerAdapter {
         for (FlexibleLenViewBody bodyView : vLists
              ) {
             long startTime = bodyView.getCalendar().getBeginOfDayMilliseconds();
-            if (this.dayEventMap.containsKey(startTime)){
-                bodyView.setEventList(this.dayEventMap);
+            if (this.eventPackage.getRegularEventDayMap().containsKey(startTime)){
+                bodyView.setEventList(this.eventPackage);
             }
         }
     }
@@ -82,8 +83,8 @@ public class FlexibleLenBodyViewPagerAdapter extends PagerAdapter {
 //        container.removeView(vLists.get(position % vLists.size()));
     }
 
-    public void setDayEventMap(Map<Long, List<ITimeEventInterface>> dayEventMap){
-        this.dayEventMap = dayEventMap;
+    public void setEventPackage(ITimeEventPackageInterface eventPackage){
+        this.eventPackage = eventPackage;
     }
 
 

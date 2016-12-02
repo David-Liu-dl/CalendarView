@@ -116,6 +116,11 @@ public class AgendaHeaderViewRecyclerAdapter extends RecyclerView.Adapter<Agenda
                 @Override
                 public void setCurrentSelectIndexInRow(int indexInRowIn) {
                     indexInRow = indexInRowIn;
+                    if (onHeaderListener != null){
+                        MyCalendar calendar = new MyCalendar(headerRow.getCalendar());
+                        calendar.setOffsetByDate(indexInRowIn);
+                        onHeaderListener.onClick(calendar);
+                    }
                 }
 
                 @Override
@@ -140,5 +145,14 @@ public class AgendaHeaderViewRecyclerAdapter extends RecyclerView.Adapter<Agenda
 
     public interface OnSynBodyListener{
         void synBody(int scrollTo);
+    }
+
+    private OnHeaderListener onHeaderListener;
+
+    public void setOnHeaderListener(OnHeaderListener onHeaderListener){
+        this.onHeaderListener = onHeaderListener;
+    }
+    public interface OnHeaderListener{
+        void onClick(MyCalendar myCalendar);
     }
 }

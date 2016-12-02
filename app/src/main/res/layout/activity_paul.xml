@@ -10,6 +10,11 @@
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="match_parent">-->
     <!--</FrameLayout>-->
+
+    <Button
+        android:id="@+id/back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
     <org.unimelb.itime.vendor.weekview.WeekView
         android:id="@+id/week_view"
         android:layout_weight="1"

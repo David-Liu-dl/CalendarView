@@ -35,6 +35,4 @@ public interface ITimeEventInterface<T> extends Comparable<T> {
     String getLocation();
 
     List<? extends ITimeInviteeInterface> getDisplayInvitee();
-
-
 }

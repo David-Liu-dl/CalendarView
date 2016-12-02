@@ -10,6 +10,7 @@ import org.unimelb.itime.vendor.R;
 import org.unimelb.itime.vendor.dayview.FlexibleLenViewBody;
 import org.unimelb.itime.vendor.helper.MyCalendar;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
+import org.unimelb.itime.vendor.listener.ITimeEventPackageInterface;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -26,7 +27,7 @@ public class WeekViewPagerAdapter extends PagerAdapter {
     private ArrayList<LinearLayout> views;
 
     private List<WeekView.TimeSlotStruct> slotsInfo;
-    private Map<Long, List<ITimeEventInterface>> dayEventMap;
+    private ITimeEventPackageInterface eventPackage;
 
     private int startPst = 0;
     private MyCalendar startCal;
@@ -80,7 +81,6 @@ public class WeekViewPagerAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        Date startDate = new Date();
         LinearLayout view = views.get(position%views.size());
         ViewGroup parent = (ViewGroup) view.getParent();
         if (parent != null){
@@ -92,10 +92,6 @@ public class WeekViewPagerAdapter extends PagerAdapter {
         this.updateBody(view, dateOffset);
 
         container.addView(view);
-
-        Date endDate = new Date();
-        long diff = endDate.getTime() - startDate.getTime();
-        Log.i(TAG, position + " diff: " + diff + " ~= " + (float)diff/1000);
 
         return view;
     }
@@ -111,12 +107,12 @@ public class WeekViewPagerAdapter extends PagerAdapter {
         return view == object;
     }
 
-    public Map<Long, List<ITimeEventInterface>> getDayEventMap() {
-        return dayEventMap;
+    public ITimeEventPackageInterface getDayEventMap() {
+        return eventPackage;
     }
 
-    public void setDayEventMap(Map<Long, List<ITimeEventInterface>> dayEventMap) {
-        this.dayEventMap = dayEventMap;
+    public void setDayEventMap(ITimeEventPackageInterface eventPackage) {
+        this.eventPackage = eventPackage;
     }
 
 
@@ -140,13 +136,13 @@ public class WeekViewPagerAdapter extends PagerAdapter {
                 final FlexibleLenViewBody nowBody = ((FlexibleLenViewBody)parent.getChildAt(i));
                 nowBody.setCalendar(cal);
                 nowBody.resetViews();
-                nowBody.setEventList(this.dayEventMap);
+                nowBody.setEventList(this.eventPackage);
 
                 nowBody.clearTimeSlots();
                 if (this.slotsInfo != null && this.slotsInfo.size() != 0){
                     for (int j = 0; j < this.slotsInfo.size(); j++) {
                         WeekView.TimeSlotStruct struct = this.slotsInfo.get(j);
-                        nowBody.addSlot(struct,true);
+                        nowBody.addSlot(struct,false);
                     }
                 }else {
                     Log.i(TAG, "slotsInfo: " + ((this.slotsInfo != null) ? "size 0":"null"));
@@ -173,8 +169,8 @@ public class WeekViewPagerAdapter extends PagerAdapter {
         for (LinearLayout weekView : views
                 ) {
             FlexibleLenViewBody bodyView = (FlexibleLenViewBody)weekView.getChildAt(1);
-            if (this.dayEventMap != null){
-                bodyView.setEventList(this.dayEventMap);
+            if (this.eventPackage != null){
+                bodyView.setEventList(this.eventPackage);
             }
         }
     }

@@ -93,39 +93,8 @@ public class PaulActivity extends AppCompatActivity {
             }
 
         });
-        weekView.enableTimeSlot();
-//        weekView.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-                Calendar cal = Calendar.getInstance();
-                long interval = 24 * 60 * 60 * 1000;
-                long duration = 60 * 60 * 1000;
-                for (int i = 0; i < 3; i++) {
-                    WeekView.TimeSlotStruct struct = new WeekView.TimeSlotStruct();
-                    struct.startTime = cal.getTimeInMillis() + i * interval;
-                    struct.endTime = struct.startTime + duration;
-                    weekView.addTimeSlot(struct);
-                }
-                weekView.reloadTimeSlots(true);
-//            }
-//        },0);
-//        weekView.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                weekView.updateTimeSlotsDuration(4*1800 * 1000,false);
-//            }
-//        },3000);
 
-//        weekView.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                weekView.removeAllOptListener();
-//            }
-//        },5000);
         weekView.setDayEventMap(EventManager.getInstance().getEventsMap());
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     private void showResult(ArrayList<String> paths) {
@@ -141,7 +110,7 @@ public class PaulActivity extends AppCompatActivity {
 
     private void loadData() {
         List<Event> allEvents = DBManager.getInstance(getApplicationContext()).getAllEvents();
-        EventManager.getInstance().getEventsMap().clearPackage();
+//        EventManager.getInstance().getEventsMap().clearPackage();
         for (Event event : allEvents
                 ) {
             EventManager.getInstance().addEvent(event);

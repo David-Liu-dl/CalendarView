@@ -636,8 +636,6 @@ public class FlexibleLenViewBody extends RelativeLayout {
                 int widthFactor = overlapGroup.get(i).first.first;
                 int startX = overlapGroup.get(i).first.second;
                 int topMargin = startY + overlapGapHeight * i + previousGroupExtraY;
-//                int topMargin = startY + previousGroupExtraY;
-//                int topMargin = startY;
                 DayDraggableEventView eventView = (DayDraggableEventView) eventLayout.findViewById(regularEventViewMap.get(overlapGroup.get(i).second));
                 eventView.setPosParam(new DayDraggableEventView.PosParam(startY, startX, widthFactor, topMargin));
                 Calendar cal = Calendar.getInstance();

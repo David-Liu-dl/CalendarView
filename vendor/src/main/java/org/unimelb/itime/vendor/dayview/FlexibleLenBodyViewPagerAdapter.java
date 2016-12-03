@@ -71,10 +71,14 @@ public class FlexibleLenBodyViewPagerAdapter extends PagerAdapter {
     public void reloadEvents(){
         for (FlexibleLenViewBody bodyView : vLists
              ) {
-            long startTime = bodyView.getCalendar().getBeginOfDayMilliseconds();
-            if (this.eventPackage.getRegularEventDayMap().containsKey(startTime)){
+//            long startTime = bodyView.getCalendar().getBeginOfDayMilliseconds();
+//            if (
+//                    this.eventPackage.getRegularEventDayMap().containsKey(startTime)
+//                    ||
+//                            this.eventPackage.getre
+//                    ){
                 bodyView.setEventList(this.eventPackage);
-            }
+//            }
         }
     }
 

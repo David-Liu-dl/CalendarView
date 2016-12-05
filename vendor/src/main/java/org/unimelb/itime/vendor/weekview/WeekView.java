@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 
 import org.unimelb.itime.vendor.dayview.DayViewHeader;
 import org.unimelb.itime.vendor.dayview.FlexibleLenBodyViewPager;
@@ -229,6 +230,26 @@ public class WeekView extends LinearLayout {
             bodyView.setCalendar(new MyCalendar(calendar));
             bodyView.setOnBodyListener(new OnBodyInnerListener());
             bodyView.setOnTimeSlotListener(new OnTimeSlotInnerListener());
+
+            final ScrollView scroller = bodyView.getScrollView();
+
+            scroller.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+                @Override
+                public void onScrollChanged() {
+                    FlexibleLenViewBody currentShow = adapter.getViewBodyByPosition(weekViewPager.getCurrentItem());
+                    if (currentShow.getScrollView() == scroller){
+                        int scrollY = scroller.getScrollY(); // For ScrollView
+                        int scrollX = scroller.getScrollX(); // For ScrollView
+
+                        for (FlexibleLenViewBody body:bodyViewList
+                                ) {
+                            if (body != currentShow){
+                                body.getScrollView().scrollTo(scrollX,scrollY);
+                            }
+                        }
+                    }
+                }
+            });
             bodyViewList.add(bodyView);
         }
 

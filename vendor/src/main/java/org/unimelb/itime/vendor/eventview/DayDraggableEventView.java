@@ -71,10 +71,10 @@ public class DayDraggableEventView extends ViewGroup {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        leftBar.layout(0, 0, leftBar.getLayoutParams().width, b-t);
+        leftBar.layout(l, 0, l + leftBar.getLayoutParams().width, b-t);
         int icon_margin = DensityUtil.dip2px(getContext(),1);
         icon.layout(r - icon.getLayoutParams().width -icon_margin,icon_margin,r,icon_margin + icon.getLayoutParams().height);
-        title.layout(leftBar.getLayoutParams().width,0,r - icon.getLayoutParams().width,b);
+        title.layout(l+leftBar.getLayoutParams().width,0, l + r - icon.getLayoutParams().width,b);
     }
 
     public static class LayoutParams extends ViewGroup.LayoutParams {
@@ -97,7 +97,7 @@ public class DayDraggableEventView extends ViewGroup {
 
     private void initDarkLeftBorder(){
         leftBar = new ImageView(this.getContext());
-        LayoutParams param = new LayoutParams(DensityUtil.dip2px(getContext(), 2),0);
+        LayoutParams param = new LayoutParams(DensityUtil.dip2px(getContext(), 3),0);
         this.addView(leftBar,param);
     }
 

@@ -69,6 +69,10 @@ public class DayInnerBodyEventLayout extends ViewGroup {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int width = MeasureSpec.getSize(widthMeasureSpec);
         int cCount = getChildCount();
+        int paddingLeft  = this.getPaddingLeft();
+        int paddingRight  = this.getPaddingRight();
+        width = width - (paddingLeft + paddingRight);
+
         for (int i = 0; i < cCount; i++) {
             if (getChildAt(i) instanceof TimeSlotView) {
                 getChildAt(i).getLayoutParams().width = width;
@@ -98,14 +102,17 @@ public class DayInnerBodyEventLayout extends ViewGroup {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         int cCount = getChildCount();
+        int paddingLeft  = this.getPaddingLeft();
+        int paddingRight  = this.getPaddingRight();
+
         for (int i = 0; i < cCount; i++) {
             View child = getChildAt(i);
             if (child instanceof DayDraggableEventView){
-                child.layout(0, 0, child.getLayoutParams().width, child.getLayoutParams().height);
+                child.layout(paddingLeft, 0, paddingLeft + child.getLayoutParams().width, child.getLayoutParams().height);
             }
             
             if (child instanceof TimeSlotView){
-                child.layout(0, 0, child.getLayoutParams().width, child.getLayoutParams().height);
+                child.layout(paddingLeft, 0, paddingLeft + child.getLayoutParams().width, child.getLayoutParams().height);
             }
         }
     }

@@ -271,7 +271,6 @@ public class FlexibleLenViewBody extends RelativeLayout {
             eventLayout.setPadding(eventLayoutPadding,0,eventLayoutPadding,0);
             parent.addView(eventLayout,params);
             if (!isTimeSlotEnable){
-//                eventLayout.setBackgroundColor(i%2 == 0 ? Color.RED : Color.BLACK);
                 eventLayout.setOnDragListener(new EventDragListener(i));
                 eventLayout.setOnLongClickListener(new CreateEventListener());
             }else {

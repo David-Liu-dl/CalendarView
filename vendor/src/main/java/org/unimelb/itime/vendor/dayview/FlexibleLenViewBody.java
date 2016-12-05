@@ -394,6 +394,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
             ImageView dividerImageView = new ImageView(context);
             dividerImageView.setImageResource(R.drawable.itime_day_view_dotted);
             dividerImageView.setY(this.nearestTimeSlotValue(numOfDottedLine));
+            dividerImageView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             dividerImageView.setLayoutParams(params);
             dividerImageView.setPadding(0, 0, 0, 0);
             dividerBgRLayout.addView(dividerImageView);

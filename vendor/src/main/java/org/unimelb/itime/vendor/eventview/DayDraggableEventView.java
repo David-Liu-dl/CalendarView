@@ -97,7 +97,7 @@ public class DayDraggableEventView extends ViewGroup {
 
     private void initDarkLeftBorder(){
         leftBar = new ImageView(this.getContext());
-        LayoutParams param = new LayoutParams(DensityUtil.dip2px(getContext(), 3),0);
+        LayoutParams param = new LayoutParams(DensityUtil.dip2px(getContext(), 2),0);
         this.addView(leftBar,param);
     }
 

@@ -332,6 +332,10 @@ public class FlexibleLenViewBody extends RelativeLayout {
         initDividerLine(getHours());
     }
 
+    public ScrollView getScrollView(){
+        return this.scrollContainerView;
+    }
+
     private void initTimeSlot() {
         double startPoint = timeTextSize * 0.5;
         double timeSlotHeight = lineHeight / 4;

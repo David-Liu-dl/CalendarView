@@ -1,7 +1,5 @@
 package org.unimelb.itime.vendor.dayview;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.databinding.BindingMethod;
@@ -11,15 +9,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 
 import org.unimelb.itime.vendor.R;
-import org.unimelb.itime.vendor.agendaview.AgendaHeaderViewRecyclerAdapter;
 import org.unimelb.itime.vendor.eventview.DayDraggableEventView;
 import org.unimelb.itime.vendor.helper.MyCalendar;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
@@ -28,9 +25,7 @@ import org.unimelb.itime.vendor.listener.ITimeEventPackageInterface;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * Created by yuhaoliu on 10/08/16.
@@ -288,9 +283,47 @@ public class MonthDayView extends LinearLayout {
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
+
         for (int i = 0; i < size; i++) {
             FlexibleLenViewBody bodyView = (FlexibleLenViewBody) LayoutInflater.from(this.context).inflate(R.layout.itime_day_view_body_view, null);
             bodyView.setCalendar(new MyCalendar(calendar));
+
+            final ScrollView scroller = bodyView.getScrollView();
+
+            scroller.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+                @Override
+                public void onScrollChanged() {
+                    FlexibleLenViewBody currentShow = bodyPagerAdapter.getViewByPosition(bodyPager.getCurrentItem());
+                    if (currentShow.getScrollView() == scroller){
+                        int scrollY = scroller.getScrollY(); // For ScrollView
+                        int scrollX = scroller.getScrollX(); // For ScrollView
+
+                        for (FlexibleLenViewBody body:bodyViewList
+                             ) {
+                            if (body != currentShow){
+                                body.getScrollView().scrollTo(scrollX,scrollY);
+                            }
+                        }
+                    }
+                }
+            });
+
+//            scroller.setOnScrollChangeListener(new OnScrollChangeListener() {
+//                @Override
+//                public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+//                    int x = scroller.getScrollX();
+//                    int y = scroller.getScrollY();
+//
+//                    for (FlexibleLenViewBody bodyView:bodyViewList
+//                         ) {
+//                        ScrollView scrollerInner = bodyView.getScrollView();
+//                        if(scrollerInner != scroller){
+//                            scrollerInner.scrollTo(x,y);
+//                        }
+//                    }
+//                }
+//            });
+
             bodyViewList.add(bodyView);
             bodyView.setOnBodyTouchListener(new FlexibleLenViewBody.OnBodyTouchListener() {
                 @Override
@@ -338,21 +371,7 @@ public class MonthDayView extends LinearLayout {
                             view.requestLayout();
                         }
                     });
-//                    va.addListener(new AnimatorListenerAdapter()
-//                    {
-//                        @Override
-//                        public void onAnimationEnd(Animator animation)
-//                        {
-//                            postDelayed(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    isAnimating = false;
-//                                }
-//                            },10);
-//                        }
-//                    });
                     va.setDuration(200);
-//                    isAnimating = true;
                     va.start();
                 }
             }
@@ -437,53 +456,6 @@ public class MonthDayView extends LinearLayout {
             cal.setTimeInMillis(eventView.getStartTimeM());
             if (OnBodyOuterListener != null){OnBodyOuterListener.onEventDragDrop(eventView);}
         }
-
-//        @Override
-//        public ViewTreeObserver.OnScrollChangedListener setScrollChangeListener() {
-//
-//            if (OnBodyOuterListener != null && OnBodyOuterListener.setScrollChangeListener() != null){
-//                return OnBodyOuterListener.setScrollChangeListener();
-//            }else{
-//                ViewTreeObserver.OnScrollChangedListener onScrollChangedListener = new ViewTreeObserver.OnScrollChangedListener() {
-//                    @Override
-//                    public void onScrollChanged() {
-//                        final View needChangeView = headerRecyclerView;
-//
-//                        if (!isAnimating && needChangeView.getHeight() == scroll_height){
-//                            headerRecyclerView.stopScroll();
-//                            headerLinearLayoutManager.scrollToPositionWithOffset(headerRecyclerAdapter.getCurrentSelectPst(), 0);
-//                            final View view = needChangeView;
-//                            ValueAnimator va = ValueAnimator.ofInt(scroll_height, init_height);
-//                            va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-//                                public void onAnimationUpdate(ValueAnimator animation) {
-//                                    Integer value = (Integer) animation.getAnimatedValue();
-//                                    view.getLayoutParams().height = value.intValue();
-//                                    view.requestLayout();
-//                                }
-//                            });
-//                            va.setDuration(200);
-//                            va.addListener(new AnimatorListenerAdapter()
-//                            {
-//                                @Override
-//                                public void onAnimationEnd(Animator animation)
-//                                {
-//                                    postDelayed(new Runnable() {
-//                                        @Override
-//                                        public void run() {
-//                                            isAnimating = false;
-//                                        }
-//                                    },10);
-//                                }
-//                            });
-//                            isAnimating = true;
-//                            va.start();
-//                        }
-//                    }
-//                };
-//
-//                return onScrollChangedListener;
-//            }
-//        }
 
         private void bodyAutoSwipe(DayDraggableEventView eventView, int x, int y){
             int offset = x > (parentWidth * 0.7) ? 1 : (x <= parentWidth * 0.05 ? -1 : 0);

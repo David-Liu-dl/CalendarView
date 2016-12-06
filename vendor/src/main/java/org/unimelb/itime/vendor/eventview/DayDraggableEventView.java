@@ -1,12 +1,20 @@
 package org.unimelb.itime.vendor.eventview;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +51,15 @@ public class DayDraggableEventView extends ViewGroup {
     private MyCalendar newCalendar = new MyCalendar(Calendar.getInstance());
 
     private ITimeEventInterface event;
+
+    private int color;
+    private String status;
+    private String icon_name;
+
     private PosParam posParam;
+
+    private int width;
+    private int height;
 
     public MyCalendar getNewCalendar() {
         return newCalendar;
@@ -56,12 +72,29 @@ public class DayDraggableEventView extends ViewGroup {
     public DayDraggableEventView(Context context, @Nullable ITimeEventInterface event, boolean isAllDayEvent) {
         super(context);
         this.event = event;
+        initAttrs();
+
+
         this.isAllDayEvent = isAllDayEvent;
-        this.setBackground(getResources().getDrawable(R.drawable.itime_draggable_event_bg));
+        this.setBackgroundDrawable(getResources().getDrawable(R.drawable.itime_draggable_event_bg));
         ((GradientDrawable)this.getBackground()).setColor(Color.BLUE);
 
         initBackground();
         initDataInViews();
+    }
+
+    private void initAttrs(){
+        String dpStatus = event.getDisplayStatus();
+        if (dpStatus != null && !dpStatus.equals("")){
+            String[] attrs = dpStatus.split("\\|");
+            if (attrs.length < 3){
+                Log.i(TAG, "initAttrs: attrs is not sufficient.");
+            }else{
+                this.color = Color.parseColor(attrs[0]);
+                this.status = attrs[1];
+                this.icon_name = attrs[2];
+            }
+        }
     }
 
     @Override
@@ -70,7 +103,31 @@ public class DayDraggableEventView extends ViewGroup {
     }
 
     @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
+        if(this.event != null && this.status.equals("slash")){
+            Paint p = new Paint();
+            p.setAntiAlias(true);
+            p.setColor(Color.WHITE);
+            p.setStrokeWidth(DensityUtil.dip2px(getContext(),1));
+            int nowAtPxX = (int)(-width*0.5);
+            int nowAtPxY = 0;
+            int xDiffer = DensityUtil.dip2px(getContext(),30);
+            int xGap = DensityUtil.dip2px(getContext(),10);
+
+            while (nowAtPxX <= width){
+                canvas.drawLine(nowAtPxX, nowAtPxY, nowAtPxX + xDiffer, height, p);
+                nowAtPxX += xGap;
+            }
+        }
+    }
+
+    @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        width = r - l;
+        height = b - t;
+
         leftBar.layout(l, 0, l + leftBar.getLayoutParams().width, b-t);
         int icon_margin = DensityUtil.dip2px(getContext(),1);
         icon.layout(r - icon.getLayoutParams().width -icon_margin,icon_margin,r,icon_margin + icon.getLayoutParams().height);
@@ -114,19 +171,19 @@ public class DayDraggableEventView extends ViewGroup {
     }
 
     private void setType(){
-        int color = Color.RED;
-
-        switch (this.event.getDisplayEventType()){
-            case 0:
-                color = getContext().getResources().getColor(R.color.private_et);
-                break;
-            case 1:
-                color = getContext().getResources().getColor(R.color.group_et);
-                break;
-            case 2:
-                color = getContext().getResources().getColor(R.color.public_et);
-                break;
-        }
+//        int color = Color.RED;
+//
+//        switch (this.event.getDisplayEventType()){
+//            case 0:
+//                color = getContext().getResources().getColor(R.color.private_et);
+//                break;
+//            case 1:
+//                color = getContext().getResources().getColor(R.color.group_et);
+//                break;
+//            case 2:
+//                color = getContext().getResources().getColor(R.color.public_et);
+//                break;
+//        }
 
         this.setBackground(getResources().getDrawable(R.drawable.itime_draggable_event_bg));
         ((GradientDrawable)this.getBackground()).setColor(color);
@@ -137,8 +194,8 @@ public class DayDraggableEventView extends ViewGroup {
 
     private void setStatus(){
         long duration = this.event.getEndTime() - this.event.getStartTime();
-        boolean useSmallIcon = ((duration <= (15 * 60 * 1000)) || isAllDayEvent);
-        this.resetIcon(getStatusIcon(this.event.getDisplayStatus(), useSmallIcon));
+//        boolean useSmallIcon = ((duration <= (15 * 60 * 1000)) || isAllDayEvent);
+//        this.resetIcon(getStatusIcon(this.event.getDisplayStatus(), useSmallIcon));
     }
 
     private int getStatusIcon(int status, boolean useSmallIcon){
@@ -185,10 +242,6 @@ public class DayDraggableEventView extends ViewGroup {
         title.setTextColor(Color.WHITE);
         title.setIncludeFontPadding(false);
         title.setPadding(padding,padding,padding,padding);
-//        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//        params.addRule(RelativeLayout.RIGHT_OF, leftBar.getId());
-//        params.addRule(RelativeLayout.LEFT_OF, icon.getId());
-//        this.addView(title,params);
         this.addView(title);
     }
 

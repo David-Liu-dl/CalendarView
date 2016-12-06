@@ -147,6 +147,24 @@ public class WeekView extends LinearLayout {
         });
     }
 
+    public void scrollToWithOffset(final long time){
+        final Calendar temp = Calendar.getInstance();
+        temp.setTimeInMillis(time);
+
+        ViewTreeObserver vto = this.getViewTreeObserver();
+        final ViewGroup self = this;
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                self.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                weekViewPager.setCurrentItem(upperBoundsOffset + getRowDiff(temp),false);
+
+            }
+        });
+        FlexibleLenViewBody currentBody = adapter.getViewBodyByPosition(weekViewPager.getCurrentItem());
+        currentBody.scrollToTime(time);
+    }
+
     public int getRowDiff(Calendar body_fst_cal){
 
             MyCalendar tempH = new MyCalendar(Calendar.getInstance());

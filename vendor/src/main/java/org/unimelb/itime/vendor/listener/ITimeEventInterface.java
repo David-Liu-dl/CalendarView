@@ -21,7 +21,7 @@ public interface ITimeEventInterface<T> extends Comparable<T> {
     int getDisplayEventType();
 
 //    void setDisplayStatus(int statusId);
-    int getDisplayStatus();
+    String getDisplayStatus();
 
     /**
      * Note: Display status:

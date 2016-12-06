@@ -181,10 +181,10 @@ public class AgendaViewInnerBody extends RelativeLayout {
         eventStatusView = new ImageView(context);
         eventStatusView.setId(generateViewId());
         eventStatusView.setPadding(0, DensityUtil.dip2px(context, 10), DensityUtil.dip2px(context, 10), 0);
-        int iconId = getStatusIcon(this.event.getDisplayStatus(), true);
-        if (iconId != -1) {
-            eventStatusView.setImageDrawable(context.getResources().getDrawable(iconId));
-        }
+//        int iconId = getStatusIcon(this.event.getDisplayStatus(), true);
+//        if (iconId != -1) {
+//            eventStatusView.setImageDrawable(context.getResources().getDrawable(iconId));
+//        }
         RelativeLayout.LayoutParams eventStatusViewParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         eventStatusViewParams.addRule(ALIGN_TOP, rightInfo.getId());
         eventStatusViewParams.addRule(ALIGN_PARENT_RIGHT);
@@ -281,7 +281,6 @@ public class AgendaViewInnerBody extends RelativeLayout {
 
     private void initEventShowAttrs(ITimeEventInterface event) {
         type = event.getDisplayEventType();
-        status = event.getDisplayStatus();
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(event.getStartTime());

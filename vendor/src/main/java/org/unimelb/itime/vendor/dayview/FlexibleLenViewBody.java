@@ -639,7 +639,8 @@ public class FlexibleLenViewBody extends RelativeLayout {
                 int startY = getEventY(overlapGroup.get(i).second);
                 int widthFactor = overlapGroup.get(i).first.first;
                 int startX = overlapGroup.get(i).first.second;
-                int topMargin = startY + overlapGapHeight * i + previousGroupExtraY;
+//                int topMargin = startY + overlapGapHeight * i + previousGroupExtraY;
+                int topMargin = startY + previousGroupExtraY;
                 DayDraggableEventView eventView = (DayDraggableEventView) eventLayout.findViewById(regularEventViewMap.get(overlapGroup.get(i).second));
                 eventView.setPosParam(new DayDraggableEventView.PosParam(startY, startX, widthFactor, topMargin));
                 Calendar cal = Calendar.getInstance();
@@ -909,6 +910,16 @@ public class FlexibleLenViewBody extends RelativeLayout {
             int offsetY = scrollContainerView.getScrollY() + DensityUtil.dip2px(context, 10);
             scrollContainerView.smoothScrollTo(scrollContainerView.getScrollX(), offsetY);
         }
+    }
+
+    public void scrollToTime(long time) {
+        String hourWithMinutes = sdf.format(new Date(time));
+
+        String[] components = hourWithMinutes.split(":");
+        float trickTime = Integer.valueOf(components[0]) + Integer.valueOf(components[1]) / (float) 100;
+        int getStartY = nearestTimeSlotValue(trickTime);
+
+        this.scrollContainerView.scrollTo(this.scrollContainerView.getScrollX(), (int)(getStartY + rightContentLayout.getY() - DensityUtil.dip2px(context,10)));
     }
 
     private void msgWindowFollow(int tapX, int tapY, int index, View followView) {

@@ -95,6 +95,16 @@ public class PaulActivity extends AppCompatActivity {
         });
 
         weekView.setDayEventMap(EventManager.getInstance().getEventsMap());
+
+        weekView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.HOUR_OF_DAY,18);
+                calendar.set(Calendar.MINUTE,30);
+                weekView.scrollToWithOffset(calendar.getTimeInMillis());
+            }
+        },1000);
     }
 
     private void showResult(ArrayList<String> paths) {

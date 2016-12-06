@@ -210,6 +210,26 @@ public class MonthDayView extends LinearLayout {
         });
     }
 
+    public void scrollToWithOffset(final long time){
+        final Calendar temp = Calendar.getInstance();
+        temp.setTimeInMillis(time);
+
+        ViewTreeObserver vto = this.getViewTreeObserver();
+        final ViewGroup self = this;
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                self.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                headerRecyclerView.stopScroll();
+                headerScrollToDate(temp);
+
+            }
+        });
+
+        FlexibleLenViewBody currentBody = bodyPagerAdapter.getViewByPosition(bodyPager.getCurrentItem());
+        currentBody.scrollToTime(time);
+    }
+
     public void backToToday(){
         this.headerRecyclerView.stopScroll();
         this.headerRecyclerView.scrollToPosition(upperBoundsOffset);

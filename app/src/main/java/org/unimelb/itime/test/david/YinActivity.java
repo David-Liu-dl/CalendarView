@@ -143,7 +143,7 @@ public class YinActivity extends AppCompatActivity {
             Event event = new Event();
             event.setEventUid("" + i);
             event.setDisplayEventType(i%type.length);
-            event.setDisplayStatus(i%status.length);
+            event.setDisplayStatus("#63ADF2|slash|icon_normal");
             event.setLocation("here");
             event.setStartTime(startTime);
             Calendar cal = Calendar.getInstance();
@@ -186,7 +186,7 @@ public class YinActivity extends AppCompatActivity {
                     event_clone.setEventUid(uuuid);
                     event_clone.setTitle(title);
                     event_clone.setDisplayEventType(0);
-                    event_clone.setDisplayStatus(0);
+                    event_clone.setDisplayStatus("#63ADF2|slash|icon_normal");
                     event_clone.setStartTime(startTime);
                     event_clone.setEndTime(endTime);
                     event_clone.setLocation("here");

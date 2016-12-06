@@ -143,6 +143,15 @@ public class DavidActivity extends AppCompatActivity {
             }
         });
 
+        monthDayView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.HOUR_OF_DAY,10);
+                calendar.set(Calendar.MINUTE,30);
+                monthDayView.scrollToWithOffset(calendar.getTimeInMillis());
+            }
+        },1000);
     }
 
 //    private void doMonthAgendaViewThings(){
@@ -235,7 +244,7 @@ public class DavidActivity extends AppCompatActivity {
             event.setEventUid("" + i);
             event.setTitle("adawdwadwadaw" + i);
             event.setDisplayEventType(0);
-            event.setDisplayStatus(0);
+            event.setDisplayStatus("#63ADF2|slash|icon_normal");
             event.setLocation("here");
             event.setStartTime(startTime);
 

@@ -90,7 +90,7 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
     private int eventType;
     @Property
     @NotNull
-    private int status;
+    private String display;
 
     @ToMany(referencedJoinProperty = "eventUid")
     private List<Invitee> invitee = null;
@@ -104,11 +104,12 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
     public Event() {
     }
 
-    @Generated(hash = 1257694514)
+    @Generated(hash = 217815341)
     public Event(String eventUid, String eventId, String recurringEventUid, String recurringEventId,
             String calendarUid, String iCalUID, String hostUserUid, String summary, String url,
             String location, String locationNote, double locationLatitude, double locationLongitude,
-            String note, String photo, long startTime, long endTime, int eventType, int status) {
+            String note, String photo, long startTime, long endTime, int eventType,
+            @NotNull String display) {
         this.eventUid = eventUid;
         this.eventId = eventId;
         this.recurringEventUid = recurringEventUid;
@@ -127,8 +128,10 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
         this.startTime = startTime;
         this.endTime = endTime;
         this.eventType = eventType;
-        this.status = status;
+        this.display = display;
     }
+
+
 
     @Override
     public void setTitle(String summary) {
@@ -168,12 +171,12 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
         return eventType;
     }
 
-    public int getDisplayStatus() {
-        return status;
+    public String getDisplayStatus() {
+        return display;
     }
 
-    public void setDisplayStatus(int status) {
-        this.status = status;
+    public void setDisplayStatus(String display) {
+        this.display = display;
     }
 
     public int getDuration(){
@@ -503,19 +506,6 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
     }
 
 
-
-    public int getStatus() {
-        return this.status;
-    }
-
-
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-
-
     public int getEventType() {
         return this.eventType;
     }
@@ -524,6 +514,14 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
 
     public void setEventType(int eventType) {
         this.eventType = eventType;
+    }
+
+    public String getDisplay() {
+        return this.display;
+    }
+
+    public void setDisplay(String display) {
+        this.display = display;
     }
 
 }

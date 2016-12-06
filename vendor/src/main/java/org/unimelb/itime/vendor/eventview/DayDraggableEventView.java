@@ -74,7 +74,6 @@ public class DayDraggableEventView extends ViewGroup {
         this.event = event;
         initAttrs();
 
-
         this.isAllDayEvent = isAllDayEvent;
         this.setBackgroundDrawable(getResources().getDrawable(R.drawable.itime_draggable_event_bg));
         ((GradientDrawable)this.getBackground()).setColor(Color.BLUE);
@@ -106,7 +105,10 @@ public class DayDraggableEventView extends ViewGroup {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        if(this.event != null && this.status.equals("slash")){
+        if(this.event != null
+                && this.status != null
+                && !this.status.equals("")
+                && this.status.equals("slash")){
             Paint p = new Paint();
             p.setAntiAlias(true);
             p.setColor(Color.WHITE);
@@ -173,17 +175,19 @@ public class DayDraggableEventView extends ViewGroup {
     private void setType(){
 //        int color = Color.RED;
 //
-//        switch (this.event.getDisplayEventType()){
-//            case 0:
-//                color = getContext().getResources().getColor(R.color.private_et);
-//                break;
-//            case 1:
-//                color = getContext().getResources().getColor(R.color.group_et);
-//                break;
-//            case 2:
-//                color = getContext().getResources().getColor(R.color.public_et);
-//                break;
-//        }
+        if (color == 0){
+            switch (this.event.getDisplayEventType()){
+                case 0:
+                    color = getContext().getResources().getColor(R.color.private_et);
+                    break;
+                case 1:
+                    color = getContext().getResources().getColor(R.color.group_et);
+                    break;
+                case 2:
+                    color = getContext().getResources().getColor(R.color.public_et);
+                    break;
+            }
+        }
 
         this.setBackground(getResources().getDrawable(R.drawable.itime_draggable_event_bg));
         ((GradientDrawable)this.getBackground()).setColor(color);

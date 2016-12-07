@@ -50,7 +50,7 @@ public class DayViewHeader extends LinearLayout {
     private int headerNormalTextColorEven = Color.BLACK;
     private int headerSelectedTextColor = Color.WHITE;
     private int todaySelectedCircleBgColor = Color.RED;
-    private int otherSelectedCircleBgColor = Color.BLUE;
+    private int otherSelectedCircleBgColor = getResources().getColor(R.color.group_et);
 
     private float textTitleRatio = 1f;
 
@@ -110,6 +110,7 @@ public class DayViewHeader extends LinearLayout {
                 headerSelectedTextColor = typedArray.getColor(R.styleable.dayStyle_headerSelectedTextColor, headerSelectedTextColor);
                 todaySelectedCircleBgColor = typedArray.getColor(R.styleable.dayStyle_todaySelectedCircleBgColor, todaySelectedCircleBgColor);
                 otherSelectedCircleBgColor = typedArray.getColor(R.styleable.dayStyle_otherSelectedCircleBgColor, otherSelectedCircleBgColor);
+
                 typedArray.recycle();
             }
         }

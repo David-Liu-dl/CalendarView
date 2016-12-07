@@ -452,6 +452,9 @@ public class WeekView extends LinearLayout {
 
     public void addTimeSlot(TimeSlotStruct slotInfo){
         slotsInfo.add(slotInfo);
+        if (adapter != null){
+            adapter.notifyDataSetChanged();
+        }
     }
 
     public void resetTimeSlots(){

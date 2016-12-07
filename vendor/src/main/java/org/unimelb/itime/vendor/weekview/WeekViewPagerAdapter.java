@@ -148,12 +148,6 @@ public class WeekViewPagerAdapter extends PagerAdapter {
                     Log.i(TAG, "slotsInfo: " + ((this.slotsInfo != null) ? "size 0":"null"));
                 }
 
-//                nowBody.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        nowBody.updateTimeSlotsDuration(2 * 3600 * 1000);
-//                    }
-//                },6000);
             }
         }
     }

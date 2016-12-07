@@ -1121,11 +1121,12 @@ public class FlexibleLenViewBody extends RelativeLayout {
              ) {
             int offset = this.getEventContainerIndex(tsV.getStartTime());
 
-            if (offset < displayLen && offset > -1){
-                long startTime = tsV.getStartTime();
+            long startTime = tsV.getStartTime();
 
-                tsV.setTimes(startTime, startTime + duration);
-                ((WeekView.TimeSlotStruct)tsV.getTag()).endTime = startTime + duration;
+            tsV.setTimes(startTime, startTime + duration);
+            ((WeekView.TimeSlotStruct)tsV.getTag()).endTime = startTime + duration;
+
+            if (offset < displayLen && offset > -1){
                 resizeTimeSlot(tsV,animate);
             }
         }

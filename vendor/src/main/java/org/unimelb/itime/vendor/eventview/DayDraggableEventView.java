@@ -115,7 +115,7 @@ public class DayDraggableEventView extends ViewGroup {
             p.setStrokeWidth(DensityUtil.dip2px(getContext(),1));
 
             float slope = 0.8f;
-            int nowAtPxX = (int)(-width*0.5);
+            int nowAtPxX = 0 - height;
             int nowAtPxY = 0;
 
             int xDiffer = DensityUtil.dip2px(getContext(),30);
@@ -174,6 +174,7 @@ public class DayDraggableEventView extends ViewGroup {
 
     private void setSummary(){
         title.setText(event.getTitle());
+//        title.setText("fuck");
     }
 
     private void setType(){

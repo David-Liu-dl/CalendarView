@@ -113,13 +113,17 @@ public class DayDraggableEventView extends ViewGroup {
             p.setAntiAlias(true);
             p.setColor(Color.WHITE);
             p.setStrokeWidth(DensityUtil.dip2px(getContext(),1));
+
+            float slope = 0.8f;
             int nowAtPxX = (int)(-width*0.5);
             int nowAtPxY = 0;
+
             int xDiffer = DensityUtil.dip2px(getContext(),30);
             int xGap = DensityUtil.dip2px(getContext(),10);
 
             while (nowAtPxX <= width){
-                canvas.drawLine(nowAtPxX, nowAtPxY, nowAtPxX + xDiffer, height, p);
+//                canvas.drawLine(nowAtPxX, nowAtPxY, nowAtPxX + xDiffer, height, p);
+                canvas.drawLine(nowAtPxX, nowAtPxY, nowAtPxX + height, height, p);
                 nowAtPxX += xGap;
             }
         }

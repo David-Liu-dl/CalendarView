@@ -4,6 +4,7 @@ import android.support.v4.view.PagerAdapter;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 import org.unimelb.itime.vendor.listener.ITimeEventPackageInterface;
@@ -71,14 +72,7 @@ public class FlexibleLenBodyViewPagerAdapter extends PagerAdapter {
     public void reloadEvents(){
         for (FlexibleLenViewBody bodyView : vLists
              ) {
-//            long startTime = bodyView.getCalendar().getBeginOfDayMilliseconds();
-//            if (
-//                    this.eventPackage.getRegularEventDayMap().containsKey(startTime)
-//                    ||
-//                            this.eventPackage.getre
-//                    ){
                 bodyView.setEventList(this.eventPackage);
-//            }
         }
     }
 
@@ -89,6 +83,13 @@ public class FlexibleLenBodyViewPagerAdapter extends PagerAdapter {
 
     public void setEventPackage(ITimeEventPackageInterface eventPackage){
         this.eventPackage = eventPackage;
+    }
+
+    public void removeAllOptListener(){
+        for (FlexibleLenViewBody bodyView : vLists
+                ) {
+            bodyView.removeOptListener();
+        }
     }
 
 

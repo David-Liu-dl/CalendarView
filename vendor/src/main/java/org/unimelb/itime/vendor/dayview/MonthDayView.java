@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,6 +67,18 @@ public class MonthDayView extends LinearLayout {
     public MonthDayView(Context context) {
         super(context);
         initView();
+    }
+
+    public void hideHeader(){
+        if (this.headerRecyclerView != null){
+            this.headerRecyclerView.setVisibility(View.GONE);
+        }
+    }
+
+    public void removeAllOptListener(){
+        if (bodyPagerAdapter != null){
+            bodyPagerAdapter.removeAllOptListener();
+        }
     }
 
     public MonthDayView(Context context, AttributeSet attrs) {
@@ -214,20 +227,25 @@ public class MonthDayView extends LinearLayout {
         final Calendar temp = Calendar.getInstance();
         temp.setTimeInMillis(time);
 
-        ViewTreeObserver vto = this.getViewTreeObserver();
-        final ViewGroup self = this;
-        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                self.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                headerRecyclerView.stopScroll();
-                headerScrollToDate(temp);
-
-            }
-        });
-
-        FlexibleLenViewBody currentBody = bodyPagerAdapter.getViewByPosition(bodyPager.getCurrentItem());
-        currentBody.scrollToTime(time);
+        if (this.getHeight() == 0) {
+            ViewTreeObserver vto = this.getViewTreeObserver();
+            final ViewGroup self = this;
+            vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    self.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    headerRecyclerView.stopScroll();
+                    headerScrollToDate(temp);
+                    FlexibleLenViewBody currentBody = bodyPagerAdapter.getViewByPosition(bodyPager.getCurrentItem());
+                    currentBody.scrollToTime(time);
+                }
+            });
+        }else{
+            headerRecyclerView.stopScroll();
+            headerScrollToDate(temp);
+            FlexibleLenViewBody currentBody = bodyPagerAdapter.getViewByPosition(bodyPager.getCurrentItem());
+            currentBody.scrollToTime(time);
+        }
     }
 
     public void backToToday(){

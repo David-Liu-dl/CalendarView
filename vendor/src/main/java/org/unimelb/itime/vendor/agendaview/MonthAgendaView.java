@@ -80,6 +80,12 @@ public class MonthAgendaView extends RelativeLayout{
         initView();
     }
 
+    public void hideHeader(){
+        if (this.headerRecyclerView != null){
+            this.headerRecyclerView.setVisibility(View.GONE);
+        }
+    }
+
     private void initView(){
         this.context = getContext();
 

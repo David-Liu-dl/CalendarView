@@ -143,15 +143,11 @@ public class DavidActivity extends AppCompatActivity {
             }
         });
 
-        monthDayView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(Calendar.HOUR_OF_DAY,10);
-                calendar.set(Calendar.MINUTE,30);
-                monthDayView.scrollToWithOffset(calendar.getTimeInMillis());
-            }
-        },1000);
+        final Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE,2);
+        calendar.set(Calendar.HOUR_OF_DAY,10);
+        calendar.set(Calendar.MINUTE,30);
+        monthDayView.scrollToWithOffset(calendar.getTimeInMillis());
     }
 
 //    private void doMonthAgendaViewThings(){

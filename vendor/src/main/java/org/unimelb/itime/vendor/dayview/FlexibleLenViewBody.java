@@ -917,9 +917,9 @@ public class FlexibleLenViewBody extends RelativeLayout {
 
         String[] components = hourWithMinutes.split(":");
         float trickTime = Integer.valueOf(components[0]) + Integer.valueOf(components[1]) / (float) 100;
-        int getStartY = nearestTimeSlotValue(trickTime);
+        final int getStartY = nearestTimeSlotValue(trickTime);
 
-        this.scrollContainerView.scrollTo(this.scrollContainerView.getScrollX(), (int)(getStartY + rightContentLayout.getY() - DensityUtil.dip2px(context,10)));
+        scrollContainerView.scrollTo(scrollContainerView.getScrollX(), (int)(getStartY + rightContentLayout.getY() - DensityUtil.dip2px(context,10)));
     }
 
     private void msgWindowFollow(int tapX, int tapY, int index, View followView) {

@@ -137,7 +137,10 @@ public class DayDraggableEventView extends ViewGroup {
         leftBar.layout(l, 0, l + leftBar.getLayoutParams().width, b-t);
         int icon_margin = DensityUtil.dip2px(getContext(),1);
         icon.layout(r - icon.getLayoutParams().width -icon_margin,icon_margin,r,icon_margin + icon.getLayoutParams().height);
-        title.layout(l+leftBar.getLayoutParams().width,0, l + r - icon.getLayoutParams().width,b);
+//        icon.layout(r - icon.getLayoutParams().width -icon_margin,t,r, t+icon.getLayoutParams().height);
+//        title.layout(l+leftBar.getLayoutParams().width,0, l + r - icon.getLayoutParams().width,b);
+//        title.layout(l+leftBar.getLayoutParams().width,0, l + r,b);
+        title.layout(l+leftBar.getLayoutParams().width,(int) (icon.getLayoutParams().height * 0.7), l + r,b);
     }
 
     public static class LayoutParams extends ViewGroup.LayoutParams {
@@ -222,15 +225,17 @@ public class DayDraggableEventView extends ViewGroup {
 
     /****************************************************************************************/
     private void initBackground(){
-        initIcon();
         initDarkLeftBorder();
         initEventTitle();
+        initIcon();
     }
 
     private void initIcon(){
         icon = new ImageView(getContext());
         icon.setImageResource(R.drawable.itime_question_mark_small);
         LayoutParams params = new LayoutParams(DensityUtil.dip2px(getContext(), 15),DensityUtil.dip2px(getContext(), 15));
+        icon.setPadding(0,0,0,0);
+
         this.addView(icon,params);
     }
 
@@ -245,12 +250,13 @@ public class DayDraggableEventView extends ViewGroup {
     private void initEventTitle(){
         int padding = DensityUtil.dip2px(getContext(), isAllDayEvent ? 1 : 3);
         title = new TextView(getContext());
-        title.setMaxLines(1);
+//        title.setMaxLines(1);
+        title.setTextSize(11);
         title.setEllipsize(TextUtils.TruncateAt.END);
         title.setGravity(Gravity.CENTER_VERTICAL);
         title.setTextColor(Color.WHITE);
-        title.setIncludeFontPadding(false);
-        title.setPadding(padding,padding,padding,padding);
+        title.setIncludeFontPadding(true);
+        title.setPadding(padding,0,padding,0);
         this.addView(title);
     }
 

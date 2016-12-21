@@ -566,7 +566,8 @@ public class FlexibleLenViewBody extends RelativeLayout {
     private int getEventContainerIndex(long startTime){
         long today = this.myCalendar.getBeginOfDayMilliseconds();
         long dayLong = (24 * 60 * 60 * 1000);
-        return (int)((startTime - today)/ dayLong);
+
+        return (int)(Math.floor((float)(startTime - today)/ dayLong));
     }
 
     private boolean isAllDayEvent(ITimeEventInterface event) {
@@ -1044,9 +1045,15 @@ public class FlexibleLenViewBody extends RelativeLayout {
     }
 
     public void addSlot(WeekView.TimeSlotStruct struct, boolean animate){
+//        Log.i(TAG, "addSlot - at: " + this.myCalendar.getCalendar().getTime());
+
         int offset = this.getEventContainerIndex(struct.startTime);
+//        Log.i(TAG, "addSlot - at: " + offset + " " + this.myCalendar.getCalendar().getTime());
 
         if (offset < displayLen && offset > -1){
+//            Calendar cal = Calendar.getInstance();
+//            cal.setTimeInMillis(struct.startTime);
+//            Log.i(TAG, "addSlot: " + cal.getTime());
             TimeSlotView timeSlotView = createTimeSlotView(struct);
             eventLayouts.get(offset).addView(timeSlotView,timeSlotView.getLayoutParams());
             timeSlotView.bringToFront();

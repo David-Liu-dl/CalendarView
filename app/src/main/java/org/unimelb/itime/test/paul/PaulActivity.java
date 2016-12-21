@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.Toast;
 
 
 import com.google.android.gms.appindexing.Action;
@@ -15,10 +16,12 @@ import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.unimelb.itime.test.R;
 import org.unimelb.itime.test.bean.Event;
+import org.unimelb.itime.test.bean.TimeSlot;
 import org.unimelb.itime.test.david.DBManager;
 import org.unimelb.itime.test.david.EventManager;
 import org.unimelb.itime.vendor.dayview.FlexibleLenViewBody;
 import org.unimelb.itime.vendor.eventview.DayDraggableEventView;
+import org.unimelb.itime.vendor.timeslot.TimeSlotView;
 import org.unimelb.itime.vendor.weekview.WeekView;
 
 import java.util.ArrayList;
@@ -93,18 +96,59 @@ public class PaulActivity extends AppCompatActivity {
             }
 
         });
+        weekView.enableTimeSlot();
 
         weekView.setDayEventMap(EventManager.getInstance().getEventsMap());
 
-        weekView.postDelayed(new Runnable() {
+        weekView.setOnTimeSlotOuterListener(new FlexibleLenViewBody.OnTimeSlotListener() {
             @Override
-            public void run() {
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(Calendar.HOUR_OF_DAY,18);
-                calendar.set(Calendar.MINUTE,30);
-                weekView.scrollToWithOffset(calendar.getTimeInMillis());
+            public void onTimeSlotCreate(TimeSlotView timeSlotView) {
+                // popup timeslot create page
+                TimeSlot timeSlot = new TimeSlot();
+                // what is the difference between getTag().startTime and startTimeM .... discuss with David
+                timeSlot.setStartTime(((WeekView.TimeSlotStruct) timeSlotView.getTag()).startTime);
+                timeSlot.setEndTime(((WeekView.TimeSlotStruct) timeSlotView.getTag()).endTime);
+                WeekView.TimeSlotStruct struct = (WeekView.TimeSlotStruct) timeSlotView.getTag();
+                struct.object = timeSlot;
+                weekView.addTimeSlot(struct);
+                weekView.reloadTimeSlots(false);
             }
-        },1000);
+
+            @Override
+            public void onTimeSlotClick(TimeSlotView timeSlotView) {
+            }
+
+            @Override
+            public void onTimeSlotDragStart(TimeSlotView timeSlotView) {
+
+            }
+
+            @Override
+            public void onTimeSlotDragging(TimeSlotView timeSlotView, int i, int i1) {
+
+            }
+
+            @Override
+            public void onTimeSlotDragDrop(TimeSlotView timeSlotView, long startTime, long endTime) {
+
+            }
+
+        });
+//
+//        weekView.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                Calendar calendar = Calendar.getInstance();
+//                calendar.set(Calendar.HOUR_OF_DAY,18);
+//                calendar.set(Calendar.MINUTE,30);
+//                weekView.scrollToWithOffset(calendar.getTimeInMillis());
+//            }
+//        },1000);
+    }
+
+    private void timeslotDrop(TimeSlotView timeSlotView, long startTime, long endTime) {
+        // update timeslot struct
+
     }
 
     private void showResult(ArrayList<String> paths) {

@@ -133,6 +133,8 @@ public class WeekViewPagerAdapter extends PagerAdapter {
             if (parent.getChildAt(i) instanceof FlexibleLenViewBody){
                 MyCalendar cal = new MyCalendar(this.startCal);
                 cal.setOffsetByDate(offset);
+
+                Log.i(TAG, "updateBody: " + cal.getCalendar().getTime());
                 final FlexibleLenViewBody nowBody = ((FlexibleLenViewBody)parent.getChildAt(i));
                 nowBody.setCalendar(cal);
                 nowBody.resetViews();

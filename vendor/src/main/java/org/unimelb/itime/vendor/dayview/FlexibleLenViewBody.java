@@ -568,6 +568,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
         long dayLong = (24 * 60 * 60 * 1000);
 
         return (int)(Math.floor((float)(startTime - today)/ dayLong));
+//        return (int)((startTime - today)/ dayLong);
     }
 
     private boolean isAllDayEvent(ITimeEventInterface event) {

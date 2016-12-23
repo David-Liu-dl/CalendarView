@@ -181,7 +181,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
         this.addView(dividerTop);
 
         ImageView dividerBottom = getDivider();
-        ((RelativeLayout.LayoutParams) dividerBottom.getLayoutParams()).addRule(BELOW, topAllDayLayout.getId());
+        ((RelativeLayout.LayoutParams) dividerBottom.getLayoutParams()).addRule(ALIGN_BOTTOM, topAllDayLayout.getId());
         bodyContainerLayout.addView(dividerBottom);
 
         TextView allDayTitleTv = new TextView(context);
@@ -226,6 +226,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
         rightContentLayout.setLayoutParams(rightContentLayoutParams);
 
         dividerBgRLayout = new RelativeLayout(getContext());
+//        dividerBgRLayout.setBackgroundColor(Color.parseColor("#80000000"));
         dividerBgRLayout.setId(View.generateViewId());
         RelativeLayout.LayoutParams dividerBgRLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         dividerBgRLayout.setLayoutParams(dividerBgRLayoutParams);
@@ -236,9 +237,9 @@ public class FlexibleLenViewBody extends RelativeLayout {
         eventLayout.setOrientation(LinearLayout.HORIZONTAL);
         RelativeLayout.LayoutParams eventLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         eventLayoutParams.addRule(ALIGN_LEFT, rightContentLayout.getId());
-        eventLayoutParams.addRule(ALIGN_RIGHT, rightContentLayout.getId());
+//        eventLayoutParams.addRule(ALIGN_RIGHT, rightContentLayout.getId());
         eventLayoutParams.addRule(ALIGN_TOP, rightContentLayout.getId());
-        eventLayoutParams.addRule(ALIGN_BOTTOM, rightContentLayout.getId());
+//        eventLayoutParams.addRule(ALIGN_BOTTOM, rightContentLayout.getId());
         this.initInnerBodyEventLayouts(eventLayout);
         eventLayout.setLayoutParams(eventLayoutParams);
 
@@ -249,11 +250,15 @@ public class FlexibleLenViewBody extends RelativeLayout {
         bodyContainerLayout.addView(leftSideRLayout);
         bodyContainerLayout.addView(rightContentLayout);
 
+//        dividerBgRLayout.bringToFront();
+        dividerTop.bringToFront();
+        dividerBottom.bringToFront();
     }
 
     private void initInnerHeaderEventLayouts(LinearLayout parent){
         for (int i = 0; i < displayLen; i++) {
             DayInnerHeaderEventLayout allDayEventLayout = new DayInnerHeaderEventLayout(context);
+//            allDayEventLayout.setBackgroundColor(getResources().getColor(R.color.allday_container_bg));
             int allDayEventLayoutPadding = DensityUtil.dip2px(context, 1);
             allDayEventLayout.setPadding(allDayEventLayoutPadding,0,allDayEventLayoutPadding,0);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,1f);
@@ -266,6 +271,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
     private void initInnerBodyEventLayouts(LinearLayout parent){
         for (int i = 0; i < displayLen; i++) {
             DayInnerBodyEventLayout eventLayout = new DayInnerBodyEventLayout(context);
+            eventLayout.setBackgroundColor(getResources().getColor(displayLen == 1 ? R.color.color_75white : (i%2 == 0 ? R.color.color_f2f2f5 : R.color.color_75white)));
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,1f);
             int eventLayoutPadding = DensityUtil.dip2px(context, 1);
             eventLayout.setPadding(eventLayoutPadding,0,eventLayoutPadding,0);
@@ -548,8 +554,6 @@ public class FlexibleLenViewBody extends RelativeLayout {
             DayInnerBodyEventLayout eventLayout = this.eventLayouts.get(offset);
             DayDraggableEventView newDragEventView = this.createDayDraggableEventView(event, false);
             DayDraggableEventView.LayoutParams params = (DayDraggableEventView.LayoutParams) newDragEventView.getLayoutParams();
-            Calendar cal = Calendar.getInstance();
-            cal.setTimeInMillis(event.getStartTime());
 
             newDragEventView.setId(View.generateViewId());
             this.regularEventViewMap.put(event, newDragEventView.getId());
@@ -667,7 +671,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
         }
 
         if (isAllDayEvent) {
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, 0,1f);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,1f);
             event_view.setTag(event);
             event_view.setLayoutParams(params);
         } else {

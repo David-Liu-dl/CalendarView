@@ -299,8 +299,10 @@
     <color name="color_F45B69">#F45B69</color>
     <color name="text_disable">#a2a2a2</color>
     <color name="color_C5C5C5">#C5C5C5</color>
-
-    <!--for dayView-->F45B69
+    <color name="color_FAFAFB">#99fafafb</color>
+    <color name="color_f2f2f5">#73f2f2f5</color>
+    <color name="color_75white">#73FFFFFF</color>
+    <!--for dayView-->
     <color name="private_et">#05447e</color>
     <color name="group_et">#63adf2</color>
     <color name="public_et">#ffc428</color>
@@ -311,8 +313,7 @@
     <color name="today_circle_color">#f53331</color>
     <color name="other_circle_color">#6692d1</color>
     <color name="divider_color">#cccccc</color>
-    <color name="allday_container_bg">#ebebeb</color>
-
+    <color name="allday_container_bg">#929090</color>
     <!--for contact-->
     <color name="sidebar_text_color">#000000</color>
 

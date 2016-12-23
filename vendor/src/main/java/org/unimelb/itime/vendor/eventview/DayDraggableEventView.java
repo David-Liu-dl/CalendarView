@@ -134,13 +134,13 @@ public class DayDraggableEventView extends ViewGroup {
         width = r - l;
         height = b - t;
 
-        leftBar.layout(l, 0, l + leftBar.getLayoutParams().width, b-t);
+        leftBar.layout(0, 0, leftBar.getLayoutParams().width, b-t);
         int icon_margin = DensityUtil.dip2px(getContext(),1);
-        icon.layout(r - icon.getLayoutParams().width -icon_margin,icon_margin,r,icon_margin + icon.getLayoutParams().height);
+        icon.layout(width - icon.getLayoutParams().width -icon_margin,icon_margin,width,icon_margin + icon.getLayoutParams().height);
 //        icon.layout(r - icon.getLayoutParams().width -icon_margin,t,r, t+icon.getLayoutParams().height);
 //        title.layout(l+leftBar.getLayoutParams().width,0, l + r - icon.getLayoutParams().width,b);
 //        title.layout(l+leftBar.getLayoutParams().width,0, l + r,b);
-        title.layout(l+leftBar.getLayoutParams().width,(int) (icon.getLayoutParams().height * 0.7), l + r,b);
+        title.layout(leftBar.getLayoutParams().width,t, width,b);
     }
 
     public static class LayoutParams extends ViewGroup.LayoutParams {

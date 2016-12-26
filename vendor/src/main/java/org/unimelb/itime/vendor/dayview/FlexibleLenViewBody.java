@@ -3,12 +3,10 @@ package org.unimelb.itime.vendor.dayview;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Rect;
-import android.text.LoginFilter;
 import android.util.AttributeSet;
-import android.util.EventLog;
 import android.util.Log;
 import android.util.Pair;
 import android.util.TypedValue;
@@ -18,7 +16,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -27,6 +24,7 @@ import android.widget.TextView;
 
 import org.unimelb.itime.vendor.R;
 import org.unimelb.itime.vendor.eventview.DayDraggableEventView;
+import org.unimelb.itime.vendor.helper.Animation;
 import org.unimelb.itime.vendor.helper.CalendarEventOverlapHelper;
 import org.unimelb.itime.vendor.helper.DensityUtil;
 import org.unimelb.itime.vendor.helper.MyCalendar;
@@ -35,6 +33,7 @@ import org.unimelb.itime.vendor.listener.ITimeEventPackageInterface;
 import org.unimelb.itime.vendor.timeslot.TimeSlotView;
 import org.unimelb.itime.vendor.weekview.WeekView;
 
+import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -58,6 +57,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
 
     private ScrollContainerView scrollContainerView;
     private RelativeLayout bodyContainerLayout;
+    private RelativeLayout animationLayout;
 
     private LinearLayout topAllDayLayout;
     private LinearLayout topAllDayEventLayouts;
@@ -109,14 +109,17 @@ public class FlexibleLenViewBody extends RelativeLayout {
 
     private ViewTreeObserver.OnScrollChangedListener onScrollChangeListener;
 
+    private ImageView leftArrow;
+    private ImageView rightArrow;
+    private ImageView topArrow;
+    private ImageView bottomArrow;
+
     public FlexibleLenViewBody(Context context, int displayLen) {
         super(context);
-        Log.i(TAG, "FlexibleLenViewBody: " + System.currentTimeMillis());
         this.context = context;
         this.displayLen = displayLen;
         initLayoutParams();
         init();
-        initBackgroundView();
     }
 
     public FlexibleLenViewBody(Context context, AttributeSet attrs) {
@@ -125,7 +128,6 @@ public class FlexibleLenViewBody extends RelativeLayout {
         initLayoutParams();
         loadAttributes(attrs, context);
         init();
-        initBackgroundView();
     }
 
     public FlexibleLenViewBody(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -134,7 +136,12 @@ public class FlexibleLenViewBody extends RelativeLayout {
         initLayoutParams();
         loadAttributes(attrs, context);
         init();
+    }
+
+    private void init(){
+        initViews();
         initBackgroundView();
+        initAnimations();
     }
 
     @Override
@@ -159,7 +166,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
         this.leftSideWidth = DensityUtil.dip2px(context,leftSideWidth);
     }
 
-    private void init() {
+    private void initViews() {
         this.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
         scrollContainerView = new ScrollContainerView(context);
@@ -243,16 +250,87 @@ public class FlexibleLenViewBody extends RelativeLayout {
         this.initInnerBodyEventLayouts(eventLayout);
         eventLayout.setLayoutParams(eventLayoutParams);
 
-
         rightContentLayout.addView(eventLayout);
+//        rightContentLayout.addView(animationLayout);
 
         bodyContainerLayout.addView(topAllDayLayout);
         bodyContainerLayout.addView(leftSideRLayout);
         bodyContainerLayout.addView(rightContentLayout);
 
+        animationLayout = new RelativeLayout(context);
+        RelativeLayout.LayoutParams animationLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        animationLayout.setLayoutParams(animationLayoutParams);
+        this.addView(animationLayout);
+
 //        dividerBgRLayout.bringToFront();
         dividerTop.bringToFront();
         dividerBottom.bringToFront();
+    }
+
+    private void initAnimations(){
+        initTimeSlotArrow();
+    }
+
+    public void resetAnimationViews(){
+        leftArrow.setVisibility(INVISIBLE);
+        rightArrow.setVisibility(INVISIBLE);
+        topArrow.setVisibility(INVISIBLE);
+        bottomArrow.setVisibility(INVISIBLE);
+    }
+
+    private void initTimeSlotArrow(){
+        int width = DensityUtil.dip2px(context,30);
+
+        leftArrow = new ImageView(context);
+        leftArrow.setImageDrawable(getResources().getDrawable(R.drawable.invitee_selected_arrow));
+        RelativeLayout.LayoutParams leftParams = new RelativeLayout.LayoutParams(width, width);
+        leftParams.addRule(ALIGN_PARENT_LEFT);
+        leftParams.addRule(CENTER_VERTICAL);
+        leftParams.leftMargin = leftSideWidth;
+        leftArrow.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        leftArrow.setLayoutParams(leftParams);
+        leftArrow.setPivotX(width/2);
+        leftArrow.setPivotY(width/2);
+        leftArrow.setRotation(180);
+        leftArrow.setVisibility(INVISIBLE);
+
+        rightArrow = new ImageView(context);
+        rightArrow.setImageDrawable(getResources().getDrawable(R.drawable.invitee_selected_arrow));
+        RelativeLayout.LayoutParams rightParams = new RelativeLayout.LayoutParams(width, width);
+        rightParams.addRule(ALIGN_PARENT_RIGHT);
+        rightParams.addRule(CENTER_VERTICAL);
+        rightArrow.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        rightArrow.setLayoutParams(rightParams);
+        rightArrow.setVisibility(INVISIBLE);
+
+        topArrow = new ImageView(context);
+        topArrow.setImageDrawable(getResources().getDrawable(R.drawable.invitee_selected_arrow));
+        RelativeLayout.LayoutParams topParams = new RelativeLayout.LayoutParams(width, width);
+        topParams.addRule(ALIGN_PARENT_TOP);
+        topParams.addRule(CENTER_HORIZONTAL);
+        topArrow.setLayoutParams(topParams);
+        topArrow.setPivotX(width/2);
+        topArrow.setPivotY(width/2);
+        topArrow.setRotation(-90);
+        topArrow.setVisibility(INVISIBLE);
+
+        bottomArrow = new ImageView(context);
+        bottomArrow.setImageDrawable(getResources().getDrawable(R.drawable.invitee_selected_arrow));
+        RelativeLayout.LayoutParams bottomParams = new RelativeLayout.LayoutParams(width, width);
+        bottomParams.addRule(ALIGN_PARENT_BOTTOM);
+        bottomParams.addRule(CENTER_HORIZONTAL);
+        bottomArrow.setLayoutParams(bottomParams);
+        bottomArrow.setPivotX(width/2);
+        bottomArrow.setPivotY(width/2);
+        bottomArrow.setRotation(90);
+        bottomArrow.setVisibility(INVISIBLE);
+
+        if (this.animationLayout != null){
+            animationLayout.addView(leftArrow);
+            animationLayout.addView(rightArrow);
+            animationLayout.addView(topArrow);
+            animationLayout.addView(bottomArrow);
+        }
     }
 
     private void initInnerHeaderEventLayouts(LinearLayout parent){
@@ -284,21 +362,36 @@ public class FlexibleLenViewBody extends RelativeLayout {
                 eventLayout.setOnLongClickListener(new CreateTimeSlotListener());
             }
 
-//            eventLayout.setOnTouchListener(new View.OnTouchListener() {
-//                @Override
-//                public boolean onTouch(View v, MotionEvent event) {
-//                    nowTapX = event.getX();
-//                    nowTapY = event.getY();
-//                    if (onBodyTouchListener != null) {
-//                        onBodyTouchListener.bodyOnTouchListener(nowTapX, nowTapY);
-//                    }
-//
-//                    return false;
-//                }
-//            });
             eventLayouts.add(eventLayout);
         }
 
+    }
+
+    public void timeSlotAnimationChecker(){
+        Rect scrollBounds = new Rect();
+        scrollContainerView.getHitRect(scrollBounds);
+
+        for (int i = 0; i < slotViews.size(); i++) {
+            TimeSlotView slotview = slotViews.get(i);
+
+            if (slotview.getWindowToken() != null){
+                if (slotview.getLocalVisibleRect(scrollBounds)) {
+                    //showing
+                    Log.i(TAG, "timeSlotAnimationChecker: ");
+                } else {
+                    //hiding
+                    if (scrollBounds.bottom < 0){
+                        if (topArrow.getVisibility() != VISIBLE)
+                            topArrow.startAnimation(Animation.getInstance().getFadeInAnim());
+                    }else{
+                        if (bottomArrow.getVisibility() != VISIBLE){
+                            bottomArrow.startAnimation(Animation.getInstance().getFadeInAnim());
+                        }
+
+                    }
+                }
+            }
+        }
     }
 
     private ImageView getDivider() {
@@ -1050,15 +1143,15 @@ public class FlexibleLenViewBody extends RelativeLayout {
     }
 
     public void addSlot(WeekView.TimeSlotStruct struct, boolean animate){
-//        Log.i(TAG, "addSlot - at: " + this.myCalendar.getCalendar().getTime());
 
         int offset = this.getEventContainerIndex(struct.startTime);
-//        Log.i(TAG, "addSlot - at: " + offset + " " + this.myCalendar.getCalendar().getTime());
+        if (rightArrow!= null && offset >= displayLen){
+            rightArrow.setVisibility(VISIBLE);
+        }else if (rightArrow!= null && offset <= -1){
+            leftArrow.setVisibility(VISIBLE);
+        }
 
         if (offset < displayLen && offset > -1){
-//            Calendar cal = Calendar.getInstance();
-//            cal.setTimeInMillis(struct.startTime);
-//            Log.i(TAG, "addSlot: " + cal.getTime());
             TimeSlotView timeSlotView = createTimeSlotView(struct);
             eventLayouts.get(offset).addView(timeSlotView,timeSlotView.getLayoutParams());
             timeSlotView.bringToFront();

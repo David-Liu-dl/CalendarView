@@ -1,1 +1,1 @@
-include ':app', ':vendor', ':photopicker'
+include ':app', ':vendor', ':photopicker', ':imagepicker', ':IOSDialog'

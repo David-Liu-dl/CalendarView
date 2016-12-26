@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import static android.support.v4.view.ViewPager.SCROLL_STATE_IDLE;
+
 /**
  * Created by yuhaoliu on 10/08/16.
  */
@@ -235,6 +237,11 @@ public class WeekView extends LinearLayout {
             @Override
             public void onPageScrollStateChanged(int state) {
                 bodyPagerCurrentState = state;
+                if (state == SCROLL_STATE_IDLE){
+                    //when slide down
+                    FlexibleLenViewBody currentShow = adapter.getViewBodyByPosition(weekViewPager.getCurrentItem());
+                    currentShow.timeSlotAnimationChecker();
+                }
             }
         });
     }
@@ -263,6 +270,10 @@ public class WeekView extends LinearLayout {
                 @Override
                 public void onScrollChanged() {
                     FlexibleLenViewBody currentShow = adapter.getViewBodyByPosition(weekViewPager.getCurrentItem());
+                    if (bodyPagerCurrentState == SCROLL_STATE_IDLE){
+                        currentShow.timeSlotAnimationChecker();
+                    }
+
                     if (currentShow.getScrollView() == scroller){
                         int scrollY = scroller.getScrollY(); // For ScrollView
                         int scrollX = scroller.getScrollX(); // For ScrollView

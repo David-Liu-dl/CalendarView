@@ -134,12 +134,11 @@ public class WeekViewPagerAdapter extends PagerAdapter {
                 MyCalendar cal = new MyCalendar(this.startCal);
                 cal.setOffsetByDate(offset);
 
-                Log.i(TAG, "updateBody: " + cal.getCalendar().getTime());
                 final FlexibleLenViewBody nowBody = ((FlexibleLenViewBody)parent.getChildAt(i));
                 nowBody.setCalendar(cal);
                 nowBody.resetViews();
                 nowBody.setEventList(this.eventPackage);
-
+                nowBody.resetAnimationViews();
                 nowBody.clearTimeSlots();
                 if (this.slotsInfo != null && this.slotsInfo.size() != 0){
                     for (int j = 0; j < this.slotsInfo.size(); j++) {
@@ -147,7 +146,7 @@ public class WeekViewPagerAdapter extends PagerAdapter {
                         nowBody.addSlot(struct,false);
                     }
                 }else {
-                    Log.i(TAG, "slotsInfo: " + ((this.slotsInfo != null) ? "size 0":"null"));
+//                    Log.i(TAG, "slotsInfo: " + ((this.slotsInfo != null) ? "size 0":"null"));
                 }
 
             }

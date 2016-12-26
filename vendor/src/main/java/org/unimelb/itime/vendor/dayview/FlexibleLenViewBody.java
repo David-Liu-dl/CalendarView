@@ -379,7 +379,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
                     Log.i(TAG, "timeSlotAnimationChecker: ");
                 } else {
                     //hiding
-                    if (scrollBounds.bottom < 0){
+                    if (scrollBounds.bottom <= 0){
                         if (topArrow.getVisibility() != VISIBLE)
                             topArrow.startAnimation(Animation.getInstance().getFadeInAnim());
                     }else{

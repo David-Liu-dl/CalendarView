@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="共0张"
+            android:text="0 Photos"
             android:textColor="#d2d2d7"
             android:textSize="14sp"/>
     </LinearLayout>

@@ -33,7 +33,6 @@ import org.unimelb.itime.vendor.listener.ITimeEventPackageInterface;
 import org.unimelb.itime.vendor.timeslot.TimeSlotView;
 import org.unimelb.itime.vendor.weekview.WeekView;
 
-import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -282,7 +281,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
         int width = DensityUtil.dip2px(context,30);
 
         leftArrow = new ImageView(context);
-        leftArrow.setImageDrawable(getResources().getDrawable(R.drawable.invitee_selected_arrow));
+        leftArrow.setImageDrawable(getResources().getDrawable(R.drawable.icon_timeslot_arrow));
         RelativeLayout.LayoutParams leftParams = new RelativeLayout.LayoutParams(width, width);
         leftParams.addRule(ALIGN_PARENT_LEFT);
         leftParams.addRule(CENTER_VERTICAL);
@@ -295,7 +294,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
         leftArrow.setVisibility(INVISIBLE);
 
         rightArrow = new ImageView(context);
-        rightArrow.setImageDrawable(getResources().getDrawable(R.drawable.invitee_selected_arrow));
+        rightArrow.setImageDrawable(getResources().getDrawable(R.drawable.icon_timeslot_arrow));
         RelativeLayout.LayoutParams rightParams = new RelativeLayout.LayoutParams(width, width);
         rightParams.addRule(ALIGN_PARENT_RIGHT);
         rightParams.addRule(CENTER_VERTICAL);
@@ -304,7 +303,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
         rightArrow.setVisibility(INVISIBLE);
 
         topArrow = new ImageView(context);
-        topArrow.setImageDrawable(getResources().getDrawable(R.drawable.invitee_selected_arrow));
+        topArrow.setImageDrawable(getResources().getDrawable(R.drawable.icon_timeslot_arrow));
         RelativeLayout.LayoutParams topParams = new RelativeLayout.LayoutParams(width, width);
         topParams.addRule(ALIGN_PARENT_TOP);
         topParams.addRule(CENTER_HORIZONTAL);
@@ -315,7 +314,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
         topArrow.setVisibility(INVISIBLE);
 
         bottomArrow = new ImageView(context);
-        bottomArrow.setImageDrawable(getResources().getDrawable(R.drawable.invitee_selected_arrow));
+        bottomArrow.setImageDrawable(getResources().getDrawable(R.drawable.icon_timeslot_arrow));
         RelativeLayout.LayoutParams bottomParams = new RelativeLayout.LayoutParams(width, width);
         bottomParams.addRule(ALIGN_PARENT_BOTTOM);
         bottomParams.addRule(CENTER_HORIZONTAL);

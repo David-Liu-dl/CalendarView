@@ -49,7 +49,7 @@
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:singleLine="true"
-                android:text="全部图片"
+                android:text="All Photos"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"/>
@@ -62,7 +62,7 @@
                 android:background="@null"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                android:text="预览(3)"
+                android:text="Preview(3)"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"/>

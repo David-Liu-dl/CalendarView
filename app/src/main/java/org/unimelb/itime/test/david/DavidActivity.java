@@ -103,7 +103,13 @@ public class DavidActivity extends AppCompatActivity {
 
             @Override
             public void onEventCreate(DayDraggableEventView eventView) {
+                Calendar cal = Calendar.getInstance();
+                cal.setTimeInMillis(eventView.getStartTimeM());
+                Log.i(TAG, "onEventCreate: s" + cal.getTime());
+                cal.setTimeInMillis(eventView.getEndTimeM());
+                Log.i(TAG, "onEventCreate: " + cal.getTime());
 
+                monthDayView.scrollToWithOffset(eventView.getStartTimeM());
             }
 
             @Override
@@ -132,6 +138,8 @@ public class DavidActivity extends AppCompatActivity {
                 Log.i(TAG, "onEventDragDrop: s" + cal.getTime());
                 cal.setTimeInMillis(eventView.getEndTimeM());
                 Log.i(TAG, "onEventDragDrop: " + cal.getTime());
+
+                monthDayView.scrollToWithOffset(eventView.getStartTimeM());
             }
 
         });

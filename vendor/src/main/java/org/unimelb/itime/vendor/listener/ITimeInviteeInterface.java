@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
  * Created by yuhaoliu on 10/09/2016.
  */
 public interface ITimeInviteeInterface {
+
     @Nullable
     String getPhoto();
 
@@ -16,4 +17,10 @@ public interface ITimeInviteeInterface {
     String getUserUid();
 
     String getUserId();
+
+    /**
+     *
+     * @return {activated, unactivated}
+     */
+    String getUserStatus();
 }

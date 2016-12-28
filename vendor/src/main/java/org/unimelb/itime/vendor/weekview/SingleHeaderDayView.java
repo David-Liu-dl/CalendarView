@@ -13,16 +13,17 @@ import org.unimelb.itime.vendor.helper.DensityUtil;
 /**
  * Created by yuhaoliu on 23/09/16.
  */
-public class HeaderDay extends LinearLayout {
+public class SingleHeaderDayView extends LinearLayout {
     TextView dayOfWeekTv;
     TextView nthDayTv;
     LinearLayout container;
-    public HeaderDay(Context context) {
+
+    public SingleHeaderDayView(Context context) {
         super(context);
         init();
     }
 
-    public HeaderDay(Context context, AttributeSet attrs) {
+    public SingleHeaderDayView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }

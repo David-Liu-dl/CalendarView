@@ -18,10 +18,8 @@ public interface ITimeEventInterface<T> extends Comparable<T> {
     void setEndTime(long endTime);
     long getEndTime();
 
-//    void setDisplayEventType(int typeId);
     int getDisplayEventType();
 
-//    void setDisplayStatus(int statusId);
     String getDisplayStatus();
 
     /**

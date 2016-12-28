@@ -29,6 +29,7 @@ import org.unimelb.itime.vendor.helper.DensityUtil;
 import org.unimelb.itime.vendor.helper.MyCalendar;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 import org.unimelb.itime.vendor.listener.ITimeEventPackageInterface;
+import org.unimelb.itime.vendor.listener.ITimeTimeSlotInterface;
 import org.unimelb.itime.vendor.timeslot.TimeSlotView;
 import org.unimelb.itime.vendor.weekview.WeekView;
 
@@ -736,11 +737,41 @@ public class FlexibleLenViewBody extends RelativeLayout {
         }
     }
 
+    public void showTimeslotAnim(ITimeTimeSlotInterface... timeslots){
+        for (ITimeTimeSlotInterface timeslot:timeslots
+                ) {
+            showSingleEventAnim(event);
+        }
+    }
+
+    public void showTimeslotAnim(ITimeTimeSlotInterface... timeslots){
+        for (ITimeTimeSlotInterface timeslot:timeslots
+                ) {
+            showSingleEventAnim(event);
+        }
+    }
+
     private void showSingleEventAnim(ITimeEventInterface event){
         final DayDraggableEventView eventView = this.uidDragViewMap.get(event.getEventUid());
         if (eventView!=null){
             eventView.showAlphaAnim();
         }
+    }
+
+    private void showSingleTimeslotAnim(ITimeTimeSlotInterface timeslot){
+        final TimeSlotView eventView = slotViews.get();
+        if (eventView!=null){
+            eventView.showAlphaAnim();
+        }
+    }
+
+    private TimeSlotView findTimeslotView(ArrayList<TimeSlotView> timeSlotViews, ITimeTimeSlotInterface timeslot){
+//        WeekView.TimeSlotStruct struct;
+//        for (TimeSlotView timeslotView:timeSlotViews
+//             ) {
+//            struct = (WeekView.TimeSlotStruct) timeslotView.getTag();
+//            ITimeTimeSlotInterface slot = ITimeTimeSlotInterface (struct.object);
+//        }
     }
 
     /**
@@ -1166,8 +1197,8 @@ public class FlexibleLenViewBody extends RelativeLayout {
     }
 
     public void addSlot(WeekView.TimeSlotStruct struct, boolean animate){
-
         int offset = this.getEventContainerIndex(struct.startTime);
+
         if (rightArrow!= null && offset >= displayLen){
             rightArrow.setVisibility(VISIBLE);
         }else if (rightArrow!= null && offset <= -1){

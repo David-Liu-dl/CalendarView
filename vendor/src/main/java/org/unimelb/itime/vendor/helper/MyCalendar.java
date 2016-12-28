@@ -13,8 +13,6 @@ public class MyCalendar {
     private int hour;
     private int minute;
 
-    private String TAG="MyAPPCalendar";
-
     public MyCalendar(Calendar calendar) {
         this.cloneFromCalendar(calendar);
     }
@@ -47,20 +45,33 @@ public class MyCalendar {
         this.day = day;
     }
 
+    public void setHour(int hour) {
+        this.hour = hour;
+    }
+
+    public int getMinute() {
+        return minute;
+    }
+
+    public void setMinute(int minute) {
+        this.minute = minute;
+    }
+
+    public int getDayOfWeek(){
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR,this.getYear());
+        calendar.set(Calendar.MONTH,this.getMonth());
+        calendar.set(Calendar.DATE,this.getDay());
+
+        return calendar.get(Calendar.DAY_OF_WEEK);
+    }
+
     public void cloneFromCalendar(Calendar calendar){
         this.year = calendar.get(Calendar.YEAR);
         this.month = calendar.get(Calendar.MONTH);
         this.day = calendar.get(Calendar.DAY_OF_MONTH);
         this.hour = calendar.get(Calendar.HOUR_OF_DAY);
         this.minute = calendar.get(Calendar.MINUTE);
-    }
-
-    public void cloneFromMyCalendar(MyCalendar myCalendar){
-        this.year = myCalendar.getYear();
-        this.month = myCalendar.getMonth();
-        this.day = myCalendar.getDay();
-        this.hour = myCalendar.getHour();
-        this.minute = myCalendar.getMinute();
     }
 
     public void setOffset(int offset){
@@ -100,27 +111,6 @@ public class MyCalendar {
         return hour;
     }
 
-    public void setHour(int hour) {
-        this.hour = hour;
-    }
-
-    public int getMinute() {
-        return minute;
-    }
-
-    public void setMinute(int minute) {
-        this.minute = minute;
-    }
-
-    public int getDayOfWeek(){
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR,this.getYear());
-        calendar.set(Calendar.MONTH,this.getMonth());
-        calendar.set(Calendar.DATE,this.getDay());
-
-        return calendar.get(Calendar.DAY_OF_WEEK);
-    }
-
     public long getBeginOfDayMilliseconds(){
         Calendar calendar = this.getCalendar();
         calendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -139,5 +129,13 @@ public class MyCalendar {
         int minutes = this.getMinute();
 
         return year + "  " + day + "/" + month + "  " + hour + " : " + minutes;
+    }
+
+    private void cloneFromMyCalendar(MyCalendar myCalendar){
+        this.year = myCalendar.getYear();
+        this.month = myCalendar.getMonth();
+        this.day = myCalendar.getDay();
+        this.hour = myCalendar.getHour();
+        this.minute = myCalendar.getMinute();
     }
 }

@@ -14,7 +14,6 @@ import org.unimelb.itime.vendor.listener.ITimeContactInterface;
  */
 public class LoadImgHelper {
     private static LoadImgHelper loadImgHelper;
-    private final String TAG = "MyAPP";
 
     public static LoadImgHelper getInstance() {
         if(loadImgHelper == null)
@@ -26,7 +25,6 @@ public class LoadImgHelper {
 
     public void bindContactWithImageView(Context mContext, ITimeContactInterface contact, ImageView img_v){
         if (contact.getPhoto() != null){
-            Log.i(TAG, "url: " + contact.getPhoto());
             Picasso.with(mContext).load(contact.getPhoto()).placeholder(R.drawable.invitee_selected_loading).into(img_v);
         }else {
             Picasso.with(mContext).load(R.drawable.invitee_selected_default_picture).into(img_v);

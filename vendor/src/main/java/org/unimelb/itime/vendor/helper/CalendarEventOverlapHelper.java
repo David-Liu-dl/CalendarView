@@ -12,8 +12,8 @@ import java.util.List;
  * Created by yuhaoliu on 18/08/16.
  */
 public class CalendarEventOverlapHelper {
-    private static final String TAG = "Helper";
     private final long overlapTolerance = (15/2) * 60 * 1000;
+
     private ArrayList<ITimeEventInterface> eventModules = new ArrayList<>();
     private List<ArrayList<Pair<Pair<Integer,Integer>,ITimeEventInterface>>> param_events = new ArrayList<>();
 
@@ -23,7 +23,6 @@ public class CalendarEventOverlapHelper {
     public List<ArrayList<Pair<Pair<Integer,Integer>,ITimeEventInterface>>> computeOverlapXForEvents(ArrayList<ITimeEventInterface> eventModules){
         this.eventModules = eventModules;
         param_events.clear();
-//        printDateInfo();
         // sort event by start time first
         this.sortEvent();
         // get overlapped Groups
@@ -34,7 +33,6 @@ public class CalendarEventOverlapHelper {
             if (list.size() > 1){
                 param_events.add(this.computeEventXPstInGroup(list));
             }else {
-//                Log.i(TAG, "title: " + list.get(0).getTitle());
                 Pair<Integer,Integer> param = new Pair<>(1, 0);
                 Pair<Pair<Integer,Integer>,ITimeEventInterface> param_event = new Pair<>(param, list.get(0));
                 ArrayList<Pair<Pair<Integer,Integer>,ITimeEventInterface>> single_list = new ArrayList<>();

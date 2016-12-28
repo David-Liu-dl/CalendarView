@@ -13,7 +13,6 @@ import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
-import org.unimelb.itime.vendor.dayview.DayViewHeader;
 import org.unimelb.itime.vendor.dayview.FlexibleLenBodyViewPager;
 import org.unimelb.itime.vendor.dayview.FlexibleLenViewBody;
 import org.unimelb.itime.vendor.eventview.DayDraggableEventView;
@@ -23,13 +22,11 @@ import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 import org.unimelb.itime.vendor.listener.ITimeEventPackageInterface;
 import org.unimelb.itime.vendor.timeslot.TimeSlotView;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import static android.support.v4.view.ViewPager.SCROLL_STATE_IDLE;
 
@@ -46,31 +43,27 @@ import static android.support.v4.view.ViewPager.SCROLL_STATE_IDLE;
         }
 )
 public class WeekView extends LinearLayout {
-    private final String TAG = "MyAPP";
+    private final DisplayMetrics dm = getResources().getDisplayMetrics();
+    private MyCalendar monthDayViewCalendar = new MyCalendar(Calendar.getInstance());
 
     private Context context;
-    final DisplayMetrics dm = getResources().getDisplayMetrics();
 
     private int upperBoundsOffset = 1;
     private int bodyCurrentPosition;
+    private int bodyPagerCurrentState = 0;
 
-    private MyCalendar monthDayViewCalendar = new MyCalendar(Calendar.getInstance());
-
-    ArrayList<WeekViewHeader> headerViewList;
-    ArrayList<FlexibleLenViewBody> bodyViewList;
-    ArrayList<LinearLayout> weekViewList;
-
+    private ArrayList<WeekViewHeader> headerViewList;
+    private ArrayList<FlexibleLenViewBody> bodyViewList;
+    private ArrayList<LinearLayout> weekViewList;
+    private ArrayList<TimeSlotStruct> slotsInfo = new ArrayList<>();
 
     private FlexibleLenBodyViewPager weekViewPager;
     private WeekViewPagerAdapter adapter;
-
     private ITimeEventPackageInterface eventPackage;
 
-    private int bodyPagerCurrentState = 0;
-
     private FlexibleLenViewBody.OnBodyListener OnBodyOuterListener;
-
     private FlexibleLenViewBody.OnTimeSlotListener onTimeSlotOuterListener;
+    private OnHeaderListener onHeaderListener;
 
     public WeekView(Context context) {
         super(context);
@@ -85,14 +78,6 @@ public class WeekView extends LinearLayout {
     public WeekView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initView();
-    }
-
-    public void reloadEvents(){
-        adapter.reloadEvents();
-    }
-
-    public void reloadTimeSlots(boolean animate){
-        adapter.reloadTimeSlots(animate);
     }
 
     private void initView(){
@@ -120,132 +105,6 @@ public class WeekView extends LinearLayout {
             headerViewList.add(headerView);
         }
     }
-
-    private void initWeekViews(){
-        int size = 4;
-        for (int i = 0; i < size; i++) {
-            LinearLayout weekView = new LinearLayout(context);
-            weekView.setOrientation(VERTICAL);
-            weekView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            weekView.addView(this.headerViewList.get(i));
-            weekView.addView(this.bodyViewList.get(i));
-            this.weekViewList.add(weekView);
-        }
-    }
-
-    public void backToToday(){
-        weekViewPager.setCurrentItem(upperBoundsOffset,false);
-    }
-
-    public void scrollTo(final Calendar toDate){
-        ViewTreeObserver vto = this.getViewTreeObserver();
-        final ViewGroup self = this;
-        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                self.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                weekViewPager.setCurrentItem(upperBoundsOffset + getRowDiff(toDate),false);
-            }
-        });
-    }
-
-    public void scrollToWithOffset(final long time){
-        final Calendar temp = Calendar.getInstance();
-        temp.setTimeInMillis(time);
-
-        if (this.getHeight() == 0){
-            ViewTreeObserver vto = this.getViewTreeObserver();
-            final ViewGroup self = this;
-            vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                self.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                weekViewPager.setCurrentItem(upperBoundsOffset + getRowDiff(temp),false);
-                FlexibleLenViewBody currentBody = adapter.getViewBodyByPosition(weekViewPager.getCurrentItem());
-                currentBody.scrollToTime(time);
-
-                }
-            });
-
-        }else {
-            weekViewPager.setCurrentItem(upperBoundsOffset + getRowDiff(temp),false);
-            FlexibleLenViewBody currentBody = adapter.getViewBodyByPosition(weekViewPager.getCurrentItem());
-            currentBody.scrollToTime(time);
-        }
-
-    }
-
-    public int getRowDiff(Calendar body_fst_cal){
-
-            MyCalendar tempH = new MyCalendar(Calendar.getInstance());
-            MyCalendar tempB = new MyCalendar(body_fst_cal);
-
-            int date_offset =  Math.round((float)(tempB.getCalendar().getTimeInMillis() - tempH.getCalendar().getTimeInMillis()) / (float)(1000*60*60*24));
-
-            int row_diff = date_offset/7;
-            int day_diff = (tempH.getDayOfWeek() + date_offset%7);
-
-            if (date_offset > 0){
-                row_diff = row_diff + (day_diff > 7 ? 1:0);
-                day_diff = day_diff > 7 ? day_diff%7 : day_diff;
-            }else if(date_offset < 0){
-                row_diff = row_diff + (day_diff <= 0 ? -1:0);
-                day_diff = day_diff <= 0 ? (7 + day_diff):day_diff;
-            }
-
-        return row_diff;
-    }
-    /*--------------------*/
-
-    public void setDayEventMap(ITimeEventPackageInterface eventPackage){
-        this.eventPackage = eventPackage;
-        if (adapter != null){
-            adapter.setDayEventMap(this.eventPackage);
-        }else {
-            Log.i(TAG, "adapter: null" );
-        }
-        this.reloadEvents();
-    }
-
-    private void setUpWeekView(){
-        weekViewPager = new FlexibleLenBodyViewPager(context);
-        weekViewPager.setScrollDurationFactor(3);
-        upperBoundsOffset = 500;
-        bodyCurrentPosition = upperBoundsOffset;
-        adapter = new WeekViewPagerAdapter(upperBoundsOffset,weekViewList);
-        if (this.eventPackage != null){
-            adapter.setDayEventMap(this.eventPackage);
-        }
-        adapter.setSlotsInfo(this.slotsInfo);
-        weekViewPager.setAdapter(adapter);
-        weekViewPager.setCurrentItem(upperBoundsOffset);
-        this.addView(weekViewPager,new LinearLayoutCompat.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        weekViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                bodyCurrentPosition = position;
-                monthDayViewCalendar = adapter.getViewBodyByPosition(position).getCalendar();
-                if (onHeaderListener != null){
-                    onHeaderListener.onMonthChanged(monthDayViewCalendar);
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                bodyPagerCurrentState = state;
-                if (state == SCROLL_STATE_IDLE){
-                    //when slide down
-                    FlexibleLenViewBody currentShow = adapter.getViewBodyByPosition(weekViewPager.getCurrentItem());
-                    currentShow.timeSlotAnimationChecker();
-                }
-            }
-        });
-    }
-
 
     private void initBody(){
         int size = 4;
@@ -292,10 +151,153 @@ public class WeekView extends LinearLayout {
 
     }
 
-    public void showEventAnim(List<ITimeEventInterface> events){
-        for (FlexibleLenViewBody body: bodyViewList
+    private void initWeekViews(){
+        int size = 4;
+        for (int i = 0; i < size; i++) {
+            LinearLayout weekView = new LinearLayout(context);
+            weekView.setOrientation(VERTICAL);
+            weekView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            weekView.addView(this.headerViewList.get(i));
+            weekView.addView(this.bodyViewList.get(i));
+            this.weekViewList.add(weekView);
+        }
+    }
+
+    private void setUpWeekView(){
+        weekViewPager = new FlexibleLenBodyViewPager(context);
+        weekViewPager.setScrollDurationFactor(3);
+        upperBoundsOffset = 500;
+        bodyCurrentPosition = upperBoundsOffset;
+        adapter = new WeekViewPagerAdapter(upperBoundsOffset,weekViewList);
+        if (this.eventPackage != null){
+            adapter.setDayEventMap(this.eventPackage);
+        }
+        adapter.setSlotsInfo(this.slotsInfo);
+        weekViewPager.setAdapter(adapter);
+        weekViewPager.setCurrentItem(upperBoundsOffset);
+        this.addView(weekViewPager,new LinearLayoutCompat.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        weekViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                bodyCurrentPosition = position;
+                monthDayViewCalendar = adapter.getViewBodyByPosition(position).getCalendar();
+                if (onHeaderListener != null){
+                    onHeaderListener.onMonthChanged(monthDayViewCalendar);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                bodyPagerCurrentState = state;
+                if (state == SCROLL_STATE_IDLE){
+                    //when slide down
+                    FlexibleLenViewBody currentShow = adapter.getViewBodyByPosition(weekViewPager.getCurrentItem());
+                    currentShow.timeSlotAnimationChecker();
+                }
+            }
+        });
+    }
+
+    private int getRowDiff(Calendar body_fst_cal){
+
+        MyCalendar tempH = new MyCalendar(Calendar.getInstance());
+        MyCalendar tempB = new MyCalendar(body_fst_cal);
+
+        int date_offset =  Math.round((float)(tempB.getCalendar().getTimeInMillis() - tempH.getCalendar().getTimeInMillis()) / (float)(1000*60*60*24));
+
+        int row_diff = date_offset/7;
+        int day_diff = (tempH.getDayOfWeek() + date_offset%7);
+
+        if (date_offset > 0){
+            row_diff = row_diff + (day_diff > 7 ? 1:0);
+            day_diff = day_diff > 7 ? day_diff%7 : day_diff;
+        }else if(date_offset < 0){
+            row_diff = row_diff + (day_diff <= 0 ? -1:0);
+            day_diff = day_diff <= 0 ? (7 + day_diff):day_diff;
+        }
+
+        return row_diff;
+    }
+
+    public void reloadEvents(){
+        adapter.reloadEvents();
+    }
+
+    public void reloadTimeSlots(boolean animate){
+        adapter.reloadTimeSlots(animate);
+    }
+
+    public void backToToday(){
+        weekViewPager.setCurrentItem(upperBoundsOffset,false);
+    }
+
+    public void scrollTo(final Calendar toDate){
+        ViewTreeObserver vto = this.getViewTreeObserver();
+        final ViewGroup self = this;
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                self.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                weekViewPager.setCurrentItem(upperBoundsOffset + getRowDiff(toDate),false);
+            }
+        });
+    }
+
+    public void scrollToWithOffset(final long time){
+        final Calendar temp = Calendar.getInstance();
+        temp.setTimeInMillis(time);
+
+        if (this.getHeight() == 0){
+            ViewTreeObserver vto = this.getViewTreeObserver();
+            final ViewGroup self = this;
+            vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                self.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                weekViewPager.setCurrentItem(upperBoundsOffset + getRowDiff(temp),false);
+                FlexibleLenViewBody currentBody = adapter.getViewBodyByPosition(weekViewPager.getCurrentItem());
+                currentBody.scrollToTime(time);
+
+                }
+            });
+
+        }else {
+            weekViewPager.setCurrentItem(upperBoundsOffset + getRowDiff(temp),false);
+            FlexibleLenViewBody currentBody = adapter.getViewBodyByPosition(weekViewPager.getCurrentItem());
+            currentBody.scrollToTime(time);
+        }
+
+    }
+
+    public void setDayEventMap(ITimeEventPackageInterface eventPackage){
+        this.eventPackage = eventPackage;
+        if (adapter != null){
+            adapter.setDayEventMap(this.eventPackage);
+        }else {
+            Log.i("Debug", "adapter: null" );
+        }
+        this.reloadEvents();
+    }
+
+    public void showEventAnim(final List<ITimeEventInterface> events){
+        for (final FlexibleLenViewBody body: bodyViewList
                 ) {
-            body.showEventAnim(events);
+            if (body.isShown()){
+                body.showEventAnim(events);
+            }else{
+                ViewTreeObserver vto = this.getViewTreeObserver();
+                vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        WeekView.this.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                        body.showEventAnim(events);
+                    }
+                });
+            }
         }
     }
 
@@ -317,22 +319,79 @@ public class WeekView extends LinearLayout {
         }
     }
 
-    private OnHeaderListener onHeaderListener;
 
     public void setOnHeaderListener(OnHeaderListener onHeaderListener){
         this.onHeaderListener = onHeaderListener;
     }
 
-
     public void setOnBodyOuterListener(FlexibleLenViewBody.OnBodyListener onBodyOuterListener){
         this.OnBodyOuterListener = onBodyOuterListener;
     }
 
-    public interface OnHeaderListener{
-        void onMonthChanged(MyCalendar calendar);
+    public void setOnTimeSlotOuterListener(FlexibleLenViewBody.OnTimeSlotListener onTimeSlotOuterListener){
+        this.onTimeSlotOuterListener = onTimeSlotOuterListener;
     }
 
-    public class OnBodyInnerListener implements FlexibleLenViewBody.OnBodyListener{
+    public class OnTimeSlotInnerListener implements FlexibleLenViewBody.OnTimeSlotListener{
+        @Override
+        public void onTimeSlotCreate(TimeSlotView timeSlotView) {
+            MyCalendar currentCal = new MyCalendar((adapter.getViewBodyByPosition(bodyCurrentPosition)).getCalendar());
+            currentCal.setOffsetByDate(timeSlotView.getIndexInView());
+            timeSlotView.getNewCalendar().setDay(currentCal.getDay());
+            timeSlotView.getNewCalendar().setMonth(currentCal.getMonth());
+            timeSlotView.getNewCalendar().setYear(currentCal.getYear());
+
+            TimeSlotStruct newStruct = new TimeSlotStruct();
+            newStruct.startTime = timeSlotView.getStartTimeM();
+            newStruct.endTime = timeSlotView.getStartTimeM() + timeSlotView.getDuration();
+            newStruct.status = false;
+
+            timeSlotView.setTag(newStruct);
+            if (onTimeSlotOuterListener != null){
+                onTimeSlotOuterListener.onTimeSlotCreate(timeSlotView);
+//                ){
+//                    addTimeSlot(newStruct);
+//                    reloadTimeSlots(false);
+//                }
+            }
+        }
+
+        @Override
+        public void onTimeSlotClick(TimeSlotView timeSlotView) {
+            if (onTimeSlotOuterListener != null){
+                onTimeSlotOuterListener.onTimeSlotClick(timeSlotView);
+            }
+        }
+
+        @Override
+        public void onTimeSlotDragStart(TimeSlotView timeSlotView) {
+            if (onTimeSlotOuterListener != null){
+                onTimeSlotOuterListener.onTimeSlotDragStart(timeSlotView);
+            }
+        }
+
+        @Override
+        public void onTimeSlotDragging(TimeSlotView timeSlotView, int x, int y) {
+            if (onTimeSlotOuterListener != null){
+                onTimeSlotOuterListener.onTimeSlotDragging(timeSlotView, x, y);
+            }
+        }
+
+        @Override
+        public void onTimeSlotDragDrop(TimeSlotView timeSlotView, long start, long end) {
+            MyCalendar currentCal = new MyCalendar((adapter.getViewBodyByPosition(bodyCurrentPosition)).getCalendar());
+            currentCal.setOffsetByDate(timeSlotView.getIndexInView());
+            timeSlotView.getNewCalendar().setDay(currentCal.getDay());
+            timeSlotView.getNewCalendar().setMonth(currentCal.getMonth());
+            timeSlotView.getNewCalendar().setYear(currentCal.getYear());
+
+            if (onTimeSlotOuterListener != null){
+                onTimeSlotOuterListener.onTimeSlotDragDrop(timeSlotView, timeSlotView.getStartTimeM(), timeSlotView.getEndTimeM());
+            }
+        }
+    }
+
+    private class OnBodyInnerListener implements FlexibleLenViewBody.OnBodyListener{
         int parentWidth = dm.widthPixels;
 
         @Override
@@ -405,71 +464,8 @@ public class WeekView extends LinearLayout {
         }
     }
 
-    public void setOnTimeSlotOuterListener(FlexibleLenViewBody.OnTimeSlotListener onTimeSlotOuterListener){
-        this.onTimeSlotOuterListener = onTimeSlotOuterListener;
-    }
-
-    public class OnTimeSlotInnerListener implements FlexibleLenViewBody.OnTimeSlotListener{
-        @Override
-        public void onTimeSlotCreate(TimeSlotView timeSlotView) {
-            MyCalendar currentCal = new MyCalendar((adapter.getViewBodyByPosition(bodyCurrentPosition)).getCalendar());
-            currentCal.setOffsetByDate(timeSlotView.getIndexInView());
-            timeSlotView.getNewCalendar().setDay(currentCal.getDay());
-            timeSlotView.getNewCalendar().setMonth(currentCal.getMonth());
-            timeSlotView.getNewCalendar().setYear(currentCal.getYear());
-
-            TimeSlotStruct newStruct = new TimeSlotStruct();
-            newStruct.startTime = timeSlotView.getStartTimeM();
-            newStruct.endTime = timeSlotView.getStartTimeM() + timeSlotView.getDuration();
-            newStruct.status = false;
-
-            timeSlotView.setTag(newStruct);
-            if (onTimeSlotOuterListener != null){
-                onTimeSlotOuterListener.onTimeSlotCreate(timeSlotView);
-//                ){
-//                    addTimeSlot(newStruct);
-//                    reloadTimeSlots(false);
-//                }
-            }
-        }
-
-        @Override
-        public void onTimeSlotClick(TimeSlotView timeSlotView) {
-            if (onTimeSlotOuterListener != null){
-                onTimeSlotOuterListener.onTimeSlotClick(timeSlotView);
-            }
-        }
-
-        @Override
-        public void onTimeSlotDragStart(TimeSlotView timeSlotView) {
-            if (onTimeSlotOuterListener != null){
-                onTimeSlotOuterListener.onTimeSlotDragStart(timeSlotView);
-            }
-        }
-
-        @Override
-        public void onTimeSlotDragging(TimeSlotView timeSlotView, int x, int y) {
-            if (onTimeSlotOuterListener != null){
-                onTimeSlotOuterListener.onTimeSlotDragging(timeSlotView, x, y);
-            }
-        }
-
-        @Override
-        public void onTimeSlotDragDrop(TimeSlotView timeSlotView, long start, long end) {
-            MyCalendar currentCal = new MyCalendar((adapter.getViewBodyByPosition(bodyCurrentPosition)).getCalendar());
-            currentCal.setOffsetByDate(timeSlotView.getIndexInView());
-            timeSlotView.getNewCalendar().setDay(currentCal.getDay());
-            timeSlotView.getNewCalendar().setMonth(currentCal.getMonth());
-            timeSlotView.getNewCalendar().setYear(currentCal.getYear());
-
-            if (onTimeSlotOuterListener != null){
-                onTimeSlotOuterListener.onTimeSlotDragDrop(timeSlotView, timeSlotView.getStartTimeM(), timeSlotView.getEndTimeM());
-            }
-        }
-    }
-
     /**
-     *
+     * For creating instance,
      * @param className
      * @param <E>
      */
@@ -480,17 +476,9 @@ public class WeekView extends LinearLayout {
         }
     }
 
-    private ArrayList<TimeSlotStruct> slotsInfo = new ArrayList<>();
-
     public void enableTimeSlot(){
         if (adapter != null){
             adapter.enableTimeSlot();
-        }
-    }
-
-    public void removeAllOptListener(){
-        if (adapter != null){
-            adapter.removeAllOptListener();
         }
     }
 
@@ -498,6 +486,12 @@ public class WeekView extends LinearLayout {
         slotsInfo.add(slotInfo);
         if (adapter != null){
             adapter.notifyDataSetChanged();
+        }
+    }
+
+    public void removeAllOptListener(){
+        if (adapter != null){
+            adapter.removeAllOptListener();
         }
     }
 
@@ -517,6 +511,13 @@ public class WeekView extends LinearLayout {
         public long endTime = 0;
         public boolean status = false;
         public Object object = null;
+    }
+
+    /**
+     * Interface for header changing
+     */
+    public interface OnHeaderListener{
+        void onMonthChanged(MyCalendar calendar);
     }
 
 }

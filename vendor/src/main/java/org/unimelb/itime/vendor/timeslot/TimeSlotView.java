@@ -1,7 +1,11 @@
 package org.unimelb.itime.vendor.timeslot;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -12,32 +16,35 @@ import android.widget.RelativeLayout;
 import org.unimelb.itime.vendor.R;
 import org.unimelb.itime.vendor.helper.DensityUtil;
 import org.unimelb.itime.vendor.helper.MyCalendar;
+import org.unimelb.itime.vendor.helper.VendorAnimation;
+import org.unimelb.itime.vendor.listener.ITimeEventInterface;
+import org.unimelb.itime.vendor.listener.ITimeTimeSlotInterface;
 
+import java.sql.Time;
 import java.util.Calendar;
 
 /**
- * Created by Paul on 26/08/2016.
+ * Created by yuhaoliu on 26/08/2016.
  */
 public class TimeSlotView extends ViewGroup {
-    private static final String TAG = "MyAPP";
-    private MyCalendar calendar = new MyCalendar(Calendar.getInstance());
-
     public static int TYPE_NORMAL = 0;
     public static int TYPE_TEMP = 1;
+
     private int type = 0;
-
     private int indexInView = 0;
-
     private long startTime = 0;
     private long endTime = 0;
     private long duration;
-
-    private ImageView icon;
-
     private boolean isSelect = false;
 
-    public TimeSlotView(Context context) {
+    private ImageView icon;
+    private MyCalendar calendar = new MyCalendar(Calendar.getInstance());
+
+    private ITimeTimeSlotInterface timeslot;
+
+    public TimeSlotView(Context context, @Nullable ITimeTimeSlotInterface timeslot) {
         super(context);
+        this.timeslot = timeslot;
         init();
     }
 
@@ -77,7 +84,7 @@ public class TimeSlotView extends ViewGroup {
     }
 
     public long getStartTime() {
-        return startTime;
+        return timeslot.getStartTime();
     }
 
     public void setStartTime(Long startTime) {
@@ -90,6 +97,14 @@ public class TimeSlotView extends ViewGroup {
 
     public void setDuration(long duration) {
         this.duration = duration;
+    }
+
+    public long getStartTimeM(){
+        return this.calendar.getCalendar().getTimeInMillis();
+    }
+
+    public long getEndTimeM(){
+        return this.getStartTimeM() + getDuration();
     }
 
     public boolean isSelect() {
@@ -132,12 +147,22 @@ public class TimeSlotView extends ViewGroup {
         return calendar;
     }
 
-    public long getStartTimeM(){
-        return this.calendar.getCalendar().getTimeInMillis();
-    }
+    public void showAlphaAnim(){
+        ValueAnimator animator = VendorAnimation.getInstance().getAlphaAnim(255,125,this);
+        animator.addListener(new AnimatorListenerAdapter()
+        {
+            @Override
+            public void onAnimationStart(Animator animation) {
+//                super.onAnimationStart(animation);
+                TimeSlotView.this.setBackground(getResources().getDrawable(R.drawable.icon_timeslot_bg));
+            }
 
-    public long getEndTimeM(){
-        return this.getStartTimeM() + getDuration();
+            @Override
+            public void onAnimationEnd(Animator animation)
+            {
+                TimeSlotView.this.setBackground(getResources().getDrawable(R.drawable.time_block_background));
+            }
+        });
     }
 
     @Override

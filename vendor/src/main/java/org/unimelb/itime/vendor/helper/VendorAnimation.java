@@ -4,9 +4,6 @@ import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-
-import org.unimelb.itime.vendor.eventview.DayDraggableEventView;
 
 /**
  * Created by yuhaoliu on 26/12/2016.
@@ -39,7 +36,7 @@ public class VendorAnimation {
         int alphaFrom = from;
         int alphaTo = to;
         ValueAnimator alphaAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), alphaFrom, alphaTo);
-        alphaAnimation.setDuration(3000); // milliseconds
+        alphaAnimation.setDuration(2000); // milliseconds
         alphaAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
 
             @Override

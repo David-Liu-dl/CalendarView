@@ -6,55 +6,42 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import org.unimelb.itime.vendor.R;
 import org.unimelb.itime.vendor.dayview.FlexibleLenViewBody;
 import org.unimelb.itime.vendor.helper.MyCalendar;
-import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 import org.unimelb.itime.vendor.listener.ITimeEventPackageInterface;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
- * Created by Paul on 22/08/2016.
+ * Created by yuhaoliu on 22/08/2016.
  */
-public class WeekViewPagerAdapter extends PagerAdapter {
+class WeekViewPagerAdapter extends PagerAdapter {
+    private int startPst = 0;
 
-    private static final String TAG = "MyAPP";
     private ArrayList<LinearLayout> views;
-
     private List<WeekView.TimeSlotStruct> slotsInfo;
     private ITimeEventPackageInterface eventPackage;
 
-    private int startPst = 0;
     private MyCalendar startCal;
 
-    public WeekViewPagerAdapter(int startPst, ArrayList<LinearLayout> views){
-
+    WeekViewPagerAdapter(int startPst, ArrayList<LinearLayout> views){
         this.views = views;
         this.startPst =startPst;
 
         Calendar calendar = Calendar.getInstance();
         int weekOfDay = calendar.get(Calendar.DAY_OF_WEEK);
         calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) - weekOfDay + 1);
-        MyCalendar startCal = new MyCalendar(calendar);
-        this.startCal = startCal;
+        this.startCal = new MyCalendar(calendar);
     }
 
-
-    public ArrayList<LinearLayout> getViews(){
-        return views;
-    }
-
-    public void setSlotsInfo(ArrayList<WeekView.TimeSlotStruct> slotsInfo) {
+    void setSlotsInfo(ArrayList<WeekView.TimeSlotStruct> slotsInfo) {
         this.slotsInfo = slotsInfo;
 
     }
 
-    public void enableTimeSlot(){
+    void enableTimeSlot(){
         for (LinearLayout weekView : views
                 ) {
             FlexibleLenViewBody bodyView = (FlexibleLenViewBody)weekView.getChildAt(1);
@@ -62,7 +49,7 @@ public class WeekViewPagerAdapter extends PagerAdapter {
         }
     }
 
-    public void removeAllOptListener(){
+    void removeAllOptListener(){
         for (LinearLayout weekView : views
                 ) {
             FlexibleLenViewBody bodyView = (FlexibleLenViewBody)weekView.getChildAt(1);
@@ -70,8 +57,48 @@ public class WeekViewPagerAdapter extends PagerAdapter {
         }
     }
 
-    public void changeView(LinearLayout newView,int position){
-        views.set(position,newView);
+    void setDayEventMap(ITimeEventPackageInterface eventPackage) {
+        this.eventPackage = eventPackage;
+    }
+
+    void updateTimeSlotsDuration(long duration, boolean animate){
+        for (LinearLayout weekView : views
+                ) {
+            FlexibleLenViewBody bodyView = (FlexibleLenViewBody)weekView.getChildAt(1);
+            bodyView.updateTimeSlotsDuration(duration, animate);
+        }
+    }
+
+    void reloadEvents(){
+        for (LinearLayout weekView : views
+                ) {
+            FlexibleLenViewBody bodyView = (FlexibleLenViewBody)weekView.getChildAt(1);
+            if (this.eventPackage != null){
+                bodyView.setEventList(this.eventPackage);
+            }
+        }
+    }
+
+    void reloadTimeSlots(boolean animate){
+        for (LinearLayout weekView : views
+                ) {
+            FlexibleLenViewBody bodyView = (FlexibleLenViewBody)weekView.getChildAt(1);
+            bodyView.clearTimeSlots();
+            if (this.slotsInfo != null){
+                for (int j = 0; j < this.slotsInfo.size(); j++) {
+                    WeekView.TimeSlotStruct struct = this.slotsInfo.get(j);
+                    bodyView.addSlot(struct,animate);
+                }
+            }else {
+                Log.i("debug", "slotsInfo: " + ((this.slotsInfo != null) ? "size 0":"null"));
+            }
+        }
+    }
+
+    FlexibleLenViewBody getViewBodyByPosition(int position){
+        LinearLayout viewAtPosition = views.get(position % views.size());
+
+        return (FlexibleLenViewBody) viewAtPosition.getChildAt(1);
     }
 
     @Override
@@ -98,23 +125,12 @@ public class WeekViewPagerAdapter extends PagerAdapter {
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-//        doNotifyDataSetChangedOnce = true;
-//        container.removeView(views.get(position % views.size()));
     }
 
     @Override
     public boolean isViewFromObject(View view, Object object) {
         return view == object;
     }
-
-    public ITimeEventPackageInterface getDayEventMap() {
-        return eventPackage;
-    }
-
-    public void setDayEventMap(ITimeEventPackageInterface eventPackage) {
-        this.eventPackage = eventPackage;
-    }
-
 
     private void updateHeader(ViewGroup parent, int offset){
         int count = parent.getChildCount();
@@ -149,47 +165,6 @@ public class WeekViewPagerAdapter extends PagerAdapter {
 //                    Log.i(TAG, "slotsInfo: " + ((this.slotsInfo != null) ? "size 0":"null"));
                 }
 
-            }
-        }
-    }
-
-    public FlexibleLenViewBody getViewBodyByPosition(int position){
-        LinearLayout viewAtPosition = views.get(position % views.size());
-
-        return (FlexibleLenViewBody) viewAtPosition.getChildAt(1);
-    }
-
-
-    public void reloadEvents(){
-        for (LinearLayout weekView : views
-                ) {
-            FlexibleLenViewBody bodyView = (FlexibleLenViewBody)weekView.getChildAt(1);
-            if (this.eventPackage != null){
-                bodyView.setEventList(this.eventPackage);
-            }
-        }
-    }
-
-    public void updateTimeSlotsDuration(long duration, boolean animate){
-        for (LinearLayout weekView : views
-                ) {
-            FlexibleLenViewBody bodyView = (FlexibleLenViewBody)weekView.getChildAt(1);
-            bodyView.updateTimeSlotsDuration(duration, animate);
-        }
-    }
-
-    public void reloadTimeSlots(boolean animate){
-        for (LinearLayout weekView : views
-                ) {
-            FlexibleLenViewBody bodyView = (FlexibleLenViewBody)weekView.getChildAt(1);
-            bodyView.clearTimeSlots();
-            if (this.slotsInfo != null){    // && this.slotsInfo.size() != 0
-                for (int j = 0; j < this.slotsInfo.size(); j++) {
-                    WeekView.TimeSlotStruct struct = this.slotsInfo.get(j);
-                    bodyView.addSlot(struct,animate);
-                }
-            }else {
-                Log.i(TAG, "slotsInfo: " + ((this.slotsInfo != null) ? "size 0":"null"));
             }
         }
     }

@@ -18,4 +18,5 @@ public interface ITimeTimeSlotInterface {
     int getTotalNum();
     void setTotalNum(int num);
 
+    String getTimeslotUid();
 }

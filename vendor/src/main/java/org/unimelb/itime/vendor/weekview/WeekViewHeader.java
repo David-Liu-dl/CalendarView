@@ -1,13 +1,11 @@
 package org.unimelb.itime.vendor.weekview;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import org.unimelb.itime.vendor.R;
 import org.unimelb.itime.vendor.helper.MyCalendar;
@@ -27,7 +25,7 @@ public class WeekViewHeader extends LinearLayout {
 
     private Context context;
 
-    private List<HeaderDay> headerDays = new ArrayList<>();
+    private List<SingleHeaderDayView> singleHeaderDayViews = new ArrayList<>();
 
     public WeekViewHeader(Context context) {
         super(context);
@@ -49,10 +47,10 @@ public class WeekViewHeader extends LinearLayout {
 
     private void initDays(){
         for (int i = 0; i < displayLen; i++) {
-            HeaderDay headerDay = new HeaderDay(context);
+            SingleHeaderDayView singleHeaderDayView = new SingleHeaderDayView(context);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,1f);
-            this.addView(headerDay,params);
-            headerDays.add(headerDay);
+            this.addView(singleHeaderDayView,params);
+            singleHeaderDayViews.add(singleHeaderDayView);
         }
     }
 
@@ -65,22 +63,22 @@ public class WeekViewHeader extends LinearLayout {
         MyCalendar cal = new MyCalendar(this.myCalendar);
         int color;
 
-        for (int i = 0; i < this.headerDays.size(); i++) {
-            HeaderDay headerDay = this.headerDays.get(i);
+        for (int i = 0; i < this.singleHeaderDayViews.size(); i++) {
+            SingleHeaderDayView singleHeaderDayView = this.singleHeaderDayViews.get(i);
 
             if (cal.isToday()){
                 Drawable drawable = getResources().getDrawable(R.drawable.itime_day_rectangle);
-                headerDay.getContainer().setBackground(drawable);
-                ((GradientDrawable)headerDay.getContainer().getBackground()).setColor(getResources().getColor(R.color.today_circle_color));
+                singleHeaderDayView.getContainer().setBackground(drawable);
+                ((GradientDrawable) singleHeaderDayView.getContainer().getBackground()).setColor(getResources().getColor(R.color.today_circle_color));
                 color = getResources().getColor(R.color.text_in_circle_color);
             }else{
-                headerDay.getContainer().setBackgroundResource(0);
+                singleHeaderDayView.getContainer().setBackgroundResource(0);
                 color = getResources().getColor(R.color.text_enable);
             }
 
             String dayOfWeek = cal.getCalendar().getDisplayName(Calendar.DAY_OF_WEEK,Calendar.SHORT, Locale.getDefault());
             String nthDay = cal.getCalendar().get(Calendar.DAY_OF_MONTH) + "";
-            headerDay.updateText(dayOfWeek, nthDay,color);
+            singleHeaderDayView.updateText(dayOfWeek, nthDay,color);
             cal.setOffsetByDate(1);
         }
     }

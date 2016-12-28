@@ -1,16 +1,9 @@
 package org.unimelb.itime.vendor.eventview;
 
-import android.animation.ArgbEvaluator;
-import android.animation.ValueAnimator;
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.Nullable;
@@ -18,10 +11,8 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.unimelb.itime.vendor.R;
@@ -40,36 +31,26 @@ public class DayDraggableEventView extends ViewGroup {
 
     public static int TYPE_NORMAL = 0;
     public static int TYPE_TEMP = 1;
+
+    private int width;
+    private int height;
     //0: default_normal, -1: temp view;
     private int type = 0;
-
     private int indexInView = 0;
+    private int color;
+    private boolean isAllDayEvent = false;
 
+    private String status;
+    private String icon_name;
+
+    private Paint p = new Paint();
     private TextView title;
     private ImageView icon;
     private ImageView leftBar;
 
-    private boolean isAllDayEvent = false;
-
     private MyCalendar newCalendar = new MyCalendar(Calendar.getInstance());
-
     private ITimeEventInterface event;
-    private int color;
-    private String status;
-    private String icon_name;
-
     private PosParam posParam;
-
-    private int width;
-    private int height;
-
-    public MyCalendar getNewCalendar() {
-        return newCalendar;
-    }
-
-    public void setNewCalendar(MyCalendar newCalendar) {
-        this.newCalendar = newCalendar;
-    }
 
     public DayDraggableEventView(Context context, @Nullable ITimeEventInterface event, boolean isAllDayEvent) {
         super(context);
@@ -111,20 +92,17 @@ public class DayDraggableEventView extends ViewGroup {
                 && this.status != null
                 && !this.status.equals("")
                 && this.status.equals("slash")){
-            Paint p = new Paint();
+
             p.setAntiAlias(true);
             p.setColor(Color.WHITE);
             p.setStrokeWidth(DensityUtil.dip2px(getContext(),1));
 
-            float slope = 0.8f;
             int nowAtPxX = 0 - height;
             int nowAtPxY = 0;
 
-            int xDiffer = DensityUtil.dip2px(getContext(),30);
             int xGap = DensityUtil.dip2px(getContext(),10);
 
             while (nowAtPxX <= width){
-//                canvas.drawLine(nowAtPxX, nowAtPxY, nowAtPxX + xDiffer, height, p);
                 canvas.drawLine(nowAtPxX, nowAtPxY, nowAtPxX + height, height, p);
                 nowAtPxX += xGap;
             }
@@ -139,9 +117,6 @@ public class DayDraggableEventView extends ViewGroup {
         leftBar.layout(0, 0, leftBar.getLayoutParams().width, b-t);
         int icon_margin = DensityUtil.dip2px(getContext(),1);
         icon.layout(width - icon.getLayoutParams().width -icon_margin,icon_margin,width,icon_margin + icon.getLayoutParams().height);
-//        icon.layout(r - icon.getLayoutParams().width -icon_margin,t,r, t+icon.getLayoutParams().height);
-//        title.layout(l+leftBar.getLayoutParams().width,0, l + r - icon.getLayoutParams().width,b);
-//        title.layout(l+leftBar.getLayoutParams().width,0, l + r,b);
         title.layout(leftBar.getLayoutParams().width,t, width,b);
     }
 
@@ -163,28 +138,20 @@ public class DayDraggableEventView extends ViewGroup {
 
     }
 
-    private void initDarkLeftBorder(){
-        leftBar = new ImageView(this.getContext());
-        LayoutParams param = new LayoutParams(DensityUtil.dip2px(getContext(), 3),0);
-        this.addView(leftBar,param);
+    public MyCalendar getNewCalendar() {
+        return newCalendar;
     }
 
-    private void initDataInViews(){
-        if (this.event != null){
-            this.setSummary();
-            this.setType();
-            this.setStatus();
-        }
+    public void setNewCalendar(MyCalendar newCalendar) {
+        this.newCalendar = newCalendar;
     }
 
     private void setSummary(){
         title.setText(event.getTitle());
-//        title.setText("fuck");
     }
 
     private void setType(){
-//        int color = Color.RED;
-//
+        //if color is not determined
         if (color == 0){
             switch (this.event.getDisplayEventType()){
                 case 0:
@@ -199,33 +166,27 @@ public class DayDraggableEventView extends ViewGroup {
             }
         }
 
+        //set background color base on type
         this.setBackground(getResources().getDrawable(R.drawable.itime_draggable_event_bg));
         ((GradientDrawable)this.getBackground()).setColor(color);
         this.getBackground().setAlpha(128);
-
+        //set leftBar color base on type
         updateLeftBar(getResources().getDrawable(R.drawable.itime_draggable_event_bg), color);
     }
 
-    private void setStatus(){
-        long duration = this.event.getEndTime() - this.event.getStartTime();
-//        boolean useSmallIcon = ((duration <= (15 * 60 * 1000)) || isAllDayEvent);
-//        this.resetIcon(getStatusIcon(this.event.getDisplayStatus(), useSmallIcon));
+    private void initDarkLeftBorder(){
+        leftBar = new ImageView(this.getContext());
+        LayoutParams param = new LayoutParams(DensityUtil.dip2px(getContext(), 3),0);
+        this.addView(leftBar,param);
     }
 
-    private int getStatusIcon(int status, boolean useSmallIcon){
-        switch (status){
-            case 0:
-                if (useSmallIcon){
-                    return R.drawable.itime_question_mark_small;
-                }else {
-                    return R.drawable.itime_question_mark_small;
-                }
-            default:
-                return -1;
+    private void initDataInViews(){
+        if (this.event != null){
+            this.setSummary();
+            this.setType();
         }
     }
 
-    /****************************************************************************************/
     private void initBackground(){
         initDarkLeftBorder();
         initEventTitle();
@@ -241,18 +202,9 @@ public class DayDraggableEventView extends ViewGroup {
         this.addView(icon,params);
     }
 
-    private void resetIcon(int iconDrawable){
-        if (iconDrawable != -1){
-            icon.setImageResource(iconDrawable);
-        }else{
-            icon.setImageResource(0);
-        }
-    }
-
     private void initEventTitle(){
         int padding = DensityUtil.dip2px(getContext(), isAllDayEvent ? 1 : 3);
         title = new TextView(getContext());
-//        title.setMaxLines(1);
         title.setTextSize(11);
         title.setEllipsize(TextUtils.TruncateAt.END);
         title.setGravity(Gravity.CENTER_VERTICAL);
@@ -281,6 +233,10 @@ public class DayDraggableEventView extends ViewGroup {
 
     public void setIndexInView(int indexInView) {
         this.indexInView = indexInView;
+    }
+
+    public void showAlphaAnim(){
+        VendorAnimation.getInstance().getAlphaAnim(255,125,this).start();
     }
 
     /**
@@ -328,9 +284,5 @@ public class DayDraggableEventView extends ViewGroup {
 
     public void setType(int type) {
         this.type = type;
-    }
-
-    public void showAlphaAnim(){
-        VendorAnimation.getInstance().getAlphaAnim(125,255,this).start();
     }
 }

@@ -201,7 +201,7 @@ public class DavidActivity extends AppCompatActivity {
 //            public void run() {
 //                try {
 //                    Event newE = (Event) e.clone();
-//                    newE.setEndTime(newE.getStartTime() + 60*3600);
+//                    newE.setEndTime(newE.getNewStartTime() + 60*3600);
 //                    EventManager.getInstance().updateRepeatedEvent(newE);
 //
 //                } catch (CloneNotSupportedException e1) {
@@ -223,7 +223,7 @@ public class DavidActivity extends AppCompatActivity {
 ////            public void run() {
 ////                Event event = new Event();
 ////                event.setTitle("new added");
-////                event.setStartTime(Calendar.getInstance().getTimeInMillis());
+////                event.setNewStartTime(Calendar.getInstance().getTimeInMillis());
 ////                event.setEndTime(Calendar.getInstance().getTimeInMillis() + 60 * 60 * 1000);
 ////                EventManager.getInstance().addEvent(event);
 ////            }

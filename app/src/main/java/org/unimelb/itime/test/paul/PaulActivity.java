@@ -106,12 +106,9 @@ public class PaulActivity extends AppCompatActivity {
             public void onTimeSlotCreate(TimeSlotView timeSlotView) {
                 // popup timeslot create page
                 TimeSlot timeSlot = new TimeSlot();
-                // what is the difference between getTag().startTime and startTimeM .... discuss with David
-                timeSlot.setStartTime(((WeekView.TimeSlotStruct) timeSlotView.getTag()).startTime);
-                timeSlot.setEndTime(((WeekView.TimeSlotStruct) timeSlotView.getTag()).endTime);
-                WeekView.TimeSlotStruct struct = (WeekView.TimeSlotStruct) timeSlotView.getTag();
-                struct.object = timeSlot;
-                weekView.addTimeSlot(struct);
+                timeSlot.setStartTime(timeSlotView.getNewStartTime());
+                timeSlot.setEndTime(timeSlotView.getNewEndTime());
+                weekView.addTimeSlot(timeSlot);
                 weekView.reloadTimeSlots(false);
             }
 
@@ -131,12 +128,23 @@ public class PaulActivity extends AppCompatActivity {
 
             @Override
             public void onTimeSlotDragDrop(TimeSlotView timeSlotView, long startTime, long endTime) {
+                if (timeSlotView.getTimeslot() != null){
+                    timeSlotView.getTimeslot().setStartTime(startTime);
+                    timeSlotView.getTimeslot().setEndTime(endTime);
+                    weekView.reloadTimeSlots(false);
+                }
 
             }
 
         });
 
         weekView.showEventAnim(event);
+        weekView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                weekView.updateTimeSlotsDuration(2*3600*1000,true);
+            }
+        },5000);
 //        weekView.postDelayed(new Runnable() {
 //            @Override
 //            public void run() {

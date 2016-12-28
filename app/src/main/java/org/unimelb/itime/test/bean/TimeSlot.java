@@ -64,6 +64,15 @@ public class TimeSlot implements ITimeTimeSlotInterface,Serializable {
     }
 
     @Override
+    public void setDisplayStatus(boolean status) {
+    }
+
+    @Override
+    public boolean getDisplayStatus() {
+        return false;
+    }
+
+    @Override
     public int getAcceptedNum() {
         return accetpedNum;
     }
@@ -81,6 +90,11 @@ public class TimeSlot implements ITimeTimeSlotInterface,Serializable {
     @Override
     public void setTotalNum(int i) {
         this.totalNum = i;
+    }
+
+    @Override
+    public String getTimeslotUid() {
+        return null;
     }
 
     public long getTimeSlotUid() {

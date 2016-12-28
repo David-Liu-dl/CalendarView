@@ -99,7 +99,7 @@ public class YinActivity extends AppCompatActivity {
 //                event.setDisplayEventType(1);
 //                event.setDisplayStatus(1);
 //                event.setLocation("here");
-//                event.setStartTime(Calendar.getInstance().getTimeInMillis());
+//                event.setNewStartTime(Calendar.getInstance().getTimeInMillis());
 //                event.setEndTime(Calendar.getInstance().getTimeInMillis() + 60 * 60 * 1000);
 //                EventManager.getInstance().addEvent(event);
 //

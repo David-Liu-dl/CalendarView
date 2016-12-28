@@ -12,6 +12,10 @@ public interface ITimeTimeSlotInterface {
     void setStatus(String status);
     String getStatus();
 
+    void setDisplayStatus(boolean status);
+    boolean getDisplayStatus();
+
+
     int getAcceptedNum();
     void setAcceptedNum(int num);
 

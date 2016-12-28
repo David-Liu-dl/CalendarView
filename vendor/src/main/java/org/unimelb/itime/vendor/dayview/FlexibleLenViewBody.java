@@ -740,14 +740,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
     public void showTimeslotAnim(ITimeTimeSlotInterface... timeslots){
         for (ITimeTimeSlotInterface timeslot:timeslots
                 ) {
-            showSingleEventAnim(event);
-        }
-    }
-
-    public void showTimeslotAnim(ITimeTimeSlotInterface... timeslots){
-        for (ITimeTimeSlotInterface timeslot:timeslots
-                ) {
-            showSingleEventAnim(event);
+            showSingleTimeslotAnim(timeslot);
         }
     }
 
@@ -759,19 +752,21 @@ public class FlexibleLenViewBody extends RelativeLayout {
     }
 
     private void showSingleTimeslotAnim(ITimeTimeSlotInterface timeslot){
-        final TimeSlotView eventView = slotViews.get();
-        if (eventView!=null){
-            eventView.showAlphaAnim();
+        final TimeSlotView timeslotView = findTimeslotView(slotViews, timeslot);
+        if (timeslotView!=null){
+            timeslotView.showAlphaAnim();
         }
     }
 
     private TimeSlotView findTimeslotView(ArrayList<TimeSlotView> timeSlotViews, ITimeTimeSlotInterface timeslot){
-//        WeekView.TimeSlotStruct struct;
-//        for (TimeSlotView timeslotView:timeSlotViews
-//             ) {
-//            struct = (WeekView.TimeSlotStruct) timeslotView.getTag();
-//            ITimeTimeSlotInterface slot = ITimeTimeSlotInterface (struct.object);
-//        }
+        for (TimeSlotView timeslotView:timeSlotViews
+             ) {
+            ITimeTimeSlotInterface slot = timeslotView.getTimeslot();
+            if (slot != null && slot.getTimeslotUid().equals(timeslot.getTimeslotUid())){
+                return timeslotView;
+            }
+        }
+        return null;
     }
 
     /**
@@ -1196,8 +1191,8 @@ public class FlexibleLenViewBody extends RelativeLayout {
         }
     }
 
-    public void addSlot(WeekView.TimeSlotStruct struct, boolean animate){
-        int offset = this.getEventContainerIndex(struct.startTime);
+    public void addSlot(ITimeTimeSlotInterface timeslot, boolean animate){
+        int offset = this.getEventContainerIndex(timeslot.getStartTime());
 
         if (rightArrow!= null && offset >= displayLen){
             rightArrow.setVisibility(VISIBLE);
@@ -1206,7 +1201,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
         }
 
         if (offset < displayLen && offset > -1){
-            TimeSlotView timeSlotView = createTimeSlotView(struct);
+            TimeSlotView timeSlotView = createTimeSlotView(timeslot);
             eventLayouts.get(offset).addView(timeSlotView,timeSlotView.getLayoutParams());
             timeSlotView.bringToFront();
             timeSlotView.setVisibility(VISIBLE);
@@ -1216,15 +1211,15 @@ public class FlexibleLenViewBody extends RelativeLayout {
         }
     }
 
-    private TimeSlotView createTimeSlotView(WeekView.TimeSlotStruct struct){
-        TimeSlotView timeSlotView = new TimeSlotView(context);
-        if (struct != null){
+    private TimeSlotView createTimeSlotView(ITimeTimeSlotInterface timeslot){
+        TimeSlotView timeSlotView = new TimeSlotView(context, timeslot);
+        if (timeslot != null){
             timeSlotView.setType(TimeSlotView.TYPE_NORMAL);
-            timeSlotView.setTimes(struct.startTime, struct.endTime);
-            timeSlotView.setStatus(struct.status);
+            timeSlotView.setTimes(timeslot.getStartTime(), timeslot.getEndTime());
+            timeSlotView.setStatus(timeslot.getDisplayStatus());
             DayInnerBodyEventLayout.LayoutParams params = new DayInnerBodyEventLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, layoutWidthPerDay);
             timeSlotView.setLayoutParams(params);
-            timeSlotView.setTag(struct);
+//            timeSlotView.setTag(struct);
         }else {
             long duration = this.slotViews.size() == 0 ? 3600 * 1000 : this.slotViews.get(0).getDuration();
             timeSlotView.setDuration(duration);
@@ -1255,7 +1250,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
         long duration = timeSlotView.getDuration();
         final int slotHeight = (int) (((float) duration / (3600 * 1000)) * lineHeight);
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-        String hourWithMinutes = sdf.format(new Date(timeSlotView.getStartTime()));
+        String hourWithMinutes = sdf.format(new Date(timeSlotView.getNewStartTime()));
         String[] components = hourWithMinutes.split(":");
         float trickTime = Integer.valueOf(components[0]) + (float) Integer.valueOf(components[1]) / 100;
         final int topMargin = nearestTimeSlotValue(trickTime);
@@ -1278,12 +1273,10 @@ public class FlexibleLenViewBody extends RelativeLayout {
     public void updateTimeSlotsDuration(long duration, boolean animate){
         for (TimeSlotView tsV : this.slotViews
              ) {
-            int offset = this.getEventContainerIndex(tsV.getStartTime());
-
-            long startTime = tsV.getStartTime();
+            int offset = this.getEventContainerIndex(tsV.getNewStartTime());
+            long startTime = tsV.getNewStartTime();
 
             tsV.setTimes(startTime, startTime + duration);
-            ((WeekView.TimeSlotStruct)tsV.getTag()).endTime = startTime + duration;
 
             if (offset < displayLen && offset > -1){
                 resizeTimeSlot(tsV,animate);
@@ -1353,12 +1346,10 @@ public class FlexibleLenViewBody extends RelativeLayout {
                     break;
                 case DragEvent.ACTION_DROP:
                     //handler ended things in here, because ended some time is not triggered
-//                    tsView.getBackground().setAlpha(128);
                     View finalView = (View) event.getLocalState();
-//                    finalView.getBackground().setAlpha(128);
                     finalView.setVisibility(View.VISIBLE);
                     msgWindow.setVisibility(View.INVISIBLE);
-//
+
                     float actionStopX = event.getX();
                     float actionStopY = event.getY();
                     // Dropped, reassign View to ViewGroup

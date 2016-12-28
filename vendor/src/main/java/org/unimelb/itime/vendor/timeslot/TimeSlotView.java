@@ -4,23 +4,17 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import org.unimelb.itime.vendor.R;
 import org.unimelb.itime.vendor.helper.DensityUtil;
 import org.unimelb.itime.vendor.helper.MyCalendar;
 import org.unimelb.itime.vendor.helper.VendorAnimation;
-import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 import org.unimelb.itime.vendor.listener.ITimeTimeSlotInterface;
 
-import java.sql.Time;
 import java.util.Calendar;
 
 /**
@@ -32,8 +26,8 @@ public class TimeSlotView extends ViewGroup {
 
     private int type = 0;
     private int indexInView = 0;
-    private long startTime = 0;
-    private long endTime = 0;
+    private long newStartTime = 0;
+    private long newEndTime = 0;
     private long duration;
     private boolean isSelect = false;
 
@@ -45,6 +39,11 @@ public class TimeSlotView extends ViewGroup {
     public TimeSlotView(Context context, @Nullable ITimeTimeSlotInterface timeslot) {
         super(context);
         this.timeslot = timeslot;
+        if (timeslot != null){
+            this.newStartTime = timeslot.getStartTime();
+            this.newEndTime = timeslot.getEndTime();
+            this.duration = this.newEndTime - this.newStartTime;
+        }
         init();
     }
 
@@ -71,8 +70,9 @@ public class TimeSlotView extends ViewGroup {
     }
 
     public void setTimes(long startTime, long endTime){
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.newStartTime = startTime;
+        this.newEndTime = endTime;
+        this.duration = endTime - startTime;
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(startTime);
         this.calendar.cloneFromCalendar(cal);
@@ -83,28 +83,24 @@ public class TimeSlotView extends ViewGroup {
         updateIcon();
     }
 
-    public long getStartTime() {
-        return timeslot.getStartTime();
-    }
-
-    public void setStartTime(Long startTime) {
-        this.startTime = startTime;
+    public void setNewStartTime(Long newStartTime) {
+        this.newStartTime = newStartTime;
     }
 
     public long getDuration() {
-        return endTime - startTime == 0 ? duration : (endTime - startTime);
+        return newEndTime - newStartTime == 0 ? duration : (newEndTime - newStartTime);
     }
 
     public void setDuration(long duration) {
         this.duration = duration;
     }
 
-    public long getStartTimeM(){
+    public long getNewStartTime(){
         return this.calendar.getCalendar().getTimeInMillis();
     }
 
-    public long getEndTimeM(){
-        return this.getStartTimeM() + getDuration();
+    public long getNewEndTime(){
+        return this.getNewStartTime() + getDuration();
     }
 
     public boolean isSelect() {
@@ -163,6 +159,10 @@ public class TimeSlotView extends ViewGroup {
                 TimeSlotView.this.setBackground(getResources().getDrawable(R.drawable.time_block_background));
             }
         });
+    }
+
+    public ITimeTimeSlotInterface getTimeslot() {
+        return timeslot;
     }
 
     @Override

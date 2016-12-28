@@ -20,6 +20,7 @@ import org.unimelb.itime.vendor.helper.DensityUtil;
 import org.unimelb.itime.vendor.helper.MyCalendar;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 import org.unimelb.itime.vendor.listener.ITimeEventPackageInterface;
+import org.unimelb.itime.vendor.listener.ITimeTimeSlotInterface;
 import org.unimelb.itime.vendor.timeslot.TimeSlotView;
 
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ public class WeekView extends LinearLayout {
     private ArrayList<WeekViewHeader> headerViewList;
     private ArrayList<FlexibleLenViewBody> bodyViewList;
     private ArrayList<LinearLayout> weekViewList;
-    private ArrayList<TimeSlotStruct> slotsInfo = new ArrayList<>();
+    private ArrayList<ITimeTimeSlotInterface> slotsInfo = new ArrayList<>();
 
     private FlexibleLenBodyViewPager weekViewPager;
     private WeekViewPagerAdapter adapter;
@@ -341,12 +342,12 @@ public class WeekView extends LinearLayout {
             timeSlotView.getNewCalendar().setMonth(currentCal.getMonth());
             timeSlotView.getNewCalendar().setYear(currentCal.getYear());
 
-            TimeSlotStruct newStruct = new TimeSlotStruct();
-            newStruct.startTime = timeSlotView.getStartTimeM();
-            newStruct.endTime = timeSlotView.getStartTimeM() + timeSlotView.getDuration();
-            newStruct.status = false;
+//            TimeSlotStruct newStruct = new TimeSlotStruct();
+//            newStruct.startTime = timeSlotView.getNewStartTime();
+//            newStruct.endTime = timeSlotView.getNewStartTime() + timeSlotView.getDuration();
+//            newStruct.status = false;
 
-            timeSlotView.setTag(newStruct);
+//            timeSlotView.setTag(newStruct);
             if (onTimeSlotOuterListener != null){
                 onTimeSlotOuterListener.onTimeSlotCreate(timeSlotView);
 //                ){
@@ -386,7 +387,7 @@ public class WeekView extends LinearLayout {
             timeSlotView.getNewCalendar().setYear(currentCal.getYear());
 
             if (onTimeSlotOuterListener != null){
-                onTimeSlotOuterListener.onTimeSlotDragDrop(timeSlotView, timeSlotView.getStartTimeM(), timeSlotView.getEndTimeM());
+                onTimeSlotOuterListener.onTimeSlotDragDrop(timeSlotView, timeSlotView.getNewStartTime(), timeSlotView.getNewEndTime());
             }
         }
     }
@@ -482,7 +483,7 @@ public class WeekView extends LinearLayout {
         }
     }
 
-    public void addTimeSlot(TimeSlotStruct slotInfo){
+    public void addTimeSlot(ITimeTimeSlotInterface slotInfo){
         slotsInfo.add(slotInfo);
         if (adapter != null){
             adapter.notifyDataSetChanged();
@@ -506,12 +507,12 @@ public class WeekView extends LinearLayout {
         }
     }
 
-    public static class TimeSlotStruct{
-        public long startTime = 0;
-        public long endTime = 0;
-        public boolean status = false;
-        public Object object = null;
-    }
+//    public static class TimeSlotStruct{
+//        public long startTime = 0;
+//        public long endTime = 0;
+//        public boolean status = false;
+//        public Object object = null;
+//    }
 
     /**
      * Interface for header changing

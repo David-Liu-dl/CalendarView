@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import org.unimelb.itime.vendor.dayview.FlexibleLenViewBody;
 import org.unimelb.itime.vendor.helper.MyCalendar;
 import org.unimelb.itime.vendor.listener.ITimeEventPackageInterface;
+import org.unimelb.itime.vendor.listener.ITimeTimeSlotInterface;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -18,13 +19,15 @@ import java.util.List;
  * Created by yuhaoliu on 22/08/2016.
  */
 class WeekViewPagerAdapter extends PagerAdapter {
+    public long duration = 3600 * 1000;
     private int startPst = 0;
 
     private ArrayList<LinearLayout> views;
-    private List<WeekView.TimeSlotStruct> slotsInfo;
+    private List<ITimeTimeSlotInterface> slotsInfo;
     private ITimeEventPackageInterface eventPackage;
 
     private MyCalendar startCal;
+
 
     WeekViewPagerAdapter(int startPst, ArrayList<LinearLayout> views){
         this.views = views;
@@ -36,7 +39,7 @@ class WeekViewPagerAdapter extends PagerAdapter {
         this.startCal = new MyCalendar(calendar);
     }
 
-    void setSlotsInfo(ArrayList<WeekView.TimeSlotStruct> slotsInfo) {
+    void setSlotsInfo(ArrayList<ITimeTimeSlotInterface> slotsInfo) {
         this.slotsInfo = slotsInfo;
 
     }
@@ -62,6 +65,7 @@ class WeekViewPagerAdapter extends PagerAdapter {
     }
 
     void updateTimeSlotsDuration(long duration, boolean animate){
+        this.duration = duration;
         for (LinearLayout weekView : views
                 ) {
             FlexibleLenViewBody bodyView = (FlexibleLenViewBody)weekView.getChildAt(1);
@@ -86,7 +90,7 @@ class WeekViewPagerAdapter extends PagerAdapter {
             bodyView.clearTimeSlots();
             if (this.slotsInfo != null){
                 for (int j = 0; j < this.slotsInfo.size(); j++) {
-                    WeekView.TimeSlotStruct struct = this.slotsInfo.get(j);
+                    ITimeTimeSlotInterface struct = this.slotsInfo.get(j);
                     bodyView.addSlot(struct,animate);
                 }
             }else {
@@ -158,9 +162,11 @@ class WeekViewPagerAdapter extends PagerAdapter {
                 nowBody.clearTimeSlots();
                 if (this.slotsInfo != null && this.slotsInfo.size() != 0){
                     for (int j = 0; j < this.slotsInfo.size(); j++) {
-                        WeekView.TimeSlotStruct struct = this.slotsInfo.get(j);
+                        ITimeTimeSlotInterface struct = this.slotsInfo.get(j);
                         nowBody.addSlot(struct,false);
                     }
+
+                    updateTimeSlotsDuration(duration,false);
                 }else {
 //                    Log.i(TAG, "slotsInfo: " + ((this.slotsInfo != null) ? "size 0":"null"));
                 }

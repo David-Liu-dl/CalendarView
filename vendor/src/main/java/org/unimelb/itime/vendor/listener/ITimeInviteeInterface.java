@@ -12,4 +12,8 @@ public interface ITimeInviteeInterface {
     String getName();
 
     String getInviteeUid();
+
+    String getUserUid();
+
+    String getUserId();
 }

@@ -33,6 +33,8 @@ public class DavidActivity extends AppCompatActivity {
     private EventManager eventManager;
     private MonthDayView monthDayView;
 
+    private Event event;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,7 +77,7 @@ public class DavidActivity extends AppCompatActivity {
     private void eventThing(){
         dbManager = DBManager.getInstance(this);
         eventManager = EventManager.getInstance();
-//        initData();
+        initData();
         loadData();
 //        doInviteesThings();
 
@@ -151,11 +153,12 @@ public class DavidActivity extends AppCompatActivity {
             }
         });
 
-        final Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DATE,2);
-        calendar.set(Calendar.HOUR_OF_DAY,10);
-        calendar.set(Calendar.MINUTE,30);
-        monthDayView.scrollToWithOffset(calendar.getTimeInMillis());
+        monthDayView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                monthDayView.showEventAnim(event);
+            }
+        },1000);
     }
 
 //    private void doMonthAgendaViewThings(){
@@ -186,8 +189,9 @@ public class DavidActivity extends AppCompatActivity {
         Event testE = null;
         for (Event event: allEvents
              ) {
-            String[] rec = {"RRULE:FREQ=WEEKLY;INTERVAL=1"};
-            event.setRecurrence(rec);
+//            String[] rec = {"RRULE:FREQ=WEEKLY;INTERVAL=1"};
+//            event.setRecurrence(rec);
+            this.event = event;
             EventManager.getInstance().addEvent(event);
 //            testE = event;
         }
@@ -241,7 +245,7 @@ public class DavidActivity extends AppCompatActivity {
         long interval = 3600 * 1000;
         for (int i = 1; i < 3; i++) {
             long startTime = calendar.getTimeInMillis();
-            long endTime = startTime + (3600*1000 * 24);
+            long endTime = startTime + (3600*1000);
 //            long duration = (endTime - startTime);
 
             Event event = new Event();

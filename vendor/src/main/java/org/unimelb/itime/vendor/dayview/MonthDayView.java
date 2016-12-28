@@ -26,6 +26,7 @@ import org.unimelb.itime.vendor.listener.ITimeEventPackageInterface;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -248,6 +249,20 @@ public class MonthDayView extends LinearLayout {
         }
     }
 
+    public void showEventAnim(List<ITimeEventInterface> events){
+        for (FlexibleLenViewBody body: bodyViewList
+                ) {
+            body.showEventAnim(events);
+        }
+    }
+
+    public void showEventAnim(ITimeEventInterface... events){
+        for (FlexibleLenViewBody body: bodyViewList
+             ) {
+            body.showEventAnim(events);
+        }
+    }
+
     public void backToToday(){
         this.headerRecyclerView.stopScroll();
         this.headerRecyclerView.scrollToPosition(upperBoundsOffset);
@@ -264,7 +279,6 @@ public class MonthDayView extends LinearLayout {
             MyCalendar tempB = new MyCalendar(body_fst_cal);
             tempB.setHour(0);
             tempH.setOffsetByDate(headerRecyclerAdapter.indexInRow);
-
 //            float bugger = (float)(tempB.getCalendar().getTimeInMillis() - tempH.getCalendar().getTimeInMillis()) / (float)(1000*60*60*24);
 //            int date_offset =  (int)((float)(tempB.getCalendar().getTimeInMillis() - tempH.getCalendar().getTimeInMillis()) / (float)(1000*60*60*24));
             int date_offset = Math.round((float)(tempB.getCalendar().getTimeInMillis() - tempH.getCalendar().getTimeInMillis()) / (float)(1000*60*60*24));

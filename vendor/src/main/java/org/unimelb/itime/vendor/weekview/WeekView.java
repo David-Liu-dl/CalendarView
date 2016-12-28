@@ -292,6 +292,31 @@ public class WeekView extends LinearLayout {
 
     }
 
+    public void showEventAnim(List<ITimeEventInterface> events){
+        for (FlexibleLenViewBody body: bodyViewList
+                ) {
+            body.showEventAnim(events);
+        }
+    }
+
+    public void showEventAnim(final ITimeEventInterface... events){
+        for (final FlexibleLenViewBody body: bodyViewList
+                ) {
+            if (body.isShown()){
+                body.showEventAnim(events);
+            }else{
+                ViewTreeObserver vto = this.getViewTreeObserver();
+                vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        WeekView.this.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                        body.showEventAnim(events);
+                    }
+                });
+            }
+        }
+    }
+
     private OnHeaderListener onHeaderListener;
 
     public void setOnHeaderListener(OnHeaderListener onHeaderListener){

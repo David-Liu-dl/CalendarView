@@ -1,5 +1,7 @@
 package org.unimelb.itime.vendor.eventview;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -25,6 +27,7 @@ import android.widget.TextView;
 import org.unimelb.itime.vendor.R;
 import org.unimelb.itime.vendor.helper.DensityUtil;
 import org.unimelb.itime.vendor.helper.MyCalendar;
+import org.unimelb.itime.vendor.helper.VendorAnimation;
 import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 
 import java.util.Calendar;
@@ -51,7 +54,6 @@ public class DayDraggableEventView extends ViewGroup {
     private MyCalendar newCalendar = new MyCalendar(Calendar.getInstance());
 
     private ITimeEventInterface event;
-
     private int color;
     private String status;
     private String icon_name;
@@ -326,5 +328,9 @@ public class DayDraggableEventView extends ViewGroup {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public void showAlphaAnim(){
+        VendorAnimation.getInstance().getAlphaAnim(125,255,this).start();
     }
 }

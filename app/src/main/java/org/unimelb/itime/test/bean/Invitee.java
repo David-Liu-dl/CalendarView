@@ -20,6 +20,9 @@ public class Invitee implements ITimeInviteeInterface, Serializable {
     private String eventUid;
     private String inviteeUid;
 
+    private String userUid;
+    private String userId;
+
     @Generated(hash = 178378225)
     private transient String contact__resolvedKey;
 
@@ -38,10 +41,12 @@ public class Invitee implements ITimeInviteeInterface, Serializable {
         this.contact = contact;
     }
 
-    @Generated(hash = 1942268371)
-    public Invitee(String eventUid, String inviteeUid) {
+    @Generated(hash = 1925218761)
+    public Invitee(String eventUid, String inviteeUid, String userUid, String userId) {
         this.eventUid = eventUid;
         this.inviteeUid = inviteeUid;
+        this.userUid = userUid;
+        this.userId = userId;
     }
 
     @Generated(hash = 15121660)
@@ -151,5 +156,21 @@ public class Invitee implements ITimeInviteeInterface, Serializable {
 
     public void setInviteeUid(String inviteeUid) {
         this.inviteeUid = inviteeUid;
+    }
+
+    public String getUserId() {
+        return this.userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getUserUid() {
+        return this.userUid;
+    }
+
+    public void setUserUid(String userUid) {
+        this.userUid = userUid;
     }
 }

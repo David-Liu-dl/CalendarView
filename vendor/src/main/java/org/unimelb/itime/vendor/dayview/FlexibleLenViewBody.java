@@ -4,7 +4,6 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -24,7 +23,7 @@ import android.widget.TextView;
 
 import org.unimelb.itime.vendor.R;
 import org.unimelb.itime.vendor.eventview.DayDraggableEventView;
-import org.unimelb.itime.vendor.helper.Animation;
+import org.unimelb.itime.vendor.helper.VendorAnimation;
 import org.unimelb.itime.vendor.helper.CalendarEventOverlapHelper;
 import org.unimelb.itime.vendor.helper.DensityUtil;
 import org.unimelb.itime.vendor.helper.MyCalendar;
@@ -71,7 +70,6 @@ public class FlexibleLenViewBody extends RelativeLayout {
     private Context context;
 
     private ArrayList<DayDraggableEventView> allDayDgEventViews = new ArrayList<>();
-    private ArrayList<DayDraggableEventView> regularDgEventViews = new ArrayList<>();
 
     private ArrayList<DayInnerHeaderEventLayout> allDayEventLayouts = new ArrayList<>();
     private ArrayList<DayInnerBodyEventLayout> eventLayouts = new ArrayList<>();
@@ -79,6 +77,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
     private TreeMap<Integer, String> positionToTimeTreeMap = new TreeMap<>();
     private TreeMap<Float, Integer> timeToPositionTreeMap = new TreeMap<>();
     private Map<ITimeEventInterface, Integer> regularEventViewMap = new HashMap<>();
+    private Map<String, DayDraggableEventView> uidDragViewMap = new HashMap<>();
 
     private CalendarEventOverlapHelper xHelper = new CalendarEventOverlapHelper();
 
@@ -381,10 +380,10 @@ public class FlexibleLenViewBody extends RelativeLayout {
                     //hiding
                     if (scrollBounds.bottom <= 0){
                         if (topArrow.getVisibility() != VISIBLE)
-                            topArrow.startAnimation(Animation.getInstance().getFadeInAnim());
+                            topArrow.startAnimation(VendorAnimation.getInstance().getFadeInAnim());
                     }else{
                         if (bottomArrow.getVisibility() != VISIBLE){
-                            bottomArrow.startAnimation(Animation.getInstance().getFadeInAnim());
+                            bottomArrow.startAnimation(VendorAnimation.getInstance().getFadeInAnim());
                         }
 
                     }
@@ -558,6 +557,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
 
         this.regularEventViewMap.clear();
         this.allDayDgEventViews.clear();
+        this.uidDragViewMap.clear();
     }
 
     public void addNowTimeLine() {
@@ -722,6 +722,27 @@ public class FlexibleLenViewBody extends RelativeLayout {
         }
     }
 
+    public void showEventAnim(ITimeEventInterface... events){
+        for (ITimeEventInterface event:events
+                ) {
+            showSingleEventAnim(event);
+        }
+    }
+
+    public void showEventAnim(List<ITimeEventInterface> events){
+        for (ITimeEventInterface event:events
+             ) {
+            showSingleEventAnim(event);
+        }
+    }
+
+    private void showSingleEventAnim(ITimeEventInterface event){
+        final DayDraggableEventView eventView = this.uidDragViewMap.get(event.getEventUid());
+        if (eventView!=null){
+            eventView.showAlphaAnim();
+        }
+    }
+
     /**
      * calculate the position of event
      * it needs to be called when setting event or event position changed
@@ -777,6 +798,9 @@ public class FlexibleLenViewBody extends RelativeLayout {
             event_view.setTag(event);
             event_view.setLayoutParams(params);
         }
+
+        //add it to map
+        uidDragViewMap.put(event.getEventUid(), event_view);
 
         return event_view;
     }

@@ -7,6 +7,7 @@ import java.util.List;
  * Created by yinchuandong on 22/08/2016.
  */
 public interface ITimeEventInterface<T> extends Comparable<T> {
+    String getEventUid();
 
     void setTitle(String title);
     String getTitle();

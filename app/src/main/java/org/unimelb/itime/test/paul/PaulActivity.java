@@ -39,6 +39,7 @@ public class PaulActivity extends AppCompatActivity {
      */
     private GoogleApiClient client;
 
+    private Event event;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,6 +135,14 @@ public class PaulActivity extends AppCompatActivity {
             }
 
         });
+
+        weekView.showEventAnim(event);
+//        weekView.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                weekView.showEventAnim(event);
+//            }
+//        },0);
 //
 //        weekView.postDelayed(new Runnable() {
 //            @Override
@@ -167,6 +176,7 @@ public class PaulActivity extends AppCompatActivity {
 //        EventManager.getInstance().getEventsMap().clearPackage();
         for (Event event : allEvents
                 ) {
+            this.event = event;
             EventManager.getInstance().addEvent(event);
         }
 

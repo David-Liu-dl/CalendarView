@@ -44,19 +44,22 @@ Step1: Create view
 ```
 Step2: Set data source
 ```Java
-  monthDayView = (MonthDayView) root.findViewById(R.id.month_day_view);
-  monthDayView.setDayEventMap(ITimeEventPackageInterface eventPackage);
-  monthDayView.setEventClassName(Class<E> className);// if creating instance needed
+     //Set the data source with format of ITimeEventPackageInterface
+    //ITimeEventPackageInterface is composed by two parts:
+    //  1: regular events. 2: repeated events.
+    monthDayView.setDayEventMap(eventManager.getEventsPackage());
+    //If creating instance of event is needed, set the class.
+    monthDayView.setEventClassName(Event.class);
 ```
 ####Listener
 
 -----------
 OnHeaderListener:
 ```Java
-  //Detecting selected date changed
-  public interface OnHeaderListener{
-          void onMonthChanged(MyCalendar calendar);
-  }
+    //Detecting selected date changed
+    public interface OnHeaderListener{
+            void onMonthChanged(MyCalendar calendar);
+    }
 ```
 
 -----------

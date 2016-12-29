@@ -108,7 +108,8 @@ If you want to customzie how many day to show, just edite attribute 'displayLen'
 
 ####Usage
   Same as DayView<br>
-Addition:
+  
+#####Addition:
   Recommend Time Block: create customized duration time block as recommendation or other usage.
 ```Java
   //Enable function of creating time block
@@ -116,8 +117,8 @@ Addition:
 ```
 ####Listener
   Same as DayView<br>
-Addition:
-
+  
+#####Addition:
 OnTimeSlotListener
 ```Java
     /**
@@ -151,7 +152,8 @@ OnTimeSlotListener
 ```
 ####Methods
 Same as DayView<br>
-Addition:
+
+#####Addition:
 ```Java
 public void enableTimeSlot();
 public <T extends ITimeTimeSlotInterface>void showTimeslotAnim(final T ... timeslots);

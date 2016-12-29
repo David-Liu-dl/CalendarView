@@ -1,8 +1,8 @@
 #ITimeVendor-android
 -------------
 
-> 关于我，欢迎关注  
-  微信：[poplyh]()  
+> Welcome 
+  WeChat：[poplyh]()  
 
 ####示例:  
 把使用了该项目的案例放在这里。可以放APK下载链接，或者简单放几张截图。  
@@ -71,9 +71,9 @@ OnBodyListener
     public interface OnBodyListener {
         //If current event view is draggable
         boolean isDraggable(DayDraggableEventView eventView);
-        //while creating event view
+        //While creating event view
         void onEventCreate(DayDraggableEventView eventView);
-        //while clicking event
+        //While clicking event
         void onEventClick(DayDraggableEventView eventView);
         //When start dragging
         void onEventDragStart(DayDraggableEventView eventView);
@@ -95,20 +95,67 @@ OnBodyListener
     public void backToToday();
     //Show alpha animation on background of DraggableView (from 255 - 125).
     public void showEventAnim(ITimeEventInterface... events);
+    //Remove all listener, shown as static page, for preview.
+    public void removeAllOptListener()
 ```
 WeekView
 ------
 Description: 
 Actually, the body part of weekview is same as dayview's. Both of them are composed of FlexibleLenViewBody.
-In the FlexibleLenViewBody, attribute 'displayLen' controls the number of day to be shown within single body. 
+In the FlexibleLenViewBody, attribute 'displayLen' controls the number of day to be shown within single body.
+If you want to customzie how many day to show, just edite attribute 'displayLen'.
 ####Demo
 
 ####Usage
-  Same as DayView  
+  Same as DayView<br>
+Addition:
+  Recommend Time Block: create customized duration time block as recommendation or other usage.
+```Java
+  //Enable function of creating time block
+  weekView.enableTimeSlot();
+```
 ####Listener
-  Same as DayView
-####Methods
+  Same as DayView<br>
+Addition:
 
+OnTimeSlotListener
+```Java
+    /**
+     * TimeSlotView contains data source(ITimeTimeSlotInterface)
+     * and all information about new status
+     */
+    public interface OnTimeSlotListener {
+        //While creating time block
+        void onTimeSlotCreate(TimeSlotView timeSlotView);
+        //While clicking existed time block
+        void onTimeSlotClick(TimeSlotView timeSlotView);
+        //When start dragging
+        void onTimeSlotDragStart(TimeSlotView timeSlotView);
+
+        /**
+         * On dragging
+         * @param timeSlotView : The view on dragging
+         * @param x : current X position of View
+         * @param y : current Y position of View
+         */
+        void onTimeSlotDragging(TimeSlotView timeSlotView, int x, int y);
+
+        /**
+         * When dragging ended
+         * @param timeSlotView : The view on drop
+         * @param startTime : dropped X position of View
+         * @param endTime : dropped Y position of View
+         */
+        void onTimeSlotDragDrop(TimeSlotView timeSlotView, long startTime, long endTime);
+    }
+```
+####Methods
+Same as DayView<br>
+Addition:
+```Java
+public void enableTimeSlot();
+public <T extends ITimeTimeSlotInterface>void showTimeslotAnim(final T ... timeslots);
+```
 
 AgendaView
 ------

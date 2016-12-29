@@ -100,14 +100,14 @@ OnBodyListener
 ```
 WeekView
 ------
-Description: 
-Actually, the body part of weekview is same as dayview's. Both of them are composed of FlexibleLenViewBody.
+Description: <br>
+The body part of weekview is same as dayview's. Both of them are composed of FlexibleLenViewBody.
 In the FlexibleLenViewBody, attribute 'displayLen' controls the number of day to be shown within single body.
 If you want to customzie how many day to show, just edite attribute 'displayLen'.
 ####Demo
 
 ####Usage
-  Same as DayView<br>
+Same as DayView<br>
   
 ######Addition:
   Recommend Time Block: create customized duration time block as recommendation or other usage.
@@ -116,7 +116,7 @@ If you want to customzie how many day to show, just edite attribute 'displayLen'
   weekView.enableTimeSlot();
 ```
 ####Listener
-  Same as DayView<br>
+Same as DayView<br>
   
 ######Addition:
 OnTimeSlotListener

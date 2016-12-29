@@ -1447,15 +1447,33 @@ public class FlexibleLenViewBody extends RelativeLayout {
     }
 
     private OnTimeSlotListener onTimeSlotListener;
+
+    /**
+     * TimeSlotView contains data source(ITimeTimeSlotInterface)
+     * and all information about new status
+     */
     public interface OnTimeSlotListener {
+        //While creating time block
         void onTimeSlotCreate(TimeSlotView timeSlotView);
-
+        //While clicking existed time block
         void onTimeSlotClick(TimeSlotView timeSlotView);
-
+        //When start dragging
         void onTimeSlotDragStart(TimeSlotView timeSlotView);
 
+        /**
+         * On dragging
+         * @param timeSlotView : The view on dragging
+         * @param x : current X position of View
+         * @param y : current Y position of View
+         */
         void onTimeSlotDragging(TimeSlotView timeSlotView, int x, int y);
 
+        /**
+         * When dragging ended
+         * @param timeSlotView : The view on drop
+         * @param startTime : dropped X position of View
+         * @param endTime : dropped Y position of View
+         */
         void onTimeSlotDragDrop(TimeSlotView timeSlotView, long startTime, long endTime);
     }
 

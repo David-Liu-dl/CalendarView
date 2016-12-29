@@ -44,7 +44,7 @@ Step1: Create view
 ```
 Step2: Set data source
 ```Java
-     //Set the data source with format of ITimeEventPackageInterface
+    //Set the data source with format of ITimeEventPackageInterface
     //ITimeEventPackageInterface is composed by two parts:
     //  1: regular events. 2: repeated events.
     monthDayView.setDayEventMap(eventManager.getEventsPackage());
@@ -54,7 +54,7 @@ Step2: Set data source
 ####Listener
 
 -----------
-OnHeaderListener:
+OnHeaderListener
 ```Java
     //Detecting selected date changed
     public interface OnHeaderListener{
@@ -98,13 +98,15 @@ OnBodyListener
 ```
 WeekView
 ------
-
+Description: 
+Actually, the body part of weekview is same as dayview's. Both of them are composed of FlexibleLenViewBody.
+In the FlexibleLenViewBody, attribute 'displayLen' controls the number of day to be shown within single body. 
 ####Demo
 
 ####Usage
-
+  Same as DayView  
 ####Listener
-
+  Same as DayView
 ####Methods
 
 

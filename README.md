@@ -85,7 +85,9 @@ OnBodyListener
 ```
 ####Methods
 ```Java
-    //refresh all event views base on data source
+    //set data source
+    public void setDayEventMap(ITimeEventPackageInterface eventPackage);
+    //refresh all event views base on data source
     public void reloadEvents();
     //scrollTo certain DATE.day
     public void scrollTo(final Calendar calendar);
@@ -97,6 +99,9 @@ OnBodyListener
     public void showEventAnim(ITimeEventInterface... events);
     //Remove all listener, shown as static page, for preview.
     public void removeAllOptListener()
+    
+    public void setOnHeaderListener(OnHeaderListener onHeaderListener);
+    public void setOnBodyListener(OnBodyListener onBodyListener);
 ```
 WeekView
 ------
@@ -167,7 +172,42 @@ AgendaView
 ####Demo
 
 ####Usage
-
+Step1: Create view
+```Java
+  <org.unimelb.itime.vendor.agendaview.MonthAgendaView
+        android:id="@+id/month_agenda_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+```
+Step2: Set data source
+```Java
+    //Set the data source with format of ITimeEventPackageInterface
+    //ITimeEventPackageInterface is composed by two parts:
+    //  1: regular events. 2: repeated events.
+    monthAgendaView.setDayEventMap(eventManager.getEventsPackage());
+```
 ####Listener
-
+-----------
+OnHeaderListener
+```Java
+    public interface OnHeaderListener {
+        void onMonthChanged(MyCalendar var1);
+    }
+```
+-----------
+OnEventClickListener
+```Java
+    public interface OnEventClickListener {
+        void onEventClick(ITimeEventInterface var1);
+    }
+```
 ####Methods
+```Java
+  //set data source
+  public void setDayEventMap(ITimeEventPackageInterface eventPackage);
+  //scrollTo certain DATE.day
+  public void scrollTo(final Calendar calendar);
+  
+  public void setOnHeaderListener(OnHeaderListener onHeaderListener);
+  public void setOnEventClickListener(OnEventClickListener onEventClickListener);
+```

@@ -24,9 +24,11 @@ import org.unimelb.itime.vendor.eventview.DayDraggableEventView;
 import org.unimelb.itime.vendor.timeslot.TimeSlotView;
 import org.unimelb.itime.vendor.weekview.WeekView;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.UUID;
 
 public class PaulActivity extends AppCompatActivity {
 
@@ -40,6 +42,8 @@ public class PaulActivity extends AppCompatActivity {
     private GoogleApiClient client;
 
     private Event event;
+
+    private ArrayList<TimeSlot> slots = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,18 +102,26 @@ public class PaulActivity extends AppCompatActivity {
 
         });
         weekView.enableTimeSlot();
-
+        weekView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                weekView.showTimeslotAnim(slots);
+            }
+        },5000);
         weekView.setDayEventMap(EventManager.getInstance().getEventsMap());
 
         weekView.setOnTimeSlotOuterListener(new FlexibleLenViewBody.OnTimeSlotListener() {
             @Override
-            public void onTimeSlotCreate(TimeSlotView timeSlotView) {
+            public void onTimeSlotCreate(final TimeSlotView timeSlotView) {
                 // popup timeslot create page
                 TimeSlot timeSlot = new TimeSlot();
+                timeSlot.setTimeSlotUid(UUID.randomUUID().toString());
                 timeSlot.setStartTime(timeSlotView.getNewStartTime());
                 timeSlot.setEndTime(timeSlotView.getNewEndTime());
                 weekView.addTimeSlot(timeSlot);
                 weekView.reloadTimeSlots(false);
+                slots.add(timeSlot);
+
             }
 
             @Override
@@ -138,13 +150,23 @@ public class PaulActivity extends AppCompatActivity {
 
         });
 
-        weekView.showEventAnim(event);
-        weekView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                weekView.updateTimeSlotsDuration(2*3600*1000,true);
-            }
-        },5000);
+        TimeSlot slot = new TimeSlot();
+        Calendar calendar = Calendar.getInstance();
+        slot.setStartTime(calendar.getTimeInMillis());
+        slot.setStartTime(calendar.getTimeInMillis()+ 3600*1000);
+        slot.setTimeSlotUid(UUID.randomUUID().toString());
+
+        weekView.addTimeSlot(slot);
+        weekView.showTimeslotAnim(slot);
+        weekView.reloadTimeSlots(false);
+
+//        weekView.showEventAnim(event);
+//        weekView.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                weekView.updateTimeSlotsDuration(2*3600*1000,true);
+//            }
+//        },5000);
 //        weekView.postDelayed(new Runnable() {
 //            @Override
 //            public void run() {

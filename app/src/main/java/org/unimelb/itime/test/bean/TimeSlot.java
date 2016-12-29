@@ -11,7 +11,7 @@ import java.io.Serializable;
  */
 @Entity
 public class TimeSlot implements ITimeTimeSlotInterface,Serializable {
-    private long timeSlotUid;
+    private String timeSlotUid;
     private String eventUid;
     private long startTime;
     private long endTime;
@@ -19,12 +19,10 @@ public class TimeSlot implements ITimeTimeSlotInterface,Serializable {
     private int accetpedNum;
     private int totalNum;
 
-    @Generated(hash = 1337764006)
-    public TimeSlot() {
-    }
-    @Generated(hash = 2063048340)
-    public TimeSlot(long timeSlotUid, String eventUid, long startTime,
-                    long endTime, String status, int accetpedNum, int totalNum) {
+
+    @Generated(hash = 842313577)
+    public TimeSlot(String timeSlotUid, String eventUid, long startTime,
+            long endTime, String status, int accetpedNum, int totalNum) {
         this.timeSlotUid = timeSlotUid;
         this.eventUid = eventUid;
         this.startTime = startTime;
@@ -33,6 +31,12 @@ public class TimeSlot implements ITimeTimeSlotInterface,Serializable {
         this.accetpedNum = accetpedNum;
         this.totalNum = totalNum;
     }
+
+    @Generated(hash = 1337764006)
+    public TimeSlot() {
+    }
+    
+
     @Override
     public void setStartTime(long l) {
         this.startTime = l;
@@ -94,14 +98,10 @@ public class TimeSlot implements ITimeTimeSlotInterface,Serializable {
 
     @Override
     public String getTimeslotUid() {
-        return null;
+        return this.timeSlotUid;
     }
 
-    public long getTimeSlotUid() {
-        return timeSlotUid;
-    }
-
-    public void setTimeSlotUid(long timeSlotUid) {
+    public void setTimeSlotUid(String timeSlotUid) {
         this.timeSlotUid = timeSlotUid;
     }
 
@@ -120,5 +120,9 @@ public class TimeSlot implements ITimeTimeSlotInterface,Serializable {
 
     public void setEventUid(String eventUid) {
         this.eventUid = eventUid;
+    }
+
+    public String getTimeSlotUid() {
+        return this.timeSlotUid;
     }
 }

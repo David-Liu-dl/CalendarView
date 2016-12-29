@@ -53,7 +53,9 @@ public class TimeSlotView extends ViewGroup {
     }
 
     public void initBackground(){
-        this.setBackgroundResource(R.drawable.time_block_background);
+        this.setBackgroundResource(R.drawable.icon_timeslot_bg);
+//        this.setBackgroundDrawable(getResources().getDrawable(R.drawable.itime_draggable_event_bg));
+//        this.setBackgroundResource(R.drawable.icon_timeslot_bg);
     }
 
     public void initIcon(){
@@ -144,21 +146,26 @@ public class TimeSlotView extends ViewGroup {
     }
 
     public void showAlphaAnim(){
-        ValueAnimator animator = VendorAnimation.getInstance().getAlphaAnim(255,125,this);
-        animator.addListener(new AnimatorListenerAdapter()
-        {
-            @Override
-            public void onAnimationStart(Animator animation) {
+        ViewGroup a = ((ViewGroup)this.getParent());
+        if (a != null)
+            ((ViewGroup)this.getParent()).removeView(this);
+//        TimeSlotView.this.setBackgroundResource(R.drawable.icon_timeslot_bg);
+//        ValueAnimator animator = VendorAnimation.getInstance().getAlphaAnim(255,125,this);
+//        animator.addListener(new AnimatorListenerAdapter()
+//        {
+//            @Override
+//            public void onAnimationStart(Animator animation) {
 //                super.onAnimationStart(animation);
-                TimeSlotView.this.setBackground(getResources().getDrawable(R.drawable.icon_timeslot_bg));
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation)
-            {
-                TimeSlotView.this.setBackground(getResources().getDrawable(R.drawable.time_block_background));
-            }
-        });
+//            }
+//
+//            @Override
+//            public void onAnimationEnd(Animator animation)
+//            {
+////                TimeSlotView.this.setBackgroundResource(R.drawable.time_block_background);
+//                TimeSlotView.this.setBackgroundResource(R.drawable.icon_timeslot_bg);
+//            }
+//        });
+//        animator.start();
     }
 
     public ITimeTimeSlotInterface getTimeslot() {

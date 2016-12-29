@@ -737,9 +737,14 @@ public class FlexibleLenViewBody extends RelativeLayout {
         }
     }
 
-    public void showTimeslotAnim(ITimeTimeSlotInterface... timeslots){
-        for (ITimeTimeSlotInterface timeslot:timeslots
-                ) {
+    public <T extends ITimeTimeSlotInterface> void showTimeslotAnim(T ... timeslots){
+        for (ITimeTimeSlotInterface timeslot:timeslots) {
+            showSingleTimeslotAnim(timeslot);
+        }
+    }
+
+    public void showTimeslotAnim(List<? extends ITimeTimeSlotInterface> timeslots){
+        for (ITimeTimeSlotInterface timeslot:timeslots) {
             showSingleTimeslotAnim(timeslot);
         }
     }
@@ -1132,20 +1137,22 @@ public class FlexibleLenViewBody extends RelativeLayout {
         this.onBodyTouchListener = onBodyTouchListener;
     }
 
+    /**
+     * DayDraggableEventView contains data source and all information about new status
+     */
     public interface OnBodyListener {
+        //If current event view is draggable
         boolean isDraggable(DayDraggableEventView eventView);
-
+        //while creating event view
         void onEventCreate(DayDraggableEventView eventView);
-
+        //while clicking event
         void onEventClick(DayDraggableEventView eventView);
-
+        //When start dragging
         void onEventDragStart(DayDraggableEventView eventView);
-
+        //On dragging
         void onEventDragging(DayDraggableEventView eventView, int x, int y);
-
+        //When dragging ended
         void onEventDragDrop(DayDraggableEventView eventView);
-
-//        ViewTreeObserver.OnScrollChangedListener setScrollChangeListener( );
     }
 
     public void setOnBodyListener(OnBodyListener onBodyListener) {

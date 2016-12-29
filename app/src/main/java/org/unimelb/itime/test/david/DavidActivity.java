@@ -292,5 +292,4 @@ public class DavidActivity extends AppCompatActivity {
 
         return contacts;
     }
-
 }

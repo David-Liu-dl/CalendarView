@@ -162,6 +162,11 @@ public class Invitee implements ITimeInviteeInterface, Serializable {
         return this.userId;
     }
 
+    @Override
+    public String getUserStatus() {
+        return null;
+    }
+
     public void setUserId(String userId) {
         this.userId = userId;
     }

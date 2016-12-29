@@ -155,8 +155,10 @@ Same as DayView<br>
 
 ######Addition:
 ```Java
-public void enableTimeSlot();
-public <T extends ITimeTimeSlotInterface>void showTimeslotAnim(final T ... timeslots);
+  //Enable funciton of time block.
+  public void enableTimeSlot();
+  //Show alpha animation on background of TimeSlotView (from 255 - 125).
+  public <T extends ITimeTimeSlotInterface>void showTimeslotAnim(final T ... timeslots);
 ```
 
 AgendaView

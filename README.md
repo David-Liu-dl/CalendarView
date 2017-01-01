@@ -6,19 +6,19 @@
 ---
 ##Catalog
 
-* [dayview](#DayView)
+* [DayView](#dayview)
     * Demo
     * Usage
     * Listener
     * Methods
 
-* [weekview](#WeekView)
+* [WeekView](#weekview)
   * Demo
   * Usage
   * Listener
   * Methods
 
-* [agendaview](#AgendaView)
+* [AgendaView](#agendaview)
   * Demo
   * Usage
   * Listener

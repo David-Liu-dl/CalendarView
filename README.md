@@ -25,7 +25,7 @@
   * Methods
 
 DayView
-------
+-------------
 
 ####Demo
 

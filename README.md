@@ -5,7 +5,7 @@
   WeChat：[poplyh]()  
 ---
 ##Preview
-![image](https://github.com/itime-team/ITimeVendor-android/blob/alpha/vendor/src/main/res/drawable/icon_timeslot_arrow.png)  
+
 ---
 ##Catalog
   
@@ -31,6 +31,12 @@ DayView
 ------
 
 ####Demo
+
+![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_dayview_create.gif)  
+![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_dayview_drag.gif)  
+![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_dayview_dragDay.gif)  
+![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_dayview_overlap.gif)  
+![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_dayview_other.gif) 
 
 ####Usage
 Step1: Create view

@@ -123,7 +123,7 @@ If you want to customzie how many day to show, just edite attribute 'displayLen'
 ####Demo
 Create && Drag  | Swipe between week
 --------- | --------
-https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_week_create%26drag.gif  | https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_week_swipe.gif 
+![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_week_create%26drag.gif)  | ![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_week_swipe.gif)
 
 ####Usage
 Same as DayView<br>
@@ -187,7 +187,7 @@ AgendaView
 
 Agenda Overall  | Float window
 --------- | --------
-https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_agenda_all.gif  | https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_agenda_floatWindow.gif  
+![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_agenda_all.gif)  | ![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_agenda_floatWindow.gif)  
 
 ####Usage
 Step1: Create view

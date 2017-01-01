@@ -4,9 +4,11 @@
 > Welcome 
   WeChat：[poplyh]()  
 ---
+##Preview
 ![image](https://github.com/itime-team/ITimeVendor-android/blob/alpha/vendor/src/main/res/drawable/icon_timeslot_arrow.png)  
 ---
 ##Catalog
+  
   * [DayView](#DayView)
     * Demo
     * Usage

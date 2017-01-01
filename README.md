@@ -32,8 +32,12 @@ DayView
 
 ####Demo
 
-![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_dayview_create.gif)  
-![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_dayview_drag.gif)  
+Create  | Drag in day
+--------- | --------
+![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_dayview_create.gif)  | ![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_dayview_drag.gif) 
+
+  
+  
 ![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_dayview_dragDay.gif)  
 ![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_dayview_overlap.gif)  
 ![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_dayview_other.gif) 

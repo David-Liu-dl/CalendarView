@@ -157,8 +157,9 @@ public class PaulActivity extends AppCompatActivity {
         slot.setTimeSlotUid(UUID.randomUUID().toString());
 
         weekView.addTimeSlot(slot);
+        weekView.addTimeSlot(slot);
         weekView.showTimeslotAnim(slot);
-        weekView.reloadTimeSlots(false);
+//        weekView.reloadTimeSlots(false);
 
 //        weekView.showEventAnim(event);
 //        weekView.postDelayed(new Runnable() {

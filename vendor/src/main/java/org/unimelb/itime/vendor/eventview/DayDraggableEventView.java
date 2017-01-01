@@ -237,6 +237,7 @@ public class DayDraggableEventView extends ViewGroup {
 
     public void showAlphaAnim(){
         VendorAnimation.getInstance().getAlphaAnim(255,125,this).start();
+
     }
 
     /**

@@ -229,7 +229,7 @@ public class WeekView extends LinearLayout {
     }
 
     public void reloadTimeSlots(boolean animate){
-//        adapter.reloadTimeSlots(animate);
+        adapter.reloadTimeSlots(animate);
     }
 
     public void backToToday(){
@@ -533,7 +533,7 @@ public class WeekView extends LinearLayout {
     }
 
     public void resetTimeSlots(){
-//        slotsInfo.clear();
+        slotsInfo.clear();
         reloadTimeSlots(false);
     }
 

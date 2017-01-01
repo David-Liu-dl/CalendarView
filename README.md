@@ -5,24 +5,23 @@
   WeChat：[poplyh]()  
 ---
 ##Catalog
-  
-  * [DayView](#DayView)
-    * Demo
-    * Usage
-    * Listener
-    * Methods
+* [DayView](#DayView)
+  * Demo
+  * Usage
+  * Listener
+  * Methods
 
-  * [WeekView](#WeekView)
-    * Demo
-    * Usage
-    * Listener
-    * Methods
+* [WeekView](#WeekView)
+  * Demo
+  * Usage
+  * Listener
+  * Methods
 
-  * [AgendaView](#AgendaView)
-    * Demo
-    * Usage
-    * Listener
-    * Methods
+* [AgendaView](#AgendaView)
+  * Demo
+  * Usage
+  * Listener
+  * Methods
 
 DayView
 ------

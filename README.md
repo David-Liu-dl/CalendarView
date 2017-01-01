@@ -41,9 +41,9 @@ Drag in day  | Drag between days
 --------- | --------
 ![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_dayview_drag.gif)   | ![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_dayview_dragDay.gif) 
 
-Header  
+Header  |
 ---------
-![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_dayview_other.gif)
+![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_dayview_other.gif)|
   
 ####Usage
 Step1: Create view

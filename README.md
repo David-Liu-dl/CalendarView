@@ -32,16 +32,18 @@ DayView
 
 ####Demo
 
-Create  | Drag in day
+Create  | Overlap
 --------- | --------
-![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_dayview_create.gif)  | ![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_dayview_drag.gif) 
+![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_dayview_create.gif)  | ![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_dayview_overlap.gif)
 
   
-  
-![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_dayview_dragDay.gif)  
-![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_dayview_overlap.gif)  
-![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_dayview_other.gif) 
+Drag in day  | Drag between days
+--------- | --------
+![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_dayview_drag.gif)   | ![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_dayview_dragDay.gif) 
 
+Header  
+![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_dayview_other.gif)  |
+  
 ####Usage
 Step1: Create view
 ```Java

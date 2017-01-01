@@ -121,6 +121,9 @@ The body part of weekview is same as dayview's. Both of them are composed of Fle
 In the FlexibleLenViewBody, attribute 'displayLen' controls the number of day to be shown within single body.
 If you want to customzie how many day to show, just edite attribute 'displayLen'.
 ####Demo
+Create && Drag  | Swipe between week
+--------- | --------
+https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_week_create%26drag.gif  | https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_week_swipe.gif 
 
 ####Usage
 Same as DayView<br>
@@ -181,6 +184,10 @@ AgendaView
 ------
 
 ####Demo
+
+Agenda Overall  | Float window
+--------- | --------
+https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_agenda_all.gif  | https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_agenda_floatWindow.gif  
 
 ####Usage
 Step1: Create view

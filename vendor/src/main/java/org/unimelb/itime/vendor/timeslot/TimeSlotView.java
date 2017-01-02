@@ -2,11 +2,14 @@ package org.unimelb.itime.vendor.timeslot;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -54,8 +57,7 @@ public class TimeSlotView extends ViewGroup {
     }
 
     public void initBackground(){
-        this.setBackgroundResource(R.drawable.icon_timeslot_bg);
-//        this.setBackgroundDrawable(getResources().getDrawable(R.drawable.itime_draggable_event_bg));
+        this.setBackgroundDrawable(getResources().getDrawable(R.drawable.time_block_background));
 //        this.setBackgroundResource(R.drawable.icon_timeslot_bg);
     }
 
@@ -147,31 +149,23 @@ public class TimeSlotView extends ViewGroup {
     }
 
     public void showAlphaAnim(){
-        ViewGroup a = ((ViewGroup)this.getParent());
-        if (a != null)
-            a.setBackgroundColor(getResources().getColor(R.color.red));
-        TimeSlotView.this.setBackgroundResource(R.drawable.icon_timeslot_bg);
-        ValueAnimator animator = VendorAnimation.getInstance().getAlphaAnim(255,125,this);
-        animator.addListener(new AnimatorListenerAdapter()
+        ValueAnimator alphaAnimation = ObjectAnimator.ofFloat(this, View.ALPHA, 0,1);
+        alphaAnimation.setDuration(2000); // milliseconds
+        alphaAnimation.addListener(new AnimatorListenerAdapter()
         {
             @Override
             public void onAnimationStart(Animator animation) {
                 super.onAnimationStart(animation);
+                TimeSlotView.this.setBackgroundResource(R.drawable.icon_timeslot_bg);
             }
 
             @Override
             public void onAnimationEnd(Animator animation)
             {
-                ViewGroup a = (ViewGroup)TimeSlotView.this.getParent();
-                if(a != null) {
-                    a.setBackgroundColor(TimeSlotView.this.getResources().getColor(R.color.blue));
-                }
-
-//                TimeSlotView.this.setBackgroundResource(R.drawable.time_block_background);
-//                TimeSlotView.this.setBackgroundColor(getResources().getColor(R.color.blue));
+                TimeSlotView.this.setBackgroundResource(R.drawable.time_block_background);
             }
         });
-        animator.start();
+        alphaAnimation.start();
     }
 
     public ITimeTimeSlotInterface getTimeslot() {

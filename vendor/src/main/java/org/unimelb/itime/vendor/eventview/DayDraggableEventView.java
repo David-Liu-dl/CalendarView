@@ -206,9 +206,9 @@ public class DayDraggableEventView extends ViewGroup {
         int padding = DensityUtil.dip2px(getContext(), isAllDayEvent ? 1 : 3);
         title = new TextView(getContext());
         title.setTextSize(11);
+        title.setTextColor(getResources().getColor(R.color.black));
         title.setEllipsize(TextUtils.TruncateAt.END);
         title.setGravity(Gravity.CENTER_VERTICAL);
-        title.setTextColor(Color.WHITE);
         title.setIncludeFontPadding(true);
         title.setPadding(padding,0,padding,0);
         this.addView(title);
@@ -236,8 +236,8 @@ public class DayDraggableEventView extends ViewGroup {
     }
 
     public void showAlphaAnim(){
-        VendorAnimation.getInstance().getAlphaAnim(255,125,this).start();
-
+        this.title.setTextColor(getResources().getColor(R.color.white));
+        VendorAnimation.getInstance().getAlphaAnim(125,255,this).start();
     }
 
     /**

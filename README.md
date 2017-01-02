@@ -1,37 +1,47 @@
-#ITimeVendor-android
+#CalendarView
 -------------
 
 > Welcome 
   WeChat：[poplyh]()  
 ---
-##Preview
-![image](https://github.com/itime-team/ITimeVendor-android/blob/alpha/vendor/src/main/res/drawable/icon_timeslot_arrow.png)  
----
 ##Catalog
-  
-  * [DayView](#DayView)
+
+* [DayView](#dayview)
     * Demo
     * Usage
     * Listener
     * Methods
 
-  * [WeekView](#WeekView)
-    * Demo
-    * Usage
-    * Listener
-    * Methods
+* [WeekView](#weekview)
+  * Demo
+  * Usage
+  * Listener
+  * Methods
 
-  * [AgendaView](#AgendaView)
-    * Demo
-    * Usage
-    * Listener
-    * Methods
+* [AgendaView](#agendaview)
+  * Demo
+  * Usage
+  * Listener
+  * Methods
 
 DayView
-------
+-------------
 
 ####Demo
 
+Create  | Overlap
+--------- | --------
+![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_dayview_create.gif)  | ![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_dayview_overlap.gif)
+
+  
+Drag in day  | Drag between days
+--------- | --------
+![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_dayview_drag.gif)   | ![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_dayview_dragDay.gif) 
+
+Header  |
+---------
+![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_dayview_other.gif)|
+  
 ####Usage
 Step1: Create view
 ```Java
@@ -101,6 +111,7 @@ OnBodyListener
     public void setOnHeaderListener(OnHeaderListener onHeaderListener);
     public void setOnBodyListener(OnBodyListener onBodyListener);
 ```
+
 WeekView
 ------
 Description: <br>
@@ -108,6 +119,9 @@ The body part of weekview is same as dayview's. Both of them are composed of Fle
 In the FlexibleLenViewBody, attribute 'displayLen' controls the number of day to be shown within single body.
 If you want to customzie how many day to show, just edite attribute 'displayLen'.
 ####Demo
+Create && Drag  | Swipe between week
+--------- | --------
+![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_week_create%26drag.gif)  | ![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_week_swipe.gif)
 
 ####Usage
 Same as DayView<br>
@@ -168,6 +182,10 @@ AgendaView
 ------
 
 ####Demo
+
+Agenda Overall  | Float window
+--------- | --------
+![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_agenda_all.gif)  | ![image](https://github.com/DavidFancy/CalendarView/blob/master/demo/gif_agenda_floatWindow.gif)  
 
 ####Usage
 Step1: Create view

@@ -102,12 +102,12 @@ public class PaulActivity extends AppCompatActivity {
 
         });
         weekView.enableTimeSlot();
-        weekView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                weekView.showTimeslotAnim(slots);
-            }
-        },5000);
+//        weekView.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                weekView.showTimeslotAnim(slots);
+//            }
+//        },5000);
         weekView.setDayEventMap(EventManager.getInstance().getEventsMap());
 
         weekView.setOnTimeSlotOuterListener(new FlexibleLenViewBody.OnTimeSlotListener() {
@@ -143,22 +143,33 @@ public class PaulActivity extends AppCompatActivity {
                 if (timeSlotView.getTimeslot() != null){
                     timeSlotView.getTimeslot().setStartTime(startTime);
                     timeSlotView.getTimeslot().setEndTime(endTime);
-                    weekView.reloadTimeSlots(false);
+//                    weekView.reloadTimeSlots(false);
+                }
+
+                for (TimeSlot slot : slots
+                     ) {
+                    weekView.showTimeslotAnim(slot);
                 }
 
             }
 
         });
 
-        TimeSlot slot = new TimeSlot();
-        Calendar calendar = Calendar.getInstance();
-        slot.setStartTime(calendar.getTimeInMillis());
-        slot.setStartTime(calendar.getTimeInMillis()+ 3600*1000);
-        slot.setTimeSlotUid(UUID.randomUUID().toString());
+        for (int i = 0; i < 3; i++) {
+            long interval = i * 24 * 3600 * 1000;
+            TimeSlot slot = new TimeSlot();
+            Calendar calendar = Calendar.getInstance();
+            slot.setStartTime(interval + calendar.getTimeInMillis());
+            slot.setStartTime(interval + calendar.getTimeInMillis()+ 3600*1000);
+            slot.setTimeSlotUid(UUID.randomUUID().toString());
+            this.slots.add(slot);
+            weekView.addTimeSlot(slot);
+//            weekView.showTimeslotAnim(slot);
+        }
 
-        weekView.addTimeSlot(slot);
-        weekView.showTimeslotAnim(slot);
-        weekView.reloadTimeSlots(false);
+
+
+//        weekView.reloadTimeSlots(false);
 
 //        weekView.showEventAnim(event);
 //        weekView.postDelayed(new Runnable() {

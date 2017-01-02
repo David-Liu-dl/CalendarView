@@ -1196,6 +1196,8 @@ public class FlexibleLenViewBody extends RelativeLayout {
                 parent.removeView(timeSlotView);
             }
         }
+
+        this.slotViews.clear();
     }
 
     public void addSlot(ITimeTimeSlotInterface timeslot, boolean animate){

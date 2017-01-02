@@ -146,26 +146,42 @@ public class PaulActivity extends AppCompatActivity {
 //                    weekView.reloadTimeSlots(false);
                 }
 
-                for (TimeSlot slot : slots
-                     ) {
-                    weekView.showTimeslotAnim(slot);
-                }
+//                for (TimeSlot slot : slots
+//                     ) {
+//                    weekView.showTimeslotAnim(slot);
+//                }
 
             }
 
         });
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 1; i++) {
             long interval = i * 24 * 3600 * 1000;
             TimeSlot slot = new TimeSlot();
             Calendar calendar = Calendar.getInstance();
             slot.setStartTime(interval + calendar.getTimeInMillis());
-            slot.setStartTime(interval + calendar.getTimeInMillis()+ 3600*1000);
+            slot.setEndTime(interval + calendar.getTimeInMillis()+ 3600*1000);
             slot.setTimeSlotUid(UUID.randomUUID().toString());
             this.slots.add(slot);
             weekView.addTimeSlot(slot);
 //            weekView.showTimeslotAnim(slot);
         }
+
+        weekView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                weekView.resetTimeSlots();
+
+                for (TimeSlot slot : slots
+                        ) {
+
+                    slot.setDisplayStatus(true);
+                    weekView.addTimeSlot(slot);
+                }
+
+                weekView.reloadTimeSlots(true);
+            }
+        },3000);
 
 
 

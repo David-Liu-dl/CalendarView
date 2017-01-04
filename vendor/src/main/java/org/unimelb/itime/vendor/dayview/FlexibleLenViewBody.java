@@ -31,7 +31,7 @@ import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 import org.unimelb.itime.vendor.listener.ITimeEventPackageInterface;
 import org.unimelb.itime.vendor.listener.ITimeTimeSlotInterface;
 import org.unimelb.itime.vendor.timeslot.TimeSlotView;
-import org.unimelb.itime.vendor.weekview.WeekView;
+import org.unimelb.itime.vendor.wrapper.WrapperTimeSlot;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -1157,10 +1157,6 @@ public class FlexibleLenViewBody extends RelativeLayout {
 
     public void setOnBodyListener(OnBodyListener onBodyListener) {
         this.onBodyListener = onBodyListener;
-//        this.onScrollChangeListener = onBodyListener.setScrollChangeListener();
-//        if (this.onScrollChangeListener != null){
-//            this.scrollContainerView.getViewTreeObserver().addOnScrollChangedListener(this.onScrollChangeListener);
-//        }
     }
 
     Class<?> eventClassName;
@@ -1200,8 +1196,8 @@ public class FlexibleLenViewBody extends RelativeLayout {
         this.slotViews.clear();
     }
 
-    public void addSlot(ITimeTimeSlotInterface timeslot, boolean animate){
-        int offset = this.getEventContainerIndex(timeslot.getStartTime());
+    public void addSlot(WrapperTimeSlot wrapper, boolean animate){
+        int offset = this.getEventContainerIndex(wrapper.getTimeSlot().getStartTime());
 
         if (rightArrow!= null && offset >= displayLen){
             rightArrow.setVisibility(VISIBLE);
@@ -1210,7 +1206,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
         }
 
         if (offset < displayLen && offset > -1){
-            TimeSlotView timeSlotView = createTimeSlotView(timeslot);
+            TimeSlotView timeSlotView = createTimeSlotView(wrapper);
             eventLayouts.get(offset).addView(timeSlotView,timeSlotView.getLayoutParams());
             timeSlotView.bringToFront();
             timeSlotView.setVisibility(VISIBLE);
@@ -1220,12 +1216,13 @@ public class FlexibleLenViewBody extends RelativeLayout {
         }
     }
 
-    private TimeSlotView createTimeSlotView(ITimeTimeSlotInterface timeslot){
-        TimeSlotView timeSlotView = new TimeSlotView(context, timeslot);
-        if (timeslot != null){
+    private TimeSlotView createTimeSlotView(WrapperTimeSlot wrapper){
+        TimeSlotView timeSlotView = new TimeSlotView(context, wrapper);
+        if (wrapper.getTimeSlot() != null){
+            ITimeTimeSlotInterface timeslot = wrapper.getTimeSlot();
             timeSlotView.setType(TimeSlotView.TYPE_NORMAL);
             timeSlotView.setTimes(timeslot.getStartTime(), timeslot.getEndTime());
-            timeSlotView.setStatus(timeslot.getDisplayStatus());
+            timeSlotView.setIsSelected(wrapper.isSelected());
             DayInnerBodyEventLayout.LayoutParams params = new DayInnerBodyEventLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, layoutWidthPerDay);
             timeSlotView.setLayoutParams(params);
 //            timeSlotView.setTag(struct);
@@ -1414,7 +1411,7 @@ public class FlexibleLenViewBody extends RelativeLayout {
         public boolean onLongClick(View v) {
 //            if (tempDragView == null) {
                 DayInnerBodyEventLayout container = (DayInnerBodyEventLayout) v;
-                tempDragView = createTimeSlotView(null);
+                tempDragView = createTimeSlotView(new WrapperTimeSlot(null));
                 tempDragView.setY(nowTapY);
                 container.addView(tempDragView);
 

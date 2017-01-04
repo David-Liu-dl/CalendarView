@@ -2,13 +2,10 @@ package org.unimelb.itime.vendor.timeslot;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -16,8 +13,8 @@ import android.widget.ImageView;
 import org.unimelb.itime.vendor.R;
 import org.unimelb.itime.vendor.helper.DensityUtil;
 import org.unimelb.itime.vendor.helper.MyCalendar;
-import org.unimelb.itime.vendor.helper.VendorAnimation;
 import org.unimelb.itime.vendor.listener.ITimeTimeSlotInterface;
+import org.unimelb.itime.vendor.wrapper.WrapperTimeSlot;
 
 import java.util.Calendar;
 
@@ -33,16 +30,17 @@ public class TimeSlotView extends ViewGroup {
     private long newStartTime = 0;
     private long newEndTime = 0;
     private long duration;
-    private boolean isSelect = false;
 
     private ImageView icon;
     private MyCalendar calendar = new MyCalendar(Calendar.getInstance());
 
+    private WrapperTimeSlot wrapper;
     private ITimeTimeSlotInterface timeslot;
 
-    public TimeSlotView(Context context, @Nullable ITimeTimeSlotInterface timeslot) {
+    public TimeSlotView(Context context, WrapperTimeSlot wrapper) {
         super(context);
-        this.timeslot = timeslot;
+        this.wrapper = wrapper;
+        this.timeslot = wrapper.getTimeSlot();
         if (timeslot != null){
             this.newStartTime = timeslot.getStartTime();
             this.newEndTime = timeslot.getEndTime();
@@ -58,14 +56,13 @@ public class TimeSlotView extends ViewGroup {
 
     public void initBackground(){
         this.setBackgroundDrawable(getResources().getDrawable(R.drawable.time_block_background));
-//        this.setBackgroundResource(R.drawable.icon_timeslot_bg);
     }
 
     public void initIcon(){
         icon = new ImageView(getContext());
         LayoutParams params = new LayoutParams(50, 50);
 
-        if (!isSelect){
+        if (!wrapper.isSelected()){
             icon.setImageResource(R.drawable.icon_event_timeslot_unselected);
         }else{
             icon.setImageResource(R.drawable.icon_event_attendee_selected);
@@ -83,8 +80,8 @@ public class TimeSlotView extends ViewGroup {
         this.calendar.cloneFromCalendar(cal);
     }
 
-    public void setStatus(boolean isSelect){
-        this.isSelect = isSelect;
+    public void setIsSelected(boolean isSelect){
+        this.wrapper.setSelected(isSelect);
         updateIcon();
     }
 
@@ -109,11 +106,11 @@ public class TimeSlotView extends ViewGroup {
     }
 
     public boolean isSelect() {
-        return isSelect;
+        return this.wrapper.isSelected();
     }
 
     private void updateIcon(){
-        if (isSelect){
+        if (wrapper.isSelected()){
             icon.setImageDrawable(getResources().getDrawable(R.drawable.icon_event_attendee_selected));
         } else {
             icon.setImageDrawable(getResources().getDrawable(R.drawable.icon_event_timeslot_unselected));

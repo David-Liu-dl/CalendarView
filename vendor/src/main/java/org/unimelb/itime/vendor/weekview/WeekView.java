@@ -22,6 +22,7 @@ import org.unimelb.itime.vendor.listener.ITimeEventInterface;
 import org.unimelb.itime.vendor.listener.ITimeEventPackageInterface;
 import org.unimelb.itime.vendor.listener.ITimeTimeSlotInterface;
 import org.unimelb.itime.vendor.timeslot.TimeSlotView;
+import org.unimelb.itime.vendor.wrapper.WrapperTimeSlot;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -56,7 +57,7 @@ public class WeekView extends LinearLayout {
     private ArrayList<WeekViewHeader> headerViewList;
     private ArrayList<FlexibleLenViewBody> bodyViewList;
     private ArrayList<LinearLayout> weekViewList;
-    private ArrayList<ITimeTimeSlotInterface> slotsInfo = new ArrayList<>();
+    private ArrayList<WrapperTimeSlot> slotsInfo = new ArrayList<>();
 
     private FlexibleLenBodyViewPager weekViewPager;
     private WeekViewPagerAdapter adapter;
@@ -520,7 +521,25 @@ public class WeekView extends LinearLayout {
     }
 
     public void addTimeSlot(ITimeTimeSlotInterface slotInfo){
-        slotsInfo.add(slotInfo);
+        WrapperTimeSlot wrapper = new WrapperTimeSlot(slotInfo);
+        slotsInfo.add(wrapper);
+        if (adapter != null){
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    public void addTimeSlot(WrapperTimeSlot wrapperTimeSlot){
+        slotsInfo.add(wrapperTimeSlot);
+        if (adapter != null){
+            adapter.notifyDataSetChanged();
+        }
+
+    }
+
+    public void addTimeSlot(ITimeTimeSlotInterface slotInfo, boolean isSelected){
+        WrapperTimeSlot wrapper = new WrapperTimeSlot(slotInfo);
+        wrapper.setSelected(isSelected);
+        slotsInfo.add(wrapper);
         if (adapter != null){
             adapter.notifyDataSetChanged();
         }

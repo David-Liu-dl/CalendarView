@@ -175,7 +175,6 @@ public class PaulActivity extends AppCompatActivity {
                 for (TimeSlot slot : slots
                         ) {
 
-                    slot.setDisplayStatus(true);
                     weekView.addTimeSlot(slot);
                 }
 

@@ -68,15 +68,6 @@ public class TimeSlot implements ITimeTimeSlotInterface,Serializable {
     }
 
     @Override
-    public void setDisplayStatus(boolean status) {
-    }
-
-    @Override
-    public boolean getDisplayStatus() {
-        return false;
-    }
-
-    @Override
     public int getAcceptedNum() {
         return accetpedNum;
     }

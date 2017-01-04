@@ -1,5 +1,6 @@
 package org.unimelb.itime.vendor.dayview;
 
+import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.databinding.BindingMethod;
@@ -7,6 +8,7 @@ import android.databinding.BindingMethods;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -264,13 +266,48 @@ public class MonthDayView extends LinearLayout {
     }
 
     public void backToToday(){
-        this.headerRecyclerView.stopScroll();
-        this.headerRecyclerView.scrollToPosition(upperBoundsOffset);
-        this.headerScrollToDate(Calendar.getInstance());
+        if (headerRecyclerView.getHeight() != init_height){
+            shrinkHeader(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    headerScrollToDate(Calendar.getInstance());
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+        }else{
+            headerScrollToDate(Calendar.getInstance());
+        }
+//        headerRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+//                super.onScrollStateChanged(recyclerView, newState);
+//                if (newState == 0){
+//                    Calendar cal = Calendar.getInstance();
+//                    DayViewHeader headerView =
+//                            (DayViewHeader) headerLinearLayoutManager.findViewByPosition(headerLinearLayoutManager.findFirstVisibleItemPosition());
+//                    headerView.performNthDayClick(cal.get(Calendar.DAY_OF_WEEK) - 1);
+//                    headerRecyclerView.removeOnScrollListener(this);
+//                }
+//            }
+//        });
+//        headerRecyclerView.smoothScrollToPosition(upperBoundsOffset);
     }
 
-    public void headerScrollToDate(Calendar body_fst_cal){
-
+    public void headerScrollToDate(final Calendar body_fst_cal){
         DayViewHeader headerView =
                 (DayViewHeader) headerLinearLayoutManager.findViewByPosition(headerRecyclerAdapter.rowPst);
         if (headerView != null){
@@ -279,10 +316,8 @@ public class MonthDayView extends LinearLayout {
             MyCalendar tempB = new MyCalendar(body_fst_cal);
             tempB.setHour(0);
             tempH.setOffsetByDate(headerRecyclerAdapter.indexInRow);
-//            float bugger = (float)(tempB.getCalendar().getTimeInMillis() - tempH.getCalendar().getTimeInMillis()) / (float)(1000*60*60*24);
-//            int date_offset =  (int)((float)(tempB.getCalendar().getTimeInMillis() - tempH.getCalendar().getTimeInMillis()) / (float)(1000*60*60*24));
-            int date_offset = Math.round((float)(tempB.getCalendar().getTimeInMillis() - tempH.getCalendar().getTimeInMillis()) / (float)(1000*60*60*24));
 
+            int date_offset = Math.round((float)(tempB.getCalendar().getTimeInMillis() - tempH.getCalendar().getTimeInMillis()) / (float)(1000*60*60*24));
             int row_diff = date_offset/7;
             int day_diff = ((headerRecyclerAdapter.indexInRow+1) + date_offset%7);
 
@@ -317,7 +352,7 @@ public class MonthDayView extends LinearLayout {
             }
         }else {
             headerRecyclerView.stopScroll();
-            headerRecyclerView.scrollToPosition(headerRecyclerAdapter.rowPst);
+            headerLinearLayoutManager.scrollToPosition(headerRecyclerAdapter.rowPst);
         }
     }
 
@@ -364,42 +399,12 @@ public class MonthDayView extends LinearLayout {
                 }
             });
 
-//            scroller.setOnScrollChangeListener(new OnScrollChangeListener() {
-//                @Override
-//                public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-//                    int x = scroller.getScrollX();
-//                    int y = scroller.getScrollY();
-//
-//                    for (FlexibleLenViewBody bodyView:bodyViewList
-//                         ) {
-//                        ScrollView scrollerInner = bodyView.getScrollView();
-//                        if(scrollerInner != scroller){
-//                            scrollerInner.scrollTo(x,y);
-//                        }
-//                    }
-//                }
-//            });
-
             bodyViewList.add(bodyView);
             bodyView.setOnBodyTouchListener(new FlexibleLenViewBody.OnBodyTouchListener() {
                 @Override
                 public boolean bodyOnTouchListener(float tapX, float tapY) {
                     if (headerRecyclerView.getHeight() != init_height){
-                        headerRecyclerView.stopScroll();
-                        headerLinearLayoutManager.scrollToPositionWithOffset(headerRecyclerAdapter.getCurrentSelectPst(), 0);
-
-                        final View view = headerRecyclerView;
-                        ValueAnimator va = ValueAnimator.ofInt(scroll_height, init_height);
-                        va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                            public void onAnimationUpdate(ValueAnimator animation) {
-                                Integer value = (Integer) animation.getAnimatedValue();
-                                view.getLayoutParams().height = value.intValue();
-                                view.requestLayout();
-                            }
-                        });
-                        va.setDuration(200);
-                        va.start();
-
+                        shrinkHeader(null);
                         return true;
                     }else{
                         return false;
@@ -411,6 +416,42 @@ public class MonthDayView extends LinearLayout {
 
     }
 
+    private void shrinkHeader(Animator.AnimatorListener callback){
+        headerRecyclerView.stopScroll();
+        headerLinearLayoutManager.scrollToPositionWithOffset(headerRecyclerAdapter.getCurrentSelectPst(), 0);
+
+        final View view = headerRecyclerView;
+        ValueAnimator va = ValueAnimator.ofInt(scroll_height, init_height);
+        va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            public void onAnimationUpdate(ValueAnimator animation) {
+                Integer value = (Integer) animation.getAnimatedValue();
+                view.getLayoutParams().height = value.intValue();
+                view.requestLayout();
+            }
+        });
+
+        if(callback != null){
+            va.addListener(callback);
+        }
+
+        va.setDuration(200);
+        va.start();
+    }
+
+    private void expandHeader(){
+        final View view = headerRecyclerView;
+        ValueAnimator va = ValueAnimator.ofInt(init_height, scroll_height);
+        va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            public void onAnimationUpdate(ValueAnimator animation) {
+                Integer value = (Integer) animation.getAnimatedValue();
+                view.getLayoutParams().height = value.intValue();
+                view.requestLayout();
+            }
+        });
+        va.setDuration(200);
+        va.start();
+    }
+
     class OnHeaderScrollListener extends RecyclerView.OnScrollListener {
         @Override
         public void onScrollStateChanged(RecyclerView v, int newState) {
@@ -418,17 +459,7 @@ public class MonthDayView extends LinearLayout {
 
             if (newState == 1){
                 if (v.getHeight() == init_height){
-                    final View view = v;
-                    ValueAnimator va = ValueAnimator.ofInt(init_height, scroll_height);
-                    va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                        public void onAnimationUpdate(ValueAnimator animation) {
-                            Integer value = (Integer) animation.getAnimatedValue();
-                            view.getLayoutParams().height = value.intValue();
-                            view.requestLayout();
-                        }
-                    });
-                    va.setDuration(200);
-                    va.start();
+                    expandHeader();
                 }
             }
             //for now header date

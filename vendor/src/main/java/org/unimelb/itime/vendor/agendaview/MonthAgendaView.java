@@ -1,5 +1,6 @@
 package org.unimelb.itime.vendor.agendaview;
 
+import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.databinding.BindingMethod;
@@ -236,8 +237,82 @@ public class MonthAgendaView extends RelativeLayout{
     public void backToToday(){
         this.headerRecyclerView.stopScroll();
         this.bodyRecyclerView.stopScroll();
-        this.headerScrollToDate(Calendar.getInstance());
+        if (headerRecyclerView.getHeight() != init_height){
+            shrinkHeader(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    headerScrollToDate(Calendar.getInstance());
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+        }else{
+            headerScrollToDate(Calendar.getInstance());
+        }
+//        headerRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+//                super.onScrollStateChanged(recyclerView, newState);
+//                if (newState == 0){
+//                    Calendar cal = Calendar.getInstance();
+//                    DayViewHeader headerView =
+//                            (DayViewHeader) headerLinearLayoutManager.findViewByPosition(headerLinearLayoutManager.findFirstVisibleItemPosition());
+//                    headerView.performNthDayClick(cal.get(Calendar.DAY_OF_WEEK) - 1);
+//                    headerRecyclerView.removeOnScrollListener(this);
+//                }
+//            }
+//        });
+//        headerRecyclerView.smoothScrollToPosition(upperBoundsOffset);
         this.bodyLinearLayoutManager.scrollToPosition(0);
+    }
+
+    private void shrinkHeader(Animator.AnimatorListener callback){
+        headerRecyclerView.stopScroll();
+        headerLinearLayoutManager.scrollToPositionWithOffset(headerRecyclerAdapter.getCurrentSelectPst(), 0);
+
+        final View view = headerRecyclerView;
+        ValueAnimator va = ValueAnimator.ofInt(scroll_height, init_height);
+        va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            public void onAnimationUpdate(ValueAnimator animation) {
+                Integer value = (Integer) animation.getAnimatedValue();
+                view.getLayoutParams().height = value.intValue();
+                view.requestLayout();
+            }
+        });
+
+        if(callback != null){
+            va.addListener(callback);
+        }
+
+        va.setDuration(200);
+        va.start();
+    }
+
+    private void expandHeader(){
+        final View view = headerRecyclerView;
+        ValueAnimator va = ValueAnimator.ofInt(init_height, scroll_height);
+        va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            public void onAnimationUpdate(ValueAnimator animation) {
+                Integer value = (Integer) animation.getAnimatedValue();
+                view.getLayoutParams().height = value.intValue();
+                view.requestLayout();
+            }
+        });
+        va.setDuration(200);
+        va.start();
     }
 
     public void scrollTo(final Calendar calendar){

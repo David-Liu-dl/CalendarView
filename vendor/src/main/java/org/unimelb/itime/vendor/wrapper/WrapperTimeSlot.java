@@ -10,10 +10,18 @@ import org.unimelb.itime.vendor.weekview.WeekView;
 public class WrapperTimeSlot {
     private ITimeTimeSlotInterface timeSlot = null;
     private boolean isSelected = false;
-    public WeekView.Inter1 inter1;
+    private boolean isAnimated = false;
 
     public WrapperTimeSlot(ITimeTimeSlotInterface timeSlot) {
         this.timeSlot = timeSlot;
+    }
+
+    public boolean isAnimated() {
+        return isAnimated;
+    }
+
+    public void setAnimated(boolean animated) {
+        isAnimated = animated;
     }
 
     public boolean isSelected() {

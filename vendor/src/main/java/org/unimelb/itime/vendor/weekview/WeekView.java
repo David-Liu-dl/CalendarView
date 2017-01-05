@@ -24,7 +24,9 @@ import org.unimelb.itime.vendor.listener.ITimeTimeSlotInterface;
 import org.unimelb.itime.vendor.timeslot.TimeSlotView;
 import org.unimelb.itime.vendor.wrapper.WrapperTimeSlot;
 
+import java.sql.Wrapper;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -322,20 +324,25 @@ public class WeekView extends LinearLayout {
     }
 
     public <T extends ITimeTimeSlotInterface>void showTimeslotAnim(final T ... timeslots){
+
         for (final FlexibleLenViewBody body: bodyViewList
                 ) {
             if (body.isShown()){
+//                setTimeSlotAnimated(Arrays.asList(timeslots));
                 body.showTimeslotAnim(timeslots);
             }else{
                 ViewTreeObserver vto = this.getViewTreeObserver();
                 vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
                     public void onGlobalLayout() {
+//                        setTimeSlotAnimated(Arrays.asList(timeslots));
                         WeekView.this.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                         body.showTimeslotAnim(timeslots);
                     }
                 });
             }
+
+
         }
     }
 
@@ -344,12 +351,14 @@ public class WeekView extends LinearLayout {
                 ) {
             if (body.isShown()){
                 body.showTimeslotAnim(timeslots);
+//                setTimeSlotAnimated(timeslots);
             }else{
                 ViewTreeObserver vto = this.getViewTreeObserver();
                 vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
                     public void onGlobalLayout() {
                         WeekView.this.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+//                        setTimeSlotAnimated(timeslots);
                         body.showTimeslotAnim(timeslots);
                     }
                 });
@@ -357,6 +366,27 @@ public class WeekView extends LinearLayout {
         }
     }
 
+    private void setTimeSlotAnimated(List<? extends ITimeTimeSlotInterface> timeslots){
+        for (ITimeTimeSlotInterface slot:timeslots
+             ) {
+            WrapperTimeSlot wrapper = getTimeSlotWrapper(slot);
+
+            if (wrapper != null){
+                wrapper.setAnimated(true);
+            }
+        }
+    }
+
+    private WrapperTimeSlot getTimeSlotWrapper(ITimeTimeSlotInterface slotInterface){
+        for (WrapperTimeSlot wrapper:slotsInfo
+             ) {
+            if (wrapper.getTimeSlot() != null && wrapper.getTimeSlot().getTimeslotUid().equals(slotInterface.getTimeslotUid())){
+                return  wrapper;
+            }
+        }
+
+        return null;
+    }
 
     public void setOnHeaderListener(OnHeaderListener onHeaderListener){
         this.onHeaderListener = onHeaderListener;

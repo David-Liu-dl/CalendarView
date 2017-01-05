@@ -167,21 +167,21 @@ public class PaulActivity extends AppCompatActivity {
 //            weekView.showTimeslotAnim(slot);
         }
 
-        weekView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                weekView.resetTimeSlots();
-
-                for (TimeSlot slot : slots
-                        ) {
-
-                    weekView.addTimeSlot(slot);
-                }
-
-                weekView.reloadTimeSlots(true);
-            }
-        },3000);
-
+//        weekView.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                weekView.resetTimeSlots();
+//
+//                for (TimeSlot slot : slots
+//                        ) {
+//
+//                    weekView.addTimeSlot(slot);
+//                }
+//
+//                weekView.reloadTimeSlots(true);
+//            }
+//        },3000);
+//
 
 
 //        weekView.reloadTimeSlots(false);

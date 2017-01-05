@@ -85,31 +85,6 @@ public class DayDraggableEventView extends ViewGroup {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-
-        if(this.event != null
-                && this.status != null
-                && !this.status.equals("")
-                && this.status.equals("slash")){
-
-            p.setAntiAlias(true);
-            p.setColor(Color.WHITE);
-            p.setStrokeWidth(DensityUtil.dip2px(getContext(),1));
-
-            int nowAtPxX = 0 - height;
-            int nowAtPxY = getPaddingTop();
-
-            int xGap = DensityUtil.dip2px(getContext(),10);
-
-            while (nowAtPxX <= width){
-                canvas.drawLine(nowAtPxX, nowAtPxY, nowAtPxX + height, height, p);
-                nowAtPxX += xGap;
-            }
-        }
-    }
-
-    @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
 
         int baseL = getPaddingLeft();
@@ -210,7 +185,21 @@ public class DayDraggableEventView extends ViewGroup {
     }
 
     private void initBackgroundView(){
-        bg = new ImageView(getContext());
+        bg = new ImageView(getContext()){
+            @Override
+            protected void onDraw(Canvas canvas) {
+                super.onDraw(canvas);
+
+                if(event != null
+                        && status != null
+                        && !status.equals("")
+                        && status.equals("slash")){
+
+                    drawSlash(canvas);
+                }
+            }
+        };
+
         bg.setBackgroundDrawable(getResources().getDrawable(R.drawable.itime_draggable_event_bg));
         ((GradientDrawable)bg.getBackground()).setColor(Color.BLUE);
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -237,6 +226,22 @@ public class DayDraggableEventView extends ViewGroup {
         title.setIncludeFontPadding(true);
         title.setPadding(padding,0,padding,0);
         this.addView(title);
+    }
+
+    private void drawSlash(Canvas canvas){
+        p.setAntiAlias(true);
+        p.setColor(Color.WHITE);
+        p.setStrokeWidth(DensityUtil.dip2px(getContext(),1));
+
+        int nowAtPxX = 0 - height;
+        int nowAtPxY = getPaddingTop();
+
+        int xGap = DensityUtil.dip2px(getContext(),10);
+
+        while (nowAtPxX <= width){
+            canvas.drawLine(nowAtPxX, nowAtPxY, nowAtPxX + height, height, p);
+            nowAtPxX += xGap;
+        }
     }
 
     private void updateLeftBar(Drawable db, int color){

@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.media.Image;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -44,6 +45,7 @@ public class DayDraggableEventView extends ViewGroup {
     private String icon_name;
 
     private Paint p = new Paint();
+    private ImageView bg;
     private TextView title;
     private ImageView icon;
     private ImageView leftBar;
@@ -58,8 +60,6 @@ public class DayDraggableEventView extends ViewGroup {
         initAttrs();
 
         this.isAllDayEvent = isAllDayEvent;
-        this.setBackgroundDrawable(getResources().getDrawable(R.drawable.itime_draggable_event_bg));
-        ((GradientDrawable)this.getBackground()).setColor(Color.BLUE);
 
         initBackground();
         initDataInViews();
@@ -98,7 +98,7 @@ public class DayDraggableEventView extends ViewGroup {
             p.setStrokeWidth(DensityUtil.dip2px(getContext(),1));
 
             int nowAtPxX = 0 - height;
-            int nowAtPxY = 0;
+            int nowAtPxY = getPaddingTop();
 
             int xGap = DensityUtil.dip2px(getContext(),10);
 
@@ -111,13 +111,17 @@ public class DayDraggableEventView extends ViewGroup {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        width = r - l;
+
+        int baseL = getPaddingLeft();
+        int baseT = getPaddingTop();
+        width = r - l - baseL;
         height = b - t;
 
-        leftBar.layout(0, 0, leftBar.getLayoutParams().width, b-t);
+        bg.layout(baseL,baseT,r,b);
+        leftBar.layout(baseL, baseT, leftBar.getLayoutParams().width, height);
         int icon_margin = DensityUtil.dip2px(getContext(),1);
-        icon.layout(width - icon.getLayoutParams().width -icon_margin,icon_margin,width,icon_margin + icon.getLayoutParams().height);
-        title.layout(leftBar.getLayoutParams().width,t, width,b);
+        icon.layout(width - baseL - icon.getLayoutParams().width -icon_margin,icon_margin + baseT,width,icon_margin + icon.getLayoutParams().height + baseT);
+        title.layout(baseL+leftBar.getLayoutParams().width,t + baseT, width,b);
     }
 
     public static class LayoutParams extends ViewGroup.LayoutParams {
@@ -167,11 +171,22 @@ public class DayDraggableEventView extends ViewGroup {
         }
 
         //set background color base on type
-        this.setBackground(getResources().getDrawable(R.drawable.itime_draggable_event_bg));
-        ((GradientDrawable)this.getBackground()).setColor(color);
-        this.getBackground().setAlpha(128);
+        bg.setBackground(getResources().getDrawable(R.drawable.itime_draggable_event_bg));
+        ((GradientDrawable)bg.getBackground()).setColor(color);
+        bg.getBackground().setAlpha(128);
         //set leftBar color base on type
         updateLeftBar(getResources().getDrawable(R.drawable.itime_draggable_event_bg), color);
+    }
+
+    public void setBackground(Drawable drawable){
+        bg.setBackground(drawable);
+        ((GradientDrawable)bg.getBackground()).setColor(color);
+        bg.getBackground().setAlpha(128);
+    }
+
+    @Override
+    public Drawable getBackground() {
+        return this.bg.getBackground();
     }
 
     private void initDarkLeftBorder(){
@@ -188,9 +203,19 @@ public class DayDraggableEventView extends ViewGroup {
     }
 
     private void initBackground(){
+        initBackgroundView();
         initDarkLeftBorder();
         initEventTitle();
         initIcon();
+    }
+
+    private void initBackgroundView(){
+        bg = new ImageView(getContext());
+        bg.setBackgroundDrawable(getResources().getDrawable(R.drawable.itime_draggable_event_bg));
+        ((GradientDrawable)bg.getBackground()).setColor(Color.BLUE);
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+        this.addView(bg,params);
     }
 
     private void initIcon(){

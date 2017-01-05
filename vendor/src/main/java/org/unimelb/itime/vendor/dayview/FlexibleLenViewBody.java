@@ -361,8 +361,8 @@ public class FlexibleLenViewBody extends RelativeLayout {
             DayInnerBodyEventLayout eventLayout = new DayInnerBodyEventLayout(context);
             eventLayout.setBackgroundColor(getResources().getColor(displayLen == 1 ? R.color.color_75white : (i%2 == 0 ? R.color.color_f2f2f5 : R.color.color_75white)));
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,1f);
-            int eventLayoutPadding = DensityUtil.dip2px(context, 1);
-            eventLayout.setPadding(eventLayoutPadding,0,eventLayoutPadding,0);
+//            int eventLayoutPadding = DensityUtil.dip2px(context, 20);
+//            eventLayout.setPadding(eventLayoutPadding,0,eventLayoutPadding,0);
             parent.addView(eventLayout,params);
             if (!isTimeSlotEnable){
                 eventLayout.setOnDragListener(new EventDragListener(i));
@@ -795,7 +795,6 @@ public class FlexibleLenViewBody extends RelativeLayout {
     private void calculateEventLayout(DayInnerBodyEventLayout eventLayout) {
         List<ArrayList<Pair<Pair<Integer, Integer>, ITimeEventInterface>>> overlapGroups
                 = xHelper.computeOverlapXForEvents(eventLayout.getEvents());
-        int previousGroupExtraY = 0;
         for (ArrayList<Pair<Pair<Integer, Integer>, ITimeEventInterface>> overlapGroup : overlapGroups
                 ) {
             for (int i = 0; i < overlapGroup.size(); i++) {
@@ -803,20 +802,20 @@ public class FlexibleLenViewBody extends RelativeLayout {
                 int startY = getEventY(overlapGroup.get(i).second);
                 int widthFactor = overlapGroup.get(i).first.first;
                 int startX = overlapGroup.get(i).first.second;
-//                int topMargin = startY + overlapGapHeight * i + previousGroupExtraY;
-                int topMargin = startY + previousGroupExtraY;
+                int topMargin = startY;
                 DayDraggableEventView eventView = (DayDraggableEventView) eventLayout.findViewById(regularEventViewMap.get(overlapGroup.get(i).second));
                 eventView.setPosParam(new DayDraggableEventView.PosParam(startY, startX, widthFactor, topMargin));
                 Calendar cal = Calendar.getInstance();
                 cal.setTimeInMillis(eventView.getEvent().getStartTime());
             }
-            previousGroupExtraY += overlapGapHeight * overlapGroup.size();
         }
     }
 
     private DayDraggableEventView createDayDraggableEventView(ITimeEventInterface event, boolean isAllDayEvent) {
         DayDraggableEventView event_view = new DayDraggableEventView(context, event, isAllDayEvent);
         event_view.setType(DayDraggableEventView.TYPE_NORMAL);
+        int padding = DensityUtil.dip2px(context,1);
+        event_view.setPadding(0,padding,0,0);
         if (!isTimeSlotEnable){
             event_view.setOnClickListener(new OnClickListener() {
                 @Override

@@ -154,6 +154,7 @@ public class TimeSlotView extends ViewGroup {
             public void onAnimationStart(Animator animation) {
                 super.onAnimationStart(animation);
                 TimeSlotView.this.setBackgroundResource(R.drawable.icon_timeslot_bg);
+//                TimeSlotView.this.setBackgroundResource(R.drawable.time_block_background);
             }
 
             @Override

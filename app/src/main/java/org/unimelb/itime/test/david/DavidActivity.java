@@ -40,44 +40,12 @@ public class DavidActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_david);
 
-//        Calendar cal1 = Calendar.getInstance();
-//
-//        SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
-//        Date startDate = new Date();
-//        try {
-//            startDate = df.parse("20150611");
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-//
-//        cal1.setTime(startDate);
-//
-//        Calendar cal2 = Calendar.getInstance();
-////        cal2.add(Calendar.DATE,3);
-//
-//        Calendar cal3 = Calendar.getInstance();
-//        cal3.add(Calendar.MONTH,1);
-//
-//        String[] recurrence = {"RRULE:FREQ=WEEKLY;INTERVAL=1"
-//        };
-//
-//        RuleModel module = RuleFactory.getInstance().getRuleModel(cal1.getTimeInMillis(), cal2.getTimeInMillis(), recurrence);
-//        ArrayList<Long> result = module.getOccurenceDates(cal2.getTimeInMillis(),cal3.getTimeInMillis());
-//        Calendar printCal = Calendar.getInstance();
-//        for (Long timeM:result
-//             ) {
-//            printCal.setTimeInMillis(timeM);
-//            Log.i(TAG, "Date: " + printCal.getTime());
-//        }
-
-//        Cloner cloner=new Cloner();
-//        Object cloned = cloner.deepClone(someObject);
         eventThing();
     }
     private void eventThing(){
         dbManager = DBManager.getInstance(this);
         eventManager = EventManager.getInstance();
-        initData();
+//        initData();
         loadData();
 //        doInviteesThings();
 
@@ -111,7 +79,8 @@ public class DavidActivity extends AppCompatActivity {
                 cal.setTimeInMillis(eventView.getEndTimeM());
                 Log.i(TAG, "onEventCreate: " + cal.getTime());
 
-                monthDayView.scrollToWithOffset(eventView.getStartTimeM());
+//                monthDayView.scrollToWithOffset(eventView.getStartTimeM());
+                monthDayView.reloadEvents();
             }
 
             @Override
@@ -120,7 +89,6 @@ public class DavidActivity extends AppCompatActivity {
                 cal.setTimeInMillis(eventView.getStartTimeM());
 
                 EventManager.getInstance().updateEvent((Event) eventView.getEvent(),10,10);
-
             }
 
             @Override
@@ -141,7 +109,7 @@ public class DavidActivity extends AppCompatActivity {
                 cal.setTimeInMillis(eventView.getEndTimeM());
                 Log.i(TAG, "onEventDragDrop: " + cal.getTime());
 
-                monthDayView.scrollToWithOffset(eventView.getStartTimeM());
+//                monthDayView.scrollToWithOffset(eventView.getStartTimeM());
             }
 
         });
@@ -152,13 +120,12 @@ public class DavidActivity extends AppCompatActivity {
                 monthDayView.backToToday();
             }
         });
-
         monthDayView.postDelayed(new Runnable() {
             @Override
             public void run() {
-                monthDayView.showEventAnim(event);
+                monthDayView.reloadEvents();
             }
-        },1000);
+        },2000);
     }
 
 //    private void doMonthAgendaViewThings(){
@@ -243,9 +210,10 @@ public class DavidActivity extends AppCompatActivity {
         int[] type = {0,1,2};
         int[] status = {0,1};
         long interval = 3600 * 1000;
-        for (int i = 1; i < 3; i++) {
-            long startTime = calendar.getTimeInMillis();
-            long endTime = startTime + (3600*1000);
+        long startTime = calendar.getTimeInMillis();
+        long endTime;
+        for (int i = 1; i < 4; i++) {
+            endTime = startTime + (3600*1000);
 //            long duration = (endTime - startTime);
 
             Event event = new Event();
@@ -276,6 +244,7 @@ public class DavidActivity extends AppCompatActivity {
             event.setEndTime(endTime);
             events.add(event);
 
+            startTime= i==2?startTime:endTime;
 //            calendar.setTimeInMillis(startTime + 24*3600*1000);
         }
 

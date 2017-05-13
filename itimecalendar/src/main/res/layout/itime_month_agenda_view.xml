@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/monthAgendaView"
+    android:layout_height="1dp"
+    android:layout_width="1dp"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <include layout="@layout/day_of_week"/>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@drawable/itime_header_divider_line"
+        />
+
+    <android.support.v7.widget.RecyclerView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/headerRowList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </android.support.v7.widget.RecyclerView>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@drawable/itime_header_divider_line"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/bodyRL">
+        <org.unimelb.itime.vendor.agendaview.AgendaBodyRecyclerView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/bodyRowList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </org.unimelb.itime.vendor.agendaview.AgendaBodyRecyclerView>
+    </RelativeLayout>
+</LinearLayout>

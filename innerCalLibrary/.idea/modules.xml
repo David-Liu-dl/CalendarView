@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../IOSDialog/IOSDialog.iml" filepath="$PROJECT_DIR$/../IOSDialog/IOSDialog.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../ITimeVendor-android.iml" filepath="$PROJECT_DIR$/../ITimeVendor-android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../library/LoadingBtn.iml" filepath="$PROJECT_DIR$/../library/LoadingBtn.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../app/app.iml" filepath="$PROJECT_DIR$/../app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../imagepicker/imagepicker.iml" filepath="$PROJECT_DIR$/../imagepicker/imagepicker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/innerCalLibrary.iml" filepath="$PROJECT_DIR$/innerCalLibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../photopicker/photopicker.iml" filepath="$PROJECT_DIR$/../photopicker/photopicker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../vendor/vendor.iml" filepath="$PROJECT_DIR$/../vendor/vendor.iml" />
+    </modules>
+  </component>
+</project>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/horizontalscrollpageview/horizontalscrollpageview.iml" filepath="$PROJECT_DIR$/horizontalscrollpageview/horizontalscrollpageview.iml" />
+      <module fileurl="file://$PROJECT_DIR$/iTime-Calendar.iml" filepath="$PROJECT_DIR$/iTime-Calendar.iml" />
+      <module fileurl="file://$PROJECT_DIR$/innerCalLibrary/innerCalLibrary.iml" filepath="$PROJECT_DIR$/innerCalLibrary/innerCalLibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/itimecalendar/itimecalendar.iml" filepath="$PROJECT_DIR$/itimecalendar/itimecalendar.iml" />
+    </modules>
+  </component>
+</project>

@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Vendor</string>
+    <!--for contacts-->
+    <string name="cancel">Cancel</string>
+    <string name="new_event">New Event</string>
+    <string name="done">Send</string>
+    <string name="search">Search</string>
+    <!--for head day of week-->
+    <string name="_1th_of_week">SUN</string>
+    <string name="_2th_of_week">MON</string>
+    <string name="_3th_of_week">TUE</string>
+    <string name="_4th_of_week">WED</string>
+    <string name="_5th_of_week">TUR</string>
+    <string name="_6th_of_week">FRI</string>
+    <string name="_7th_of_week">SAT</string>
+</resources>

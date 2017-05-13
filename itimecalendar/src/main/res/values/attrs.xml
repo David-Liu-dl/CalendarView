@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <attr name="page_text_size" format="dimension"></attr>
+    <!-- for binding -->
+    <declare-styleable name="WeekView">
+        <attr name="onWeekViewChange" format="string" />
+        <attr name="onWeekOuterListener" format="string"/>
+        <attr name="timeslot" format="string"/>
+        <attr name="WeekViewBackToday" format="string"/>
+    </declare-styleable>
+
+    <declare-styleable name="MonthDayView">
+        <attr name="BackToday" format="string"/>
+        <attr name="onHeaderListener" format="string"/>
+        <attr name="onBodyListener" format="string"/>
+        <attr name="onFlexibleBodyScroll" format="string"/>
+    </declare-styleable>
+
+    <declare-styleable name="MonthAgendaView">
+        <attr name="MonthAgendaViewBackToday" format="string"/>
+    </declare-styleable>
+    <!-- end binding -->
+    <declare-styleable name="WeekTimeSlotView">
+        <attr name="onTimeSlotWeekViewChange" format="string"/>
+        <attr name="onTimeSlotClick" format="string"/>
+    </declare-styleable>
+
+    <declare-styleable name="dayStyle">
+        <attr name="display_length" format="integer"/>
+        <attr name="state_current" format="boolean" />
+        <attr name="lineHeight" format="dimension" />
+        <attr name="timeTextSize" format="dimension" />
+        <attr name="headerNormalTextColorOdd" format="color" />
+        <attr name="headerNormalTextColorEven" format="color" />
+        <attr name="headerTodayTextColor" format="color" />
+        <!--<attr name="headerNormalTextColor" format="color" />-->
+        <attr name="headerSelectedTextColor" format="color" />
+        <attr name="todaySelectedCircleBgColor" format="color" />
+        <attr name="otherSelectedCircleBgColor" format="color" />
+    </declare-styleable>
+
+    <attr name="calendarViewStyle" format="reference" />
+</resources>

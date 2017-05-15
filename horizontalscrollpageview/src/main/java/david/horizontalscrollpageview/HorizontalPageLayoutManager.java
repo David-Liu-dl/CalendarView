@@ -8,11 +8,15 @@ import android.util.SparseBooleanArray;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.List;
+
 /**
  * Created by zhuguohui on 2016/11/9.
  */
 
 public class HorizontalPageLayoutManager extends RecyclerView.LayoutManager implements PageDecorationLastJudge {
+    private static final String TAG = "test";
+
     @Override
     public RecyclerView.LayoutParams generateDefaultLayoutParams() {
         return new RecyclerView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -22,6 +26,7 @@ public class HorizontalPageLayoutManager extends RecyclerView.LayoutManager impl
     int totalWidth = 0;
     int offsetY = 0;
     int offsetX = 0;
+    int currentPst = 0;
 
     public HorizontalPageLayoutManager(int rows, int columns) {
         this.rows = rows;
@@ -41,7 +46,8 @@ public class HorizontalPageLayoutManager extends RecyclerView.LayoutManager impl
 
     @Override
     public int scrollHorizontallyBy(int dx, RecyclerView.Recycler recycler, RecyclerView.State state) {
-        detachAndScrapAttachedViews(recycler);
+        long currentS = System.currentTimeMillis();
+//        detachAndScrapAttachedViews(recycler);
 
         int newX = offsetX + dx;
         int result = dx;
@@ -52,9 +58,15 @@ public class HorizontalPageLayoutManager extends RecyclerView.LayoutManager impl
         }
         offsetX += result;
         offsetChildrenHorizontal(-result);
+
+        Log.d("--->", "ScrapList: " + recycler.getScrapList().size());
+
         recycleAndFillItems(recycler, state);
 
-        Log.d("--->", " childView count:" + getChildCount());
+        Log.d("--->", " childView count: after:" + getChildCount());
+
+        long currentE = System.currentTimeMillis();
+        Log.i("time", "time consuming: "  + (currentE - currentS));
 
         return result;
     }
@@ -79,7 +91,6 @@ public class HorizontalPageLayoutManager extends RecyclerView.LayoutManager impl
     int onePageSize = 0;
     int itemWidthUsed;
     int itemHeightUsed;
-
 
     @Override
     public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
@@ -136,7 +147,6 @@ public class HorizontalPageLayoutManager extends RecyclerView.LayoutManager impl
                     int y = r * itemHeight;
                     rect.set(x, y, width + x, height + y);
                     allItemFrames.put(index, rect);
-                    hasAttachedItems.put(index, false);
                 }
             }
             //每一页循环以后就回收一页的View用于下一页的使用
@@ -154,13 +164,19 @@ public class HorizontalPageLayoutManager extends RecyclerView.LayoutManager impl
     }
 
     private void recycleAndFillItems(RecyclerView.Recycler recycler, RecyclerView.State state) {
+        long currentS = System.currentTimeMillis();
+
         if (state.isPreLayout()) {
             return;
         }
 
         Rect displayRect = new Rect(getPaddingLeft() + offsetX, getPaddingTop(), getWidth() - getPaddingLeft() - getPaddingRight() + offsetX, getHeight() - getPaddingTop() - getPaddingBottom());
         Rect childRect = new Rect();
+        List<RecyclerView.ViewHolder> scrapList = recycler.getScrapList();
+
+//        for (int i = 0; i < scrapList.size(); i++) {
         for (int i = 0; i < getChildCount(); i++) {
+//            View child = scrapList.get(i).itemView;
             View child = getChildAt(i);
             childRect.left = getDecoratedLeft(child);
             childRect.top = getDecoratedTop(child);
@@ -168,21 +184,77 @@ public class HorizontalPageLayoutManager extends RecyclerView.LayoutManager impl
             childRect.bottom = getDecoratedBottom(child);
             if (!Rect.intersects(displayRect, childRect)) {
                 removeAndRecycleView(child, recycler);
-                Log.i("recycle", "recycleAndFillItems: ");
+                Log.i(TAG, "removeAndRecycleView: ");
             }
+        }
+        Log.i(TAG, "After removeAndRecycleView: " + scrapList.size());
+
+        long currentE1 = System.currentTimeMillis();
+
+//        for (int i = 0; i < getItemCount(); i++) {
+//            if (Rect.intersects(displayRect, allItemFrames.get(i))) {
+//                View view = recycler.getViewForPosition(i);
+//                addView(view);
+//                measureChildWithMargins(view, itemWidthUsed, itemHeightUsed);
+//                Rect rect = allItemFrames.get(i);
+//                layoutDecorated(view, rect.left - offsetX, rect.top, rect.right - offsetX, rect.bottom);
+//            }
+//        }
+        int nowPst = (int)Math.floor((float)(offsetX - getPaddingLeft())/(getWidth()/columns));
+        int layoutFrom = (nowPst - 1) >= 0 ? nowPst-1 : nowPst;
+        for (int i = layoutFrom; i < layoutFrom + columns + 2; i++) {
+            View view = recycler.getViewForPosition(i);
+
+            if (!isAttachedToRecyclerView(view)){
+                addView(view);
+                Log.i(TAG, "addView ------: ");
+
+//                attachView(view);
+//                Log.i(TAG, "attachView ------: ");
+            }else {
+//                addView(view);
+//                Log.i(TAG, "addView ------: ");
+            }
+
+            measureChildWithMargins(view, itemWidthUsed, itemHeightUsed);
+
+            Rect rect = allItemFrames.get(i);
+
+            layoutDecorated(view, rect.left - offsetX, rect.top, rect.right - offsetX, rect.bottom);
         }
 
-        for (int i = 0; i < getItemCount(); i++) {
-            if (Rect.intersects(displayRect, allItemFrames.get(i))) {
-                View view = recycler.getViewForPosition(i);
-                addView(view);
-                measureChildWithMargins(view, itemWidthUsed, itemHeightUsed);
-                Rect rect = allItemFrames.get(i);
-                layoutDecorated(view, rect.left - offsetX, rect.top, rect.right - offsetX, rect.bottom);
-            }
-        }
+        long currentE2 = System.currentTimeMillis();
+
+        Log.i(TAG, "recycleAndFillItems: "
+                + "currentE1: " + (currentE1 - currentS)
+                + "currentE2: " + (currentE2 - currentE1)
+        );
     }
 
+    private boolean isAttachedToRecyclerView(View view){
+        int cCount = getChildCount();
+        for (int i = 0; i < cCount; i++) {
+            View child = getChildAt(i);
+            if (child == view){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean isInScrapList(View view, RecyclerView.Recycler recycler){
+        List<RecyclerView.ViewHolder> scrapList = recycler.getScrapList();
+        int cCount = scrapList.size();
+        for (int i = 0; i < cCount; i++) {
+            View child = scrapList.get(i).itemView;
+            if (child == view){
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     @Override
     public boolean isLastRow(int index) {
@@ -220,8 +292,10 @@ public class HorizontalPageLayoutManager extends RecyclerView.LayoutManager impl
 
     private int[] mMeasuredDimension = new int[2];
 
+
     @Override
     public void onMeasure(RecyclerView.Recycler recycler, RecyclerView.State state, int widthSpec, int heightSpec) {
+
         if (state.getItemCount() == 0){
             setMeasuredDimension(0,0);
             return;

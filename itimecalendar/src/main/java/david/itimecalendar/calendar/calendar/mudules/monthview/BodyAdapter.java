@@ -2,10 +2,13 @@ package david.itimecalendar.calendar.calendar.mudules.monthview;
 
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.widget.TextView;
 
 import java.util.Calendar;
 
 import david.horizontalscrollpageview.HorizontalScrollAdapter;
+import david.itimecalendar.R;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
 import david.itimecalendar.calendar.util.MyCalendar;
 
@@ -26,6 +29,8 @@ public class BodyAdapter extends HorizontalScrollAdapter {
 
     @Override
     public void onBindViewHolderOuter(RecyclerView.ViewHolder holder, int position) {
+        TextView tv = (TextView) holder.itemView.findViewById(R.id.test_tv);
+        tv.setText("" + position);
         if (this.eventPackage != null){
             Calendar cal = Calendar.getInstance();
             cal.add(Calendar.DATE, position - HorizontalScrollAdapter.START_POSITION);

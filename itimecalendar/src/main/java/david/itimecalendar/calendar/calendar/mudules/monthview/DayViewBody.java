@@ -65,8 +65,9 @@ public class DayViewBody extends FrameLayout {
     private void setUpCalendarBody(){
         this.bodyRecyclerView = new HorizontalRecyclerView(getContext(),3);
         bodyPagerAdapter = new BodyAdapter(R.layout.itime_day_view_body);
+//        bodyPagerAdapter = new BodyAdapter(R.layout.item_view);
         bodyRecyclerView.setAdapter(bodyPagerAdapter);
-        bodyRecyclerView.scrollToPosition(HorizontalScrollAdapter.START_POSITION);
+//        bodyRecyclerView.scrollToPosition(HorizontalScrollAdapter.START_POSITION);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.leftMargin = leftBarWidth;
         this.addView(bodyRecyclerView, params);

@@ -61,7 +61,6 @@ public class HorizontalRecyclerView extends RecyclerView {
 
         scrollHelper = new PagingScrollHelper(columns);
         scrollHelper.setUpRecycleView(this);
-//        this.setOverScrollMode(OVER_SCROLL_NEVER);
         horizontalPageLayoutManager = new HorizontalPageLayoutManager(1,columns);
         pagingItemDecoration = new PagingItemDecoration(this.getContext(), horizontalPageLayoutManager);
         initLayout();
@@ -73,7 +72,6 @@ public class HorizontalRecyclerView extends RecyclerView {
 
         if (layoutManager != null) {
 //            this.setLayoutManager(new HorizontalPageLayoutLinearManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
-//            this.setLayoutManager(new GridLayoutManager(getContext(),3, GridLayoutManager.HORIZONTAL, false));
             this.setLayoutManager(layoutManager);
             this.removeItemDecoration(lastItemDecoration);
             this.addItemDecoration(itemDecoration);
@@ -86,10 +84,8 @@ public class HorizontalRecyclerView extends RecyclerView {
         scrollHelper.scrollToPosition(position);
     }
 
-
 //    @Override
 //    public boolean fling(int velocityX, int velocityY) {
-//
 //        return super.fling(0, 0);
 //    }
 }

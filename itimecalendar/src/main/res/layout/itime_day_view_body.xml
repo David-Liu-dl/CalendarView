@@ -7,5 +7,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/test_tv"
         android:text="123"/>
 </david.itimecalendar.calendar.calendar.mudules.monthview.DayViewBodyCell>

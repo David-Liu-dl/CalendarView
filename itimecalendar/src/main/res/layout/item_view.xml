@@ -5,6 +5,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="500dp"
+        android:id="@+id/item_view_tv"
         android:text="1"
         android:background="@color/colorAccent"
         />

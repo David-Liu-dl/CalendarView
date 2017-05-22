@@ -32,7 +32,7 @@ public class RecycledViewGroup extends ViewGroup{
     private String TAG = "RecycledViewGroup";
     private int mTouchSlop;
     private List<AwesomeViewGroup> awesomeViewGroups;
-    int[] colors =new int[]{Color.RED, Color.BLUE, Color.GRAY, Color.YELLOW, Color.GREEN};
+//    int[] colors =new int[]{Color.RED, Color.BLUE, Color.GRAY, Color.YELLOW, Color.GREEN};
     private int width,height, childWidth, childHeight;
     private float preX, preY;
 
@@ -51,8 +51,6 @@ public class RecycledViewGroup extends ViewGroup{
 
     private boolean hasDecideScrollWay = false; // if scroll too small, cannot decide whether is vertical or horizontal
     private int curScrollWay = 0; // {SCROLL_VERTICAL, SCROLL_HORIZONTAL} only one
-
-    public CalendarInterface calendarInterface;
 
     public int scrollThreshold;
 
@@ -693,11 +691,6 @@ public class RecycledViewGroup extends ViewGroup{
 
     private float calculateItemHeight(float baseParams){
         return baseParams * 25;
-    }
-
-
-    public interface CalendarInterface{
-        Calendar getFirstDay();
     }
 
     private class AwesomeThread extends Thread{

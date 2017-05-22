@@ -41,7 +41,7 @@ public class DayViewBody extends FrameLayout {
     private int hourHeight = 30;
     private int timeTextSize = 20;
     private int spaceTop = 30;
-    private int NUM_LAYOUTS = 7;
+    private int NUM_LAYOUTS = 3;
 
     private int color_time_text = R.color.text_enable;
 

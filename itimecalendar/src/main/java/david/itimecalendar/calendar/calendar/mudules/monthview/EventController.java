@@ -10,7 +10,6 @@ import android.content.Context;
 import android.graphics.Point;
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.util.Pair;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -282,22 +281,19 @@ public class EventController {
      * it needs to be called when setting event or event position changed
      */
     private void calculateEventLayout(DayInnerBodyEventLayout eventLayout) {
-//        List<ArrayList<Pair<Pair<Integer, Integer>, WrapperEvent>>> overlapGroups
-//                = xHelper.computeOverlapXForEvents(eventLayout.getEvents());
-//        for (ArrayList<Pair<Pair<Integer, Integer>, WrapperEvent>> overlapGroup : overlapGroups
-//                ) {
-//            for (int i = 0; i < overlapGroup.size(); i++) {
-//
-//                int startY = getEventY(overlapGroup.get(i).second);
-//                int widthFactor = overlapGroup.get(i).first.first;
-//                int startX = overlapGroup.get(i).first.second;
-//                int topMargin = startY;
-//                DraggableEventView eventView = (DraggableEventView) eventLayout.findViewById(regularEventViewMap.get(overlapGroup.get(i).second));
-//                eventView.setPosParam(new DraggableEventView.PosParam(startY, startX, widthFactor, topMargin));
-//                Calendar cal = Calendar.getInstance();
-//                cal.setTimeInMillis(eventView.getEvent().getStartTime());
-//            }
-//        }
+        List<ArrayList<CalendarEventOverlapHelper.OverlappedEvent>> overlapGroups
+                = xHelper.computeOverlapXForEvents(eventLayout.getEvents());
+        for (ArrayList<CalendarEventOverlapHelper.OverlappedEvent> overlapGroup : overlapGroups
+                ) {
+            for (int i = 0; i < overlapGroup.size(); i++) {
+
+                int startY = getEventY(overlapGroup.get(i).event);
+                int overlapCount = overlapGroup.get(i).params.overlapCount;
+                int indexInRow = overlapGroup.get(i).params.indexInRow;
+                DraggableEventView eventView = (DraggableEventView) eventLayout.findViewById(regularEventViewMap.get(overlapGroup.get(i).event));
+                eventView.setPosParam(new DraggableEventView.PosParam(startY, indexInRow, overlapCount, startY));
+            }
+        }
     }
 
     private int getEventY(WrapperEvent wrapper) {

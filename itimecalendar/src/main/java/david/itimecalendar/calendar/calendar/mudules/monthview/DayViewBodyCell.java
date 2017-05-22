@@ -265,7 +265,6 @@ public class DayViewBodyCell extends FrameLayout{
         resetViews();
         eventController.setEventList(eventPackage);
         BaseUtil.relayoutChildren(eventLayout);
-//        Log.i("onBindViewHolder", "refresh: " + this);
     }
 
     protected int[] reComputePositionToSet(int actualX, int actualY, View draggableObj, View container) {

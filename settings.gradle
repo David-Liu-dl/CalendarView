@@ -1,2 +1,1 @@
-include ':app', ':horizontalscrollpageview', ':innerCalLibrary', ':itimecalendar', ':itimerecycler', ':viewserver'
-project(':itimerecycler').projectDir = new File('RecycleViewGroup/itimerecycler')
+include ':app', ':horizontalscrollpageview', ':innerCalLibrary', ':itimecalendar', ':viewserver', ':itimerecycler'

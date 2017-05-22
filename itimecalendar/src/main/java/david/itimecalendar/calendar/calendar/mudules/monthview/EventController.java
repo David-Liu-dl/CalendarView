@@ -282,22 +282,22 @@ public class EventController {
      * it needs to be called when setting event or event position changed
      */
     private void calculateEventLayout(DayInnerBodyEventLayout eventLayout) {
-        List<ArrayList<Pair<Pair<Integer, Integer>, WrapperEvent>>> overlapGroups
-                = xHelper.computeOverlapXForEvents(eventLayout.getEvents());
-        for (ArrayList<Pair<Pair<Integer, Integer>, WrapperEvent>> overlapGroup : overlapGroups
-                ) {
-            for (int i = 0; i < overlapGroup.size(); i++) {
-
-                int startY = getEventY(overlapGroup.get(i).second);
-                int widthFactor = overlapGroup.get(i).first.first;
-                int startX = overlapGroup.get(i).first.second;
-                int topMargin = startY;
-                DraggableEventView eventView = (DraggableEventView) eventLayout.findViewById(regularEventViewMap.get(overlapGroup.get(i).second));
-                eventView.setPosParam(new DraggableEventView.PosParam(startY, startX, widthFactor, topMargin));
-                Calendar cal = Calendar.getInstance();
-                cal.setTimeInMillis(eventView.getEvent().getStartTime());
-            }
-        }
+//        List<ArrayList<Pair<Pair<Integer, Integer>, WrapperEvent>>> overlapGroups
+//                = xHelper.computeOverlapXForEvents(eventLayout.getEvents());
+//        for (ArrayList<Pair<Pair<Integer, Integer>, WrapperEvent>> overlapGroup : overlapGroups
+//                ) {
+//            for (int i = 0; i < overlapGroup.size(); i++) {
+//
+//                int startY = getEventY(overlapGroup.get(i).second);
+//                int widthFactor = overlapGroup.get(i).first.first;
+//                int startX = overlapGroup.get(i).first.second;
+//                int topMargin = startY;
+//                DraggableEventView eventView = (DraggableEventView) eventLayout.findViewById(regularEventViewMap.get(overlapGroup.get(i).second));
+//                eventView.setPosParam(new DraggableEventView.PosParam(startY, startX, widthFactor, topMargin));
+//                Calendar cal = Calendar.getInstance();
+//                cal.setTimeInMillis(eventView.getEvent().getStartTime());
+//            }
+//        }
     }
 
     private int getEventY(WrapperEvent wrapper) {

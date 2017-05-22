@@ -2,6 +2,8 @@ package david.itimecalendar.calendar.calendar.mudules.monthview;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -16,6 +18,7 @@ import david.itimecalendar.calendar.wrapper.WrapperEvent;
  * Created by yuhaoliu on 21/09/16.
  */
 public class DayInnerBodyEventLayout extends ViewGroup {
+    private static final String TAG = "DayInnerBodyEventLayout";
     ArrayList<WrapperEvent> events = new ArrayList<>();
     ArrayList<DraggableEventView> dgEvents = new ArrayList<>();
 
@@ -132,4 +135,25 @@ public class DayInnerBodyEventLayout extends ViewGroup {
         events.clear();
         dgEvents.clear();
     }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+//        switch (event.getAction()){
+//            case MotionEvent.ACTION_DOWN:
+//                Log.i(TAG, "onTouchEvent: ACTION_DOWN");
+//                break;
+//            case MotionEvent.ACTION_UP:
+//                Log.i(TAG, "onTouchEvent: ACTION_UP");
+//                break;
+//            case MotionEvent.ACTION_MOVE:
+//                Log.i(TAG, "onTouchEvent: ACTION_MOVE");
+//                break;
+//        }
+//        Log.i(TAG, "onTouchEvent: R: " + );
+//        return super.onTouchEvent(event);
+        return super.onTouchEvent(event);
+    }
+
+
 }

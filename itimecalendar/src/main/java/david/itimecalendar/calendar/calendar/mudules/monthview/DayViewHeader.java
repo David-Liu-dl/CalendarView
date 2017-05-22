@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 import david.itimecalendar.R;
@@ -274,7 +275,7 @@ public class DayViewHeader extends LinearLayout {
             dateView.setTextSize(textSize);
             cell.getTitleView().setTextSize((int)(textSize * 0.65));
             cell.setOnClickListener(new cellOnClickListener());
-            LayoutParams params = new LayoutParams(cellWidth, cellWidth,1.0f);//viewWidth
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(cellWidth, cellWidth,1.0f);//viewWidth
             params.topMargin = 0;
             params.leftMargin = 10;
             params.rightMargin = 10;
@@ -348,7 +349,9 @@ public class DayViewHeader extends LinearLayout {
                 onCalendarHeaderDayClickListener.setCurrentSelectIndexInRow(currentSelectedPst);
 
                 //synchronize body part
-                onCalendarHeaderDayClickListener.synBodyPart(rowPst, currentSelectedPst);
+                Calendar cal = currentCalendar.getCalendar();
+                cal.add(Calendar.DATE, currentSelectedPst);
+                onCalendarHeaderDayClickListener.onDateSelected(cal.getTime());
             }
         }
     }
@@ -367,7 +370,8 @@ public class DayViewHeader extends LinearLayout {
         void onClick(View v);
         void setCurrentSelectPst(int rowPst);
         void setCurrentSelectIndexInRow(int indexInRow);
-        void synBodyPart(int rowPst, int indexInRow);
+//        void synBodyPart(MyCalendar fstDayDate, int rowPst, int indexInRow);
+        void onDateSelected(Date date);
     }
 
     public interface OnCheckIfHasEvent{

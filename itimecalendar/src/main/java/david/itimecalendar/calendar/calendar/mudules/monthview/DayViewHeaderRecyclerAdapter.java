@@ -3,6 +3,7 @@ package david.itimecalendar.calendar.calendar.mudules.monthview;
 import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 import david.itimecalendar.R;
 import david.itimecalendar.calendar.util.MyCalendar;
@@ -25,7 +27,6 @@ public class DayViewHeaderRecyclerAdapter extends RecyclerView.Adapter<DayViewHe
     int rowPst;
     int todayOfWeek;
     int indexInRow = 0;
-    ViewPager bodyPager;
 
     public DayViewHeaderRecyclerAdapter(Context context, int upperBoundsOffset) {
         inflater = LayoutInflater.from(context);
@@ -34,10 +35,6 @@ public class DayViewHeaderRecyclerAdapter extends RecyclerView.Adapter<DayViewHe
         rowPst = startPosition;
         todayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1;
         indexInRow = todayOfWeek;
-    }
-
-    void setBodyPager(ViewPager bodyPager){
-        this.bodyPager = bodyPager;
     }
 
     int getCurrentSelectPst(){
@@ -62,6 +59,7 @@ public class DayViewHeaderRecyclerAdapter extends RecyclerView.Adapter<DayViewHe
         holder.headerRow.rowPst = position;
         holder.headerRow.getCalendar().setOffset((position-startPosition)*7 - todayOfWeek);
         holder.headerRow.updateDate();
+
         if (position == rowPst){
             holder.headerRow.performNthDayClick(indexInRow);
         }
@@ -80,56 +78,38 @@ public class DayViewHeaderRecyclerAdapter extends RecyclerView.Adapter<DayViewHe
             headerRow = (DayViewHeader) itemView.findViewById(R.id.calendarDayViewHeader);
             headerRow.setCalendar(new MyCalendar(Calendar.getInstance()));
             headerRow.resizeCurrentWeekHeaders();
-//            headerRow.setOnCalendarHeaderDayClickListener(new DayViewHeader.OnCalendarHeaderDayClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    for (MyViewHolder holder:holds
-//                         ) {
-//                        holder.headerRow.clearAllBg();
-//                        holder.headerRow.updateDate();
-//                    }
-//                }
-//
-//                @Override
-//                public void setCurrentSelectPst(int rowPstIn) {
-//                    rowPst = rowPstIn;
-//                }
-//
-//                @Override
-//                public void setCurrentSelectIndexInRow(int indexInRowIn) {
-//                    indexInRow = indexInRowIn;
-//                    if (onHeaderListener != null){
-//                        MyCalendar calendar = new MyCalendar(headerRow.getCalendar());
-//                        calendar.setOffsetByDate(indexInRowIn);
-//                        onHeaderListener.onClick(calendar);
-//                    }
-//                }
-//
-//                @Override
-//                public void synBodyPart(int rowPst, int indexInRow) {
-//                    if (bodyPager != null){
-//                        int offsetRow = rowPst - startPosition;
-//                        int indexOffset = indexInRow;
-//                        int totalOffset = offsetRow*7 + indexOffset;
-//                        final int scrollTo = startPosition + totalOffset;
-//
-//                        bodyPager.postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                boolean needUpdate =
-//                                        ((FlexibleLenBodyViewPagerAdapter) bodyPager.getAdapter()).currentDayPos
-//                                        != scrollTo;
-//                                if (needUpdate){
-//                                    bodyPager.setCurrentItem(scrollTo, false);
-//                                    ((FlexibleLenBodyViewPagerAdapter) bodyPager.getAdapter()).currentDayPos = scrollTo;
-//                                }
-//                            }
-//                        },50);
-//                    }else {
-//                        Log.i(TAG, "synBodyPart: " + "Fail, pager == null");
-//                    }
-//                }
-//            });
+            headerRow.setOnCalendarHeaderDayClickListener(new DayViewHeader.OnCalendarHeaderDayClickListener() {
+                @Override
+                public void onClick(View v) {
+                    for (MyViewHolder holder:holds
+                         ) {
+                        holder.headerRow.clearAllBg();
+                        holder.headerRow.updateDate();
+                    }
+                }
+
+                @Override
+                public void setCurrentSelectPst(int rowPstIn) {
+                    rowPst = rowPstIn;
+                }
+
+                @Override
+                public void setCurrentSelectIndexInRow(int indexInRowIn) {
+                    indexInRow = indexInRowIn;
+                    if (onHeaderListener != null){
+                        MyCalendar calendar = new MyCalendar(headerRow.getCalendar());
+                        calendar.setOffsetByDate(indexInRowIn);
+                        onHeaderListener.onClick(calendar);
+                    }
+                }
+
+                @Override
+                public void onDateSelected(Date date) {
+                    if (onHeaderListener != null){
+                        onHeaderListener.onDateSelected(date);
+                    }
+                }
+            });
             headerRow.setOnCheckIfHasEvent(onCheckIfHasEvent);
         }
     }
@@ -140,7 +120,9 @@ public class DayViewHeaderRecyclerAdapter extends RecyclerView.Adapter<DayViewHe
         this.onHeaderListener = onHeaderListener;
     }
 
+
     interface OnHeaderListener{
         void onClick(MyCalendar myCalendar);
+        void onDateSelected(Date date);
     }
 }

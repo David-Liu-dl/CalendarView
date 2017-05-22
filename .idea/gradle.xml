@@ -8,10 +8,12 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/RecycleViewGroup/itimerecycler" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/horizontalscrollpageview" />
             <option value="$PROJECT_DIR$/innerCalLibrary" />
             <option value="$PROJECT_DIR$/itimecalendar" />
+            <option value="$PROJECT_DIR$/viewserver" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

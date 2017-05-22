@@ -204,17 +204,7 @@ public class HorizontalPageLayoutManager extends RecyclerView.LayoutManager impl
         int layoutFrom = (nowPst - 1) >= 0 ? nowPst-1 : nowPst;
         for (int i = layoutFrom; i < layoutFrom + columns + 2; i++) {
             View view = recycler.getViewForPosition(i);
-
-            if (!isAttachedToRecyclerView(view)){
-                addView(view);
-                Log.i(TAG, "addView ------: ");
-
-//                attachView(view);
-//                Log.i(TAG, "attachView ------: ");
-            }else {
-//                addView(view);
-//                Log.i(TAG, "addView ------: ");
-            }
+            addView(view);
 
             measureChildWithMargins(view, itemWidthUsed, itemHeightUsed);
 

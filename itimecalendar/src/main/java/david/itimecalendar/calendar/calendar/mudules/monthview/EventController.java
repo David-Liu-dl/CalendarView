@@ -8,7 +8,10 @@ import android.animation.ValueAnimator;
 import android.content.ClipData;
 import android.content.Context;
 import android.graphics.Point;
+import android.support.annotation.NonNull;
+import android.util.Log;
 import android.util.Pair;
+import android.view.DragEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -28,6 +31,7 @@ import java.util.Map;
 
 import david.itimecalendar.calendar.listeners.ITimeEventInterface;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
+import david.itimecalendar.calendar.listeners.ITimeInviteeInterface;
 import david.itimecalendar.calendar.unitviews.DraggableEventView;
 import david.itimecalendar.calendar.util.BaseUtil;
 import david.itimecalendar.calendar.util.CalendarEventOverlapHelper;
@@ -106,6 +110,8 @@ public class EventController {
             }
 
         calculateEventLayout(this.container.eventLayout);
+
+        this.container.eventLayout.invalidate();
     }
 
     private void addAllDayEvent(WrapperEvent wrapper, int index) {
@@ -181,6 +187,7 @@ public class EventController {
     private DraggableEventView createDayDraggableEventView(WrapperEvent wrapper, boolean isAllDayEvent) {
         ITimeEventInterface event = wrapper.getEvent();
         DraggableEventView event_view = new DraggableEventView(context, event, isAllDayEvent);
+        event_view.setNewCalendar(container.getCalendar());
         event_view.setType(DraggableEventView.TYPE_NORMAL);
         int padding = DensityUtil.dip2px(context,1);
         event_view.setPadding(0,padding,0,padding);
@@ -349,6 +356,7 @@ public class EventController {
                         }
                     }
                 };
+
                 if (container.tempDragView != null) {
                     view.setVisibility(View.INVISIBLE);
                 } else {
@@ -373,105 +381,110 @@ public class EventController {
                 alpha.start();
                 view.startDrag(data, shadowBuilder, view, 0);
             }
-            return false;
+
+            return true;
         }
     }
 
-//    class EventDragListener implements View.OnDragListener {
-//        int index = 0;
-//        int currentEventNewHour = -1;
-//        int currentEventNewMinutes = -1;
-//
-//        EventDragListener(int index) {
-//            this.index = index;
-//        }
-//
-//        @Override
-//        public boolean onDrag(View v, DragEvent event) {
-//            DraggableEventView dgView = (DraggableEventView) event.getLocalState();
-//            switch (event.getAction()) {
-//                case DragEvent.ACTION_DRAG_STARTED:
-//                    break;
-//                case DragEvent.ACTION_DRAG_LOCATION:
-//                    int rawX = (int) (container.layoutWidthPerDay * index + event.getX());
+    class EventDragListener implements View.OnDragListener {
+        int currentEventNewHour = -1;
+        int currentEventNewMinutes = -1;
+
+        @Override
+        public boolean onDrag(View v, DragEvent event) {
+            DraggableEventView dgView = (DraggableEventView) event.getLocalState();
+            switch (event.getAction()) {
+                case DragEvent.ACTION_DRAG_STARTED:
+//                    Log.i(TAG, "ACTION_DRAG_STARTED: " + container.getCalendar().getCalendar().getTime());
+                    break;
+                case DragEvent.ACTION_DRAG_LOCATION:
+                    Log.i(TAG, "ACTION_DRAG_LOCATION: " + this + " " + container.getCalendar().getCalendar().getTime());
+
+                    int rawX = (int) event.getX();
+                    int rawY = (int) event.getY();
+//                    Log.i("raws", "onDrag event: " +rawY);
 //                    container.scrollViewAutoScroll(event);
-//
-//                    if (onEventListener != null) {
-//                        onEventListener.onEventDragging(dgView, rawX, (int) event.getY());
-//                    } else {
-//                        Log.i(TAG, "onDrag: null onEventDragListener");
-//                    }
+
+                    if (onEventListener != null) {
+                        onEventListener.onEventDragging(dgView, container.getCalendar(), rawX, (int) event.getY());
+                    } else {
+                        Log.i(TAG, "onDrag: null onEventDragListener");
+                    }
 //                    container.msgWindowFollow(rawX, (int) event.getY(), index, (View) event.getLocalState());
-//                    break;
-//                case DragEvent.ACTION_DRAG_ENTERED:
+                    break;
+                case DragEvent.ACTION_DRAG_ENTERED:
+//                    Log.i(TAG, "ACTION_DRAG_ENTERED:" + container.getCalendar().getCalendar().getTime());
 //                    container.msgWindow.setVisibility(View.VISIBLE);
-//                    if (dgView.getType() == DraggableEventView.TYPE_TEMP){
-//                        container.tempDragView = dgView;
-//                    }else{
-//                        container.tempDragView= null;
-//                    }
-//                    break;
-//                case DragEvent.ACTION_DRAG_EXITED:
+                    if (dgView.getType() == DraggableEventView.TYPE_TEMP){
+                        container.tempDragView = dgView;
+                    }else{
+                        container.tempDragView= null;
+                    }
+                    break;
+                case DragEvent.ACTION_DRAG_EXITED:
+//                    Log.i(TAG, "ACTION_DRAG_EXITED:" + container.getCalendar().getCalendar().getTime());
 //                    container.msgWindow.setVisibility(View.INVISIBLE);
-//                    container.tempDragView = null;
-//                    break;
-//                case DragEvent.ACTION_DROP:
-//                    //handler ended things in here, because ended some time is not triggered
-//                    dgView.getBackground().setAlpha(DraggableEventView.OPACITY_INT);
-//                    View finalView = (View) event.getLocalState();
-//                    finalView.getBackground().setAlpha(DraggableEventView.OPACITY_INT);
-//                    finalView.setVisibility(View.VISIBLE);
+                    container.tempDragView = null;
+                    break;
+                case DragEvent.ACTION_DROP:
+//                    Log.i(TAG, "ACTION_DROP:" + container.getCalendar().getCalendar().getTime());
+                    //handler ended things in here, because ended some time is not triggered
+                    dgView.getBackground().setAlpha(DraggableEventView.OPACITY_INT);
+                    View finalView = (View) event.getLocalState();
+                    finalView.getBackground().setAlpha(DraggableEventView.OPACITY_INT);
+                    finalView.setVisibility(View.VISIBLE);
 //                    container.msgWindow.setVisibility(View.INVISIBLE);
-//
-//                    float actionStopX = event.getX();
-//                    float actionStopY = event.getY();
-//                    // Dropped, reassign View to ViewGroup
-//                    int newX = (int) actionStopX - dgView.getWidth() / 2;
-//                    int newY = (int) actionStopY;
-//                    int[] reComputeResult = container.reComputePositionToSet(newX, newY, dgView, v);
-//
-//                    //update the event time
-//                    String new_time = container.positionToTimeQuarterTreeMap.get(reComputeResult[1]);
-//                    //important! update event time after drag
-//                    String[] time_parts = new_time.split(":");
-//                    currentEventNewHour = Integer.valueOf(time_parts[0]);
-//                    currentEventNewMinutes = Integer.valueOf(time_parts[1]);
-//
-//                    dgView.getNewCalendar().setHour(currentEventNewHour);
-//                    dgView.getNewCalendar().setMinute(currentEventNewMinutes);
-//                    //set dropped container index
+
+                    float actionStopX = event.getX();
+                    float actionStopY = event.getY();
+                    // Dropped, reassign View to ViewGroup
+                    int newX = (int) actionStopX - dgView.getWidth() / 2;
+                    int newY = (int) actionStopY;
+                    int[] reComputeResult = container.reComputePositionToSet(newX, newY, dgView, v);
+
+                    //update the event time
+                    String new_time = container.positionToTimeQuarterTreeMap.get(reComputeResult[1]);
+                    //important! update event time after drag
+                    String[] time_parts = new_time.split(":");
+                    currentEventNewHour = Integer.valueOf(time_parts[0]);
+                    currentEventNewMinutes = Integer.valueOf(time_parts[1]);
+
+                    dgView.setNewCalendar(container.getCalendar());
+                    dgView.getNewCalendar().setHour(currentEventNewHour);
+                    dgView.getNewCalendar().setMinute(currentEventNewMinutes);
+                    //set dropped container index
 //                    dgView.setIndexInView(index);
-//
-//                    if (container.tempDragView == null && onEventListener != null) {
-//                        onEventListener.onEventDragDrop(dgView);
-//                    } else {
-//                        Log.i(TAG, "onDrop Not Called");
-//                    }
-//
-//                    if (dgView.getType() == DraggableEventView.TYPE_TEMP) {
-//                        ViewGroup parent = (ViewGroup) dgView.getParent();
-//                        if(parent != null){
-//                            parent.removeView(dgView);
-//                        }
-//                        //important! update event time after drag via listener
-//                        if (onEventListener != null) {
-//                            onEventListener.onEventCreate(dgView);
-//                        }
-//                        //finally reset tempDragView to NULL.
-//                        container.tempDragView = null;
-//                    }
-//                    Log.i(TAG, "onDrag: drop " + index);
-//                    break;
-//                case DragEvent.ACTION_DRAG_ENDED:
-//                    if (dgView != null){
-//                        dgView.getBackground().setAlpha(DraggableEventView.OPACITY_INT);
-//                    }
-//                    break;
-//            }
-//
-//            return true;
-//        }
-//    }
+
+                    if (container.tempDragView == null && onEventListener != null) {
+                        onEventListener.onEventDragDrop(dgView);
+                    } else {
+                        Log.i(TAG, "onDrop Not Called");
+                    }
+
+                    if (dgView.getType() == DraggableEventView.TYPE_TEMP) {
+                        ViewGroup parent = (ViewGroup) dgView.getParent();
+                        if(parent != null){
+                            parent.removeView(dgView);
+                        }
+                        //important! update event time after drag via listener
+                        if (onEventListener != null) {
+                            onEventListener.onEventCreate(dgView);
+                        }
+                        //finally reset tempDragView to NULL.
+                        container.tempDragView = null;
+                    }
+                    Log.i(TAG, "onDrag: drop ");
+                    break;
+                case DragEvent.ACTION_DRAG_ENDED:
+                    if (dgView != null){
+                        dgView.getBackground().setAlpha(DraggableEventView.OPACITY_INT);
+                    }
+                    break;
+            }
+
+            return true;
+        }
+    }
 
     class CreateEventListener implements View.OnLongClickListener {
 
@@ -539,16 +552,95 @@ public class EventController {
         }
     }
 
-    <E extends ITimeEventInterface> void setEventClassName(Class<E> className) {
-        eventClassName = className;
-    }
-
     private ITimeEventInterface initializeEvent() {
         try {
-            ITimeEventInterface t = (ITimeEventInterface) eventClassName.newInstance();
+            ITimeEventInterface t = new EventPackage();
             return t;
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    class EventPackage implements ITimeEventInterface{
+
+        @Override
+        public String getEventUid() {
+            return null;
+        }
+
+        @Override
+        public void setTitle(String title) {
+
+        }
+
+        @Override
+        public String getTitle() {
+            return null;
+        }
+
+        @Override
+        public void setStartTime(long startTime) {
+
+        }
+
+        @Override
+        public long getStartTime() {
+            return 0;
+        }
+
+        @Override
+        public void setEndTime(long endTime) {
+
+        }
+
+        @Override
+        public long getEndTime() {
+            return 0;
+        }
+
+        @Override
+        public int getDisplayEventType() {
+            return 0;
+        }
+
+        @Override
+        public String getDisplayStatus() {
+            return null;
+        }
+
+        @Override
+        public void setLocation(String location) {
+
+        }
+
+        @Override
+        public String getLocation() {
+            return null;
+        }
+
+        @Override
+        public List<? extends ITimeInviteeInterface> getDisplayInvitee() {
+            return null;
+        }
+
+        @Override
+        public void setHighLighted(boolean highlighted) {
+
+        }
+
+        @Override
+        public boolean isHighlighted() {
+            return false;
+        }
+
+        @Override
+        public int isShownInCalendar() {
+            return 0;
+        }
+
+        @Override
+        public int compareTo(@NonNull Object o) {
+            return 0;
         }
     }
 
@@ -565,7 +657,7 @@ public class EventController {
         //When start dragging
         void onEventDragStart(DraggableEventView eventView);
         //On dragging
-        void onEventDragging(DraggableEventView eventView, int x, int y);
+        void onEventDragging(DraggableEventView eventView, MyCalendar curAreaCal, int x, int y);
         //When dragging ended
         void onEventDragDrop(DraggableEventView eventView);
     }

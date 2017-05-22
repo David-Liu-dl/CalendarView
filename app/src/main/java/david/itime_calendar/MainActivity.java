@@ -10,7 +10,12 @@ import java.util.List;
 import david.itime_calendar.bean.Contact;
 import david.itime_calendar.bean.Event;
 import david.itime_calendar.bean.Invitee;
+import david.itimecalendar.calendar.calendar.mudules.monthview.EventController;
 import david.itimecalendar.calendar.calendar.mudules.monthview.MonthView;
+import david.itimecalendar.calendar.listeners.ITimeEventInterface;
+import david.itimecalendar.calendar.unitviews.DraggableEventView;
+import david.itimecalendar.calendar.util.BaseUtil;
+import david.itimecalendar.calendar.util.MyCalendar;
 
 public class MainActivity extends AppCompatActivity {
     private DBManager dbManager;
@@ -20,9 +25,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         this.initTest();
         this.monthviewTest();
+
+        ViewServer.get(this).addWindow(this);
     }
 
     private void initTest(){
@@ -33,8 +39,71 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void monthviewTest(){
-        MonthView monthView = (MonthView) findViewById(R.id.monthview);
+        final MonthView monthView = (MonthView) findViewById(R.id.monthview);
+        monthView.setOnBodyListener(new EventController.OnEventListener() {
+            @Override
+            public boolean isDraggable(DraggableEventView eventView) {
+                return true;
+            }
+
+            @Override
+            public void onEventCreate(DraggableEventView eventView) {
+
+            }
+
+            @Override
+            public void onEventClick(DraggableEventView eventView) {
+
+            }
+
+            @Override
+            public void onEventDragStart(DraggableEventView eventView) {
+
+            }
+
+            @Override
+            public void onEventDragging(DraggableEventView eventView, MyCalendar curAreaCal, int x, int y) {
+
+            }
+
+            @Override
+            public void onEventDragDrop(DraggableEventView eventView) {
+                ITimeEventInterface event = eventView.getEvent();
+                BaseUtil.printEventTime("before",event);
+
+                eventManager.updateEvent((Event) event, eventView.getStartTimeM(), eventView.getEndTimeM());
+
+                BaseUtil.printEventTime("end",event);
+                monthView.refresh();
+            }
+        });
         monthView.setEventPackage(eventManager.getEventsMap());
+//        monthView.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                int count = 0;
+//
+//                while (count < 2){
+//                    try {
+//                        Thread.sleep(3000);
+//                        if (count == 0){
+//                            Calendar cal = Calendar.getInstance();
+//                            cal.add(Calendar.DATE, -17);
+//                            monthView.scrollToDate(cal.getTime());
+//                        }
+//
+//                        if (count == 1){
+//                            Calendar cal = Calendar.getInstance();
+//                            monthView.scrollToDate(cal.getTime());
+//                        }
+//
+//                        count++;
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        }, 1000);
     }
 
     private void initData(){
@@ -107,5 +176,15 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return contacts;
+    }
+
+    public void onDestroy() {
+        super.onDestroy();
+        ViewServer.get(this).removeWindow(this);
+    }
+
+    public void onResume() {
+        super.onResume();
+        ViewServer.get(this).setFocusedWindow(this);
     }
 }

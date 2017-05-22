@@ -47,6 +47,7 @@ public class DraggableEventView extends ViewGroup {
     private float slashOpacity = 0.30f;
 
     private boolean isAllDayEvent = false;
+    private long duration = 0;
 
     private String status;
     private String iconName;
@@ -63,7 +64,7 @@ public class DraggableEventView extends ViewGroup {
 
     public DraggableEventView(Context context, @Nullable ITimeEventInterface event, boolean isAllDayEvent) {
         super(context);
-        this.event = event;
+        this.setEvent(event);
         initAttrs();
 
         this.isAllDayEvent = isAllDayEvent;
@@ -302,6 +303,7 @@ public class DraggableEventView extends ViewGroup {
 
     public void setEvent(ITimeEventInterface event) {
         this.event = event;
+        this.duration = event.getEndTime() - event.getStartTime();
     }
 
     public int getIndexInView() {
@@ -353,7 +355,7 @@ public class DraggableEventView extends ViewGroup {
     }
 
     public long getEndTimeM(){
-        return this.getStartTimeM() + (event.getEndTime() - event.getStartTime());
+        return this.getStartTimeM() + duration;
     }
 
     public int getType() {

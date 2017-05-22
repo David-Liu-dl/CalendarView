@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.LoginFilter;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -26,6 +27,7 @@ import java.util.TreeMap;
 
 import david.itimecalendar.R;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
+import david.itimecalendar.calendar.util.BaseUtil;
 import david.itimecalendar.calendar.util.DensityUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
 
@@ -34,7 +36,7 @@ import david.itimecalendar.calendar.util.MyCalendar;
  */
 
 public class DayViewBodyCell extends FrameLayout{
-    public final String TAG = "MyAPP";
+    public final String TAG = "DayViewBodyCell";
     //FOR event inner type
     public static final int UNDEFINED = -1;
     public static final int REGULAR = 0;
@@ -146,6 +148,20 @@ public class DayViewBodyCell extends FrameLayout{
         initContentView();
     }
 
+//    @Override
+//    public boolean onTouchEvent(MotionEvent event) {
+//        boolean value = super.onTouchEvent(event);
+//        Log.i(TAG, "DayViewBodyCell onTouchEvent:Action: " + event.getAction() + " R:" + value);
+//        return super.onTouchEvent(event);
+//    }
+//
+//    @Override
+//    public boolean onInterceptTouchEvent(MotionEvent ev) {
+//        boolean value = super.onInterceptTouchEvent(ev);
+//        Log.i(TAG, "onInterceptTouchEvent: " + value);
+//        return super.onInterceptTouchEvent(ev);
+//    }
+
     private void initContentView(){
         eventLayout = new DayInnerBodyEventLayout(context);
 //        eventLayout.setBackgroundColor(getResources().getColor(displayLen == 1 ? color_bg_day_odd : (i%2 == 0 ? color_bg_day_even : color_bg_day_odd)));
@@ -161,8 +177,9 @@ public class DayViewBodyCell extends FrameLayout{
                     return false;
                 }
             });
-//            eventLayout.setOnDragListener(eventController.new EventDragListener(i));
-//            eventLayout.setOnLongClickListener(eventController.new CreateEventListener());
+            eventLayout.setOnDragListener(eventController.new EventDragListener());
+            eventLayout.setOnLongClickListener(eventController.new CreateEventListener());
+
         }else {
 //            eventLayout.setOnDragListener(this.timeSlotController.new TimeSlotDragListener(i));
 //            eventLayout.setOnLongClickListener(this.timeSlotController.new CreateTimeSlotListener());
@@ -213,7 +230,6 @@ public class DayViewBodyCell extends FrameLayout{
 
             ImageView dividerImageView = new ImageView(context);
             dividerImageView.setImageResource(rs_divider_line);
-//            dividerImageView.setY();
             params.topMargin = this.nearestTimeSlotValue(numOfDottedLine);
             dividerImageView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             dividerImageView.setLayoutParams(params);
@@ -248,6 +264,32 @@ public class DayViewBodyCell extends FrameLayout{
     public void refresh(ITimeEventPackageInterface eventPackage){
         resetViews();
         eventController.setEventList(eventPackage);
+        BaseUtil.relayoutChildren(eventLayout);
+//        Log.i("onBindViewHolder", "refresh: " + this);
+    }
+
+    protected int[] reComputePositionToSet(int actualX, int actualY, View draggableObj, View container) {
+        int containerWidth = container.getWidth();
+        int containerHeight = container.getHeight();
+        int objWidth = draggableObj.getWidth();
+        int objHeight = draggableObj.getHeight();
+
+        int finalX = (int) (timeTextSize * 1.5);
+        int finalY = actualY;
+
+        if (actualY < 0) {
+            finalY = 0;
+        } else if (actualY > containerHeight) {
+            finalY = containerHeight;
+        }
+        int findNearestPosition = nearestQuarterTimeSlotKey(finalY);
+        if (findNearestPosition != -1) {
+            finalY = findNearestPosition;
+        } else {
+            Log.i(TAG, "reComputePositionToSet: " + "ERROR NO SUCH POSITION");
+        }
+
+        return new int[]{finalX, finalY};
     }
 
     @Override
@@ -285,12 +327,15 @@ public class DayViewBodyCell extends FrameLayout{
     }
 
     private int getViewHeight(){
-        int timeHeight = hourHeight * 24;
+        int timeHeight = hourHeight * 25;
         int topSpaceHeight = getPaddingTop();
         int bottomSpaceHeight = getPaddingBottom();
         return timeHeight + topSpaceHeight + bottomSpaceHeight;
     }
 
+    public void setOnBodyListener(EventController.OnEventListener onEventListener) {
+        this.eventController.setOnEventListener(onEventListener);
+    }
 
     public void resetViews() {
         clearAllEvents();
@@ -339,6 +384,4 @@ public class DayViewBodyCell extends FrameLayout{
 
         return -1;
     }
-
-
 }

@@ -1,0 +1,45 @@
+[
+    {
+        "outputFile": "/Users/yuhaoliu/Documents/ITIME/vendor/iTime-Calendar/viewserver-sample/build/intermediates/incremental/mergeDebugResources/merged.dir/values/values.xml",
+        "map": [
+            {
+                "to": {
+                    "startLine": 2,
+                    "startColumn": 4,
+                    "startOffset": 55,
+                    "endColumn": 47,
+                    "endOffset": 98
+                },
+                "from": {
+                    "file": "/Users/yuhaoliu/Documents/ITIME/vendor/iTime-Calendar/viewserver-sample/src/main/res/values/strings.xml",
+                    "position": {
+                        "startLine": 3,
+                        "startColumn": 4,
+                        "startOffset": 122,
+                        "endColumn": 47,
+                        "endOffset": 165
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 3,
+                    "startColumn": 4,
+                    "startOffset": 103,
+                    "endColumn": 66,
+                    "endOffset": 165
+                },
+                "from": {
+                    "file": "/Users/yuhaoliu/Documents/ITIME/vendor/iTime-Calendar/viewserver-sample/src/main/res/values/strings.xml",
+                    "position": {
+                        "startLine": 2,
+                        "startColumn": 4,
+                        "startOffset": 55,
+                        "endColumn": 66,
+                        "endOffset": 117
+                    }
+                }
+            }
+        ]
+    }
+]

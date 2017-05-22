@@ -38,4 +38,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile project(':horizontalscrollpageview')
     compile project(':innerCalLibrary')
+    compile project(':itimerecycler')
 }

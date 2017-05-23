@@ -18,6 +18,7 @@ import david.horizontalscrollpageview.HorizontalScrollAdapter;
 import david.itimecalendar.R;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
 import david.itimecalendar.calendar.util.MyCalendar;
+import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
 import david.itimerecycler.ITimeAdapter;
 
 /**
@@ -26,6 +27,7 @@ import david.itimerecycler.ITimeAdapter;
 
 public class BodyAdapter extends ITimeAdapter {
     private ITimeEventPackageInterface eventPackage;
+    private ArrayList<WrapperTimeSlot> slotsInfo = new ArrayList<>();
     private Context context;
     private List<View> viewItems = new ArrayList<>();
 
@@ -36,6 +38,14 @@ public class BodyAdapter extends ITimeAdapter {
     public void setEventPackage(ITimeEventPackageInterface eventPackage) {
         this.eventPackage = eventPackage;
         this.notifyDataSetChanged();
+    }
+
+    public ArrayList<WrapperTimeSlot> getSlotsInfo() {
+        return slotsInfo;
+    }
+
+    public void setSlotsInfo(ArrayList<WrapperTimeSlot> slotsInfo) {
+        this.slotsInfo = slotsInfo;
     }
 
     @Override
@@ -52,16 +62,35 @@ public class BodyAdapter extends ITimeAdapter {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, offset);
         TextView tv = (TextView) item.findViewById(R.id.test_tv);
-        tv.setText(offset + "\n" + cal.getTime());
+        tv.setText(cal.getTime() + "");
+
+        DayViewBodyCell body = (DayViewBodyCell) item;
+
+        //set events
         if (this.eventPackage != null){
-            DayViewBodyCell body = (DayViewBodyCell) item;
             body.setCalendar(new MyCalendar(cal));
-            body.refresh(eventPackage);
+            body.setEventList(eventPackage);
         }
+
+        //set timeslots
+        if (body.isTimeSlotEnable && this.slotsInfo != null){
+            MyCalendar calendar = body.getCalendar();
+            for (WrapperTimeSlot struct : slotsInfo
+                 ) {
+                if (calendar.contains(struct.getTimeSlot().getStartTime())){
+                    if (struct.isRecommended() && !struct.isSelected()){
+                        body.addRcdSlot(struct);
+                    }else {
+                        body.addSlot(struct,false);
+                    }
+                }
+            }
+        }
+
+        body.refresh();
     }
 
     public List<View> getViewItems(){
         return this.viewItems;
-//        return new ArrayList<>();
     }
 }

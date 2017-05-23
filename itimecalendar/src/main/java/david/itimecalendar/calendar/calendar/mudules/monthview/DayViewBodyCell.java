@@ -15,9 +15,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.daasuu.bl.ArrowDirection;
 import com.daasuu.bl.BubbleLayout;
 
 import java.text.SimpleDateFormat;
@@ -27,9 +29,11 @@ import java.util.TreeMap;
 
 import david.itimecalendar.R;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
+import david.itimecalendar.calendar.unitviews.DraggableTimeSlotView;
 import david.itimecalendar.calendar.util.BaseUtil;
 import david.itimecalendar.calendar.util.DensityUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
+import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
 
 /**
  * Created by yuhaoliu on 10/05/2017.
@@ -71,7 +75,6 @@ public class DayViewBodyCell extends FrameLayout{
     FrameLayout dividerBgRLayout;
     DayInnerBodyEventLayout eventLayout;
 
-    protected BubbleLayout bubble;
 
     public MyCalendar myCalendar;
     protected Context context;
@@ -112,7 +115,7 @@ public class DayViewBodyCell extends FrameLayout{
     final Handler uiHandler= new Handler();
     private Thread uiUpdateThread;
 
-//    private TimeSlotController timeSlotController;
+    private TimeSlotController timeSlotController = new TimeSlotController(this);;
     private EventController eventController = new EventController(this);
 
     public DayViewBodyCell(@NonNull Context context) {
@@ -188,7 +191,9 @@ public class DayViewBodyCell extends FrameLayout{
 
     private void initBgView(){
         initDividerLine(getHours());
+//        initBubbleView();
     }
+
 
     private void initTimeSlot() {
         double startPoint = spaceTop;
@@ -261,9 +266,7 @@ public class DayViewBodyCell extends FrameLayout{
         this.myCalendar = myCalendar;
     }
 
-    public void refresh(ITimeEventPackageInterface eventPackage){
-        resetViews();
-        eventController.setEventList(eventPackage);
+    public void refresh(){
         BaseUtil.relayoutChildren(eventLayout);
     }
 
@@ -382,5 +385,35 @@ public class DayViewBodyCell extends FrameLayout{
         }
 
         return -1;
+    }
+
+    /*** for time slot ***/
+    public void clearTimeSlots(){
+        timeSlotController.clearTimeSlots();
+    }
+
+    public void resetTimeSlotViews(){
+        timeSlotController.resetTimeSlotViews();
+    }
+
+    public void addSlot(WrapperTimeSlot wrapper, boolean animate){
+        timeSlotController.addSlot(wrapper,animate);
+    }
+
+    public void addRcdSlot(WrapperTimeSlot wrapper){
+        timeSlotController.addRecommended(wrapper);
+    }
+
+    public void updateTimeSlotsDuration(long duration, boolean animate){
+        timeSlotController.updateTimeSlotsDuration(duration, animate);
+    }
+
+    public void enableTimeSlot(){
+        eventController.enableBgMode();
+        timeSlotController.enableTimeSlot();
+    }
+
+    public void setOnTimeSlotListener(TimeSlotController.OnTimeSlotListener onTimeSlotListener) {
+        timeSlotController.setOnTimeSlotListener(onTimeSlotListener);
     }
 }

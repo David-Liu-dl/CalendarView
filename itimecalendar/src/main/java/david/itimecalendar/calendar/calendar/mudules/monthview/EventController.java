@@ -22,7 +22,6 @@ import com.daimajia.androidanimations.library.YoYo;
 
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +32,7 @@ import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
 import david.itimecalendar.calendar.listeners.ITimeInviteeInterface;
 import david.itimecalendar.calendar.unitviews.DraggableEventView;
 import david.itimecalendar.calendar.util.BaseUtil;
-import david.itimecalendar.calendar.util.CalendarEventOverlapHelper;
+import david.itimecalendar.calendar.util.OverlapHelper;
 import david.itimecalendar.calendar.util.DensityUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
 import david.itimecalendar.calendar.wrapper.WrapperEvent;
@@ -59,7 +58,7 @@ public class EventController {
     private Map<ITimeEventInterface, DraggableEventView> uidDragViewMap = new HashMap<>();
     private ArrayList<DraggableEventView> allDayDgEventViews = new ArrayList<>();
 
-    private CalendarEventOverlapHelper xHelper = new CalendarEventOverlapHelper();
+    private OverlapHelper xHelper = new OverlapHelper();
 
     private Class<?> eventClassName;
 
@@ -281,13 +280,27 @@ public class EventController {
      * it needs to be called when setting event or event position changed
      */
     private void calculateEventLayout(DayInnerBodyEventLayout eventLayout) {
-        List<ArrayList<CalendarEventOverlapHelper.OverlappedEvent>> overlapGroups
+        List<ArrayList<OverlapHelper.OverlappedEvent>> overlapGroups
                 = xHelper.computeOverlapXForEvents(eventLayout.getEvents());
-        for (ArrayList<CalendarEventOverlapHelper.OverlappedEvent> overlapGroup : overlapGroups
+        for (ArrayList<OverlapHelper.OverlappedEvent> overlapGroup : overlapGroups
                 ) {
             for (int i = 0; i < overlapGroup.size(); i++) {
+                int startY = getEventY((WrapperEvent) overlapGroup.get(i).event);
+                int overlapCount = overlapGroup.get(i).params.overlapCount;
+                int indexInRow = overlapGroup.get(i).params.indexInRow;
+                DraggableEventView eventView = (DraggableEventView) eventLayout.findViewById(regularEventViewMap.get(overlapGroup.get(i).event));
+                eventView.setPosParam(new DraggableEventView.PosParam(startY, indexInRow, overlapCount, startY));
+            }
+        }
+    }
 
-                int startY = getEventY(overlapGroup.get(i).event);
+    private void calculateTimeSlotLayout(DayInnerBodyEventLayout eventLayout) {
+        List<ArrayList<OverlapHelper.OverlappedEvent>> overlapGroups
+                = xHelper.computeOverlapXForEvents(eventLayout.getEvents());
+        for (ArrayList<OverlapHelper.OverlappedEvent> overlapGroup : overlapGroups
+                ) {
+            for (int i = 0; i < overlapGroup.size(); i++) {
+                int startY = getEventY((WrapperEvent) overlapGroup.get(i).event);
                 int overlapCount = overlapGroup.get(i).params.overlapCount;
                 int indexInRow = overlapGroup.get(i).params.indexInRow;
                 DraggableEventView eventView = (DraggableEventView) eventLayout.findViewById(regularEventViewMap.get(overlapGroup.get(i).event));

@@ -1,31 +1,27 @@
 package david.itimecalendar.calendar.util;
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import david.itimecalendar.calendar.listeners.ITimeEventInterface;
-import david.itimecalendar.calendar.wrapper.WrapperEvent;
-
 /**
  * Created by yuhaoliu on 18/08/16.
  */
-public class CalendarEventOverlapHelper {
+public class OverlapHelper <I extends OverlapHelper.OverlapInput<I>> {
     private final long overlapTolerance = (15/2) * 60 * 1000;
 
-    private ArrayList<WrapperEvent> eventModules = new ArrayList<>();
+    private ArrayList<I> eventModules = new ArrayList<>();
     private List<ArrayList<OverlappedEvent>> groupedOlpEventList = new ArrayList<>();
 
-    public List<ArrayList<OverlappedEvent>> computeOverlapXForEvents(ArrayList<WrapperEvent> eventModules){
+    public List<ArrayList<OverlappedEvent>> computeOverlapXForEvents(ArrayList<I> eventModules){
         this.eventModules = eventModules;
         groupedOlpEventList.clear();
         // sort event by start time first
         this.sortEvent();
         // get overlapped Groups
-        ArrayList<ArrayList<WrapperEvent>> overlapEventGroups = divideOverlapGroup();
+        ArrayList<ArrayList<I>> overlapEventGroups = divideOverlapGroup();
         // compute each event X in every group in overlapped groups
-        for (ArrayList<WrapperEvent> list: overlapEventGroups
+        for (ArrayList<I> list: overlapEventGroups
                 ) {
             if (list.size() > 1){
                 groupedOlpEventList.add(this.computeEventXPstInGroup(list));
@@ -47,22 +43,25 @@ public class CalendarEventOverlapHelper {
         Collections.sort(eventModules);
     }
 
-    private ArrayList<ArrayList<WrapperEvent>> divideOverlapGroup(){
-        ArrayList<ArrayList<WrapperEvent>> overLapEventGroups = new ArrayList<>();
+    private ArrayList<ArrayList<I>> divideOverlapGroup(){
+        ArrayList<ArrayList<I>> overLapEventGroups = new ArrayList<>();
 
         // get today 00:00 milliseconds
         long startFlag = 0;
         long endFlag = 0;//-1 means 00:00 within today
 
-        for (WrapperEvent wrapper:eventModules
+        for (I wrapper:eventModules
                 ) {
-            ITimeEventInterface event = wrapper.getEvent();
-            long startTime = event.getStartTime();
-            long endTime = event.getEndTime();
+//            ITimeEventInterface event = wrapper.getEvent();
+//            long startTime = event.getStartTime();
+//            long endTime = event.getEndTime();
+
+            long startTime = wrapper.getStartTime();
+            long endTime = wrapper.getEndTime();
 
             if (startTime >= (endFlag - overlapTolerance)){
                 //means no overlap with previous group, then create new group
-                ArrayList<WrapperEvent> new_group = new ArrayList<>();
+                ArrayList<I> new_group = new ArrayList<>();
                 new_group.add(wrapper);
                 //add new group to groups
                 overLapEventGroups.add(new_group);
@@ -77,7 +76,7 @@ public class CalendarEventOverlapHelper {
         return overLapEventGroups;
     }
 
-    private ArrayList<OverlappedEvent> computeEventXPstInGroup(ArrayList<WrapperEvent> group) {
+    private ArrayList<OverlappedEvent> computeEventXPstInGroup(ArrayList<I> group) {
         ArrayList<ColumnPackage> columnEvents = new ArrayList<>();
         int curColumn = 0;
 
@@ -94,14 +93,14 @@ public class CalendarEventOverlapHelper {
                 continue;
             }
 
-            long currentEventStartTime = group.get(i).getEvent().getStartTime();
+            long currentEventStartTime = group.get(i).getStartTime();
             boolean foundRoot = false;
 
             //finding the root for current event
             for (ColumnPackage columnEvent:columnEvents
                  ) {
                 //compare with last event in column event
-                if (currentEventStartTime >= (columnEvent.eventSlots.get(columnEvent.eventSlots.size() -1).event.getEvent().getEndTime() - overlapTolerance)){
+                if (currentEventStartTime >= (columnEvent.eventSlots.get(columnEvent.eventSlots.size() -1).event.getEndTime() - overlapTolerance)){
                     EventSlot childSlot = new EventSlot();
                     childSlot.event = group.get(i);
                     childSlot.row = columnEvent.eventSlots.size();
@@ -149,7 +148,7 @@ public class CalendarEventOverlapHelper {
     }
 
     private class EventSlot{
-        public WrapperEvent event;
+        public I event;
         int row;
         int columnStart;
     }
@@ -176,12 +175,16 @@ public class CalendarEventOverlapHelper {
 
     public class OverlappedEvent {
         public OverlappedParams params;
-        public WrapperEvent event;
+        public I event;
 
-        private OverlappedEvent(OverlappedParams params, WrapperEvent event) {
+        private OverlappedEvent(OverlappedParams params, I event) {
             this.params = params;
             this.event = event;
         }
     }
 
+    public interface OverlapInput<T> extends Comparable<T>{
+        long getStartTime();
+        long getEndTime();
+    }
 }

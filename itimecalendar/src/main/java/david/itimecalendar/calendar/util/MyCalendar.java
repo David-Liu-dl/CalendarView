@@ -164,4 +164,10 @@ public class MyCalendar {
         this.millisecond = myCalendar.getMillisecond();
     }
 
+    public boolean contains(long time){
+        long beginOfDay = getBeginOfDayMilliseconds();
+        long endOfDay = getEndOfDayMilliseconds();
+        return time>= beginOfDay && time < endOfDay;
+    }
+
 }

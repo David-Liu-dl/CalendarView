@@ -5,7 +5,9 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.util.Log;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -28,7 +30,6 @@ public class DraggableTimeSlotView extends FrameLayout {
 
     public boolean onScreen = false;
     private int type = 0;
-    private int indexInView = 0;
     private long newStartTime = 0;
     private long newEndTime = 0;
     private long duration;
@@ -138,14 +139,6 @@ public class DraggableTimeSlotView extends FrameLayout {
         this.calendar = calendar;
     }
 
-    public void setIndexInView(int indexInView) {
-        this.indexInView = indexInView;
-    }
-
-    public int getIndexInView() {
-        return indexInView;
-    }
-
     public int getType() {
         return type;
     }
@@ -203,5 +196,11 @@ public class DraggableTimeSlotView extends FrameLayout {
 
     public ITimeTimeSlotInterface getTimeslot() {
         return timeslot;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return super.onTouchEvent(event);
+//        return false;
     }
 }

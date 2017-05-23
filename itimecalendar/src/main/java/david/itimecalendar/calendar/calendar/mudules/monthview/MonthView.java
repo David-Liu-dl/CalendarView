@@ -8,7 +8,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,8 +20,11 @@ import java.util.Date;
 
 import david.itimecalendar.R;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
+import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
+import david.itimecalendar.calendar.unitviews.TimeSlotInnerCalendarView;
 import david.itimecalendar.calendar.util.BaseUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
+import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
 import david.itimerecycler.RecycledViewGroup;
 
 /**
@@ -289,9 +291,30 @@ public class MonthView extends LinearLayout{
         dayViewBody.refresh();
     }
 
-
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    /*** for timeslot ***/
+
+    public void enableTimeSlot(){
+        dayViewBody.enableTimeSlot();
+    }
+
+    public void setOnTimeSlotInnerCalendar(TimeSlotInnerCalendarView.OnTimeSlotInnerCalendar onTimeSlotInnerCalendar) {
+        dayViewBody.setOnTimeSlotInnerCalendar(onTimeSlotInnerCalendar);
+    }
+
+    public void addTimeSlot(ITimeTimeSlotInterface slotInfo){
+        dayViewBody.addTimeSlot(slotInfo);
+    }
+
+    public void addTimeSlot(WrapperTimeSlot wrapperTimeSlot){
+        dayViewBody.addTimeSlot(wrapperTimeSlot);
+    }
+
+    public void setOnTimeSlotListener(TimeSlotController.OnTimeSlotListener onTimeSlotOuterListener) {
+        this.dayViewBody.setOnTimeSlotListener(onTimeSlotOuterListener);
     }
 }

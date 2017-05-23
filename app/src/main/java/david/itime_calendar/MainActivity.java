@@ -2,18 +2,28 @@ package david.itime_calendar;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import david.itime_calendar.bean.Contact;
 import david.itime_calendar.bean.Event;
 import david.itime_calendar.bean.Invitee;
+import david.itime_calendar.bean.TimeSlot;
 import david.itimecalendar.calendar.calendar.mudules.monthview.EventController;
 import david.itimecalendar.calendar.calendar.mudules.monthview.MonthView;
+import david.itimecalendar.calendar.calendar.mudules.monthview.TimeSlotController;
+import david.itimecalendar.calendar.calendar.mudules.weekview.WeekView;
 import david.itimecalendar.calendar.listeners.ITimeEventInterface;
 import david.itimecalendar.calendar.unitviews.DraggableEventView;
+import david.itimecalendar.calendar.unitviews.DraggableTimeSlotView;
+import david.itimecalendar.calendar.unitviews.RecommendedSlotView;
+import david.itimecalendar.calendar.unitviews.TimeSlotInnerCalendarView;
 import david.itimecalendar.calendar.util.BaseUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
 
@@ -26,7 +36,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         this.initTest();
-        this.monthviewTest();
+//        this.monthviewTest();
+        this.timeSlotTest();
 
         ViewServer.get(this).addWindow(this);
     }
@@ -78,32 +89,81 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         monthView.setEventPackage(eventManager.getEventsMap());
-//        monthView.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                int count = 0;
-//
-//                while (count < 2){
-//                    try {
-//                        Thread.sleep(3000);
-//                        if (count == 0){
-//                            Calendar cal = Calendar.getInstance();
-//                            cal.add(Calendar.DATE, -17);
-//                            monthView.scrollToDate(cal.getTime());
-//                        }
-//
-//                        if (count == 1){
-//                            Calendar cal = Calendar.getInstance();
-//                            monthView.scrollToDate(cal.getTime());
-//                        }
-//
-//                        count++;
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//        }, 1000);
+    }
+
+    private void timeSlotTest(){
+        ArrayList<TimeSlot> slots = new ArrayList<>();
+        initSlots(slots);
+
+        final MonthView weekView = (MonthView) findViewById(R.id.monthview);
+        weekView.setEventPackage(eventManager.getEventsMap());
+        weekView.enableTimeSlot();
+        weekView.setOnTimeSlotInnerCalendar(new TimeSlotInnerCalendarView.OnTimeSlotInnerCalendar() {
+            @Override
+            public void onCalendarBtnClick(View v, boolean result) {
+
+            }
+
+            @Override
+            public void onDayClick(Date dateClicked) {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(dateClicked);
+                weekView.scrollToDate(cal.getTime());
+            }
+
+            @Override
+            public void onMonthScroll(Date firstDayOfNewMonth) {
+            }
+        });
+        weekView.setOnTimeSlotListener(new TimeSlotController.OnTimeSlotListener() {
+            @Override
+            public void onTimeSlotCreate(DraggableTimeSlotView draggableTimeSlotView) {
+
+            }
+
+            @Override
+            public void onTimeSlotClick(DraggableTimeSlotView draggableTimeSlotView) {
+//                weekView.reloadTimeSlots(false);
+            }
+
+            @Override
+            public void onRcdTimeSlotClick(RecommendedSlotView v) {
+                v.getWrapper().setSelected(true);
+//                weekView.reloadTimeSlots(false);
+            }
+
+            @Override
+            public void onTimeSlotDragStart(DraggableTimeSlotView draggableTimeSlotView) {
+
+            }
+
+            @Override
+            public void onTimeSlotDragging(DraggableTimeSlotView draggableTimeSlotView, int x, int y) {
+
+            }
+
+            @Override
+            public void onTimeSlotDragDrop(DraggableTimeSlotView draggableTimeSlotView, long startTime, long endTime) {
+
+            }
+
+            @Override
+            public void onTimeSlotEdit(DraggableTimeSlotView draggableTimeSlotView) {
+            }
+
+            @Override
+            public void onTimeSlotDelete(DraggableTimeSlotView draggableTimeSlotView) {
+            }
+        });
+
+
+        HashMap<String, Integer> numSlot = new HashMap<>();
+
+
+        for (TimeSlot slot:slots
+                ) {
+            weekView.addTimeSlot(slot);
+        }
     }
 
     private void initData(){
@@ -186,5 +246,20 @@ public class MainActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         ViewServer.get(this).setFocusedWindow(this);
+    }
+
+    private void initSlots(ArrayList<TimeSlot> slots){
+        Calendar cal = Calendar.getInstance();
+        long startTime = cal.getTimeInMillis();
+        long duration = 3*3600*1000;
+        for (int i = 0; i < 10; i++) {
+            TimeSlot slot = new TimeSlot();
+            slot.setStartTime(startTime);
+            slot.setEndTime(startTime+duration);
+            slot.setRecommended(true);
+            slots.add(slot);
+
+            startTime += 5 * 3600 * 1000;
+        }
     }
 }

@@ -10,20 +10,19 @@ import android.content.Context;
 import android.graphics.Point;
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.util.Pair;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +33,7 @@ import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
 import david.itimecalendar.calendar.listeners.ITimeInviteeInterface;
 import david.itimecalendar.calendar.unitviews.DraggableEventView;
 import david.itimecalendar.calendar.util.BaseUtil;
-import david.itimecalendar.calendar.util.CalendarEventOverlapHelper;
+import david.itimecalendar.calendar.util.OverlapHelper;
 import david.itimecalendar.calendar.util.DensityUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
 import david.itimecalendar.calendar.wrapper.WrapperEvent;
@@ -60,7 +59,7 @@ public class EventController {
     private Map<ITimeEventInterface, DraggableEventView> uidDragViewMap = new HashMap<>();
     private ArrayList<DraggableEventView> allDayDgEventViews = new ArrayList<>();
 
-    private CalendarEventOverlapHelper xHelper = new CalendarEventOverlapHelper();
+    private OverlapHelper xHelper = new OverlapHelper();
 
     private Class<?> eventClassName;
 
@@ -282,22 +281,33 @@ public class EventController {
      * it needs to be called when setting event or event position changed
      */
     private void calculateEventLayout(DayInnerBodyEventLayout eventLayout) {
-//        List<ArrayList<Pair<Pair<Integer, Integer>, WrapperEvent>>> overlapGroups
-//                = xHelper.computeOverlapXForEvents(eventLayout.getEvents());
-//        for (ArrayList<Pair<Pair<Integer, Integer>, WrapperEvent>> overlapGroup : overlapGroups
-//                ) {
-//            for (int i = 0; i < overlapGroup.size(); i++) {
-//
-//                int startY = getEventY(overlapGroup.get(i).second);
-//                int widthFactor = overlapGroup.get(i).first.first;
-//                int startX = overlapGroup.get(i).first.second;
-//                int topMargin = startY;
-//                DraggableEventView eventView = (DraggableEventView) eventLayout.findViewById(regularEventViewMap.get(overlapGroup.get(i).second));
-//                eventView.setPosParam(new DraggableEventView.PosParam(startY, startX, widthFactor, topMargin));
-//                Calendar cal = Calendar.getInstance();
-//                cal.setTimeInMillis(eventView.getEvent().getStartTime());
-//            }
-//        }
+        List<ArrayList<OverlapHelper.OverlappedEvent>> overlapGroups
+                = xHelper.computeOverlapXForEvents(eventLayout.getEvents());
+        for (ArrayList<OverlapHelper.OverlappedEvent> overlapGroup : overlapGroups
+                ) {
+            for (int i = 0; i < overlapGroup.size(); i++) {
+                int startY = getEventY((WrapperEvent) overlapGroup.get(i).event);
+                int overlapCount = overlapGroup.get(i).params.overlapCount;
+                int indexInRow = overlapGroup.get(i).params.indexInRow;
+                DraggableEventView eventView = (DraggableEventView) eventLayout.findViewById(regularEventViewMap.get(overlapGroup.get(i).event));
+                eventView.setPosParam(new DraggableEventView.PosParam(startY, indexInRow, overlapCount, startY));
+            }
+        }
+    }
+
+    private void calculateTimeSlotLayout(DayInnerBodyEventLayout eventLayout) {
+        List<ArrayList<OverlapHelper.OverlappedEvent>> overlapGroups
+                = xHelper.computeOverlapXForEvents(eventLayout.getEvents());
+        for (ArrayList<OverlapHelper.OverlappedEvent> overlapGroup : overlapGroups
+                ) {
+            for (int i = 0; i < overlapGroup.size(); i++) {
+                int startY = getEventY((WrapperEvent) overlapGroup.get(i).event);
+                int overlapCount = overlapGroup.get(i).params.overlapCount;
+                int indexInRow = overlapGroup.get(i).params.indexInRow;
+                DraggableEventView eventView = (DraggableEventView) eventLayout.findViewById(regularEventViewMap.get(overlapGroup.get(i).event));
+                eventView.setPosParam(new DraggableEventView.PosParam(startY, indexInRow, overlapCount, startY));
+            }
+        }
     }
 
     private int getEventY(WrapperEvent wrapper) {
@@ -491,61 +501,61 @@ public class EventController {
         @Override
         public boolean onLongClick(View v) {
 //            if (container.tempDragView == null) {
-                DayInnerBodyEventLayout container = (DayInnerBodyEventLayout) v;
-                EventController.this.container.tempDragView = createTempDayDraggableEventView(EventController.this.container.nowTapX, EventController.this.container.nowTapY);
-                EventController.this.container.tempDragView.setAlpha(0);
-                container.addView(EventController.this.container.tempDragView);
-//
-                EventController.this.container.tempDragView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                    @Override
-                    public void onGlobalLayout() {
-                        EventController.this.container.tempDragView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                        ObjectAnimator scaleX = ObjectAnimator.ofFloat(EventController.this.container.tempDragView, "scaleX", 0f,1f);
-                        ObjectAnimator scaleY = ObjectAnimator.ofFloat(EventController.this.container.tempDragView, "scaleY", 0f,1f);
-                        ObjectAnimator alpha = ObjectAnimator.ofFloat(EventController.this.container.tempDragView, "alpha", 0f,1f);
-                        alpha.setDuration(180);
-                        scaleX.setDuration(120);
-                        scaleY.setDuration(120);
+            DayInnerBodyEventLayout container = (DayInnerBodyEventLayout) v;
+            EventController.this.container.tempDragView = createTempDayDraggableEventView(EventController.this.container.nowTapX, EventController.this.container.nowTapY);
+            EventController.this.container.tempDragView.setAlpha(0);
+            container.addView(EventController.this.container.tempDragView);
+            BaseUtil.relayoutChildren(container);
+            EventController.this.container.tempDragView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    EventController.this.container.tempDragView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    ObjectAnimator scaleX = ObjectAnimator.ofFloat(EventController.this.container.tempDragView, "scaleX", 0f,1f);
+                    ObjectAnimator scaleY = ObjectAnimator.ofFloat(EventController.this.container.tempDragView, "scaleY", 0f,1f);
+                    ObjectAnimator alpha = ObjectAnimator.ofFloat(EventController.this.container.tempDragView, "alpha", 0f,1f);
+                    alpha.setDuration(180);
+                    scaleX.setDuration(120);
+                    scaleY.setDuration(120);
 
-                        AnimatorSet scaleDown = new AnimatorSet();
-                        scaleDown.play(alpha).with(scaleY).with(scaleX);
-                        scaleX.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                            @Override
-                            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                                View p= (View) EventController.this.container.tempDragView.getParent();
-                                if (p != null){
-                                    p.invalidate();
-                                }
+                    AnimatorSet scaleDown = new AnimatorSet();
+                    scaleDown.play(alpha).with(scaleY).with(scaleX);
+                    scaleX.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                        @Override
+                        public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                            View p= (View) EventController.this.container.tempDragView.getParent();
+                            if (p != null){
+                                p.invalidate();
                             }
-                        });
-                        scaleDown.addListener(new Animator.AnimatorListener() {
-                            @Override
-                            public void onAnimationStart(Animator animation) {
+                        }
+                    });
+                    scaleDown.addListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
 
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            if (EventController.this.container.tempDragView != null
+                                    && EventController.this.container.tempDragView.getParent() != null){
+                                EventController.this.container.tempDragView.performLongClick();
                             }
+                        }
 
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                if (EventController.this.container.tempDragView != null
-                                        && EventController.this.container.tempDragView.getParent() != null){
-                                    EventController.this.container.tempDragView.performLongClick();
-                                }
-                            }
+                        @Override
+                        public void onAnimationCancel(Animator animation) {
 
-                            @Override
-                            public void onAnimationCancel(Animator animation) {
+                        }
 
-                            }
+                        @Override
+                        public void onAnimationRepeat(Animator animation) {
 
-                            @Override
-                            public void onAnimationRepeat(Animator animation) {
+                        }
+                    });
 
-                            }
-                        });
-
-                        scaleDown.start();
-                    }
-                });
+                    scaleDown.start();
+                }
+            });
 //            }
 
             return true;

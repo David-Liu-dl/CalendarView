@@ -1,95 +1,67 @@
 package david.itimecalendar.calendar.util;
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import david.itimecalendar.calendar.listeners.ITimeEventInterface;
-import david.itimecalendar.calendar.wrapper.WrapperEvent;
-
 /**
  * Created by yuhaoliu on 18/08/16.
  */
-public class CalendarEventOverlapHelper {
+public class OverlapHelper <I extends OverlapHelper.OverlapInput<I>> {
     private final long overlapTolerance = (15/2) * 60 * 1000;
 
-    private ArrayList<WrapperEvent> eventModules = new ArrayList<>();
-    private List<ArrayList<OverlappedEvent>> param_events = new ArrayList<>();
+    private ArrayList<I> eventModules = new ArrayList<>();
+    private List<ArrayList<OverlappedEvent>> groupedOlpEventList = new ArrayList<>();
 
-    public CalendarEventOverlapHelper() {
-    }
-
-    public List<ArrayList<OverlappedEvent>> computeOverlapXForEvents(ArrayList<WrapperEvent> eventModules){
+    public List<ArrayList<OverlappedEvent>> computeOverlapXForEvents(ArrayList<I> eventModules){
         this.eventModules = eventModules;
-        param_events.clear();
+        groupedOlpEventList.clear();
         // sort event by start time first
         this.sortEvent();
         // get overlapped Groups
-        ArrayList<ArrayList<WrapperEvent>> overlapEventGroups = divideOverlapGroup();
+        ArrayList<ArrayList<I>> overlapEventGroups = divideOverlapGroup();
         // compute each event X in every group in overlapped groups
-        for (ArrayList<WrapperEvent> list: overlapEventGroups
+        for (ArrayList<I> list: overlapEventGroups
                 ) {
             if (list.size() > 1){
-                param_events.add(this.computeEventXPstInGroup(list));
+                groupedOlpEventList.add(this.computeEventXPstInGroup(list));
             }else {
-                //<widthFactor, startX>
-//                Pair<Integer,Integer> param = new Pair<>(1, 0);
-//                Pair<Integer,Integer> param = new Pair<>(1, 0);
+                //<overlapCount, indexInRow>
                 OverlappedParams params = new OverlappedParams(1,0);
                 //<params, event>
-//                Pair<Pair<Integer,Integer>,WrapperEvent> param_event = new Pair<>(param, list.get(0));
                 OverlappedEvent param_event = new OverlappedEvent(params, list.get(0));
-                //list of <params, event>
-                ArrayList<OverlappedEvent> single_list = new ArrayList<>();
-                single_list.add(param_event);
-                param_events.add(single_list);
+                ArrayList<OverlappedEvent> group = new ArrayList<>();
+                group.add(param_event);
+                groupedOlpEventList.add(group);
             }
         }
 
-        return param_events;
-    }
-
-    private class OverlappedParams {
-        int widthFactor;
-        int startX;
-
-        public OverlappedParams(int widthFactor, int startX) {
-            this.widthFactor = widthFactor;
-            this.startX = startX;
-        }
-    }
-
-    private class OverlappedEvent {
-        OverlappedParams params;
-        WrapperEvent event;
-
-        public OverlappedEvent(OverlappedParams params, WrapperEvent event) {
-            this.params = params;
-            this.event = event;
-        }
+        return groupedOlpEventList;
     }
 
     private void sortEvent(){
         Collections.sort(eventModules);
     }
 
-    private ArrayList<ArrayList<WrapperEvent>> divideOverlapGroup(){
-        ArrayList<ArrayList<WrapperEvent>> overLapEventGroups = new ArrayList<>();
+    private ArrayList<ArrayList<I>> divideOverlapGroup(){
+        ArrayList<ArrayList<I>> overLapEventGroups = new ArrayList<>();
 
         // get today 00:00 milliseconds
         long startFlag = 0;
         long endFlag = 0;//-1 means 00:00 within today
 
-        for (WrapperEvent wrapper:eventModules
+        for (I wrapper:eventModules
                 ) {
-            ITimeEventInterface event = wrapper.getEvent();
-            long startTime = event.getStartTime();
-            long endTime = event.getEndTime();
+//            ITimeEventInterface event = wrapper.getEvent();
+//            long startTime = event.getStartTime();
+//            long endTime = event.getEndTime();
+
+            long startTime = wrapper.getStartTime();
+            long endTime = wrapper.getEndTime();
 
             if (startTime >= (endFlag - overlapTolerance)){
                 //means no overlap with previous group, then create new group
-                ArrayList<WrapperEvent> new_group = new ArrayList<>();
+                ArrayList<I> new_group = new ArrayList<>();
                 new_group.add(wrapper);
                 //add new group to groups
                 overLapEventGroups.add(new_group);
@@ -104,18 +76,7 @@ public class CalendarEventOverlapHelper {
         return overLapEventGroups;
     }
 
-    private class ColumnPackage{
-        int column;
-        ArrayList<EventSlot> eventSlots;
-
-        public ColumnPackage(int column, ArrayList<EventSlot> eventSlots) {
-            this.column = column;
-            this.eventSlots = eventSlots;
-        }
-    }
-
-    private ArrayList<OverlappedEvent> computeEventXPstInGroup(ArrayList<WrapperEvent> group) {
-//        ArrayList<Pair<Integer, ArrayList<EventSlot>>> columnEvents = new ArrayList<>();
+    private ArrayList<OverlappedEvent> computeEventXPstInGroup(ArrayList<I> group) {
         ArrayList<ColumnPackage> columnEvents = new ArrayList<>();
         int curColumn = 0;
 
@@ -127,20 +88,19 @@ public class CalendarEventOverlapHelper {
                 rootSlot.event = group.get(0);
                 rootSlot.row = 0;
                 rootSlot.columnStart = 0;
-//                columnEvents.add(new Pair<>(curColumn,initColumn(rootSlot)));
                 columnEvents.add(new ColumnPackage(curColumn, initColumn(rootSlot)));
                 curColumn += 1;
                 continue;
             }
 
-            long currentEventStartTime = group.get(i).getEvent().getStartTime();
+            long currentEventStartTime = group.get(i).getStartTime();
             boolean foundRoot = false;
 
             //finding the root for current event
             for (ColumnPackage columnEvent:columnEvents
                  ) {
                 //compare with last event in column event
-                if (currentEventStartTime >= (columnEvent.eventSlots.get(columnEvent.eventSlots.size() -1).event.getEvent().getEndTime() - overlapTolerance)){
+                if (currentEventStartTime >= (columnEvent.eventSlots.get(columnEvent.eventSlots.size() -1).event.getEndTime() - overlapTolerance)){
                     EventSlot childSlot = new EventSlot();
                     childSlot.event = group.get(i);
                     childSlot.row = columnEvent.eventSlots.size();
@@ -171,7 +131,6 @@ public class CalendarEventOverlapHelper {
             OverlappedParams param = new OverlappedParams(curColumn, columnEvent.column);
             for (EventSlot event:columnEvent.eventSlots
                  ) {
-//                Pair<Pair<Integer,Integer>, WrapperEvent> param_event = new Pair<>(param, event.event);
                 OverlappedEvent param_event = new OverlappedEvent(param,event.event);
                 overlappedEventList.add(param_event);
             }
@@ -189,11 +148,43 @@ public class CalendarEventOverlapHelper {
     }
 
     private class EventSlot{
-        public WrapperEvent event;
-        public int row;
-        public int columnStart;
-        public int columnEnd;
+        public I event;
+        int row;
+        int columnStart;
     }
 
+    private class ColumnPackage{
+        int column;
+        ArrayList<EventSlot> eventSlots;
 
+        private ColumnPackage(int column, ArrayList<EventSlot> eventSlots) {
+            this.column = column;
+            this.eventSlots = eventSlots;
+        }
+    }
+
+    public class OverlappedParams {
+        public int overlapCount;
+        public int indexInRow;
+
+        private OverlappedParams(int overlapCount, int indexInRow) {
+            this.overlapCount = overlapCount;
+            this.indexInRow = indexInRow;
+        }
+    }
+
+    public class OverlappedEvent {
+        public OverlappedParams params;
+        public I event;
+
+        private OverlappedEvent(OverlappedParams params, I event) {
+            this.params = params;
+            this.event = event;
+        }
+    }
+
+    public interface OverlapInput<T> extends Comparable<T>{
+        long getStartTime();
+        long getEndTime();
+    }
 }

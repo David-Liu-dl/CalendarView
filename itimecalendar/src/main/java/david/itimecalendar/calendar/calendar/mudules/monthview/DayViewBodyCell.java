@@ -1,6 +1,7 @@
 package david.itimecalendar.calendar.calendar.mudules.monthview;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Handler;
 import android.support.annotation.AttrRes;
@@ -15,9 +16,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.daasuu.bl.ArrowDirection;
 import com.daasuu.bl.BubbleLayout;
 
 import java.text.SimpleDateFormat;
@@ -27,9 +30,11 @@ import java.util.TreeMap;
 
 import david.itimecalendar.R;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
+import david.itimecalendar.calendar.unitviews.DraggableTimeSlotView;
 import david.itimecalendar.calendar.util.BaseUtil;
 import david.itimecalendar.calendar.util.DensityUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
+import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
 
 /**
  * Created by yuhaoliu on 10/05/2017.
@@ -55,10 +60,12 @@ public class DayViewBodyCell extends FrameLayout{
     private int color_time_text = R.color.text_enable;
     private int color_nowtime = R.color.text_today_color;
     private int color_nowtime_bg = R.color.whites;
+    private int color_vertical_dct = R.color.divider_color;
     /*************************** End of Color Setting **********************************/
 
     /*************************** Start of Resources Setting ****************************/
     private int rs_divider_line = R.drawable.itime_day_view_dotted;
+    private int rs_vertical_line = R.drawable.itime_day_view_decoration_line;
     private int rs_nowtime_line = R.drawable.itime_now_time_full_line;
     /*************************** End of Resources Setting ****************************/
 
@@ -71,7 +78,6 @@ public class DayViewBodyCell extends FrameLayout{
     FrameLayout dividerBgRLayout;
     DayInnerBodyEventLayout eventLayout;
 
-    protected BubbleLayout bubble;
 
     public MyCalendar myCalendar;
     protected Context context;
@@ -92,8 +98,6 @@ public class DayViewBodyCell extends FrameLayout{
     protected View tempDragView = null;
 
     //dp
-    private int leftSideWidth = 40;
-    //dp
     protected int hourHeight = 30;
     private int spaceTop = 30;
 
@@ -112,7 +116,7 @@ public class DayViewBodyCell extends FrameLayout{
     final Handler uiHandler= new Handler();
     private Thread uiUpdateThread;
 
-//    private TimeSlotController timeSlotController;
+    private TimeSlotController timeSlotController = new TimeSlotController(this);
     private EventController eventController = new EventController(this);
 
     public DayViewBodyCell(@NonNull Context context) {
@@ -122,12 +126,26 @@ public class DayViewBodyCell extends FrameLayout{
 
     public DayViewBodyCell(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        this.loadAttributes(attrs,context);
         init();
     }
 
     public DayViewBodyCell(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        this.loadAttributes(attrs,context);
         init();
+    }
+
+    private void loadAttributes(AttributeSet attrs, Context context) {
+        if (attrs != null && context != null) {
+            TypedArray typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.viewBody, 0, 0);
+            try {
+                spaceTop = (int) typedArray.getDimension(R.styleable.viewBody_topSpace, spaceTop);
+                hourHeight = (int) typedArray.getDimension(R.styleable.viewBody_hourHeight, hourHeight);
+            } finally {
+                typedArray.recycle();
+            }
+        }
     }
 
     private void init(){
@@ -138,9 +156,7 @@ public class DayViewBodyCell extends FrameLayout{
     }
 
     private void initLayoutParams(){
-        this.hourHeight = DensityUtil.dip2px(context, hourHeight);
         this.heightPerMillisd = (float) hourHeight /(3600*1000);
-        this.leftSideWidth = DensityUtil.dip2px(context,leftSideWidth);
     }
 
     private void initView(){
@@ -168,27 +184,30 @@ public class DayViewBodyCell extends FrameLayout{
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
         this.addView(eventLayout,params);
+
+        eventLayout.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                nowTapX = event.getX();
+                nowTapY = event.getY();
+                return false;
+            }
+        });
+
         if (!isTimeSlotEnable){
-            eventLayout.setOnTouchListener(new OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    nowTapX = event.getX();
-                    nowTapY = event.getY();
-                    return false;
-                }
-            });
             eventLayout.setOnDragListener(eventController.new EventDragListener());
             eventLayout.setOnLongClickListener(eventController.new CreateEventListener());
-
         }else {
-//            eventLayout.setOnDragListener(this.timeSlotController.new TimeSlotDragListener(i));
-//            eventLayout.setOnLongClickListener(this.timeSlotController.new CreateTimeSlotListener());
+            eventLayout.setOnDragListener(this.timeSlotController.new TimeSlotDragListener());
+            eventLayout.setOnLongClickListener(this.timeSlotController.new CreateTimeSlotListener());
         }
     }
 
     private void initBgView(){
         initDividerLine(getHours());
+//        initBubbleView();
     }
+
 
     private void initTimeSlot() {
         double startPoint = spaceTop;
@@ -225,17 +244,28 @@ public class DayViewBodyCell extends FrameLayout{
         FrameLayout.LayoutParams dividerBgRLayoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         this.addView(dividerBgRLayout, dividerBgRLayoutParams);
 
-        for (int numOfDottedLine = 0; numOfDottedLine < HOURS.length; numOfDottedLine++) {
+        //add divider
+        for (int numOfLine = 0; numOfLine < HOURS.length; numOfLine++) {
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
             ImageView dividerImageView = new ImageView(context);
             dividerImageView.setImageResource(rs_divider_line);
-            params.topMargin = this.nearestTimeSlotValue(numOfDottedLine);
-            dividerImageView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+            params.topMargin = this.nearestTimeSlotValue(numOfLine);
+//            dividerImageView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             dividerImageView.setLayoutParams(params);
             dividerImageView.setPadding(0, 0, 0, 0);
             dividerBgRLayout.addView(dividerImageView);
         }
+
+        //add right side decoration
+        FrameLayout.LayoutParams dctParams = new FrameLayout.LayoutParams(DensityUtil.dip2px(context,1), ViewGroup.LayoutParams.MATCH_PARENT);
+        dctParams.gravity = Gravity.END;
+        dctParams.topMargin = spaceTop;
+        View dctView = new View(context);
+        dctView.setBackgroundColor(getResources().getColor(color_vertical_dct));
+        dctView.setLayoutParams(dctParams);
+        dctView.setPadding(0, 0, 0, 0);
+        dividerBgRLayout.addView(dctView);
     }
 
     private String[] getHours() {
@@ -261,11 +291,8 @@ public class DayViewBodyCell extends FrameLayout{
         this.myCalendar = myCalendar;
     }
 
-    public void refresh(ITimeEventPackageInterface eventPackage){
-        resetViews();
-        eventController.setEventList(eventPackage);
+    public void refresh(){
         BaseUtil.relayoutChildren(eventLayout);
-//        Log.i("onBindViewHolder", "refresh: " + this);
     }
 
     protected int[] reComputePositionToSet(int actualX, int actualY, View draggableObj, View container) {
@@ -383,5 +410,35 @@ public class DayViewBodyCell extends FrameLayout{
         }
 
         return -1;
+    }
+
+    /*** for time slot ***/
+    public void clearTimeSlots(){
+        timeSlotController.clearTimeSlots();
+    }
+
+    public void resetTimeSlotViews(){
+        timeSlotController.resetTimeSlotViews();
+    }
+
+    public void addSlot(WrapperTimeSlot wrapper, boolean animate){
+        timeSlotController.addSlot(wrapper,animate);
+    }
+
+    public void addRcdSlot(WrapperTimeSlot wrapper){
+        timeSlotController.addRecommended(wrapper);
+    }
+
+    public void updateTimeSlotsDuration(long duration, boolean animate){
+        timeSlotController.updateTimeSlotsDuration(duration, animate);
+    }
+
+    public void enableTimeSlot(){
+        eventController.enableBgMode();
+        timeSlotController.enableTimeSlot();
+    }
+
+    public void setOnTimeSlotListener(TimeSlotController.OnTimeSlotListener onTimeSlotListener) {
+        timeSlotController.setOnTimeSlotListener(onTimeSlotListener);
     }
 }

@@ -1,13 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <attr name="page_text_size" format="dimension"></attr>
-    <!-- for binding -->
+    <attr name="page_text_size" format="dimension"/>
+
+    <!-- for vendor view common attrs-->
+    <attr name="cellNum" format="integer"/>
+    <attr name="hourHeight" format="dimension"/>
+    <attr name="leftBarWidth" format="dimension"/>
+    <attr name="topSpace" format="dimension"/>
+
+    <declare-styleable name="viewBody">
+        <attr name="cellNum"/>
+        <attr name="leftBarWidth"/>
+        <attr name="topSpace"/>
+        <attr name="hourHeight"/>
+    </declare-styleable>
+
     <declare-styleable name="WeekView">
-        <attr name="onWeekViewChange" format="string" />
-        <attr name="onWeekOuterListener" format="string"/>
-        <attr name="timeslot" format="string"/>
-        <attr name="WeekViewBackToday" format="string"/>
+        <attr name="cellNum"/>
+        <attr name="leftBarWidth"/>
+        <attr name="topSpace"/>
+        <attr name="hourHeight"/>
     </declare-styleable>
 
     <declare-styleable name="MonthDayView">

@@ -135,25 +135,4 @@ public class DayInnerBodyEventLayout extends ViewGroup {
         events.clear();
         dgEvents.clear();
     }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-
-//        switch (event.getAction()){
-//            case MotionEvent.ACTION_DOWN:
-//                Log.i(TAG, "onTouchEvent: ACTION_DOWN");
-//                break;
-//            case MotionEvent.ACTION_UP:
-//                Log.i(TAG, "onTouchEvent: ACTION_UP");
-//                break;
-//            case MotionEvent.ACTION_MOVE:
-//                Log.i(TAG, "onTouchEvent: ACTION_MOVE");
-//                break;
-//        }
-//        Log.i(TAG, "onTouchEvent: R: " + );
-//        return super.onTouchEvent(event);
-        return super.onTouchEvent(event);
-    }
-
-
 }

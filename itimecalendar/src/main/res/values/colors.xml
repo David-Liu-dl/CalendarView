@@ -312,7 +312,7 @@
     <color name="text_normal_color_even">#6D6D6D</color>
     <color name="today_circle_color">#f53331</color>
     <color name="other_circle_color">#6692d1</color>
-    <color name="divider_color">#AAAAAA</color>
+    <color name="divider_color">#d7d7d7</color>
     <color name="divider_light_color">#e0e0e0</color>
     <color name="allday_container_bg">#929090</color>
     <!--for contact-->

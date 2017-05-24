@@ -10,7 +10,7 @@ import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
 public class WrapperTimeSlot {
     private ITimeTimeSlotInterface timeSlot = null;
     private boolean isSelected = false;
-    private boolean isAnimated = true;
+    private boolean isAnimated = false;
     private boolean isRead = false;
     private boolean isRecommended = false;
 

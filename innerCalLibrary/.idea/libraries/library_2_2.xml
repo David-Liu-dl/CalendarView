@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="library-2.2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../vendor/build/intermediates/exploded-aar/com.daimajia.androidanimations/library/2.2/jars/classes.jar!/" />
+      <root url="file://$PROJECT_DIR$/../vendor/build/intermediates/exploded-aar/com.daimajia.androidanimations/library/2.2/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.daimajia.androidanimations/library/2.2/92ed9b26d785e0ecca973c43fc77e82fb047ba50/library-2.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

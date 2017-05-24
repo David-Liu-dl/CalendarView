@@ -84,12 +84,12 @@ public class DayViewBody extends FrameLayout {
             }
 
             @Override
-            public void onHorizontalScroll(float dx, float preOffsetX) {
+            public void onHorizontalScroll(int dx, int preOffsetX) {
 
             }
 
             @Override
-            public void onVerticalScroll(float dy, float preOffsetY) {
+            public void onVerticalScroll(int dy, int preOffsetY) {
                 synViewsVerticalPosition(preOffsetY + dy, leftTimeBarLayout);
                 if (onScroll != null){
                     onScroll.onVerticalScroll(dy, preOffsetY);

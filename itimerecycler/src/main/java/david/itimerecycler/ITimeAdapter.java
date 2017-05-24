@@ -5,7 +5,9 @@ import android.view.View;
 
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -14,66 +16,38 @@ import java.util.TreeMap;
  */
 
 public abstract class ITimeAdapter {
-    private TreeMap<Integer, View> showingMap = new TreeMap<>(new MapKeyComparator());
+    private List<AwesomeViewGroup> awesomeViewGroups;
 
     public abstract View onCreateViewHolder();
 
-    public abstract void onBindViewHolder(View item, int offset);
+    public void setAwesomeViewGroups(List<AwesomeViewGroup> awesomeViewGroups) {
+        this.awesomeViewGroups = awesomeViewGroups;
 
-    void addViewOffset(View item, int offset){
-        showingMap.put(offset,item);
-        onBindViewHolder(item, offset);
     }
 
-    void removeViewOffset(int offset){
-        if (showingMap.containsKey(offset)){
-            showingMap.remove(offset);
-        }else {
-            throw new RuntimeException("Offset error on " + offset);
+    public void onCreateViewHolders(){
+        if (awesomeViewGroups==null){
+            return;
         }
-    }
-
-    void updateBaseOffsetForMap(int newBaseOffset){
-        //item record from -1, so now recover it
-        int i = 0;
-        newBaseOffset -= 1;
-        TreeMap<Integer, View> newShowingMap = new TreeMap<>();
-
-        for (Map.Entry<Integer, View> entry:showingMap.entrySet()
-                ) {
-            newShowingMap.put(newBaseOffset + i++, entry.getValue());
+        for (AwesomeViewGroup awesomeViewGroup: awesomeViewGroups){
+            awesomeViewGroup.setItem(onCreateViewHolder());
+            onBindViewHolder(awesomeViewGroup.getItem(), awesomeViewGroup.getInRecycledViewIndex());
         }
 
-        showingMap.clear();
-        showingMap = newShowingMap;
-        notifyDataSetChanged();
     }
+
+    public abstract void onBindViewHolder(View item, int index);
+
 
     public void notifyDataSetChanged(){
-        for (Map.Entry<Integer, View> entry:showingMap.entrySet()
-             ) {
-            onBindViewHolder(entry.getValue(), entry.getKey());
+        if (awesomeViewGroups==null){
+            return;
+        }
+        for (AwesomeViewGroup awesomeViewgroup: awesomeViewGroups){
+            onBindViewHolder(awesomeViewgroup.getItem(), awesomeViewgroup.getInRecycledViewIndex());
+            Log.i("new index", "notifyDataSetChanged: " + awesomeViewgroup.getInRecycledViewIndex());
         }
     }
-
-    public void showMap(){
-        Log.i("map", "*****************");
-        for (Map.Entry<Integer, View> entry:showingMap.entrySet()
-                ) {
-            onBindViewHolder(entry.getValue(), entry.getKey());
-            Log.i("map", "" + entry.getKey() + " view: " + entry.getValue());
-        }
-        Log.i("map", "*****************");
-    }
-//
-//    public static Map<String, String> sortMapByKey(Map<String, String> map) {
-//        if (map == null || map.isEmpty()) {
-//            return null;
-//        }
-//        Map<String, String> sortMap = new TreeMap<String, String>(new MapKeyComparator());
-//        sortMap.putAll(map);
-//        return sortMap;
-//    }
 
     //比较器类
     private class MapKeyComparator implements Comparator<Integer> {

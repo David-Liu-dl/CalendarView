@@ -25,7 +25,8 @@ public class AwesomeViewGroup extends ViewGroup {
 
     private int width, height;
     private Calendar calendar;
-    private float startX;
+    private int inRecycledViewIndex;
+    private int startX;
 
     public AwesomeViewGroup(Context context) {
         super(context);
@@ -35,6 +36,14 @@ public class AwesomeViewGroup extends ViewGroup {
     public AwesomeViewGroup(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         initView();
+    }
+
+    public int getInRecycledViewIndex() {
+        return inRecycledViewIndex;
+    }
+
+    public void setInRecycledViewIndex(int inRecycledViewIndex) {
+        this.inRecycledViewIndex = inRecycledViewIndex;
     }
 
     /**
@@ -173,7 +182,7 @@ public class AwesomeViewGroup extends ViewGroup {
         }
 
         AwesomeLayoutParams lp = (AwesomeLayoutParams) getLayoutParams();
-        if (lp.right <= 0){
+        if (lp.right < 0){
             return false;
         }
 
@@ -189,7 +198,7 @@ public class AwesomeViewGroup extends ViewGroup {
      */
     public void reLayoutByLp(){
         AwesomeLayoutParams lp = (AwesomeLayoutParams) getLayoutParams();
-        layout((int)lp.left, (int)lp.top, (int)lp.right, (int)lp.bottom);
+        layout(lp.left, lp.top, lp.right, lp.bottom);
     }
 
     public View getItem() {
@@ -224,12 +233,12 @@ public class AwesomeViewGroup extends ViewGroup {
 
     public static class AwesomeLayoutParams extends LayoutParams{
 
-        public float left;
-        public float top;
-        public float right;
-        public float bottom;
+        public int left;
+        public int top;
+        public int right;
+        public int bottom;
 
-        public float parentHeight;
+        public int parentHeight;
 
 
         public AwesomeLayoutParams(Context c, AttributeSet attrs) {

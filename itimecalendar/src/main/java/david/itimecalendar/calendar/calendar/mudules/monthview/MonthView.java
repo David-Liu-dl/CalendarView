@@ -150,14 +150,15 @@ public class MonthView extends LinearLayout{
             }
 
             @Override
-            public void onHorizontalScroll(float dx, float preOffsetX) {
+            public void onHorizontalScroll(int dx, int preOffsetX) {
 
             }
 
             @Override
-            public void onVerticalScroll(float dy, float preOffsetY) {
+            public void onVerticalScroll(int dy, int preOffsetY) {
 
             }
+
         });
 
         FrameLayout.LayoutParams bodyParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);

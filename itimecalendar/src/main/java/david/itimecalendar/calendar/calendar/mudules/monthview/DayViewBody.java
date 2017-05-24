@@ -1,7 +1,9 @@
 package david.itimecalendar.calendar.calendar.mudules.monthview;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,7 +13,6 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.view.animation.Animation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -55,13 +56,15 @@ public class DayViewBody extends FrameLayout {
     private BodyAdapter bodyPagerAdapter;
     private Context context;
 
-    private int leftBarWidth = 100;
     private int hourHeight = 30;
     private int timeTextSize = 20;
-    private int spaceTop = 30;
+    private int topSpace = 30;
+    private int leftBarWidth = 100;
     private int NUM_LAYOUTS = 3;
 
     private int color_time_text = R.color.text_enable;
+
+    private AttributeSet attrs;
 
     public DayViewBody(@NonNull Context context) {
         super(context);
@@ -70,25 +73,64 @@ public class DayViewBody extends FrameLayout {
 
     public DayViewBody(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        this.loadAttributes(attrs,context);
+        this.attrs = attrs;
         init();
     }
 
     public DayViewBody(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        this.loadAttributes(attrs,context);
+        this.attrs = attrs;
         init();
     }
+
+    private void loadAttributes(AttributeSet attrs, Context context) {
+        if (attrs != null && context != null) {
+            TypedArray typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.viewBody, 0, 0);
+            try {
+                NUM_LAYOUTS = typedArray.getInteger(R.styleable.viewBody_cellNum, NUM_LAYOUTS);
+                topSpace = (int)typedArray.getDimension(R.styleable.viewBody_topSpace, topSpace);
+                leftBarWidth = (int)typedArray.getDimension(R.styleable.viewBody_leftBarWidth, leftBarWidth);
+                hourHeight = (int)typedArray.getDimension(R.styleable.viewBody_hourHeight, hourHeight);
+                Log.i(TAG, "loadAttributes: ");
+            } finally {
+                typedArray.recycle();
+            }
+        }
+    }
+
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (bubble.getVisibility() == VISIBLE){
-            bubble.setVisibility(GONE);
+            if (ev.getAction() == MotionEvent.ACTION_DOWN){
+                Rect viewRect = new Rect();
+                bubble.getGlobalVisibleRect(viewRect);
+                if (viewRect.contains((int) ev.getRawX(), (int) ev.getRawY())) {
+                    //when click on tooltips and it's visible
+                    // pass it to tooltips
+//                    return false;
+                }else {
+                    //when click outside of tooltips and it's visible
+                    bubble.setVisibility(GONE);
+//                    return true;
+                }
+            }else {
+                bubble.setVisibility(GONE);
+//                return false;
+            }
         }
+
         return super.onInterceptTouchEvent(ev);
+    }
+
+    public int getLeftBarWidth() {
+        return leftBarWidth;
     }
 
     private void init(){
         this.context = getContext();
-        this.hourHeight = DensityUtil.dip2px(context, hourHeight);
         setUpBody();
 
         this.setUpStaticLayer();
@@ -101,7 +143,7 @@ public class DayViewBody extends FrameLayout {
     }
 
     private void setUpCalendarBody(){
-        bodyPagerAdapter = new BodyAdapter(getContext());
+        bodyPagerAdapter = new BodyAdapter(getContext(), this.attrs);
         bodyPagerAdapter.setSlotsInfo(this.slotsInfo);
         bodyRecyclerView = new RecycledViewGroup(context, hourHeight, NUM_LAYOUTS);
         bodyRecyclerView.setAdapter(bodyPagerAdapter);
@@ -284,7 +326,7 @@ public class DayViewBody extends FrameLayout {
     private void initTimeText(String[] HOURS) {
         int height = DensityUtil.dip2px(context,20);
         for (int time = 0; time < HOURS.length; time++) {
-            int timeTextY = hourHeight * time + spaceTop;
+            int timeTextY = hourHeight * time + topSpace;
 
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(leftBarWidth, height);
             TextView timeView = new TextView(context);
@@ -311,27 +353,7 @@ public class DayViewBody extends FrameLayout {
         return HOURS;
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return super.onTouchEvent(event);
-    }
-
     private void initBubbleView(){
-        this.setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (bubble == null){
-                    return false;
-                }
-
-                if (bubble.getVisibility() == VISIBLE){
-                    bubble.setVisibility(GONE);
-                    return false;
-                }
-
-                return false;
-            }
-        });
         bubble = new BubbleLayout(getContext());
         int bubbleWidth = DensityUtil.dip2px(getContext(),110);
         int bubbleHeight = DensityUtil.dip2px(getContext(),35);
@@ -362,12 +384,12 @@ public class DayViewBody extends FrameLayout {
             @Override
             public void onClick(View v) {
                 Object tag = bubble.getTag();
-//                if (tag != null){
-//                    DraggableTimeSlotView slotView = (DraggableTimeSlotView) tag;
-//                    bubble.setVisibility(GONE);
-//                    bubble.setTag(null);
-//                    timeSlotController.onTimeSlotEdit(slotView);
-//                }
+                if (tag != null){
+                    DraggableTimeSlotView slotView = (DraggableTimeSlotView) tag;
+                    bubble.setVisibility(GONE);
+                    bubble.setTag(null);
+                    onTimeSlotInnerListener.onTimeSlotEdit(slotView);
+                }
             }
         });
         bubbleMenuContainer.addView(editBtn,editBtnParams);
@@ -388,13 +410,13 @@ public class DayViewBody extends FrameLayout {
         deleteBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Object tag = bubble.getTag();
-//                if (tag != null){
-//                    DraggableTimeSlotView slotView = (DraggableTimeSlotView) tag;
-//                    bubble.setVisibility(GONE);
-//                    bubble.setTag(null);
-//                    timeSlotController.onTimeSlotDelete(slotView);
-//                }
+                Object tag = bubble.getTag();
+                if (tag != null){
+                    DraggableTimeSlotView slotView = (DraggableTimeSlotView) tag;
+                    bubble.setVisibility(GONE);
+                    bubble.setTag(null);
+                    onTimeSlotInnerListener.onTimeSlotDelete(slotView);
+                }
             }
         });
         bubbleMenuContainer.addView(deleteBtn,dltBtnParams);
@@ -402,23 +424,15 @@ public class DayViewBody extends FrameLayout {
 
 
     private void showTimeSlotTools(DraggableTimeSlotView slotView){
-//        Object tag = bubble.getTag();
-//        if (tag != null && tag == slotView){
-//            //which means second time to click same slot
-//            bubble.setVisibility(View.GONE);
-//            bubble.setTag(null);
-//            return;
-//        }else {
-//            //which means its clicked the different slot
-//            bubble.setTag(slotView);
-//        }
-
-        int buttonLoc[] = {0, 0};
-        slotView.getLocationOnScreen(buttonLoc);
-        float posX = buttonLoc[0];
-        float posY = slotView.getY();
+        int slotRect[] = {0, 0};
+        int bodyRect[] = {0, 0};
+        slotView.getLocationOnScreen(slotRect);
+        this.getLocationOnScreen(bodyRect);
+        float posX = slotRect[0] - bodyRect[0];
+        float posY = slotRect[1] - bodyRect[1];
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) bubble.getLayoutParams();
-        int topMargin = (int)posY - params.height;
+        int topMargin = (int)(posY - params.height);
+
         params.topMargin = topMargin>0?topMargin:0;
         params.leftMargin = (int)posX;
 
@@ -550,14 +564,16 @@ public class DayViewBody extends FrameLayout {
     }
 
     TimeSlotController.OnTimeSlotListener onTimeSlotOuterListener;
+    TimeSlotController.OnTimeSlotListener onTimeSlotInnerListener;
 
     private void initOnTimeSlotListener(){
+        onTimeSlotInnerListener = new OnTimeSlotInnerListener();
         if (bodyPagerAdapter != null){
             List<View> items = bodyPagerAdapter.getViewItems();
             for (View view:items
                     ) {
                 DayViewBodyCell cell = (DayViewBodyCell) view;
-                cell.setOnTimeSlotListener(new OnTimeSlotInnerListener());
+                cell.setOnTimeSlotListener(onTimeSlotInnerListener);
             }
         }
     }
@@ -574,15 +590,18 @@ public class DayViewBody extends FrameLayout {
             if (onTimeSlotOuterListener != null){
                 onTimeSlotOuterListener.onTimeSlotCreate(draggableTimeSlotView);
             }
-            bodyPagerAdapter.notifyDataSetChanged();
+//            bodyPagerAdapter.notifyDataSetChanged();
         }
 
         @Override
         public void onTimeSlotClick(DraggableTimeSlotView draggableTimeSlotView) {
+            bubble.setTag(draggableTimeSlotView);
             showTimeSlotTools(draggableTimeSlotView);
+
             if (onTimeSlotOuterListener != null){
                 onTimeSlotOuterListener.onTimeSlotClick(draggableTimeSlotView);
             }
+
             bodyPagerAdapter.notifyDataSetChanged();
         }
 

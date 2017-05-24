@@ -3,6 +3,7 @@ package david.itimecalendar.calendar.calendar.mudules.monthview;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,10 +30,12 @@ public class BodyAdapter extends ITimeAdapter {
     private ITimeEventPackageInterface eventPackage;
     private ArrayList<WrapperTimeSlot> slotsInfo = new ArrayList<>();
     private Context context;
+    private AttributeSet attrs;
     private List<View> viewItems = new ArrayList<>();
 
-    public BodyAdapter(Context context) {
+    public BodyAdapter(Context context, AttributeSet attrs) {
         this.context = context;
+        this.attrs = attrs;
     }
 
     public void setEventPackage(ITimeEventPackageInterface eventPackage) {
@@ -50,9 +53,7 @@ public class BodyAdapter extends ITimeAdapter {
 
     @Override
     public View onCreateViewHolder() {
-        LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.itime_day_view_body, null, false);
-//        View view = inflater.inflate(R.layout.item_view, null, false);
+        View view = new DayViewBodyCell(context, attrs);
         viewItems.add(view);
         return view;
     }
@@ -61,11 +62,8 @@ public class BodyAdapter extends ITimeAdapter {
     public void onBindViewHolder(View item, int offset) {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, offset);
-        TextView tv = (TextView) item.findViewById(R.id.test_tv);
-        tv.setText(cal.getTime() + "");
 
         DayViewBodyCell body = (DayViewBodyCell) item;
-
         //set events
         if (this.eventPackage != null){
             body.setCalendar(new MyCalendar(cal));

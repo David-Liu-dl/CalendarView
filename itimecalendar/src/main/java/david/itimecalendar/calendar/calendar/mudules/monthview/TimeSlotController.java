@@ -116,7 +116,7 @@ public class TimeSlotController {
             DayInnerBodyEventLayout.LayoutParams params = (DayInnerBodyEventLayout.LayoutParams)TimeSlotController.this.container.tempDragView.getLayoutParams();
             params.top = (int) TimeSlotController.this.container.nowTapY;
             container.addView(TimeSlotController.this.container.tempDragView);
-
+            BaseUtil.relayoutChildren(container);
             TimeSlotController.this.container.tempDragView.postDelayed(new Runnable() {
                 @Override
                 public void run() {

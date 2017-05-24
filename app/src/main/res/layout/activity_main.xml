@@ -1,14 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="david.itime_calendar.MainActivity">
 
-    <david.itimecalendar.calendar.calendar.mudules.monthview.MonthView
+    <!--<david.itimecalendar.calendar.calendar.mudules.monthview.MonthView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:visibility="gone"-->
+        <!--android:id="@+id/monthview"/>-->
+
+    <!--<david.itimecalendar.calendar.calendar.mudules.weekview.WeekViewHeader-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:id="@+id/week_header"-->
+        <!--android:visibility="gone"-->
+        <!--android:layout_marginLeft="50dp"-->
+        <!--/>-->
+
+    <david.itimecalendar.calendar.calendar.mudules.weekview.WeekView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/monthview"/>
+        android:id="@+id/week_view"
+        app:cellNum="7"
+        app:leftBarWidth="30dp"
+        app:topSpace="5dp"
+        app:hourHeight="40dp">
+    </david.itimecalendar.calendar.calendar.mudules.weekview.WeekView>
 
 </android.support.constraint.ConstraintLayout>

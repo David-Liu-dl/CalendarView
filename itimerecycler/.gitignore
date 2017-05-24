@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /build
 =======
 *.iml
@@ -11,3 +12,6 @@
 /captures
 .externalNativeBuild
 >>>>>>> da49fd2d3011340950a0ce6bd226964108f726ab
+=======
+/build
+>>>>>>> 3eb2314bb3969edc720fcfef8552410eb8ad395f

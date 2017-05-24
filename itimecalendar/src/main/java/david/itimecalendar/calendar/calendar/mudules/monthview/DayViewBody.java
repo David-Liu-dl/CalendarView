@@ -146,7 +146,10 @@ public class DayViewBody extends FrameLayout {
         bodyPagerAdapter = new BodyAdapter(getContext(), this.attrs);
         bodyPagerAdapter.setSlotsInfo(this.slotsInfo);
         bodyRecyclerView = new RecycledViewGroup(context, hourHeight, NUM_LAYOUTS);
+<<<<<<< HEAD
         bodyRecyclerView.setDisableCellScroll(true);
+=======
+>>>>>>> 3eb2314bb3969edc720fcfef8552410eb8ad395f
         bodyRecyclerView.setAdapter(bodyPagerAdapter);
         bodyRecyclerView.setOnScrollListener(new RecycledViewGroup.OnScroll() {
             @Override
@@ -177,10 +180,13 @@ public class DayViewBody extends FrameLayout {
         setUpBodyCellInnerListener();
     }
 
+<<<<<<< HEAD
     public void setDisableCellScroll(boolean isDisabled){
         bodyRecyclerView.setDisableCellScroll(isDisabled);
     }
 
+=======
+>>>>>>> 3eb2314bb3969edc720fcfef8552410eb8ad395f
     private boolean isSwiping = false;
 
     private void setUpBodyCellInnerListener(){

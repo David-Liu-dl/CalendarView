@@ -138,11 +138,14 @@ public class WeekView extends LinearLayout{
         dayViewBody.refresh();
     }
 
+<<<<<<< HEAD
 
     public void setDisableCellScroll(boolean isDisabled){
         dayViewBody.setDisableCellScroll(isDisabled);
     }
 
+=======
+>>>>>>> 3eb2314bb3969edc720fcfef8552410eb8ad395f
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);

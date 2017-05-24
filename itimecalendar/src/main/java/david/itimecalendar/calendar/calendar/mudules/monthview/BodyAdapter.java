@@ -2,30 +2,12 @@ package david.itimecalendar.calendar.calendar.mudules.monthview;
 
 
 import android.content.Context;
-<<<<<<< HEAD
 import android.util.AttributeSet;
 import android.view.View;
-=======
-import android.support.v7.widget.RecyclerView;
-import android.util.AttributeSet;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.ListView;
-import android.widget.TextView;
->>>>>>> 3eb2314bb3969edc720fcfef8552410eb8ad395f
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-<<<<<<< HEAD
-
-=======
-import java.util.Locale;
-
-import david.horizontalscrollpageview.HorizontalScrollAdapter;
-import david.itimecalendar.R;
->>>>>>> 3eb2314bb3969edc720fcfef8552410eb8ad395f
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
 import david.itimecalendar.calendar.util.MyCalendar;
 import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;

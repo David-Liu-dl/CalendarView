@@ -107,10 +107,7 @@ public class MainActivity extends AppCompatActivity {
     private void weekViewTest(){
         WeekView weekview = (WeekView) findViewById(R.id.week_view);
         weekview.setEventPackage(eventManager.getEventsMap());
-<<<<<<< HEAD
         weekview.setDisableCellScroll(true);
-=======
->>>>>>> 3eb2314bb3969edc720fcfef8552410eb8ad395f
     }
 
 //    private void timeSlotTest(){

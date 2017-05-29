@@ -11,7 +11,6 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/innerCalLibrary" />
             <option value="$PROJECT_DIR$/itimecalendar" />
-            <option value="$PROJECT_DIR$/itimerecycler" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

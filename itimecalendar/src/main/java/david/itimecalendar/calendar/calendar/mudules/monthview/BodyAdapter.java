@@ -2,16 +2,21 @@ package david.itimecalendar.calendar.calendar.mudules.monthview;
 
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
+
+import com.developer.paul.recycleviewgroup.ITimeAdapter;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import david.itimecalendar.R;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
 import david.itimecalendar.calendar.util.MyCalendar;
 import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
-import david.itimerecycler.ITimeAdapter;
 
 /**
  * Created by yuhaoliu on 9/05/2017.
@@ -23,10 +28,24 @@ public class BodyAdapter extends ITimeAdapter {
     private Context context;
     private AttributeSet attrs;
     private List<View> viewItems = new ArrayList<>();
+    private int NUM_CELL = 1;
 
     public BodyAdapter(Context context, AttributeSet attrs) {
         this.context = context;
         this.attrs = attrs;
+        this.loadAttributes(attrs, context);
+    }
+
+    private void loadAttributes(AttributeSet attrs, Context context) {
+        if (attrs != null && context != null) {
+            TypedArray typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.viewBody, 0, 0);
+            try {
+                NUM_CELL = typedArray.getInteger(R.styleable.viewBody_cellNum, NUM_CELL);
+                Log.i("", "loadAttributes: ");
+            } finally {
+                typedArray.recycle();
+            }
+        }
     }
 
     public void setEventPackage(ITimeEventPackageInterface eventPackage) {
@@ -55,6 +74,14 @@ public class BodyAdapter extends ITimeAdapter {
         cal.add(Calendar.DATE, offset);
 
         DayViewBodyCell body = (DayViewBodyCell) item;
+
+        //setBorderColor
+        if (offset % NUM_CELL == 0){
+            body.highlightCellBorder();
+        }else {
+            body.resetCellBorder();
+        }
+
         //set events
         if (this.eventPackage != null){
             body.setCalendar(new MyCalendar(cal));
@@ -75,7 +102,7 @@ public class BodyAdapter extends ITimeAdapter {
                 }
             }
         }
-
+        Log.i("onBindViewHolder", "onBindViewHolder: ");
         body.refresh();
     }
 

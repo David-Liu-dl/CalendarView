@@ -23,11 +23,11 @@
         <attr name="hourHeight"/>
     </declare-styleable>
 
-    <declare-styleable name="MonthDayView">
-        <attr name="BackToday" format="string"/>
-        <attr name="onHeaderListener" format="string"/>
-        <attr name="onBodyListener" format="string"/>
-        <attr name="onFlexibleBodyScroll" format="string"/>
+    <declare-styleable name="MonthView">
+        <attr name="cellNum"/>
+        <attr name="leftBarWidth"/>
+        <attr name="topSpace"/>
+        <attr name="hourHeight"/>
     </declare-styleable>
 
     <declare-styleable name="MonthAgendaView">

@@ -3,6 +3,7 @@ package david.itimecalendar.calendar.calendar.mudules.monthview;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.media.Image;
 import android.os.Handler;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
@@ -60,7 +61,8 @@ public class DayViewBodyCell extends FrameLayout{
     private int color_time_text = R.color.text_enable;
     private int color_nowtime = R.color.text_today_color;
     private int color_nowtime_bg = R.color.whites;
-    private int color_vertical_dct = R.color.divider_color;
+    private int color_vertical_dct = R.color.divider_calbg;
+    private int color_vertical_page_dct = R.color.divider_nav;
     /*************************** End of Color Setting **********************************/
 
     /*************************** Start of Resources Setting ****************************/
@@ -77,7 +79,6 @@ public class DayViewBodyCell extends FrameLayout{
     private FrameLayout timeLayout;
     FrameLayout dividerBgRLayout;
     DayInnerBodyEventLayout eventLayout;
-
 
     public MyCalendar myCalendar;
     protected Context context;
@@ -96,7 +97,7 @@ public class DayViewBodyCell extends FrameLayout{
 
     //tag: false-> moving, true, done
     protected View tempDragView = null;
-
+    private View dctView;
     //dp
     protected int hourHeight = 30;
     private int spaceTop = 30;
@@ -251,7 +252,6 @@ public class DayViewBodyCell extends FrameLayout{
             ImageView dividerImageView = new ImageView(context);
             dividerImageView.setImageResource(rs_divider_line);
             params.topMargin = this.nearestTimeSlotValue(numOfLine);
-//            dividerImageView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             dividerImageView.setLayoutParams(params);
             dividerImageView.setPadding(0, 0, 0, 0);
             dividerBgRLayout.addView(dividerImageView);
@@ -261,7 +261,7 @@ public class DayViewBodyCell extends FrameLayout{
         FrameLayout.LayoutParams dctParams = new FrameLayout.LayoutParams(DensityUtil.dip2px(context,1), ViewGroup.LayoutParams.MATCH_PARENT);
         dctParams.gravity = Gravity.END;
         dctParams.topMargin = spaceTop;
-        View dctView = new View(context);
+        dctView = new View(context);
         dctView.setBackgroundColor(getResources().getColor(color_vertical_dct));
         dctView.setLayoutParams(dctParams);
         dctView.setPadding(0, 0, 0, 0);
@@ -281,6 +281,20 @@ public class DayViewBodyCell extends FrameLayout{
 
     public void setEventList(ITimeEventPackageInterface eventPackage) {
         this.eventController.setEventList(eventPackage);
+    }
+
+    public void highlightCellBorder(){
+        if (dctView != null){
+            dctView.setBackgroundColor(getResources().getColor(color_vertical_page_dct));
+            dctView.invalidate();
+        }
+    }
+
+    public void resetCellBorder(){
+        if (dctView != null){
+            dctView.setBackgroundColor(getResources().getColor(color_vertical_dct));
+            dctView.invalidate();
+        }
     }
 
     public MyCalendar getCalendar() {
@@ -441,4 +455,5 @@ public class DayViewBodyCell extends FrameLayout{
     public void setOnTimeSlotListener(TimeSlotController.OnTimeSlotListener onTimeSlotListener) {
         timeSlotController.setOnTimeSlotListener(onTimeSlotListener);
     }
+
 }

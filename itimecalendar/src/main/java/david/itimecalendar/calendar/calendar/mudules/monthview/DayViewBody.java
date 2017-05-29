@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.daasuu.bl.ArrowDirection;
 import com.daasuu.bl.BubbleLayout;
+import com.developer.paul.recycleviewgroup.RecycleViewGroup;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -40,7 +41,6 @@ import david.itimecalendar.calendar.util.BaseUtil;
 import david.itimecalendar.calendar.util.DensityUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
 import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
-import david.itimerecycler.RecycledViewGroup;
 
 /**
  * Created by yuhaoliu on 11/05/2017.
@@ -50,7 +50,7 @@ public class DayViewBody extends FrameLayout {
     private static final String TAG = "DayViewBody";
 
     private FrameLayout leftTimeBarLayout;
-    private RecycledViewGroup bodyRecyclerView;
+    private RecycleViewGroup bodyRecyclerView;
     private BubbleLayout bubble;
 
     private BodyAdapter bodyPagerAdapter;
@@ -100,7 +100,6 @@ public class DayViewBody extends FrameLayout {
         }
     }
 
-
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (bubble.getVisibility() == VISIBLE){
@@ -142,13 +141,16 @@ public class DayViewBody extends FrameLayout {
         initBubbleView();
     }
 
+    public void setScrollInterface(RecycleViewGroup.ScrollInterface scrollInterface){
+        bodyRecyclerView.setScrollInterface(scrollInterface);
+    }
+
     private void setUpCalendarBody(){
         bodyPagerAdapter = new BodyAdapter(getContext(), this.attrs);
         bodyPagerAdapter.setSlotsInfo(this.slotsInfo);
-        bodyRecyclerView = new RecycledViewGroup(context, hourHeight, NUM_LAYOUTS);
-        bodyRecyclerView.setDisableCellScroll(true);
+        bodyRecyclerView = new RecycleViewGroup(context, hourHeight, NUM_LAYOUTS);
         bodyRecyclerView.setAdapter(bodyPagerAdapter);
-        bodyRecyclerView.setOnScrollListener(new RecycledViewGroup.OnScroll() {
+        bodyRecyclerView.setOnScrollListener(new RecycleViewGroup.OnScroll() {
             @Override
             public void onPageSelected(View v) {
                 if (onScroll != null){
@@ -158,7 +160,9 @@ public class DayViewBody extends FrameLayout {
 
             @Override
             public void onHorizontalScroll(int dx, int preOffsetX) {
-
+                if (onScroll != null){
+                    onScroll.onHorizontalScroll(dx, preOffsetX);
+                }
             }
 
             @Override
@@ -238,8 +242,11 @@ public class DayViewBody extends FrameLayout {
 
                     @Override
                     public void onEventDragging(DraggableEventView eventView, MyCalendar curAreaCal, int x, int y) {
+                        Log.i(TAG, "onEventDragging: isSwiping: " + isSwiping);
+
                         if (!isSwiping){
                             int rawX = getRawX(x, curAreaCal);
+                            Log.i(TAG, "onEventDragging: x: " + x);
                             this.bodyAutoSwipe(rawX);
                         }else {
                             Log.i(TAG, "onEventDragging: isSwiping , discard");
@@ -313,7 +320,16 @@ public class DayViewBody extends FrameLayout {
 
     private void setUpLeftTimeBar(){
         this.leftTimeBarLayout = new FrameLayout(getContext());
-        this.initTimeText(getHours());
+        int leftBarHeight = this.initTimeText(getHours());
+        //add right side decoration
+        FrameLayout.LayoutParams dctParams = new FrameLayout.LayoutParams(DensityUtil.dip2px(context,1), leftBarHeight);
+        dctParams.gravity = Gravity.END;
+        View dctView = new View(context);
+        dctView.setBackgroundColor(getResources().getColor(R.color.divider_nav));
+        dctView.setLayoutParams(dctParams);
+        dctView.setPadding(0, 0, 0, 0);
+        this.leftTimeBarLayout.addView(dctView);
+
         this.addView(leftTimeBarLayout, new FrameLayout.LayoutParams(leftBarWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
@@ -328,8 +344,9 @@ public class DayViewBody extends FrameLayout {
     private void scrollVertical(float dy, View view){
     }
 
-    private void initTimeText(String[] HOURS) {
+    private int initTimeText(String[] HOURS) {
         int height = DensityUtil.dip2px(context,20);
+        int leftBarHeight = 0;
         for (int time = 0; time < HOURS.length; time++) {
             int timeTextY = hourHeight * time + topSpace;
 
@@ -344,7 +361,14 @@ public class DayViewBody extends FrameLayout {
 
             timeTextSize = (int) timeView.getTextSize() + timeView.getPaddingTop();
             leftTimeBarLayout.addView(timeView);
+
+            leftBarHeight = timeTextY;
         }
+
+        // line is one hour height longer than tvs
+        leftBarHeight += hourHeight;
+
+        return leftBarHeight;
     }
 
     private String[] getHours() {
@@ -427,7 +451,6 @@ public class DayViewBody extends FrameLayout {
         bubbleMenuContainer.addView(deleteBtn,dltBtnParams);
     }
 
-
     private void showTimeSlotTools(DraggableTimeSlotView slotView){
         int slotRect[] = {0, 0};
         int bodyRect[] = {0, 0};
@@ -455,8 +478,17 @@ public class DayViewBody extends FrameLayout {
         this.onEventListener = onEventListener;
     }
 
-    private RecycledViewGroup.OnScroll onScroll;
-    public void setOnScrollListener(RecycledViewGroup.OnScroll onScroll){
+    private RecycleViewGroup.OnScroll onScroll;
+
+    public RecycleViewGroup.OnScroll getOnScroll() {
+        return onScroll;
+    }
+
+    public void setOnScroll(RecycleViewGroup.OnScroll onScroll) {
+        this.onScroll = onScroll;
+    }
+
+    public void setOnScrollListener(RecycleViewGroup.OnScroll onScroll){
         this.onScroll = onScroll;
     }
 
@@ -664,5 +696,9 @@ public class DayViewBody extends FrameLayout {
 
     public void setOnTimeSlotInnerCalendar(TimeSlotInnerCalendarView.OnTimeSlotInnerCalendar onTimeSlotInnerCalendar) {
         this.innerCalView.setOnTimeSlotInnerCalendar(onTimeSlotInnerCalendar);
+    }
+
+    public RecycleViewGroup getBodyRecyclerView() {
+        return bodyRecyclerView;
     }
 }

@@ -1,1 +1,1 @@
-include ':app', ':innerCalLibrary', ':itimecalendar', ':itimerecycler'
+include ':app', ':innerCalLibrary', ':itimecalendar'

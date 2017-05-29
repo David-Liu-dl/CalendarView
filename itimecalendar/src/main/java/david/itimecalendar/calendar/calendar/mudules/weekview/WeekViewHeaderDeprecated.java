@@ -2,7 +2,7 @@ package david.itimecalendar.calendar.calendar.mudules.weekview;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Color;
+import android.support.annotation.FloatRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -26,23 +26,28 @@ import david.itimecalendar.R;
  * Created by yuhaoliu on 23/05/2017.
  */
 
-public class WeekViewHeader extends FrameLayout {
+public class WeekViewHeaderDeprecated extends FrameLayout {
 
     public int NUM_CELL = 7;
     private List<CellPair> cellPairs = new ArrayList<>();
+    private UpdateAnimator updateAnimator = new UpdateAnimator();
 
-    public WeekViewHeader(Context context) {
+    private int text_calendar_weekdate = R.color.text_calendar_weekdate;
+    private int dayOfMonthTextSize = 16;
+    private int dayOfWeekTextSize = 11;
+
+    public WeekViewHeaderDeprecated(Context context) {
         super(context);
         init();
     }
 
-    public WeekViewHeader(Context context, @Nullable AttributeSet attrs) {
+    public WeekViewHeaderDeprecated(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         this.loadAttributes(attrs,context);
         init();
     }
 
-    public WeekViewHeader(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public WeekViewHeaderDeprecated(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.loadAttributes(attrs,context);
         init();
@@ -74,11 +79,15 @@ public class WeekViewHeader extends FrameLayout {
 
                 if (cell.sub){
                     pair.sub = setUpCell(cell);
-                    cell.setAlpha(0);
+                    cell.setScaleX(0);
+                    cell.setScaleY(0);
+//                    cell.setAlpha(1);
 //                    cell.setBackgroundColor(Color.RED);
                 }else {
                     pair.showing = setUpCell(cell);
-                    cell.setAlpha(1);
+                    cell.setScaleX(1);
+                    cell.setScaleY(1);
+//                    cell.setAlpha(1);
 //                    cell.setBackgroundColor(Color.GRAY);
                 }
 
@@ -98,17 +107,32 @@ public class WeekViewHeader extends FrameLayout {
 
     private Cell setUpCell(Cell parent){
         TextView dayOfWeekTv = new TextView(getContext());
+        dayOfWeekTv.setTextSize(dayOfWeekTextSize);
+        dayOfWeekTv.setTextColor(getResources().getColor(text_calendar_weekdate));
+        dayOfWeekTv.setText("WED");
+        dayOfWeekTv.measure(0, 0);
+        dayOfWeekTv.setGravity(Gravity.CENTER);
+        final int dayOfWeekTvMeasuredHeight = dayOfWeekTv.getMeasuredHeight(); //get height
+        final int dayOfWeekTvMeasuredWidth =  dayOfWeekTv.getMeasuredWidth();
         LinearLayout.LayoutParams dayOfWeekTvParams
-                = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                = new LinearLayout.LayoutParams(dayOfWeekTvMeasuredWidth, dayOfWeekTvMeasuredHeight);
         dayOfWeekTvParams.gravity = Gravity.CENTER;
         dayOfWeekTv.setLayoutParams(dayOfWeekTvParams);
         parent.addView(dayOfWeekTv);
         parent.dayOfWeekTv = dayOfWeekTv;
 
         TextView dayOfMonthTv = new TextView(getContext());
+        dayOfMonthTv.setTextSize(dayOfMonthTextSize);
+        dayOfMonthTv.setTextColor(getResources().getColor(text_calendar_weekdate));
+        dayOfMonthTv.setText("20");
+        dayOfMonthTv.measure(0, 0);
+        dayOfMonthTv.setGravity(Gravity.CENTER);
+        final int dayOfMonthTvMeasuredHeight = dayOfMonthTv.getMeasuredHeight(); //get height
+        final int dayOfMonthTvMeasuredWidth =  dayOfMonthTv.getMeasuredWidth();
         LinearLayout.LayoutParams dayOfMonthTvParams
-                = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                = new LinearLayout.LayoutParams(dayOfMonthTvMeasuredWidth, dayOfMonthTvMeasuredHeight);
         dayOfMonthTvParams.gravity = Gravity.CENTER;
+
         dayOfMonthTv.setLayoutParams(dayOfMonthTvParams);
         parent.addView(dayOfMonthTv);
         parent.dayOfMonthTv = dayOfMonthTv;
@@ -122,6 +146,7 @@ public class WeekViewHeader extends FrameLayout {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        Log.i("animtest", "onMeasure: ");
         int width = MeasureSpec.getSize(widthMeasureSpec);
         int height = MeasureSpec.getSize(heightMeasureSpec);
         dayWidth = (float) width/NUM_CELL;
@@ -137,7 +162,7 @@ public class WeekViewHeader extends FrameLayout {
             shownCell.setTranslationX(0);
             int cellWidth = shownCell.getMeasuredWidth();
             int cellHeight = shownCell.getMeasuredHeight();
-            distance = cellWidth;
+            updateAnimator.moveDis = (int) (cellWidth * 0.25);
 
             //params for shown cell
             float startXShown = curCell * dayWidth;
@@ -178,7 +203,10 @@ public class WeekViewHeader extends FrameLayout {
         }
     }
 
+    private Date startDate = new Date();
+
     public void setStartDate(Date date){
+        this.startDate = date;
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         //update view info
@@ -192,69 +220,89 @@ public class WeekViewHeader extends FrameLayout {
         }
     }
 
-    private int distance = 0;
-    private boolean updating = false;
-    private boolean swapped = false;
-    private Date startDate = new Date();
-    private int direction = 0;
+    public Date getStartDate() {
+        return startDate;
+    }
 
-    public void updateDate(Date startDate, int progress){
-        float progressF = progress/(float)100;
+    public void updateDate(Date startDate, float progress){
+        updateAnimator.updateDate(startDate, progress);
+    }
 
-        //start updating
-        if (progress <= 0){
-            updating = true;
-            swapped = false;
-            //set direction
-            if (this.startDate.getTime() < startDate.getTime()){
-                //move to right
-                direction = -1;
+
+    private class UpdateAnimator {
+        private int moveDis = 0;
+        private boolean updating = false;
+        private boolean swapped = false;
+        private int direction = 0;
+        private float minScale = 0.5f;
+        private float alphaThreshold = 0.1f;
+
+        private void updateDate(Date startDate, @FloatRange(from=0.0, to=1.0) float progress){
+            //start updating
+            if (progress == 0){
+                updating = true;
+                swapped = false;
+                //set direction
+                if (WeekViewHeaderDeprecated.this.startDate.getTime() < startDate.getTime()){
+                    //move to right
+                    direction = -1;
+                }else {
+                    //move to left
+                    direction = 1;
+                }
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(startDate);
+                //update view info
+                for (int i = 0; i < cellPairs.size(); i++) {
+                    CellPair pair = cellPairs.get(i);
+                    cal.add(Calendar.DATE,1);
+                    String dayOfWeekStr = cal.getDisplayName(
+                            Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()).toUpperCase();
+                    pair.sub.dayOfWeekTv.setText(dayOfWeekStr);
+                    pair.sub.dayOfMonthTv.setText("" + cal.get(Calendar.DAY_OF_MONTH));
+                }
+            }
+            //end updating
+            if (progress == 1){
+                updating = false;
+                direction = 0;
+            }
+
+            if (updating){
+                for (CellPair pair: cellPairs
+                        ) {
+//                    float scaleFactor = progress * 0.5f;
+                    pair.showing.setTranslationX(direction * progress * moveDis);
+                    pair.showing.setScaleX(1 - progress);
+                    pair.showing.setScaleY(1 - progress);
+//                    if (needUpdate(pair.showing.getAlpha(), 1 - progress, alphaThreshold)){
+//                        pair.showing.setAlpha(1 - progress);
+//                    }
+
+
+                    pair.sub.setTranslationX(direction * (progress - 1) * moveDis);
+                    pair.sub.setScaleX(progress);
+                    pair.sub.setScaleY(progress);
+//                    if (needUpdate(pair.sub.getAlpha(), progress, alphaThreshold)){
+//                        pair.showing.setAlpha(progress);
+//                    }
+                }
+                invalidate();
+            }else if (!swapped){
+                swapped = true;
+                WeekViewHeaderDeprecated.this.startDate = startDate;
+                for (CellPair pair: cellPairs
+                        ) {
+                    pair.swap();
+                }
+                requestLayout();
             }else {
-                //move to left
-                direction = 1;
-            }
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(startDate);
-            //update view info
-            for (int i = 0; i < cellPairs.size(); i++) {
-                CellPair pair = cellPairs.get(i);
-                cal.add(Calendar.DATE,1);
-                String dayOfWeekStr = cal.getDisplayName(
-                        Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()).toUpperCase();
-                pair.sub.dayOfWeekTv.setText(dayOfWeekStr);
-                pair.sub.dayOfMonthTv.setText("" + cal.get(Calendar.DAY_OF_MONTH));
+                Log.i("Warning: ", "Redundant updating, drop ");
             }
         }
-        //end updating
-        if (progress >= 99){
-            updating = false;
-            direction = 0;
-        }
+    }
 
-        if (updating){
-            for (CellPair pair: cellPairs
-                    ) {
-                float minScale = 0.5f;
-                float scaleFactor = progressF * 0.5f;
-                pair.showing.setTranslationX(direction * progressF * distance);
-                pair.showing.setAlpha(1 - progressF);
-                pair.showing.setScaleX(1 - progressF);
-                pair.showing.setScaleY(1 - progressF);
-
-                pair.sub.setTranslationX(direction * (progressF - 1) * distance);
-                pair.sub.setAlpha(progressF);
-                pair.sub.setScaleX(minScale + scaleFactor);
-                pair.sub.setScaleY(minScale + scaleFactor);
-            }
-        }else if (!swapped){
-            swapped = true;
-            for (CellPair pair: cellPairs
-                    ) {
-                pair.swap();
-            }
-            requestLayout();
-        }else {
-            Log.i("Warning: ", "Redundant updating, drop ");
-        }
+    private boolean needUpdate(float org, float compare, float threshold){
+        return  (Math.abs(compare - org) > threshold);
     }
 }

@@ -11,7 +11,7 @@
             <solid android:color="@android:color/transparent" />
             <stroke
                 android:width="0.5dp"
-                android:color="@color/divider_color" />
+                android:color="@color/divider_calbg" />
         </shape>
     </item>
 

@@ -21,7 +21,7 @@ public class DayViewHeaderRecyclerDivider extends RecyclerView.ItemDecoration {
 
     public DayViewHeaderRecyclerDivider(Context context) {
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG) ;
-        mPaint.setColor(context.getResources().getColor(R.color.divider_color));
+        mPaint.setColor(context.getResources().getColor(R.color.divider_calbg));
         mPaint.setStyle(Paint.Style.FILL);
     }
 

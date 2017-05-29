@@ -11,7 +11,12 @@ import david.itime_calendar.bean.Contact;
 import david.itime_calendar.bean.Event;
 import david.itime_calendar.bean.Invitee;
 import david.itime_calendar.bean.TimeSlot;
+import david.itimecalendar.calendar.calendar.mudules.monthview.EventController;
 import david.itimecalendar.calendar.calendar.mudules.weekview.WeekView;
+import david.itimecalendar.calendar.listeners.ITimeEventInterface;
+import david.itimecalendar.calendar.unitviews.DraggableEventView;
+import david.itimecalendar.calendar.util.BaseUtil;
+import david.itimecalendar.calendar.util.MyCalendar;
 
 public class MainActivity extends AppCompatActivity {
     private DBManager dbManager;
@@ -22,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         this.initTest();
+
 //        this.monthviewTest();
 //        this.timeSlotTest();
 //       this.weekViewHeaderTest();
@@ -31,28 +37,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
 //    private void weekViewHeaderTest(){
-//        final WeekViewHeader header = (WeekViewHeader)findViewById(R.id.week_header);
-//        header.setStartDate(new Date());
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.add(Calendar.DATE, 1);
-//        final Date date = calendar.getTime();
-//        header.postDelayed(new Runnable() {
+//        final WeekViewHeaderHorizontalScroll header = (WeekViewHeaderHorizontalScroll)findViewById(R.id.week_view_horizontal);
+////        header.setStartDate(new Date());
+////        Calendar calendar = Calendar.getInstance();
+////        calendar.add(Calendar.DATE, 1);
+////        final Date date = calendar.getTime();
+//        ValueAnimator animtor = ValueAnimator.ofInt(0,-2000);
+//        animtor.setDuration(30000);
+//        animtor.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//            int preX = 0;
 //            @Override
-//            public void run() {
-//                ValueAnimator animtor = ValueAnimator.ofInt(0,100);
-//                animtor.setDuration(1000);
-////                animtor.setRepeatCount(ValueAnimator.INFINITE);
-//                animtor.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-//                    @Override
-//                    public void onAnimationUpdate(ValueAnimator animation) {
-//                        Log.i("updateDate", "onAnimationUpdate: updateDate ");
-//                        header.updateDate(date, (int) animation.getAnimatedValue());
-//                    }
-//                });
-//
-//                animtor.start();
+//            public void onAnimationUpdate(ValueAnimator animation) {
+//                int nowX = (int) animation.getAnimatedValue();
+//                header.moveX(nowX - preX);
+//                preX = nowX;
 //            }
-//        },1000);
+//        });
+//        animtor.start();
 //    }
 
     private void initTest(){
@@ -105,9 +106,43 @@ public class MainActivity extends AppCompatActivity {
 //    }
 
     private void weekViewTest(){
-        WeekView weekview = (WeekView) findViewById(R.id.week_view);
+        final WeekView weekview = (WeekView) findViewById(R.id.week_view);
         weekview.setEventPackage(eventManager.getEventsMap());
-        weekview.setDisableCellScroll(true);
+//        weekview.setDisableCellScroll(true);
+        weekview.setOnBodyListener(new EventController.OnEventListener() {
+            @Override
+            public boolean isDraggable(DraggableEventView eventView) {
+                return true;
+            }
+
+            @Override
+            public void onEventCreate(DraggableEventView eventView) {
+
+            }
+
+            @Override
+            public void onEventClick(DraggableEventView eventView) {
+
+            }
+
+            @Override
+            public void onEventDragStart(DraggableEventView eventView) {
+
+            }
+
+            @Override
+            public void onEventDragging(DraggableEventView eventView, MyCalendar curAreaCal, int x, int y) {
+
+            }
+
+            @Override
+            public void onEventDragDrop(DraggableEventView eventView) {
+                ITimeEventInterface event = eventView.getEvent();
+
+                eventManager.updateEvent((Event) event, eventView.getStartTimeM(), eventView.getEndTimeM());
+                weekview.refresh();
+            }
+        });
     }
 
 //    private void timeSlotTest(){

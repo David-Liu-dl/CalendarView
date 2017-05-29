@@ -19,6 +19,7 @@ allprojects {
     repositories {
         mavenCentral()
         jcenter()
+        maven { url 'http://146.118.101.148/repository/recycleviewgroup/' }
         maven { url 'https://jitpack.io' }
     }
 }

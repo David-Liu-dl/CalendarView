@@ -15,6 +15,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.developer.paul.recycleviewgroup.RecycleViewGroup;
+
 import java.util.Calendar;
 import java.util.Date;
 
@@ -25,7 +27,6 @@ import david.itimecalendar.calendar.unitviews.TimeSlotInnerCalendarView;
 import david.itimecalendar.calendar.util.BaseUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
 import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
-import david.itimerecycler.RecycledViewGroup;
 
 /**
  * Created by yuhaoliu on 10/05/2017.
@@ -52,6 +53,8 @@ public class MonthView extends LinearLayout{
     private int headerCollapsedHeight;
     private int headerExpandedHeight;
 
+    private AttributeSet viewAttrs;
+
     public MonthView(Context context) {
         super(context);
         initView();
@@ -59,6 +62,7 @@ public class MonthView extends LinearLayout{
 
     public MonthView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        this.viewAttrs = attrs;
         initView();
     }
 
@@ -143,8 +147,8 @@ public class MonthView extends LinearLayout{
         });
         this.addView(dayViewBodyContainer, new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
-        dayViewBody = new DayViewBody(context);
-        dayViewBody.setOnScrollListener(new RecycledViewGroup.OnScroll() {
+        dayViewBody = new DayViewBody(context, viewAttrs);
+        dayViewBody.setOnScrollListener(new RecycleViewGroup.OnScroll() {
             @Override
             public void onPageSelected(View v) {
                 MyCalendar fstItemDate = ((DayViewBodyCell) v).getCalendar();

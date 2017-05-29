@@ -503,59 +503,105 @@ public class EventController {
 //            if (container.tempDragView == null) {
             DayInnerBodyEventLayout container = (DayInnerBodyEventLayout) v;
             EventController.this.container.tempDragView = createTempDayDraggableEventView(EventController.this.container.nowTapX, EventController.this.container.nowTapY);
-            EventController.this.container.tempDragView.setAlpha(0);
+            EventController.this.container.tempDragView.setAlpha(1);
             container.addView(EventController.this.container.tempDragView);
             BaseUtil.relayoutChildren(container);
-            EventController.this.container.tempDragView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+
+            ObjectAnimator scaleX = ObjectAnimator.ofFloat(EventController.this.container.tempDragView, "scaleX", 0f,1f);
+            ObjectAnimator scaleY = ObjectAnimator.ofFloat(EventController.this.container.tempDragView, "scaleY", 0f,1f);
+            ObjectAnimator alpha = ObjectAnimator.ofFloat(EventController.this.container.tempDragView, "alpha", 0f,1f);
+            alpha.setDuration(180);
+            scaleX.setDuration(120);
+            scaleY.setDuration(120);
+
+            AnimatorSet scaleDown = new AnimatorSet();
+            scaleDown.play(alpha).with(scaleY).with(scaleX);
+            scaleX.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
-                public void onGlobalLayout() {
-                    EventController.this.container.tempDragView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    ObjectAnimator scaleX = ObjectAnimator.ofFloat(EventController.this.container.tempDragView, "scaleX", 0f,1f);
-                    ObjectAnimator scaleY = ObjectAnimator.ofFloat(EventController.this.container.tempDragView, "scaleY", 0f,1f);
-                    ObjectAnimator alpha = ObjectAnimator.ofFloat(EventController.this.container.tempDragView, "alpha", 0f,1f);
-                    alpha.setDuration(180);
-                    scaleX.setDuration(120);
-                    scaleY.setDuration(120);
-
-                    AnimatorSet scaleDown = new AnimatorSet();
-                    scaleDown.play(alpha).with(scaleY).with(scaleX);
-                    scaleX.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                        @Override
-                        public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                            View p= (View) EventController.this.container.tempDragView.getParent();
-                            if (p != null){
-                                p.invalidate();
-                            }
-                        }
-                    });
-                    scaleDown.addListener(new Animator.AnimatorListener() {
-                        @Override
-                        public void onAnimationStart(Animator animation) {
-
-                        }
-
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            if (EventController.this.container.tempDragView != null
-                                    && EventController.this.container.tempDragView.getParent() != null){
-                                EventController.this.container.tempDragView.performLongClick();
-                            }
-                        }
-
-                        @Override
-                        public void onAnimationCancel(Animator animation) {
-
-                        }
-
-                        @Override
-                        public void onAnimationRepeat(Animator animation) {
-
-                        }
-                    });
-
-                    scaleDown.start();
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    View p= (View) EventController.this.container.tempDragView.getParent();
+                    if (p != null){
+                        p.invalidate();
+                    }
                 }
             });
+            scaleDown.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    Log.i(TAG, "onAnimationStart: ");
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    if (EventController.this.container.tempDragView != null
+                            && EventController.this.container.tempDragView.getParent() != null){
+                        EventController.this.container.tempDragView.performLongClick();
+                    }
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+
+            scaleDown.start();
+
+//            EventController.this.container.tempDragView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//                @Override
+//                public void onGlobalLayout() {
+//                    EventController.this.container.tempDragView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+//                    ObjectAnimator scaleX = ObjectAnimator.ofFloat(EventController.this.container.tempDragView, "scaleX", 0f,1f);
+//                    ObjectAnimator scaleY = ObjectAnimator.ofFloat(EventController.this.container.tempDragView, "scaleY", 0f,1f);
+//                    ObjectAnimator alpha = ObjectAnimator.ofFloat(EventController.this.container.tempDragView, "alpha", 0f,1f);
+//                    alpha.setDuration(180);
+//                    scaleX.setDuration(120);
+//                    scaleY.setDuration(120);
+//
+//                    AnimatorSet scaleDown = new AnimatorSet();
+//                    scaleDown.play(alpha).with(scaleY).with(scaleX);
+//                    scaleX.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//                        @Override
+//                        public void onAnimationUpdate(ValueAnimator valueAnimator) {
+//                            View p= (View) EventController.this.container.tempDragView.getParent();
+//                            if (p != null){
+//                                p.invalidate();
+//                            }
+//                        }
+//                    });
+//                    scaleDown.addListener(new Animator.AnimatorListener() {
+//                        @Override
+//                        public void onAnimationStart(Animator animation) {
+//                            Log.i(TAG, "onAnimationStart: ");
+//                        }
+//
+//                        @Override
+//                        public void onAnimationEnd(Animator animation) {
+//                            if (EventController.this.container.tempDragView != null
+//                                    && EventController.this.container.tempDragView.getParent() != null){
+//                                EventController.this.container.tempDragView.performLongClick();
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onAnimationCancel(Animator animation) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onAnimationRepeat(Animator animation) {
+//
+//                        }
+//                    });
+//
+//                    scaleDown.start();
+//                }
+//            });
 //            }
 
             return true;

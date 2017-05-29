@@ -6,7 +6,6 @@
       <module fileurl="file://$PROJECT_DIR$/iTime-Calendar.iml" filepath="$PROJECT_DIR$/iTime-Calendar.iml" />
       <module fileurl="file://$PROJECT_DIR$/innerCalLibrary/innerCalLibrary.iml" filepath="$PROJECT_DIR$/innerCalLibrary/innerCalLibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/itimecalendar/itimecalendar.iml" filepath="$PROJECT_DIR$/itimecalendar/itimecalendar.iml" />
-      <module fileurl="file://$PROJECT_DIR$/itimerecycler/itimerecycler.iml" filepath="$PROJECT_DIR$/itimerecycler/itimerecycler.iml" />
     </modules>
   </component>
 </project>

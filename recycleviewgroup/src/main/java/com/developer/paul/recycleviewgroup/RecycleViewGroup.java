@@ -5,6 +5,7 @@ package com.developer.paul.recycleviewgroup;
  */
 
 
+import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
@@ -392,15 +393,18 @@ public class RecycleViewGroup extends ViewGroup {
      * @param x
      */
     private void
-    smoothMoveChildX(int x, Animation.AnimationListener animationListener){
+    smoothMoveChildX(int x, Animator.AnimatorListener animatorListener){
         curScrollDir = x < 0 ? SCROLL_LEFT : SCROLL_RIGHT; // animation scroll direction
-        applyAnimation(x, animationListener);
+        applyAnimation(x, animatorListener);
     }
 
-    private void applyAnimation(int x, Animation.AnimationListener animationListener){
+    private void applyAnimation(int x, Animator.AnimatorListener animatorListener){
         ValueAnimator animator = ValueAnimator.ofInt(0, x);
         animator.setDuration(500);
         animator.setInterpolator(new DecelerateInterpolator());
+        if (animatorListener != null){
+            animator.addListener(animatorListener);
+        }
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             int preAniX = 0;
             @Override
@@ -984,12 +988,12 @@ public class RecycleViewGroup extends ViewGroup {
         void onVerticalScroll(int dy, int preOffsetY);
     }
 
-    public void smoothMoveWithOffset(int moveOffset, @Nullable Animation.AnimationListener animationListener){
+    public void smoothMoveWithOffset(int moveOffset, @Nullable Animator.AnimatorListener animatorListener){
         if (moveOffset == 0){
             return;
         }
-        int distance = moveOffset * childWidth;
-        smoothMoveChildX(distance, animationListener);
+        int distance = (-1) * moveOffset * childWidth;
+        smoothMoveChildX(distance, animatorListener);
     }
 
     public void moveWithOffset(int moveOffset){

@@ -31,11 +31,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/bodyRL">
-        <org.unimelb.itime.vendor.agendaview.AgendaBodyRecyclerView
+        <david.itimecalendar.calendar.calendar.mudules.agendaview.AgendaBodyRecyclerView
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/bodyRowList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-        </org.unimelb.itime.vendor.agendaview.AgendaBodyRecyclerView>
+        </david.itimecalendar.calendar.calendar.mudules.agendaview.AgendaBodyRecyclerView>
     </RelativeLayout>
 </LinearLayout>

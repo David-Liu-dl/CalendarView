@@ -2,12 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <TextView
-        android:id="@+id/test_tv"
+    <david.itimecalendar.calendar.calendar.mudules.agendaview.MonthAgendaView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="this is test"
-        android:textSize="15dp"/>
-
+        android:id="@+id/agenda_view">
+    </david.itimecalendar.calendar.calendar.mudules.agendaview.MonthAgendaView>
 </LinearLayout>

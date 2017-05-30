@@ -1,5 +1,6 @@
 package david.itimecalendar.calendar.calendar.mudules.monthview;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -198,22 +199,27 @@ public class DayViewBody extends FrameLayout {
                     private final int DIRECTION_STAY = 0;
                     private final int DIRECTION_RIGHT = 1;
 
-                    private Animation.AnimationListener animationListener = new Animation.AnimationListener() {
+                    private Animator.AnimatorListener animatorListener = new Animator.AnimatorListener() {
                         @Override
-                        public void onAnimationStart(Animation animation) {
+                        public void onAnimationStart(Animator animation) {
+
                         }
 
                         @Override
-                        public void onAnimationEnd(Animation animation) {
+                        public void onAnimationEnd(Animator animation) {
                             isSwiping = false;
                         }
 
                         @Override
-                        public void onAnimationRepeat(Animation animation) {
+                        public void onAnimationCancel(Animator animation) {
+                            isSwiping = false;
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animator animation) {
 
                         }
                     };
-
                     @Override
                     public boolean isDraggable(DraggableEventView eventView) {
                         return onEventListener != null && onEventListener.isDraggable(eventView);
@@ -246,7 +252,7 @@ public class DayViewBody extends FrameLayout {
 
                         if (!isSwiping){
                             int rawX = getRawX(x, curAreaCal);
-                            Log.i(TAG, "onEventDragging: x: " + x);
+                            Log.i(TAG, "onEventDragging: x: " + rawX);
                             this.bodyAutoSwipe(rawX);
                         }else {
                             Log.i(TAG, "onEventDragging: isSwiping , discard");
@@ -265,20 +271,20 @@ public class DayViewBody extends FrameLayout {
                     }
 
                     private void bodyAutoSwipe(int x){
-                        int direction = x > bodyRecyclerView.getWidth()/2 ? DIRECTION_RIGHT:DIRECTION_LEFT;
+                        int direction = x > (bodyRecyclerView.getWidth()/2) ? DIRECTION_RIGHT:DIRECTION_LEFT;
                         float threshold = getSwipeThreshHold(0.7f, direction);
 
                         switch (direction){
                             case DIRECTION_LEFT:
                                 if (x < threshold){
                                     isSwiping = true;
-                                    bodyRecyclerView.smoothMoveWithOffset(-1, animationListener);
+                                    bodyRecyclerView.smoothMoveWithOffset(-1, animatorListener);
                                 }
                                 break;
                             case DIRECTION_RIGHT:
                                 if (x > threshold){
                                     isSwiping = true;
-                                    bodyRecyclerView.smoothMoveWithOffset(1, animationListener);
+                                    bodyRecyclerView.smoothMoveWithOffset(1, animatorListener);
                                 }
                                 break;
                             default:
@@ -293,8 +299,7 @@ public class DayViewBody extends FrameLayout {
                         Calendar dropAtCal = curAreaCal.getCalendar();
                         DayViewBodyCell cell = (DayViewBodyCell) bodyRecyclerView.getFirstShowItem();
                         Calendar fstShowCal = cell.getCalendar().getCalendar();
-
-                        int offset = dropAtCal.get(Calendar.DATE) - fstShowCal.get(Calendar.DATE);
+                        int offset = BaseUtil.getDatesDifference(fstShowCal.getTimeInMillis(),dropAtCal.getTimeInMillis());
 
                         return (int) (offset * cellWidth) + relativeX;
                     }

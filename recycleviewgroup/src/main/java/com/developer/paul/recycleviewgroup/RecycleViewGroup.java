@@ -381,10 +381,13 @@ public class RecycleViewGroup extends ViewGroup {
         hasDecideScrollWay = false;
     }
 
-    private void noFlingEndCheck() {
+    private void flingEndCheck(){
+        scrollToClosetPosition();
+    }
+
+    private void scrollToClosetPosition() {
         int needScrollDistance = childNeedsScrollToNearestPosition(awesomeViewGroups);
         if (needScrollDistance != 0.0) {
-            Log.i(TAG, "noFlingEndCheck: " + needScrollDistance);
             smoothMoveChildX(needScrollDistance, null);
         }
     }
@@ -429,6 +432,7 @@ public class RecycleViewGroup extends ViewGroup {
                 if (x == (int)animation.getAnimatedValue()){
                     // when end of animation
                     shouldAbortGesture = false;
+                    flingEndCheck();
                 }
             }
 
@@ -535,7 +539,7 @@ public class RecycleViewGroup extends ViewGroup {
                     int distance = scrollPos[0];
                     smoothMoveChildX(distance, (long)mScrollTime * 1000);
                 }else{
-                    noFlingEndCheck();
+                    scrollToClosetPosition();
                     // not fling, only do post check
                     }
                 break;
@@ -813,9 +817,7 @@ public class RecycleViewGroup extends ViewGroup {
             }else if (curScrollDir == SCROLL_RIGHT){
                 lp.left = getFirstVisibleLeftOffset() + (i-1) * childWidth;
             }else if (curScrollDir == NON_SCROLL){
-//                lp.left = getFirstVisibleLeftOffset() + (i-1) * childWidth;
                 lp.left = (i-1) * childWidth;
-//                Log.i(TAG, "onMeasure: " + "this is : " + i + " left is : " + lp.left);
             }
 
             lp.right = lp.left + childWidth;

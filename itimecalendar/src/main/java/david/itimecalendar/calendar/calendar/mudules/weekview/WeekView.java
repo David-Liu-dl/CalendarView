@@ -1,6 +1,7 @@
 package david.itimecalendar.calendar.calendar.mudules.weekview;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,16 +22,21 @@ import java.util.Date;
 
 import david.itimecalendar.R;
 import david.itimecalendar.calendar.calendar.mudules.monthview.DayViewBody;
+import david.itimecalendar.calendar.calendar.mudules.monthview.DayViewBodyCell;
 import david.itimecalendar.calendar.calendar.mudules.monthview.EventController;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
 import david.itimecalendar.calendar.util.BaseUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
 
+import static android.widget.LinearLayout.VERTICAL;
+
 /**
  * Created by yuhaoliu on 10/05/2017.
  */
 
-public class WeekView extends LinearLayout{
+public class WeekView extends FrameLayout{
+    protected LinearLayout container;
+
     public WeekView(@NonNull Context context) {
         super(context);
         this.context = context;
@@ -41,6 +47,7 @@ public class WeekView extends LinearLayout{
         super(context, attrs);
         this.context = context;
         this.viewAttrs = attrs;
+        this.loadAttributes(attrs, context);
         initView();
     }
 
@@ -48,31 +55,59 @@ public class WeekView extends LinearLayout{
         super(context, attrs, defStyleAttr);
         this.context = context;
         this.viewAttrs = attrs;
+        this.loadAttributes(attrs, context);
         initView();
     }
+
+    private void loadAttributes(AttributeSet attrs, Context context) {
+        if (attrs != null && context != null) {
+            TypedArray typedArrayHead = context.getTheme().obtainStyledAttributes(attrs, R.styleable.viewHeader, 0, 0);
+            try {
+                headerHeight = typedArrayHead.getDimension(R.styleable.viewHeader_headerHeight, headerHeight);
+            } finally {
+                typedArrayHead.recycle();
+            }
+
+            TypedArray typedArrayBody = context.getTheme().obtainStyledAttributes(attrs, R.styleable.viewBody, 0, 0);
+            try {
+                leftBarWidth = typedArrayBody.getDimension(R.styleable.viewBody_leftBarWidth, leftBarWidth);
+                cellHeight = typedArrayBody.getDimension(R.styleable.viewBody_hourHeight, cellHeight);
+                NUM_CELL = typedArrayBody.getInteger(R.styleable.viewBody_cellNum, NUM_CELL);
+            } finally {
+                typedArrayBody.recycle();
+            }
+        }
+    }
+
     private AttributeSet viewAttrs;
-
-    private Context context;
-
-    private ITimeEventPackageInterface eventPackage;
-
-    private RecycleViewGroup headerRG;
-
     private FrameLayout dayViewBodyContainer;
-    private DayViewBody dayViewBody;
+    private WeekViewHeaderAdapter headerAdapter;
+    protected Context context;
+    protected DayViewBody dayViewBody;
+    protected RecycleViewGroup headerRG;
+
+    protected float headerHeight = 200;
+    protected float leftBarWidth = 50;
+    private float cellHeight = 50;
+    private int NUM_CELL = 7;
+
 
     private void initView(){
         this.context = getContext();
-        this.setOrientation(VERTICAL);
+        container = new LinearLayout(context);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        container.setLayoutParams(params);
+        container.setOrientation(VERTICAL);
+        this.addView(container);
+
         this.setUpHeader();
         this.setUpDivider();
         this.setUpBody();
     }
 
-    private WeekViewHeaderAdapter headerAdapter;
     private void setUpHeader(){
-
-        headerRG = new RecycleViewGroup(context, viewAttrs);
+        headerRG = new RecycleViewGroup(context, (int)cellHeight, NUM_CELL);
         headerRG.setOnSetting(new RecycleViewGroup.OnSetting() {
             @Override
             public int getItemHeight(int i) {
@@ -80,27 +115,30 @@ public class WeekView extends LinearLayout{
                 return childMaxHeight;
             }
         });
-        LinearLayout.LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DensityUtil.dip2px(context,50));
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) headerHeight);
+        params.leftMargin = (int)leftBarWidth;
+
         headerRG.setLayoutParams(params);
         headerAdapter = new WeekViewHeaderAdapter(context);
         headerRG.setAdapter(headerAdapter);
         headerRG.setDisableScroll(true);
-        this.addView(headerRG);
+        container.addView(headerRG);
     }
 
     private void setUpDivider(){
         ImageView divider = BaseUtil.getDivider(context, R.drawable.itime_header_divider_line);
-        this.addView(divider);
+        container.addView(divider);
     }
 
     private void setUpBody(){
         dayViewBodyContainer = new FrameLayout(getContext());
-        this.addView(dayViewBodyContainer, new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        container.addView(dayViewBodyContainer, new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
         dayViewBody = new DayViewBody(context, viewAttrs);
-        dayViewBody.setOnScrollListener(new RecycleViewGroup.OnScroll() {
+        dayViewBody.setOnScrollListener(new RecycleViewGroup.OnScroll<DayViewBodyCell>() {
             @Override
-            public void onPageSelected(View v) {
+            public void onPageSelected(DayViewBodyCell view) {
+
             }
 
             @Override
@@ -116,8 +154,6 @@ public class WeekView extends LinearLayout{
 
         FrameLayout.LayoutParams bodyParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         this.dayViewBodyContainer.addView(dayViewBody, bodyParams);
-
-        ((LayoutParams) headerRG.getLayoutParams()).leftMargin = dayViewBody.getLeftBarWidth();
     }
 
     public void setScrollInterface(RecycleViewGroup.ScrollInterface scrollInterface){
@@ -138,7 +174,6 @@ public class WeekView extends LinearLayout{
     }
 
     public void setEventPackage(ITimeEventPackageInterface eventPackage){
-        this.eventPackage = eventPackage;
         this.dayViewBody.setEventPackage(eventPackage);
     }
 

@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -84,12 +85,17 @@ public class ITimeInnerCalendar extends RelativeLayout {
         this.setOnClickListener(listener);
     }
 
-    public void setSlotNumMap(HashMap<String, Integer> slotNumMap) {
-        this.calendarView.setSlotNumMap(slotNumMap);
+    public void setSlotNumMap(InnerCalendarTimeslotPackage innerSlotPackage) {
+        this.calendarView.setSlotNumMap(innerSlotPackage);
     }
 
     public void setCurrentDate(Date date){
+        this.updateTitle(date);
         this.calendarView.setCurrentDate(date);
+    }
+
+    public void showMonth(Date date){
+        this.calendarView.showMonth(date);
     }
 
     private void initCalendarTitleBar(){
@@ -162,15 +168,15 @@ public class ITimeInnerCalendar extends RelativeLayout {
     }
 
     private void initDivider(){
-        ImageView dividerImgV;
+        View dividerView;
         //divider
-        dividerImgV = new ImageView(context);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.addRule(ALIGN_PARENT_BOTTOM);
-        params.bottomMargin = 50;
-        dividerImgV.setLayoutParams(params);
-        dividerImgV.setImageDrawable(getResources().getDrawable(R.drawable.divider_with_shadow));
-        this.addView(dividerImgV);
+        dividerView = new View(context);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DensityUtil.dip2px(context,1));
+        params.addRule(ALIGN_PARENT_TOP);
+//        params.addRule(ALIGN_PARENT_BOTTOM);
+        dividerView.setLayoutParams(params);
+        dividerView.setBackgroundColor(getResources().getColor(R.color.divider_nav));
+        this.addView(dividerView);
     }
 
     private void updateTitle(Date date){
@@ -188,5 +194,45 @@ public class ITimeInnerCalendar extends RelativeLayout {
 
     public void refreshSlotNum(){
         calendarView.invalidate();
+    }
+
+    public static class InnerCalendarTimeslotPackage{
+        private OnUpdate onUpdate;
+
+        public SimpleDateFormat slotFmt = new SimpleDateFormat("yyyyMMdd");
+        public HashMap<String, Integer> numSlotMap = new HashMap<>();
+
+        public void add(String strDate){
+            if (numSlotMap.containsKey(strDate)){
+                numSlotMap.put(strDate, numSlotMap.get(strDate) + 1);
+            }else {
+                numSlotMap.put(strDate,1);
+            }
+
+            if (onUpdate != null){
+                onUpdate.onUpdate();
+            }
+        }
+
+        public void remove(){
+            if (onUpdate != null){
+                onUpdate.onUpdate();
+            }
+        }
+
+        public void clear(){
+            this.numSlotMap.clear();
+            if (onUpdate != null){
+                onUpdate.onUpdate();
+            }
+        }
+
+        public void setOnUpdate(OnUpdate onUpdate) {
+            this.onUpdate = onUpdate;
+        }
+
+        interface OnUpdate{
+            void onUpdate();
+        }
     }
 }

@@ -148,10 +148,10 @@ public class MonthView extends LinearLayout{
         this.addView(dayViewBodyContainer, new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
         dayViewBody = new DayViewBody(context, viewAttrs);
-        dayViewBody.setOnScrollListener(new RecycleViewGroup.OnScroll() {
+        dayViewBody.setOnScrollListener(new RecycleViewGroup.OnScroll<DayViewBodyCell>() {
             @Override
-            public void onPageSelected(View v) {
-                MyCalendar fstItemDate = ((DayViewBodyCell) v).getCalendar();
+            public void onPageSelected(DayViewBodyCell v) {
+                MyCalendar fstItemDate = v.getCalendar();
                 headerScrollToDate(fstItemDate.getCalendar(), false);
             }
 
@@ -299,27 +299,5 @@ public class MonthView extends LinearLayout{
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    }
-
-    /*** for timeslot ***/
-
-    public void enableTimeSlot(){
-        dayViewBody.enableTimeSlot();
-    }
-
-    public void setOnTimeSlotInnerCalendar(TimeSlotInnerCalendarView.OnTimeSlotInnerCalendar onTimeSlotInnerCalendar) {
-        dayViewBody.setOnTimeSlotInnerCalendar(onTimeSlotInnerCalendar);
-    }
-
-    public void addTimeSlot(ITimeTimeSlotInterface slotInfo){
-        dayViewBody.addTimeSlot(slotInfo);
-    }
-
-    public void addTimeSlot(WrapperTimeSlot wrapperTimeSlot){
-        dayViewBody.addTimeSlot(wrapperTimeSlot);
-    }
-
-    public void setOnTimeSlotListener(TimeSlotController.OnTimeSlotListener onTimeSlotOuterListener) {
-        this.dayViewBody.setOnTimeSlotListener(onTimeSlotOuterListener);
     }
 }

@@ -8,6 +8,7 @@
     <attr name="hourHeight" format="dimension"/>
     <attr name="leftBarWidth" format="dimension"/>
     <attr name="topSpace" format="dimension"/>
+    <attr name="headerHeight" format="dimension"/>
 
     <declare-styleable name="viewBody">
         <attr name="cellNum"/>
@@ -16,11 +17,24 @@
         <attr name="hourHeight"/>
     </declare-styleable>
 
+    <declare-styleable name="viewHeader">
+        <attr name="headerHeight"/>
+    </declare-styleable>
+
     <declare-styleable name="WeekView">
         <attr name="cellNum"/>
         <attr name="leftBarWidth"/>
         <attr name="topSpace"/>
         <attr name="hourHeight"/>
+        <attr name="headerHeight"/>
+    </declare-styleable>
+
+    <declare-styleable name="TimeSlotView">
+        <attr name="cellNum"/>
+        <attr name="leftBarWidth"/>
+        <attr name="topSpace"/>
+        <attr name="hourHeight"/>
+        <attr name="headerHeight"/>
     </declare-styleable>
 
     <declare-styleable name="MonthView">

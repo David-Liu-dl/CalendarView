@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -16,10 +17,14 @@ import david.itime_calendar.R;
 import david.itime_calendar.bean.TimeSlot;
 import david.itimecalendar.calendar.calendar.mudules.monthview.MonthView;
 import david.itimecalendar.calendar.calendar.mudules.monthview.TimeSlotController;
+import david.itimecalendar.calendar.calendar.mudules.weekview.TimeSlotView;
 import david.itimecalendar.calendar.calendar.mudules.weekview.WeekView;
+import david.itimecalendar.calendar.listeners.ITimeEventInterface;
+import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
 import david.itimecalendar.calendar.unitviews.DraggableTimeSlotView;
 import david.itimecalendar.calendar.unitviews.RecommendedSlotView;
 import david.itimecalendar.calendar.unitviews.TimeSlotInnerCalendarView;
+import david.itimecalendar.calendar.util.MyCalendar;
 
 /**
  * Created by yuhaoliu on 30/05/2017.
@@ -40,7 +45,7 @@ public class TimeSlotActivity extends AppCompatActivity {
         ArrayList<TimeSlot> slots = new ArrayList<>();
         initSlots(slots);
 
-        final MonthView timeslotView = (MonthView) findViewById(R.id.timeslot_view);
+        final TimeSlotView timeslotView = (TimeSlotView) findViewById(R.id.timeslot_view);
         timeslotView.setEventPackage(eventManager.getEventsMap());
         timeslotView.enableTimeSlot();
         timeslotView.setOnTimeSlotInnerCalendar(new TimeSlotInnerCalendarView.OnTimeSlotInnerCalendar() {
@@ -75,6 +80,10 @@ public class TimeSlotActivity extends AppCompatActivity {
             @Override
             public void onRcdTimeSlotClick(RecommendedSlotView v) {
                 v.getWrapper().setSelected(true);
+                TimeSlot newSlot = new TimeSlot();
+                newSlot.setStartTime(v.getWrapper().getTimeSlot().getStartTime());
+                newSlot.setEndTime(v.getWrapper().getTimeSlot().getEndTime());
+                timeslotView.addTimeSlot(newSlot);
             }
 
             @Override
@@ -83,13 +92,14 @@ public class TimeSlotActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onTimeSlotDragging(DraggableTimeSlotView draggableTimeSlotView, int x, int y) {
+            public void onTimeSlotDragging(DraggableTimeSlotView draggableTimeSlotView, MyCalendar curRealCal, int x, int y) {
 
             }
 
             @Override
             public void onTimeSlotDragDrop(DraggableTimeSlotView draggableTimeSlotView, long startTime, long endTime) {
-
+                draggableTimeSlotView.getTimeslot().setStartTime(startTime);
+                draggableTimeSlotView.getTimeslot().setEndTime(endTime);
             }
 
             @Override
@@ -98,6 +108,7 @@ public class TimeSlotActivity extends AppCompatActivity {
 
             @Override
             public void onTimeSlotDelete(DraggableTimeSlotView draggableTimeSlotView) {
+                timeslotView.removeTimeslot(draggableTimeSlotView.getWrapper());
             }
         });
 

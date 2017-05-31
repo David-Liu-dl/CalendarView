@@ -35,7 +35,6 @@ public abstract class ITimeAdapter {
             awesomeViewGroup.setItem(onCreateViewHolder());
             onBindViewHolder(awesomeViewGroup.getItem(), awesomeViewGroup.getInRecycledViewIndex());
         }
-
     }
 
     public abstract void onBindViewHolder(View item, int index);
@@ -51,16 +50,6 @@ public abstract class ITimeAdapter {
         }
         for (AwesomeViewGroup awesomeViewgroup: awesomeViewGroups){
             onBindViewHolder(awesomeViewgroup.getItem(), awesomeViewgroup.getInRecycledViewIndex());
-//            Log.i("new index", "notifyDataSetChanged: " + awesomeViewgroup.getInRecycledViewIndex());
-        }
-    }
-
-    //比较器类
-    private class MapKeyComparator implements Comparator<Integer> {
-
-        @Override
-        public int compare(Integer o1, Integer o2) {
-            return o1.compareTo(o2);
         }
     }
 }

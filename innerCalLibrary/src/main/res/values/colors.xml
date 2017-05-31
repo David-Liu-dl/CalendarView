@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="calendar_alpha_bg">#B3000000</color>
+    <color name="calendar_alpha_bg">#B3ffffff</color>
+    <color name="divider_nav">#eeeeee</color>
 </resources>

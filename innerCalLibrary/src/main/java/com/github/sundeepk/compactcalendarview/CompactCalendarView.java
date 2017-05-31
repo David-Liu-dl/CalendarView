@@ -104,8 +104,8 @@ public class CompactCalendarView extends View {
         this.invalidate();
     }
 
-    public void setSlotNumMap(HashMap<String, Integer> slotNumMap) {
-        compactCalendarController.setSlotNumMap(slotNumMap);
+    public void setSlotNumMap(ITimeInnerCalendar.InnerCalendarTimeslotPackage innerSlotPackage) {
+        compactCalendarController.setSlotNumMap(innerSlotPackage);
     }
 
     public void setAnimationListener(CompactCalendarAnimationListener compactCalendarAnimationListener){
@@ -339,6 +339,10 @@ public class CompactCalendarView extends View {
     public void setTargetHeight(int targetHeight){
         compactCalendarController.setTargetHeight(targetHeight);
         checkTargetHeight();
+    }
+
+    public void showMonth(Date date){
+        compactCalendarController.setCurrentDate(date);
     }
 
     public void showCalendar(){

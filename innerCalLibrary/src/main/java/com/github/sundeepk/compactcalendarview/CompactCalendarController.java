@@ -10,6 +10,7 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -107,15 +108,16 @@ class CompactCalendarController {
     private int multiEventIndicatorColor;
     private int currentDayBackgroundColor;
     private int calenderTextColor;
+    private int calenderSelectedTextColor = Color.WHITE;
     private int timeslotTextColor = Color.WHITE;
     private int timeslotIndicatorColor = Color.BLUE;
+    private int timeslotIndicatorCircleColor = Color.WHITE;
     private int currentSelectedDayBackgroundColor;
     private int calenderBackgroundColor = Color.WHITE;
     private int otherMonthDaysTextColor;
     private TimeZone timeZone;
 
-    private HashMap<String, Integer> slotNumMap = new HashMap<>();
-    private SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
+    private ITimeInnerCalendar.InnerCalendarTimeslotPackage innerSlotPackage;
 
     /**
      * Only used in onDrawCurrentMonth to temporarily calculate previous month days
@@ -148,8 +150,15 @@ class CompactCalendarController {
         init(context);
     }
 
-    void setSlotNumMap(HashMap<String, Integer> slotNumMap) {
-        this.slotNumMap = slotNumMap;
+    void setSlotNumMap(ITimeInnerCalendar.InnerCalendarTimeslotPackage innerSlotPackage) {
+        this.innerSlotPackage = innerSlotPackage;
+        this.innerSlotPackage.setOnUpdate(new ITimeInnerCalendar.InnerCalendarTimeslotPackage.OnUpdate() {
+            @Override
+            public void onUpdate() {
+                updateCurrentMonthSlotMap();
+            }
+        });
+        updateCurrentMonthSlotMap();
     }
 
     private void loadAttributes(AttributeSet attrs, Context context) {
@@ -348,6 +357,15 @@ class CompactCalendarController {
     void setCurrentDayBackgroundColor(int currentDayBackgroundColor) {
         this.currentDayBackgroundColor = currentDayBackgroundColor;
     }
+
+//    void showMonth(Date date){
+//        Calendar cal = Calendar.getInstance();
+//        cal.setTime(date);
+//        int targetMonth = cal.get(Calendar.MONTH);
+//        int currentMonth = calendarWithFirstDayOfMonth.get(Calendar.MONTH);
+//        int offset = targetMonth - currentMonth;
+//        monthsScrolledSoFar = offset;
+//    }
 
     void showNextMonth() {
         monthsScrolledSoFar = monthsScrolledSoFar - 1;
@@ -561,6 +579,9 @@ class CompactCalendarController {
         if (calendarWithFirstDayOfMonth.get(Calendar.MONTH) != currentCalender.get(Calendar.MONTH) && shouldSelectFirstDayOfMonthOnScroll) {
             setCalenderToFirstDayOfMonth(currentCalender, currentDate, -monthsScrolledSoFar, 0);
         }
+
+        //refresh map
+        updateCurrentMonthSlotMap();
     }
 
     private int computeVelocity() {
@@ -706,6 +727,7 @@ class CompactCalendarController {
     }
 
     private void drawScrollableCalender(Canvas canvas) {
+        Log.i("drawooo", "drawScrollableCalender: ");
         drawPreviousMonth(canvas);
 
         drawCurrentMonth(canvas);
@@ -897,9 +919,11 @@ class CompactCalendarController {
                     dayPaint.setTypeface(Typeface.DEFAULT);
                 }
             } else {
+                boolean isSelected = false;
                 // day start
                 int day = ((dayRow - 1) * 7 + dayColumn + 1) - firstDayOfMonth;
                 if (currentCalender.get(Calendar.DAY_OF_MONTH) == day && isSameMonthAsCurrentCalendar && !isAnimatingWithExpose) {
+                    isSelected = true;
                     drawDayCircleIndicator(currentSelectedDayIndicatorStyle, canvas, xPosition, yPosition, currentSelectedDayBackgroundColor);
                 } else if (isSameYearAsToday && isSameMonthAsToday && todayDayOfMonth == day && !isAnimatingWithExpose) {
                     // TODO calculate position of circle in a more reliable way
@@ -922,7 +946,7 @@ class CompactCalendarController {
                 } else {
                     // normal case
                     dayPaint.setStyle(Paint.Style.FILL);
-                    dayPaint.setColor(calenderTextColor);
+                    dayPaint.setColor(isSelected?calenderSelectedTextColor:calenderTextColor);
                     canvas.drawText(String.valueOf(day), xPosition, yPosition, dayPaint);
                     // draw timeslot indicator
                     drawTimeslot(canvas, xPositionTimeslotIndicator, yPositionTimeslotIndicator, day);
@@ -931,25 +955,44 @@ class CompactCalendarController {
         }
     }
 
-    private void drawTimeslot(Canvas canvas, float x, float y, int day_of_month){
+    HashMap<Integer, String> currentMonthSlotMap = new HashMap<>();
+
+    private void updateCurrentMonthSlotMap(){
+        currentMonthSlotMap.clear();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(getFirstDayOfCurrentMonth());
-        calendar.set(Calendar.DAY_OF_MONTH,day_of_month);
-        int num = getTimeslot(calendar.getTime());
-
-        if (num != -1){
-            drawDayCircleIndicator(timeslotIndicatorStyle, canvas, x, y, timeslotIndicatorColor, 0.5f);
-            canvas.drawText(String.valueOf(num), x, y, numPaint);
+        calendar.set(Calendar.DAY_OF_MONTH,1);
+        int dayCount = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+        for (int i = 1; i <= dayCount; i++) {
+            int num = getTimeslot(calendar.getTime());
+            if (num != -1){
+                currentMonthSlotMap.put(i,String.valueOf(num));
+            }
+            calendar.add(Calendar.DATE,1);
         }
     }
 
+    private void drawTimeslot(Canvas canvas, float x, float y, int day_of_month){
+        if (currentMonthSlotMap != null && currentMonthSlotMap.containsKey(day_of_month)){
+            drawDayCircleIndicator(timeslotIndicatorStyle, canvas, x, y, timeslotIndicatorCircleColor, 0.6f);
+            drawDayCircleIndicator(timeslotIndicatorStyle, canvas, x, y, timeslotIndicatorColor, 0.5f);
+            canvas.drawText(currentMonthSlotMap.get(day_of_month), x, y, numPaint);
+        }
+//        int num = getTimeslot(calendar.getTime());
+//
+//        if (num != -1){
+//            drawDayCircleIndicator(timeslotIndicatorStyle, canvas, x, y, timeslotIndicatorColor, 0.5f);
+//            canvas.drawText(String.valueOf(num), x, y, numPaint);
+//        }
+    }
+
     private int getTimeslot(Date date){
-        String strDate = fmt.format(date);
-        if (slotNumMap == null || !slotNumMap.containsKey(strDate)){
+        String strDate = innerSlotPackage.slotFmt.format(date);
+        if (innerSlotPackage == null || !innerSlotPackage.numSlotMap.containsKey(strDate)){
             return -1;
         }
 
-        return slotNumMap.get(strDate);
+        return innerSlotPackage.numSlotMap.get(strDate);
     }
 
     private void drawDayCircleIndicator(int indicatorStyle, Canvas canvas, float x, float y, int color) {

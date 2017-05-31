@@ -20,6 +20,7 @@ import david.itimecalendar.calendar.unitviews.DraggableEventView;
 import david.itimecalendar.calendar.unitviews.DraggableTimeSlotView;
 import david.itimecalendar.calendar.unitviews.RecommendedSlotView;
 import david.itimecalendar.calendar.util.BaseUtil;
+import david.itimecalendar.calendar.util.MyCalendar;
 import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
 
 import static android.view.View.INVISIBLE;
@@ -64,7 +65,7 @@ public class TimeSlotController {
          * @param x : current X position of View
          * @param y : current Y position of View
          */
-        void onTimeSlotDragging(DraggableTimeSlotView draggableTimeSlotView, int x, int y);
+        void onTimeSlotDragging(DraggableTimeSlotView draggableTimeSlotView, MyCalendar curAreaCal, int x, int y);
 
         /**
          * When dragging ended
@@ -145,7 +146,7 @@ public class TimeSlotController {
 //                    container.scrollViewAutoScroll(event);
 
                     if (onTimeSlotListener != null) {
-                        onTimeSlotListener.onTimeSlotDragging(tsView, rawX, (int) event.getY());
+                        onTimeSlotListener.onTimeSlotDragging(tsView, container.getCalendar(),rawX, (int) event.getY());
                     } else {
                         Log.i(TAG, "onDrag: null onEventDragListener");
                     }
@@ -183,7 +184,8 @@ public class TimeSlotController {
                     String[] time_parts = new_time.split(":");
                     currentEventNewHour = Integer.valueOf(time_parts[0]);
                     currentEventNewMinutes = Integer.valueOf(time_parts[1]);
-//
+
+                    tsView.setCalendar(container.getCalendar());
                     tsView.getCalendar().setHour(currentEventNewHour);
                     tsView.getCalendar().setMinute(currentEventNewMinutes);
 

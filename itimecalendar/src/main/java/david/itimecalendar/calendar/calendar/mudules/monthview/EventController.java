@@ -13,10 +13,8 @@ import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
@@ -186,7 +184,7 @@ public class EventController {
     private DraggableEventView createDayDraggableEventView(WrapperEvent wrapper, boolean isAllDayEvent) {
         ITimeEventInterface event = wrapper.getEvent();
         DraggableEventView event_view = new DraggableEventView(context, event, isAllDayEvent);
-        event_view.setNewCalendar(container.getCalendar());
+        event_view.setCalendar(container.getCalendar());
         event_view.setType(DraggableEventView.TYPE_NORMAL);
         int padding = DensityUtil.dip2px(context,1);
         event_view.setPadding(0,padding,0,padding);
@@ -412,7 +410,6 @@ public class EventController {
 
                     int rawX = (int) event.getX();
                     int rawY = (int) event.getY();
-//                    Log.i("raws", "onDrag event: " +rawY);
 //                    container.scrollViewAutoScroll(event);
 
                     if (onEventListener != null) {
@@ -459,9 +456,9 @@ public class EventController {
                     currentEventNewHour = Integer.valueOf(time_parts[0]);
                     currentEventNewMinutes = Integer.valueOf(time_parts[1]);
 
-                    dgView.setNewCalendar(container.getCalendar());
-                    dgView.getNewCalendar().setHour(currentEventNewHour);
-                    dgView.getNewCalendar().setMinute(currentEventNewMinutes);
+                    dgView.setCalendar(container.getCalendar());
+                    dgView.getCalendar().setHour(currentEventNewHour);
+                    dgView.getCalendar().setMinute(currentEventNewMinutes);
                     //set dropped container index
 //                    dgView.setIndexInView(index);
 

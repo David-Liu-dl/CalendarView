@@ -1,5 +1,6 @@
 package david.itimecalendar.calendar.calendar.mudules.monthview;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -13,7 +14,6 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -23,20 +23,17 @@ import com.daasuu.bl.ArrowDirection;
 import com.daasuu.bl.BubbleLayout;
 import com.developer.paul.recycleviewgroup.RecycleViewGroup;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import david.itimecalendar.R;
+import david.itimecalendar.calendar.calendar.mudules.weekview.TimeSlotView;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
 import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
 import david.itimecalendar.calendar.unitviews.DraggableEventView;
 import david.itimecalendar.calendar.unitviews.DraggableTimeSlotView;
 import david.itimecalendar.calendar.unitviews.RecommendedSlotView;
-import david.itimecalendar.calendar.unitviews.TimeSlotInnerCalendarView;
 import david.itimecalendar.calendar.util.BaseUtil;
 import david.itimecalendar.calendar.util.DensityUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
@@ -93,7 +90,6 @@ public class DayViewBody extends FrameLayout {
                 topSpace = (int)typedArray.getDimension(R.styleable.viewBody_topSpace, topSpace);
                 leftBarWidth = (int)typedArray.getDimension(R.styleable.viewBody_leftBarWidth, leftBarWidth);
                 hourHeight = (int)typedArray.getDimension(R.styleable.viewBody_hourHeight, hourHeight);
-                Log.i(TAG, "loadAttributes: ");
             } finally {
                 typedArray.recycle();
             }
@@ -131,8 +127,6 @@ public class DayViewBody extends FrameLayout {
     private void init(){
         this.context = getContext();
         setUpBody();
-
-        this.setUpStaticLayer();
     }
 
     private void setUpBody(){
@@ -147,14 +141,14 @@ public class DayViewBody extends FrameLayout {
 
     private void setUpCalendarBody(){
         bodyPagerAdapter = new BodyAdapter(getContext(), this.attrs);
-        bodyPagerAdapter.setSlotsInfo(this.slotsInfo);
+        bodyPagerAdapter.setSlotsInfo(this.timeSlotPackage);
         bodyRecyclerView = new RecycleViewGroup(context, hourHeight, NUM_LAYOUTS);
         bodyRecyclerView.setAdapter(bodyPagerAdapter);
-        bodyRecyclerView.setOnScrollListener(new RecycleViewGroup.OnScroll() {
+        bodyRecyclerView.setOnScrollListener(new RecycleViewGroup.OnScroll<DayViewBodyCell>() {
             @Override
-            public void onPageSelected(View v) {
+            public void onPageSelected(DayViewBodyCell view) {
                 if (onScroll != null){
-                    onScroll.onPageSelected(v);
+                    onScroll.onPageSelected(view);
                 }
             }
 
@@ -186,7 +180,7 @@ public class DayViewBody extends FrameLayout {
     }
 
     private boolean isSwiping = false;
-
+    private AutoSwipeHelper swipeHelper = new AutoSwipeHelper();
     private void setUpBodyCellInnerListener(){
         if (this.bodyPagerAdapter != null){
             List<View> items = bodyPagerAdapter.getViewItems();
@@ -194,26 +188,6 @@ public class DayViewBody extends FrameLayout {
                     ) {
                 DayViewBodyCell cell = (DayViewBodyCell) view;
                 cell.setOnBodyListener(new EventController.OnEventListener() {
-                    private final int DIRECTION_LEFT = -1;
-                    private final int DIRECTION_STAY = 0;
-                    private final int DIRECTION_RIGHT = 1;
-
-                    private Animation.AnimationListener animationListener = new Animation.AnimationListener() {
-                        @Override
-                        public void onAnimationStart(Animation animation) {
-                        }
-
-                        @Override
-                        public void onAnimationEnd(Animation animation) {
-                            isSwiping = false;
-                        }
-
-                        @Override
-                        public void onAnimationRepeat(Animation animation) {
-
-                        }
-                    };
-
                     @Override
                     public boolean isDraggable(DraggableEventView eventView) {
                         return onEventListener != null && onEventListener.isDraggable(eventView);
@@ -242,12 +216,9 @@ public class DayViewBody extends FrameLayout {
 
                     @Override
                     public void onEventDragging(DraggableEventView eventView, MyCalendar curAreaCal, int x, int y) {
-                        Log.i(TAG, "onEventDragging: isSwiping: " + isSwiping);
-
                         if (!isSwiping){
-                            int rawX = getRawX(x, curAreaCal);
-                            Log.i(TAG, "onEventDragging: x: " + x);
-                            this.bodyAutoSwipe(rawX);
+                            int rawX = swipeHelper.getRawX(x, curAreaCal);
+                            swipeHelper.bodyAutoSwipe(rawX);
                         }else {
                             Log.i(TAG, "onEventDragging: isSwiping , discard");
                         }
@@ -262,56 +233,6 @@ public class DayViewBody extends FrameLayout {
                         if (onEventListener != null){
                             onEventListener.onEventDragDrop(eventView);
                         }
-                    }
-
-                    private void bodyAutoSwipe(int x){
-                        int direction = x > bodyRecyclerView.getWidth()/2 ? DIRECTION_RIGHT:DIRECTION_LEFT;
-                        float threshold = getSwipeThreshHold(0.7f, direction);
-
-                        switch (direction){
-                            case DIRECTION_LEFT:
-                                if (x < threshold){
-                                    isSwiping = true;
-                                    bodyRecyclerView.smoothMoveWithOffset(-1, animationListener);
-                                }
-                                break;
-                            case DIRECTION_RIGHT:
-                                if (x > threshold){
-                                    isSwiping = true;
-                                    bodyRecyclerView.smoothMoveWithOffset(1, animationListener);
-                                }
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-
-                    private int getRawX(int relativeX, MyCalendar curAreaCal){
-                        int recyclerViewWidth = bodyRecyclerView.getWidth();
-                        float cellWidth = (float) recyclerViewWidth/NUM_LAYOUTS;
-
-                        Calendar dropAtCal = curAreaCal.getCalendar();
-                        DayViewBodyCell cell = (DayViewBodyCell) bodyRecyclerView.getFirstShowItem();
-                        Calendar fstShowCal = cell.getCalendar().getCalendar();
-
-                        int offset = dropAtCal.get(Calendar.DATE) - fstShowCal.get(Calendar.DATE);
-
-                        return (int) (offset * cellWidth) + relativeX;
-                    }
-
-                    private float getSwipeThreshHold(float percentFactor, int direction){
-                        int recyclerViewWidth = bodyRecyclerView.getWidth();
-                        float cellWidth = (float) recyclerViewWidth/NUM_LAYOUTS;
-
-                        if (direction == DIRECTION_LEFT){
-                            return cellWidth * percentFactor;
-                        }
-
-                        if (direction == DIRECTION_RIGHT){
-                            return recyclerViewWidth - cellWidth * (1 - percentFactor);
-                        }
-
-                        return recyclerViewWidth;
                     }
                 });
             }
@@ -509,25 +430,11 @@ public class DayViewBody extends FrameLayout {
     }
 
     /******/
-    private ArrayList<WrapperTimeSlot> slotsInfo = new ArrayList<>();
-    private SimpleDateFormat slotFmt = new SimpleDateFormat("yyyyMMdd");
-    private HashMap<String, Integer> numSlotMap = new HashMap<>();
-    private TimeSlotInnerCalendarView innerCalView;
-    private FrameLayout staticLayer;
+//    private ArrayList<WrapperTimeSlot> timeSlotPackage = new ArrayList<>();
+    private TimeSlotView.TimeSlotPackage timeSlotPackage = new TimeSlotView.TimeSlotPackage();
 
-    private void setUpStaticLayer(){
-        //set up static layer
-        staticLayer = new FrameLayout(context);
-        FrameLayout.LayoutParams stcPageParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        innerCalView = new TimeSlotInnerCalendarView(context);
-        innerCalView.setHeaderHeight(100);
-        innerCalView.setSlotNumMap(numSlotMap);
-
-        FrameLayout.LayoutParams innerCalViewParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        this.staticLayer.addView(innerCalView,innerCalViewParams);
-
-        staticLayer.setVisibility(GONE);
-        this.addView(staticLayer, stcPageParams);
+    public TimeSlotView.TimeSlotPackage getTimeSlotPackage(){
+        return timeSlotPackage;
     }
 
     public void enableTimeSlot(){
@@ -539,20 +446,18 @@ public class DayViewBody extends FrameLayout {
                 cell.enableTimeSlot();
             }
         }
-        //staticLayer become visible
-        staticLayer.setVisibility(VISIBLE);
     }
 
     public void addTimeSlot(ITimeTimeSlotInterface slotInfo){
         WrapperTimeSlot wrapper = new WrapperTimeSlot(slotInfo);
-        addSlotToList(wrapper);
+        addSlotToPackage(wrapper);
         if (bodyPagerAdapter != null){
             bodyPagerAdapter.notifyDataSetChanged();
         }
     }
 
     public void addTimeSlot(WrapperTimeSlot wrapperTimeSlot){
-        addSlotToList(wrapperTimeSlot);
+        addSlotToPackage(wrapperTimeSlot);
         if (bodyPagerAdapter != null){
             bodyPagerAdapter.notifyDataSetChanged();
         }
@@ -561,37 +466,30 @@ public class DayViewBody extends FrameLayout {
     public void addTimeSlot(ITimeTimeSlotInterface slotInfo, boolean isSelected){
         WrapperTimeSlot wrapper = new WrapperTimeSlot(slotInfo);
         wrapper.setSelected(isSelected);
-        addSlotToList(wrapper);
+        addSlotToPackage(wrapper);
         if (bodyPagerAdapter != null){
             bodyPagerAdapter.notifyDataSetChanged();
         }
     }
 
-    private void addSlotToList(WrapperTimeSlot wrapperSlot){
-        slotsInfo.add(wrapperSlot);
-        updateNumTimeslotMap();
+    private void addSlotToPackage(WrapperTimeSlot wrapperSlot){
+        if (wrapperSlot.isRecommended() && !wrapperSlot.isSelected()){
+            timeSlotPackage.rcdSlots.add(wrapperSlot);
+        }else {
+            timeSlotPackage.realSlots.add(wrapperSlot);
+        }
     }
 
-    private void updateNumTimeslotMap(){
-        numSlotMap.clear();
-        for (WrapperTimeSlot wrapper:slotsInfo
-                ) {
-            if (wrapper.getTimeSlot() != null && wrapper.isSelected()){
-                String strDate = slotFmt.format(new Date(wrapper.getTimeSlot().getStartTime()));
-                if (this.numSlotMap.containsKey(strDate)){
-                    numSlotMap.put(strDate, numSlotMap.get(strDate) + 1);
-                }else {
-                    numSlotMap.put(strDate,1);
-                }
-            }
-        }
-        innerCalView.refreshSlotNum();
+    public void removeTimeslot(ITimeTimeSlotInterface timeslot){
+        getTimeSlotPackage().realSlots.remove(timeslot);
+    }
+
+    public void removeTimeslot(TimeSlotView timeslotView){
+
     }
 
     public void resetTimeSlots(){
-        slotsInfo.clear();
-        numSlotMap.clear();
-//        reloadTimeSlots(false);
+        timeSlotPackage.clear();
     }
 
     public void updateTimeSlotsDuration(long duration, boolean animate){
@@ -647,6 +545,7 @@ public class DayViewBody extends FrameLayout {
             if (onTimeSlotOuterListener != null){
                 onTimeSlotOuterListener.onRcdTimeSlotClick(v);
             }
+
             bodyPagerAdapter.notifyDataSetChanged();
         }
 
@@ -659,9 +558,16 @@ public class DayViewBody extends FrameLayout {
         }
 
         @Override
-        public void onTimeSlotDragging(DraggableTimeSlotView draggableTimeSlotView, int x, int y) {
+        public void onTimeSlotDragging(DraggableTimeSlotView draggableTimeSlotView, MyCalendar curAreaCal,int x, int y) {
+            if (!isSwiping){
+                int rawX = swipeHelper.getRawX(x, curAreaCal);
+                swipeHelper.bodyAutoSwipe(rawX);
+            }else {
+                Log.i(TAG, "onEventDragging: isSwiping , discard");
+            }
+
             if (onTimeSlotOuterListener != null){
-                onTimeSlotOuterListener.onTimeSlotDragging(draggableTimeSlotView, x, y);
+                onTimeSlotOuterListener.onTimeSlotDragging(draggableTimeSlotView, curAreaCal, x, y);
             }
         }
 
@@ -693,12 +599,79 @@ public class DayViewBody extends FrameLayout {
         }
     }
 
+    private class AutoSwipeHelper{
+        private final int DIRECTION_LEFT = -1;
+        private final int DIRECTION_STAY = 0;
+        private final int DIRECTION_RIGHT = 1;
 
-    public void setOnTimeSlotInnerCalendar(TimeSlotInnerCalendarView.OnTimeSlotInnerCalendar onTimeSlotInnerCalendar) {
-        this.innerCalView.setOnTimeSlotInnerCalendar(onTimeSlotInnerCalendar);
-    }
+        private Animator.AnimatorListener animatorListener = new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+            }
 
-    public RecycleViewGroup getBodyRecyclerView() {
-        return bodyRecyclerView;
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                isSwiping = false;
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                isSwiping = false;
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        };
+
+        void bodyAutoSwipe(int x){
+            int direction = x > (bodyRecyclerView.getWidth()/2) ? DIRECTION_RIGHT:DIRECTION_LEFT;
+            float threshold = getSwipeThreshHold(0.7f, direction);
+
+            switch (direction){
+                case DIRECTION_LEFT:
+                    if (x < threshold){
+                        isSwiping = true;
+                        bodyRecyclerView.smoothMoveWithOffset(-1, animatorListener);
+                    }
+                    break;
+                case DIRECTION_RIGHT:
+                    if (x > threshold){
+                        isSwiping = true;
+                        bodyRecyclerView.smoothMoveWithOffset(1, animatorListener);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        int getRawX(int relativeX, MyCalendar curAreaCal){
+            int recyclerViewWidth = bodyRecyclerView.getWidth();
+            float cellWidth = (float) recyclerViewWidth/NUM_LAYOUTS;
+
+            Calendar dropAtCal = curAreaCal.getCalendar();
+            DayViewBodyCell cell = (DayViewBodyCell) bodyRecyclerView.getFirstShowItem();
+            Calendar fstShowCal = cell.getCalendar().getCalendar();
+            int offset = BaseUtil.getDatesDifference(fstShowCal.getTimeInMillis(),dropAtCal.getTimeInMillis());
+
+            return (int) (offset * cellWidth) + relativeX;
+        }
+
+        private float getSwipeThreshHold(float percentFactor, int direction){
+            int recyclerViewWidth = bodyRecyclerView.getWidth();
+            float cellWidth = (float) recyclerViewWidth/NUM_LAYOUTS;
+
+            if (direction == DIRECTION_LEFT){
+                return cellWidth * percentFactor;
+            }
+
+            if (direction == DIRECTION_RIGHT){
+                return recyclerViewWidth - cellWidth * (1 - percentFactor);
+            }
+
+            return recyclerViewWidth;
+        }
     }
 }

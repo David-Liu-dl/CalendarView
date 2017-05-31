@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Locale;
 
 import david.itimecalendar.R;
+import david.itimecalendar.calendar.calendar.mudules.weekview.TimeSlotView;
 import david.itimecalendar.calendar.util.DensityUtil;
 
 /**
@@ -45,6 +46,8 @@ public class TimeSlotInnerCalendarView extends LinearLayout {
 
     private OnTimeSlotInnerCalendar onTimeSlotInnerCalendar;
     private int headerHeight;
+
+    public Calendar calendar = Calendar.getInstance();
 
     public TimeSlotInnerCalendarView(Context context) {
         super(context);
@@ -69,8 +72,15 @@ public class TimeSlotInnerCalendarView extends LinearLayout {
         this.btnBlock.getLayoutParams().height = this.headerHeight;
     }
 
-    public void setSlotNumMap(HashMap<String, Integer> slotNumMap) {
-        this.calendarView.setSlotNumMap(slotNumMap);
+    public void setSlotNumMap(ITimeInnerCalendar.InnerCalendarTimeslotPackage innerSlotPackage) {
+        this.calendarView.setSlotNumMap(innerSlotPackage);
+    }
+
+    public void setShowMonth(Date date){
+        calendar.setTime(date);
+        calendarView.setCurrentDate(calendar.getTime());
+        String monthName = calendar.getDisplayName(Calendar.MONTH,Calendar.SHORT, Locale.getDefault());
+        monthTitle.setText(monthName + ".");
     }
 
     private void intViews(){
@@ -86,7 +96,7 @@ public class TimeSlotInnerCalendarView extends LinearLayout {
         int leftBarHeight = headerHeight;
 
         btnBlock = new LinearLayout(getContext());
-        btnBlock.setBackgroundColor(getResources().getColor(R.color.white));
+
         btnBlock.setOrientation(LinearLayout.HORIZONTAL);
         LayoutParams leftBtnParams = new LayoutParams(leftBarWidth, leftBarHeight);
 
@@ -108,12 +118,12 @@ public class TimeSlotInnerCalendarView extends LinearLayout {
         indicatorParams.gravity = Gravity.CENTER;
         btnBlock.addView(indicator,indicatorParams);
         this.addView(btnBlock, leftBtnParams);
-        addDivider();
+//        addDivider();
     }
 
     private void initITimeInnerCalendar(){
         this.calendarView = (ITimeInnerCalendar) LayoutInflater.from(context).inflate(R.layout.itime_timeslot_inner_calendar, null);
-        LayoutParams calParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        LayoutParams calParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         this.calendarView.setOnBgClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -215,21 +225,12 @@ public class TimeSlotInnerCalendarView extends LinearLayout {
         this.addView(dividerImgV);
     }
 
-    public void setMonthTitle(Calendar calendar){
-        String monthName = calendar.getDisplayName(Calendar.MONTH,Calendar.SHORT, Locale.getDefault());
-        monthTitle.setText(monthName + ".");
-    }
-
     public OnTimeSlotInnerCalendar getOnTimeSlotInnerCalendar() {
         return onTimeSlotInnerCalendar;
     }
 
     public void setOnTimeSlotInnerCalendar(OnTimeSlotInnerCalendar onTimeSlotInnerCalendar) {
         this.onTimeSlotInnerCalendar = onTimeSlotInnerCalendar;
-    }
-
-    public void setCurrentDate(Date currentDate){
-        this.calendarView.setCurrentDate(currentDate);
     }
 
     public void refreshSlotNum(){

@@ -58,7 +58,7 @@ public class DraggableEventView extends ViewGroup {
     private ImageView icon;
     private ImageView leftBar;
 
-    private MyCalendar newCalendar = new MyCalendar(Calendar.getInstance());
+    private MyCalendar calendar = new MyCalendar(Calendar.getInstance());
     private ITimeEventInterface event;
     private PosParam posParam;
 
@@ -124,12 +124,12 @@ public class DraggableEventView extends ViewGroup {
 
     }
 
-    public MyCalendar getNewCalendar() {
-        return newCalendar;
+    public MyCalendar getCalendar() {
+        return calendar;
     }
 
-    public void setNewCalendar(MyCalendar newCalendar) {
-        this.newCalendar = newCalendar;
+    public void setCalendar(MyCalendar calendar) {
+        this.calendar = calendar;
     }
 
     private void setSummary(){
@@ -351,7 +351,7 @@ public class DraggableEventView extends ViewGroup {
     }
 
     public long getStartTimeM(){
-        return this.getNewCalendar().getCalendar().getTimeInMillis();
+        return this.getCalendar().getCalendar().getTimeInMillis();
     }
 
     public long getEndTimeM(){

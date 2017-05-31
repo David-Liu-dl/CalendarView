@@ -7,7 +7,7 @@
             <!-- set the shadow color here -->
             <stroke
                 android:width="2dp"
-                android:color="#7000" />
+                android:color="#fff" />
 
             <!-- setting the thickness of shadow (positive value will give shadow on that side) -->
 

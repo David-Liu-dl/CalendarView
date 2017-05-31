@@ -15,6 +15,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import david.itimecalendar.R;
+import david.itimecalendar.calendar.calendar.mudules.weekview.TimeSlotView;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
 import david.itimecalendar.calendar.util.MyCalendar;
 import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
@@ -25,7 +26,7 @@ import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
 
 public class BodyAdapter extends ITimeAdapter {
     private ITimeEventPackageInterface eventPackage;
-    private ArrayList<WrapperTimeSlot> slotsInfo = new ArrayList<>();
+    private TimeSlotView.TimeSlotPackage slotsInfo;
     private Context context;
     private AttributeSet attrs;
     private List<View> viewItems = new ArrayList<>();
@@ -54,11 +55,11 @@ public class BodyAdapter extends ITimeAdapter {
         this.notifyDataSetChanged();
     }
 
-    public ArrayList<WrapperTimeSlot> getSlotsInfo() {
+    public TimeSlotView.TimeSlotPackage getSlotsInfo() {
         return slotsInfo;
     }
 
-    public void setSlotsInfo(ArrayList<WrapperTimeSlot> slotsInfo) {
+    public void setSlotsInfo(TimeSlotView.TimeSlotPackage slotsInfo) {
         this.slotsInfo = slotsInfo;
     }
 
@@ -92,14 +93,18 @@ public class BodyAdapter extends ITimeAdapter {
         //set timeslots
         if (body.isTimeSlotEnable && this.slotsInfo != null){
             MyCalendar calendar = body.getCalendar();
-            for (WrapperTimeSlot struct : slotsInfo
-                 ) {
+            //add rcd first
+            for (WrapperTimeSlot struct : slotsInfo.rcdSlots
+                    ) {
                 if (calendar.contains(struct.getTimeSlot().getStartTime())){
-                    if (struct.isRecommended() && !struct.isSelected()){
-                        body.addRcdSlot(struct);
-                    }else {
-                        body.addSlot(struct,false);
-                    }
+                    body.addRcdSlot(struct);
+                }
+            }
+            //add timeslot on top index
+            for (WrapperTimeSlot struct : slotsInfo.realSlots
+                    ) {
+                if (calendar.contains(struct.getTimeSlot().getStartTime())){
+                    body.addSlot(struct,false);
                 }
             }
         }

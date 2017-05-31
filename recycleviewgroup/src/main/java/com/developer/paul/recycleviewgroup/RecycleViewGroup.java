@@ -5,6 +5,7 @@ package com.developer.paul.recycleviewgroup;
  */
 
 
+import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
@@ -115,6 +116,7 @@ public class RecycleViewGroup extends ViewGroup {
         this.adapter = adapter;
         adapter.setAwesomeViewGroups(awesomeViewGroups);
         adapter.onCreateViewHolders();
+        sendPageChangeMessage();
     }
 
     public int getFirstVisibleLeftOffset(){
@@ -290,13 +292,11 @@ public class RecycleViewGroup extends ViewGroup {
 
     }
 
-
-
-
     public void updateViewGroupIndexes(AwesomeViewGroup awesomeViewGroup, int offset){
         int preIndex = awesomeViewGroup.getInRecycledViewIndex();
         awesomeViewGroup.setInRecycledViewIndex(preIndex + offset);
 
+        sendPageChangeMessage();
         // todo: check if this can be changed
         if (adapter!=null){
             adapter.notifyDataSetChanged(awesomeViewGroup);
@@ -400,24 +400,25 @@ public class RecycleViewGroup extends ViewGroup {
         applyAnimation(x, duration, null);
     }
 
-
-
     /**
      * move each children with animations (fake move, not real move), then real move each children
      * @param x
      */
     private void
-    smoothMoveChildX(int x, Animation.AnimationListener animationListener){
+    smoothMoveChildX(int x, @Nullable Animator.AnimatorListener animatorListener){
         if (x != 0) {
             curScrollDir = x < 0 ? SCROLL_LEFT : SCROLL_RIGHT; // animation scroll direction
         }
-        applyAnimation(x, 500,animationListener);
+        applyAnimation(x, 500,animatorListener);
     }
 
-    private void applyAnimation(final int x, long duration, Animation.AnimationListener animationListener){
+    private void applyAnimation(final int x, long duration, @Nullable Animator.AnimatorListener animatorListener){
         ValueAnimator animator = ValueAnimator.ofInt(0, x);
         animator.setDuration(duration);
         animator.setInterpolator(new DecelerateInterpolator());
+        if (animatorListener != null){
+            animator.addListener(animatorListener);
+        }
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             int preAniX = 0;
             @Override
@@ -464,6 +465,9 @@ public class RecycleViewGroup extends ViewGroup {
 
             if (msg.what == AwesomeHandler.CHANGE_PAGE){
                 // TODO: 22/5/17 inform david the page has changed
+                if (onScroll != null){
+                    onScroll.onPageSelected(getFirstShowItem());
+                }
             }
 
             if (msg.what == AwesomeHandler.FLING_HORIZONTAL){
@@ -935,18 +939,18 @@ public class RecycleViewGroup extends ViewGroup {
         this.onSetting = onSetting;
     }
 
-    public interface OnScroll{
-        void onPageSelected(View v);
+    public interface OnScroll<V>{
+        void onPageSelected(V view);
         void onHorizontalScroll(int dx, int preOffsetX);
         void onVerticalScroll(int dy, int preOffsetY);
     }
 
-    public void smoothMoveWithOffset(int moveOffset, @Nullable Animation.AnimationListener animationListener){
+    public void smoothMoveWithOffset(int moveOffset, @Nullable Animator.AnimatorListener animatorListener){
         if (moveOffset == 0){
             return;
         }
-        int distance = moveOffset * childWidth;
-        smoothMoveChildX(distance, animationListener);
+        int distance = (-1) * moveOffset * childWidth;
+        smoothMoveChildX(distance, animatorListener);
     }
 
     public void moveWithOffset(int moveOffset){

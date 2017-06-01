@@ -50,8 +50,8 @@ public class AwesomeViewGroup extends ViewGroup {
     @Override
     public String toString() {
         AwesomeLayoutParams lp = (AwesomeLayoutParams) getLayoutParams();
-        String str = "inRecycledViewIndex : " + inRecycledViewIndex + " l : " + lp.left + " t : " + lp.top +
-                " r : " + lp.right + "b : " + lp.bottom;
+        String str = "inRecycledViewIndex : " + inRecycledViewIndex + " ,l : " + lp.left + " ,t : " + lp.top +
+                " ,r : " + lp.right + " ,b : " + lp.bottom;
         return str;
     }
 
@@ -80,14 +80,22 @@ public class AwesomeViewGroup extends ViewGroup {
     }
 
     private int tolerance = 2;
-
+    private int width, height;
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-//        top.layout(0, 0, 100, 100);
-//        bottom.layout(0, getHeight()- 100, 100, getHeight());
+        int newW = r - l;
+        int newH = b - t;
+
+        if (changed && item != null){
+            if (!isInRange(newH, height, tolerance) || !isInRange(newW, width, tolerance)){
+                item.layout(0,0,newW,newH);
+                width = newW;
+                height = newH;
+            }
+        }
     }
 
-    private boolean isInRange(int newN, int oldN, int tolerance) {
+    private boolean isInRange(int newN, int oldN, int tolerance){
         return (oldN + tolerance) > newN && (oldN - tolerance) < newN;
     }
 

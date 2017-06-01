@@ -160,6 +160,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        timeslotBtn.performClick();
+        timeslotBtn.performClick();
     }
 }

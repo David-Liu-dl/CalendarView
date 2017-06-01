@@ -15,18 +15,15 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.developer.paul.recycleviewgroup.RecycleViewGroup;
+import com.developer.paul.itimerecycleviewgroup.ITimeRecycleViewGroup;
 
 import java.util.Calendar;
 import java.util.Date;
 
 import david.itimecalendar.R;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
-import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
-import david.itimecalendar.calendar.unitviews.TimeSlotInnerCalendarView;
 import david.itimecalendar.calendar.util.BaseUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
-import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
 
 /**
  * Created by yuhaoliu on 10/05/2017.
@@ -148,7 +145,7 @@ public class MonthView extends LinearLayout{
         this.addView(dayViewBodyContainer, new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
         dayViewBody = new DayViewBody(context, viewAttrs);
-        dayViewBody.setOnScrollListener(new RecycleViewGroup.OnScroll<DayViewBodyCell>() {
+        dayViewBody.setOnScrollListener(new ITimeRecycleViewGroup.OnScroll<DayViewBodyCell>() {
             @Override
             public void onPageSelected(DayViewBodyCell v) {
                 MyCalendar fstItemDate = v.getCalendar();

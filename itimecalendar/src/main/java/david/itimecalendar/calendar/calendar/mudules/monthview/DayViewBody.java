@@ -21,7 +21,7 @@ import android.widget.TextView;
 
 import com.daasuu.bl.ArrowDirection;
 import com.daasuu.bl.BubbleLayout;
-import com.developer.paul.recycleviewgroup.RecycleViewGroup;
+import com.developer.paul.itimerecycleviewgroup.ITimeRecycleViewGroup;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -47,7 +47,7 @@ public class DayViewBody extends FrameLayout {
     private static final String TAG = "DayViewBody";
 
     private FrameLayout leftTimeBarLayout;
-    private RecycleViewGroup bodyRecyclerView;
+    private ITimeRecycleViewGroup bodyRecyclerView;
     private BubbleLayout bubble;
 
     private BodyAdapter bodyPagerAdapter;
@@ -135,16 +135,16 @@ public class DayViewBody extends FrameLayout {
         initBubbleView();
     }
 
-    public void setScrollInterface(RecycleViewGroup.ScrollInterface scrollInterface){
-        bodyRecyclerView.setScrollInterface(scrollInterface);
-    }
+//    public void setScrollInterface(ITimeRecycleViewGroup.ScrollInterface scrollInterface){
+//        bodyRecyclerView.setScrollInterface(scrollInterface);
+//    }
 
     private void setUpCalendarBody(){
         bodyPagerAdapter = new BodyAdapter(getContext(), this.attrs);
         bodyPagerAdapter.setSlotsInfo(this.timeSlotPackage);
-        bodyRecyclerView = new RecycleViewGroup(context, hourHeight, NUM_LAYOUTS);
+        bodyRecyclerView = new ITimeRecycleViewGroup(context, NUM_LAYOUTS);
         bodyRecyclerView.setAdapter(bodyPagerAdapter);
-        bodyRecyclerView.setOnScrollListener(new RecycleViewGroup.OnScroll<DayViewBodyCell>() {
+        bodyRecyclerView.setOnScrollListener(new ITimeRecycleViewGroup.OnScroll<DayViewBodyCell>() {
             @Override
             public void onPageSelected(DayViewBodyCell view) {
                 if (onScroll != null){
@@ -175,9 +175,9 @@ public class DayViewBody extends FrameLayout {
         setUpBodyCellInnerListener();
     }
 
-    public void setDisableCellScroll(boolean isDisabled){
-        bodyRecyclerView.setDisableCellScroll(isDisabled);
-    }
+//    public void setDisableCellScroll(boolean isDisabled){
+//        bodyRecyclerView.setDisableCellScroll(isDisabled);
+//    }
 
     private boolean isSwiping = false;
     private AutoSwipeHelper swipeHelper = new AutoSwipeHelper();
@@ -399,22 +399,14 @@ public class DayViewBody extends FrameLayout {
         this.onEventListener = onEventListener;
     }
 
-    private RecycleViewGroup.OnScroll onScroll;
+    private ITimeRecycleViewGroup.OnScroll onScroll;
 
-    public RecycleViewGroup.OnScroll getOnScroll() {
-        return onScroll;
-    }
-
-    public void setOnScroll(RecycleViewGroup.OnScroll onScroll) {
-        this.onScroll = onScroll;
-    }
-
-    public void setOnScrollListener(RecycleViewGroup.OnScroll onScroll){
+    public void setOnScrollListener(ITimeRecycleViewGroup.OnScroll onScroll){
         this.onScroll = onScroll;
     }
 
     public void smoothMoveWithOffset(int moveOffset){
-        bodyRecyclerView.smoothMoveWithOffset(moveOffset, null);
+        bodyRecyclerView.smoothMoveWithOffsetX(moveOffset, null);
     }
 
     public void scrollToDate(Date date){
@@ -422,7 +414,7 @@ public class DayViewBody extends FrameLayout {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         int offset = BaseUtil.getDatesDifference(currentFstShowDay.getCalendar().getTimeInMillis(), cal.getTimeInMillis());
-        bodyRecyclerView.moveWithOffset(offset);
+        bodyRecyclerView.moveWithOffsetX(offset);
     }
 
     public void refresh(){
@@ -638,13 +630,13 @@ public class DayViewBody extends FrameLayout {
                 case DIRECTION_LEFT:
                     if (x < threshold){
                         isSwiping = true;
-                        bodyRecyclerView.smoothMoveWithOffset(-1, animatorListener);
+                        bodyRecyclerView.smoothMoveWithOffsetX(-1, animatorListener);
                     }
                     break;
                 case DIRECTION_RIGHT:
                     if (x > threshold){
                         isSwiping = true;
-                        bodyRecyclerView.smoothMoveWithOffset(1, animatorListener);
+                        bodyRecyclerView.smoothMoveWithOffsetX(1, animatorListener);
                     }
                     break;
                 default:

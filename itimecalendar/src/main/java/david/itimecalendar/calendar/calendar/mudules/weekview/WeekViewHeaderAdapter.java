@@ -6,8 +6,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.developer.paul.recycleviewgroup.ITimeAdapter;
-import com.github.sundeepk.compactcalendarview.DensityUtil;
+
+import com.developer.paul.itimerecycleviewgroup.ITimeAdapter;
 
 import java.util.Calendar;
 

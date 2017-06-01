@@ -38,6 +38,5 @@ dependencies {
     compile 'cn.aigestudio.wheelpicker:WheelPicker:1.1.2'
     testCompile 'junit:junit:4.12'
     compile project(':innerCalLibrary')
-    compile project(path: ':recycleviewgroup')
     compile project(':itimerecycleviewgroup')
 }

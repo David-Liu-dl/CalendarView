@@ -794,7 +794,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
         adapter.onCreateViewHolders();
     }
 
-    public void smoothMoveWithOffset(int moveOffset, @Nullable Animator.AnimatorListener animatorListener){
+    public void smoothMoveWithOffsetX(int moveOffset, @Nullable Animator.AnimatorListener animatorListener){
         if (moveOffset == 0){
             return;
         }
@@ -802,7 +802,11 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
         scrollByXSmoothly(distance, 200,animatorListener);
     }
 
-    public void moveWithOffset(int moveOffset){
+    /**
+     *
+     * @param moveOffset Number of cells should to be moved. Positive value means left scroll
+     */
+    public void moveWithOffsetX(int moveOffset){
         if (moveOffset == 0){
             return;
         }

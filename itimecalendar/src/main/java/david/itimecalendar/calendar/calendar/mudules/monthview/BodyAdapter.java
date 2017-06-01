@@ -8,7 +8,7 @@ import android.util.Log;
 import android.view.View;
 
 
-import com.developer.paul.recycleviewgroup.ITimeAdapter;
+import com.developer.paul.itimerecycleviewgroup.ITimeAdapter;
 
 import java.util.ArrayList;
 import java.util.Calendar;

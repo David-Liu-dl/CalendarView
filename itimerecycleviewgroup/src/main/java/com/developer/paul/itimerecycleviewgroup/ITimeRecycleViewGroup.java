@@ -565,7 +565,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
             AwesomeViewGroup.AwesomeLayoutParams lp = (AwesomeViewGroup.AwesomeLayoutParams) child.getLayoutParams();
             child.layout(lp.left, lp.top, lp.right, lp.bottom);
         }
-
+        LogUtil.log("height", childHeight + "");
         LogUtil.logAwesomes(awesomeViewGroupList);
     }
 
@@ -601,10 +601,12 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
         }else if (y<0){
             scrollDir = SCROLL_UP;
         }
+        LogUtil.log("aaa before: ", y + "");
         y = getInBoundY(y);
         if (y==0){
             return;
         }
+        LogUtil.log("aaa after: ", y + "");
         for (AwesomeViewGroup awesomeViewGroup : awesomeViewGroupList){
             AwesomeViewGroup.AwesomeLayoutParams lp = (AwesomeViewGroup.AwesomeLayoutParams) awesomeViewGroup.getLayoutParams();
             lp.top += y;
@@ -629,6 +631,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
     }
 
     public void scrollByXSmoothly(int x, long duration, @Nullable Animator.AnimatorListener animatorListener){
+        setStatus(HORIZONTAL_FLING);
         ValueAnimator animator = ValueAnimator.ofInt(0, x);
         animator.setDuration(duration);
         animator.setInterpolator(new DecelerateInterpolator());
@@ -692,6 +695,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
 
     @Override
     public void scrollByYSmoothly(int y, long duration) {
+        setStatus(VERTICAL_FLING);
         ValueAnimator animator = ValueAnimator.ofInt(0, y);
         animator.setDuration(duration);
         animator.setInterpolator(new DecelerateInterpolator());

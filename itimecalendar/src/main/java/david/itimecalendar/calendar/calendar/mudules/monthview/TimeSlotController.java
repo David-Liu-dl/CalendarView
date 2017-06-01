@@ -35,6 +35,7 @@ public class TimeSlotController {
 
     private DayViewBodyCell container;
     private OnTimeSlotListener onTimeSlotListener;
+    private long defaultTsDuration = 3600 * 1000;
 
     private ArrayList<DraggableTimeSlotView> slotViews = new ArrayList<>();
     private ArrayList<RecommendedSlotView> rcdSlotViews = new ArrayList<>();
@@ -247,7 +248,7 @@ public class TimeSlotController {
             DayInnerBodyEventLayout.LayoutParams params = new DayInnerBodyEventLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, container.layoutWidthPerDay);
             draggableTimeSlotView.setLayoutParams(params);
         }else {
-            long duration = this.slotViews.size() == 0 ? 3600 * 1000 : this.slotViews.get(0).getDuration();
+            long duration = this.slotViews.size() == 0 ? defaultTsDuration : this.slotViews.get(0).getDuration();
             draggableTimeSlotView.setDuration(duration);
             int tempViewHeight = (int)(duration/((float)(3600*1000)) * container.hourHeight);
             draggableTimeSlotView.setType(DraggableTimeSlotView.TYPE_TEMP);
@@ -336,12 +337,15 @@ public class TimeSlotController {
     }
 
     void updateTimeSlotsDuration(long duration, boolean animate){
+        defaultTsDuration = duration;
+
         for (DraggableTimeSlotView tsV : this.slotViews
                 ) {
-            long startTime = tsV.getNewStartTime();
-            tsV.setTimes(startTime, startTime + duration);
+            long startTime = tsV.getTimeslot().getStartTime();
+            tsV.getTimeslot().setEndTime(startTime + duration);
             resizeTimeSlot(tsV,animate);
         }
+        BaseUtil.relayoutChildren(container.eventLayout);
     }
 
     void clearTimeSlots(){
@@ -380,60 +384,10 @@ public class TimeSlotController {
         }
     }
 
-//    void showAllSlotAnim(){
-//        for (int i = 0; i < slotViews.size(); i++) {
-//            slotViews.get(i).showAlphaAnim();
-//        }
-//    }
-//
-//    void timeSlotAnimationChecker(){
-//        boolean topShow = false;
-//        boolean bottomShow = false;
-//
-//        Rect scrollBounds = new Rect();
-//        container.scrollContainerView.getHitRect(scrollBounds);
-//
-//        for (int i = 0; i < slotViews.size(); i++) {
-//            DraggableTimeSlotView slotview = slotViews.get(i);
-//
-//            if (!slotview.getLocalVisibleRect(scrollBounds)) {
-//                //hiding
-//                if (scrollBounds.bottom <= 0){
-//                    topShow = true;
-//                }else{
-//                    bottomShow = true;
-//                }
-//
-//                slotview.onScreen = false;
-//            } else {
-//                if (!slotview.onScreen && slotview.getWrapper().isAnimated()){
-//                    slotview.showAlphaAnim();
-//                }
-//
-//                if (!slotview.getWrapper().isRead()){
-//                    slotview.getWrapper().setRead(true);
-//                }
-//                //showing
-//                slotview.onScreen = true;
-//            }
-//
-//            if (topShow && bottomShow){
-//                break;
-//            }
-//        }
-//
-//        if (container.topArrowVisibility == WeekView.TIMESLOT_AUTO){
-//            container.topArrow.setVisibility(topShow?VISIBLE:INVISIBLE);
-//        }
-//
-//        if (container.bottomArrowVisibility == WeekView.TIMESLOT_AUTO){
-//            container.bottomArrow.setVisibility(bottomShow?VISIBLE:INVISIBLE);
-//        }
-//    }
-
     private void resizeTimeSlot(DraggableTimeSlotView draggableTimeSlotView, boolean animate){
         final DayInnerBodyEventLayout.LayoutParams params = (DayInnerBodyEventLayout.LayoutParams) draggableTimeSlotView.getLayoutParams();
-        long duration = draggableTimeSlotView.getDuration();
+        ITimeTimeSlotInterface timeslot = draggableTimeSlotView.getTimeslot();
+        long duration = timeslot.getEndTime() - timeslot.getStartTime();
         final int slotHeight = getSlotHeight(duration);
         final int topMargin = getSlotTopMargin(draggableTimeSlotView.getNewStartTime());
 
@@ -450,7 +404,10 @@ public class TimeSlotController {
             draggableTimeSlotView.startAnimation(resizeAnimation);
         }else {
             params.height = slotHeight;
+            Log.i("params.height", "resizeTimeSlot: " + slotHeight);
         }
+
+        draggableTimeSlotView.setLayoutParams(draggableTimeSlotView.getLayoutParams());
     }
 
     private void resizeRcdTimeSlot(RecommendedSlotView rcd){

@@ -2,6 +2,7 @@ package david.itimecalendar.calendar.calendar.mudules.weekview;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.developer.paul.recycleviewgroup.RecycleViewGroup;
 import com.github.sundeepk.compactcalendarview.DensityUtil;
@@ -34,7 +36,7 @@ import static android.widget.LinearLayout.VERTICAL;
  * Created by yuhaoliu on 10/05/2017.
  */
 
-public class WeekView extends FrameLayout{
+public class WeekView extends RelativeLayout{
     protected LinearLayout container;
 
     public WeekView(@NonNull Context context) {
@@ -95,7 +97,7 @@ public class WeekView extends FrameLayout{
     private void initView(){
         this.context = getContext();
         container = new LinearLayout(context);
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         container.setLayoutParams(params);
         container.setOrientation(VERTICAL);

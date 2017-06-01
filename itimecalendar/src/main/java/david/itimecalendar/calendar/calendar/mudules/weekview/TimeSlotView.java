@@ -5,21 +5,26 @@ import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 
 import com.developer.paul.recycleviewgroup.RecycleViewGroup;
 import com.github.sundeepk.compactcalendarview.ITimeInnerCalendar.InnerCalendarTimeslotPackage;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import david.itimecalendar.calendar.calendar.mudules.monthview.DayViewBodyCell;
 import david.itimecalendar.calendar.calendar.mudules.monthview.TimeSlotController;
 import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
 import david.itimecalendar.calendar.unitviews.DraggableTimeSlotView;
+import david.itimecalendar.calendar.unitviews.PopUpMenuBar;
 import david.itimecalendar.calendar.unitviews.RecommendedSlotView;
 import david.itimecalendar.calendar.unitviews.TimeSlotInnerCalendarView;
+import david.itimecalendar.calendar.util.DensityUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
 import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
 
@@ -31,6 +36,7 @@ public class TimeSlotView extends WeekView {
     private TimeSlotInnerCalendarView innerCalView;
     private FrameLayout staticLayer;
     private InnerCalendarTimeslotPackage innerSlotPackage = new InnerCalendarTimeslotPackage();
+    private PopUpMenuBar<String> popUpMenuBar;
 
     public TimeSlotView(@NonNull Context context) {
         super(context);
@@ -64,14 +70,46 @@ public class TimeSlotView extends WeekView {
 
             }
         });
-
+        setUpTimeslotDurationWidget();
         setUpStaticLayer();
+    }
+
+    private void setUpTimeslotDurationWidget(){
+        int popUpMenuHeight = DensityUtil.dip2px(context,50);
+        popUpMenuBar = new PopUpMenuBar<>(context);
+        popUpMenuBar.setOptHeight(popUpMenuHeight);
+        RelativeLayout.LayoutParams popUpMenuBarParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        popUpMenuBarParams.addRule(ALIGN_PARENT_BOTTOM);
+        popUpMenuBar.setLayoutParams(popUpMenuBarParams);
+        popUpMenuBar.setOnItemSelectedListener(new PopUpMenuBar.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(int position) {
+                DurationItem selectedItem = durationData.get(position);
+                long toDuration = selectedItem.duration;
+
+                if (onTimeslotDurationChangedListener != null){
+                    onTimeslotDurationChangedListener.onTimeslotDurationChanged(toDuration);
+                }
+            }
+        });
+        this.addView(popUpMenuBar);
+
+        //fake occupation view for header part of popUpMenuBar
+        View blankView = new View(context);
+        RelativeLayout.LayoutParams blankVieWParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, popUpMenuHeight);
+        blankVieWParams.addRule(ALIGN_PARENT_BOTTOM);
+        blankView.setLayoutParams(blankVieWParams);
+        blankView.setId(View.generateViewId());
+        RelativeLayout.LayoutParams containerParams = (RelativeLayout.LayoutParams)container.getLayoutParams();
+        containerParams.addRule(ABOVE, blankView.getId());
+        this.addView(blankView);
     }
 
     private void setUpStaticLayer(){
         //set up static layer
         staticLayer = new FrameLayout(context);
-        FrameLayout.LayoutParams stcPageParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        RelativeLayout.LayoutParams stcPageParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
         innerCalView = new TimeSlotInnerCalendarView(context);
         innerCalView.setHeaderHeight((int)headerHeight);
         innerCalView.setSlotNumMap(innerSlotPackage);
@@ -196,6 +234,26 @@ public class TimeSlotView extends WeekView {
         }
     };
 
+    private List<DurationItem> durationData;
+
+    public void setTimeslotDurationItems(List<DurationItem> data){
+        this.durationData = data;
+        popUpMenuBar.setDate(getDurationItemNames());
+    }
+
+    private OnTimeslotDurationChangedListener onTimeslotDurationChangedListener;
+
+    public void setOnTimeslotDurationChangedListener(OnTimeslotDurationChangedListener onTimeslotDurationChangedListener) {
+        this.onTimeslotDurationChangedListener = onTimeslotDurationChangedListener;
+    }
+
+    public interface OnTimeslotDurationChangedListener {
+        void onTimeslotDurationChanged(long duration);
+    }
+
+    public void setTimeslotDuration(long duration, boolean animate){
+        dayViewBody.updateTimeSlotsDuration(duration,false);
+    }
 
     public static class TimeSlotPackage{
         public ArrayList<WrapperTimeSlot> rcdSlots = new ArrayList<>();
@@ -231,5 +289,22 @@ public class TimeSlotView extends WeekView {
                 }
             }
         }
+    }
+
+    public static class DurationItem{
+        public String showName;
+        public long duration;
+    }
+
+    private List<String> getDurationItemNames(){
+        List<String> list = new ArrayList<>();
+        if (durationData != null){
+            for (DurationItem item:durationData
+                 ) {
+                list.add(item.showName);
+            }
+        }
+
+        return list;
     }
 }

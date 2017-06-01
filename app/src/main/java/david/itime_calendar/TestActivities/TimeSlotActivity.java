@@ -5,22 +5,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.List;
 
 import david.itime_calendar.EventManager;
 import david.itime_calendar.MainActivity;
 import david.itime_calendar.R;
 import david.itime_calendar.bean.TimeSlot;
-import david.itimecalendar.calendar.calendar.mudules.monthview.MonthView;
 import david.itimecalendar.calendar.calendar.mudules.monthview.TimeSlotController;
 import david.itimecalendar.calendar.calendar.mudules.weekview.TimeSlotView;
-import david.itimecalendar.calendar.calendar.mudules.weekview.WeekView;
-import david.itimecalendar.calendar.listeners.ITimeEventInterface;
-import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
 import david.itimecalendar.calendar.unitviews.DraggableTimeSlotView;
 import david.itimecalendar.calendar.unitviews.RecommendedSlotView;
 import david.itimecalendar.calendar.unitviews.TimeSlotInnerCalendarView;
@@ -48,6 +43,7 @@ public class TimeSlotActivity extends AppCompatActivity {
         final TimeSlotView timeslotView = (TimeSlotView) findViewById(R.id.timeslot_view);
         timeslotView.setEventPackage(eventManager.getEventsMap());
         timeslotView.enableTimeSlot();
+        timeslotView.setTimeslotDurationItems(initList());
         timeslotView.setOnTimeSlotInnerCalendar(new TimeSlotInnerCalendarView.OnTimeSlotInnerCalendar() {
             @Override
             public void onCalendarBtnClick(View v, boolean result) {
@@ -63,6 +59,13 @@ public class TimeSlotActivity extends AppCompatActivity {
 
             @Override
             public void onMonthScroll(Date firstDayOfNewMonth) {
+            }
+        });
+
+        timeslotView.setOnTimeslotDurationChangedListener(new TimeSlotView.OnTimeslotDurationChangedListener() {
+            @Override
+            public void onTimeslotDurationChanged(long duration) {
+                timeslotView.setTimeslotDuration(duration,false);
             }
         });
         timeslotView.setOnTimeSlotListener(new TimeSlotController.OnTimeSlotListener() {
@@ -113,9 +116,6 @@ public class TimeSlotActivity extends AppCompatActivity {
         });
 
 
-        HashMap<String, Integer> numSlot = new HashMap<>();
-
-
         for (TimeSlot slot:slots
                 ) {
             timeslotView.addTimeSlot(slot);
@@ -135,5 +135,17 @@ public class TimeSlotActivity extends AppCompatActivity {
 
             startTime += 5 * 3600 * 1000;
         }
+    }
+
+    private List initList(){
+        List<TimeSlotView.DurationItem> list= new ArrayList<>();
+        for (int i = 1; i < 20; i++) {
+            TimeSlotView.DurationItem item = new TimeSlotView.DurationItem();
+            item.showName = "" + i + " hrs";
+            item.duration = i * 3600 * 1000;
+            list.add(item);
+        }
+
+        return list;
     }
 }

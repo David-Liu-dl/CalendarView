@@ -493,9 +493,14 @@ public class DayViewBody extends FrameLayout {
     }
 
     public void updateTimeSlotsDuration(long duration, boolean animate){
-//        if (adapter != null){
-//            adapter.updateTimeSlotsDuration(duration,animate);
-//        }
+        if (bodyPagerAdapter != null){
+            List<View> items = bodyPagerAdapter.getViewItems();
+            for (View view:items
+                    ) {
+                DayViewBodyCell cell = (DayViewBodyCell) view;
+                cell.updateTimeSlotsDuration(duration,animate);
+            }
+        }
     }
 
     TimeSlotController.OnTimeSlotListener onTimeSlotOuterListener;

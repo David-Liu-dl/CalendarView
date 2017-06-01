@@ -804,7 +804,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
 
     /**
      *
-     * @param moveOffset Number of cells should to be moved. Positive value means left scroll
+     * @param moveOffset Number of cells should to be moved. Positive value means r
      */
     public void moveWithOffsetX(int moveOffset){
         if (moveOffset == 0){

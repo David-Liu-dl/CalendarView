@@ -5,6 +5,7 @@ import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -34,9 +35,10 @@ import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
 
 public class TimeSlotView extends WeekView {
     private TimeSlotInnerCalendarView innerCalView;
+    private PopUpMenuBar<String> popUpMenuBar;
+
     private FrameLayout staticLayer;
     private InnerCalendarTimeslotPackage innerSlotPackage = new InnerCalendarTimeslotPackage();
-    private PopUpMenuBar<String> popUpMenuBar;
 
     public TimeSlotView(@NonNull Context context) {
         super(context);
@@ -70,8 +72,8 @@ public class TimeSlotView extends WeekView {
 
             }
         });
-        setUpTimeslotDurationWidget();
         setUpStaticLayer();
+        setUpTimeslotDurationWidget();
     }
 
     private void setUpTimeslotDurationWidget(){

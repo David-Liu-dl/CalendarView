@@ -99,6 +99,7 @@ public class PopUpMenuBar<T> extends FrameLayout{
 
         Context context = getContext();
         optBlock = new RelativeLayout(context);
+
         optBlock.setBackgroundColor(getResources().getColor(fakeBgColor));
         LinearLayout.LayoutParams optParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DensityUtil.dip2px(context,50));
         container.addView(optBlock,optParams);
@@ -179,7 +180,9 @@ public class PopUpMenuBar<T> extends FrameLayout{
         bgView.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                doneBtn.performClick();
+                if (event.getAction() == MotionEvent.ACTION_DOWN){
+                    doneBtn.performClick();
+                }
                 return true;
             }
         });

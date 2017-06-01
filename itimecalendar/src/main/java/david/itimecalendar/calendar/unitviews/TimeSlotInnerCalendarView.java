@@ -5,6 +5,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -96,7 +97,6 @@ public class TimeSlotInnerCalendarView extends LinearLayout {
         int leftBarHeight = headerHeight;
 
         btnBlock = new LinearLayout(getContext());
-
         btnBlock.setOrientation(LinearLayout.HORIZONTAL);
         LayoutParams leftBtnParams = new LayoutParams(leftBarWidth, leftBarHeight);
 
@@ -154,7 +154,7 @@ public class TimeSlotInnerCalendarView extends LinearLayout {
                 if (calendarView.getVisibility() != VISIBLE){
                     showCalendar();
                 }else {
-                   hideCalendar();
+                    hideCalendar();
                 }
 
                 if (onTimeSlotInnerCalendar != null){

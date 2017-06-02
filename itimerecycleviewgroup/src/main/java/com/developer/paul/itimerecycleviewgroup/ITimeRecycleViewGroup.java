@@ -66,6 +66,8 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
     private float totalMoveY = 0.0f;
     private float totalMoveX = 0.0f;
 
+    private float lastMoveY = 0.0f;
+
     public ITimeRecycleViewGroup(Context context, int NUM_SHOW) {
         super(context);
         this.NUM_SHOW = NUM_SHOW;
@@ -179,13 +181,25 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
             case SCROLL_UP:
                 if (ScrollHelper.shouldFling(mVelocityY)){
                     int distance = scrollPos[1];
-                    distance = getInBoundY(distance);
-                    if (isFalseMove(distance, scrollDir)){
-                        Log.i("up", "touchUpPostCheck: distance" + distance + " , " + scrollDir);
-                        return;
+                    if (scrollDir!=0) {
+                        // sometimes, velocity direction is wrong, need to use scrollDir fix that
+                        distance = Math.abs(distance) * (Math.abs(scrollDir) / scrollDir);
                     }
+                    Log.i("dis", "touchUpPostCheck: before : " + distance);
+                    distance = getInBoundY(distance);
+                    Log.i("dis", "touchUpPostCheck: after : " + distance);
+//                    if (isFalseMove(distance, scrollDir)){
+//                        if (!isBecauseReverseVelocity(lastMoveY)){
+//                            Log.i("up", "touchUpPostCheck: distance" + distance + " , " + scrollDir + " lastMoveY : " + lastMoveY + " mTouchSlot : " + mTouchSlop);
+//                            return;
+//                        }
+//                        distance = -distance;
+//                    }
+//                    Log.i("up", "touchUpPostCheck: " + "fling : " + distance + mVelocityTracker);
                     setStatus(VERTICAL_FLING);
                     scrollByYSmoothly(distance,500);
+                }else{
+//                    Log.i("up", "touchUpPostCheck: " + "should not fling : " + mVelocityY);
                 }
                 break;
         }
@@ -194,6 +208,11 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
     // ensure y and dir are same
     private boolean isFalseMove(int y ,int dir){
         return y * dir < 0;
+    }
+
+    // if the fling dis is incorrect, fix this by direction
+    private boolean isBecauseReverseVelocity(float lastMoveY){
+        return Math.abs(lastMoveY) < mTouchSlop;
     }
 
     private AwesomeViewGroup getFirstShownAwesomeViewGroup(List<AwesomeViewGroup> awesomeViewgroups){
@@ -328,18 +347,10 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
             if (lp.bottom + y < lp.parentHeight){
                 // reach bottom, stop up
                 realY = lp.parentHeight - lp.bottom;
-
-                if(lp.top + realY < 0){ // because the dir is not accurate, need check
-                    return 0;
-                }
             }
         }else if (scrollDir == SCROLL_DOWN){
             if (lp.top + y > 0){
                 realY = 0 - lp.top;
-
-                if (lp.bottom + realY < lp.parentHeight){
-                    return 0;
-                }
             }
         }
         return realY;
@@ -406,6 +417,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
                     }else if (scrollModel == SCROLL_VERTICAL){
                         setStatus(VERTICAL_MOVE);
                         int moveY = (int)newY - (int)preY;
+                        lastMoveY = moveY;
 
                         if (moveY > 0){
                             scrollDir = SCROLL_DOWN;
@@ -508,6 +520,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
                     } else if (scrollModel == SCROLL_VERTICAL) {
                         setStatus(VERTICAL_MOVE);
                         float moveY = newY - preY;
+                        lastMoveY = moveY;
 
                         if (moveY > 0){
                             scrollDir = SCROLL_DOWN;

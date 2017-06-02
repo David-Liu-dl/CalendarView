@@ -86,7 +86,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
         for (int i = 0 ; i < NUM_SHOW+2 ; i ++){
             AwesomeViewGroup awesomeViewGroup = new AwesomeViewGroup(getContext());
 //            awesomeViewGroup.setBackgroundColor(colors[i]);
-            awesomeViewGroup.setInRecycledViewIndex(i);
+            awesomeViewGroup.setInRecycledViewIndex(i-1);
             awesomeViewGroup.setLayoutParams(new AwesomeViewGroup.AwesomeLayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
             awesomeViewGroupList.add(awesomeViewGroup);
             addView(awesomeViewGroup);
@@ -569,6 +569,19 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
         LogUtil.logAwesomes(awesomeViewGroupList);
     }
 
+    public void followScrollByX(int x){
+        if (Math.abs(x) >= 2 * childWidth){
+            // this is page jump, then refresh page
+            int pageScroll = -x/childWidth;
+            updateIndexes(pageScroll);
+            if (adapter!=null){
+                adapter.notifyDataSetChanged();
+            }
+            return;
+        }
+        scrollByX(x);
+    }
+
     @Override
     public void scrollByX(int x) {
         if (x > 0){
@@ -622,7 +635,6 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
         }
 
         totalMoveY += y;
-
     }
 
     @Override
@@ -631,6 +643,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
     }
 
     public void scrollByXSmoothly(int x, long duration, @Nullable Animator.AnimatorListener animatorListener){
+
         setStatus(HORIZONTAL_FLING);
         ValueAnimator animator = ValueAnimator.ofInt(0, x);
         animator.setDuration(duration);
@@ -751,6 +764,13 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
         animator.start();
     }
 
+    private void updateIndexes(int indexOffset){
+        for (AwesomeViewGroup awesomeViewGroup : awesomeViewGroupList){
+            awesomeViewGroup.setInRecycledViewIndex(awesomeViewGroup.getInRecycledViewIndex() + indexOffset);
+        }
+    }
+
+
     @Override
     public void scrollByYSmoothly(int y) {
         scrollByYSmoothly(y, 200);
@@ -815,6 +835,17 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
             return;
         }
         int distance = (-1) * moveOffset * childWidth;
+
+        if (Math.abs(distance) >= 2 * childWidth){
+            // this is page jump, then refresh page
+            int pageScroll = moveOffset;
+            updateIndexes(pageScroll);
+            if (adapter!=null){
+                adapter.notifyDataSetChanged();
+            }
+            return;
+        }
+
         scrollByX(distance);
     }
 

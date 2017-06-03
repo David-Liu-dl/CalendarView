@@ -53,6 +53,7 @@ public class DayViewBody extends FrameLayout {
     private BodyAdapter bodyPagerAdapter;
     private Context context;
 
+    // unit with px
     private int hourHeight = 30;
     private int timeTextSize = 20;
     private int topSpace = 30;
@@ -144,6 +145,13 @@ public class DayViewBody extends FrameLayout {
         bodyPagerAdapter.setSlotsInfo(this.timeSlotPackage);
         bodyRecyclerView = new ITimeRecycleViewGroup(context, NUM_LAYOUTS);
         bodyRecyclerView.setAdapter(bodyPagerAdapter);
+        bodyRecyclerView.setOnSetting(new ITimeRecycleViewGroup.OnSetting() {
+            @Override
+            public int getItemHeight(int i) {
+                int childMaxHeight = hourHeight * 25;
+                return childMaxHeight;
+            }
+        });
         bodyRecyclerView.setOnScrollListener(new ITimeRecycleViewGroup.OnScroll<DayViewBodyCell>() {
             @Override
             public void onPageSelected(DayViewBodyCell view) {

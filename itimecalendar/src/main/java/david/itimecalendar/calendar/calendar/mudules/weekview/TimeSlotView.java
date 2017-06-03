@@ -5,10 +5,14 @@ import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 
 import com.developer.paul.itimerecycleviewgroup.ITimeRecycleViewGroup;
@@ -18,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import david.itimecalendar.R;
 import david.itimecalendar.calendar.calendar.mudules.monthview.DayViewBodyCell;
 import david.itimecalendar.calendar.calendar.mudules.monthview.TimeSlotController;
 import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
@@ -25,6 +30,7 @@ import david.itimecalendar.calendar.unitviews.DraggableTimeSlotView;
 import david.itimecalendar.calendar.unitviews.PopUpMenuBar;
 import david.itimecalendar.calendar.unitviews.RecommendedSlotView;
 import david.itimecalendar.calendar.unitviews.TimeSlotInnerCalendarView;
+import david.itimecalendar.calendar.unitviews.TimeslotChangeView;
 import david.itimecalendar.calendar.util.DensityUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
 import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
@@ -223,9 +229,7 @@ public class TimeSlotView extends WeekView {
 
         @Override
         public void onTimeSlotEdit(DraggableTimeSlotView draggableTimeSlotView) {
-            if (onTimeSlotOuterListener != null){
-                onTimeSlotOuterListener.onTimeSlotEdit(draggableTimeSlotView);
-            }
+            showTimeslotChangeDialog(draggableTimeSlotView);
         }
 
         @Override
@@ -235,6 +239,30 @@ public class TimeSlotView extends WeekView {
             }
         }
     };
+
+    private void showTimeslotChangeDialog(final DraggableTimeSlotView dgTimeslot){
+        final TimeslotChangeView timeslotChangeView = new TimeslotChangeView(context,dgTimeslot.getTimeslot());
+        timeslotChangeView.setBackground(getResources().getDrawable(R.drawable.itime_round_corner_bg));
+        final PopupWindow pw = new PopupWindow(timeslotChangeView, 700, LinearLayout.LayoutParams.WRAP_CONTENT, true);
+        pw.setAnimationStyle(R.style.Widget_AppCompat_PopupWindow);
+        pw.showAtLocation(timeslotChangeView, Gravity.CENTER,0,0);
+        timeslotChangeView.setOnPopupWindowListener(new TimeslotChangeView.OnPopupWindowListener() {
+            @Override
+            public void onCancel() {
+                pw.dismiss();
+            }
+
+            @Override
+            public void onSave(long startTime) {
+                dgTimeslot.setNewStartTime( startTime);
+                if (onTimeSlotOuterListener != null){
+                    onTimeSlotOuterListener.onTimeSlotEdit(dgTimeslot);
+                    dayViewBody.refresh();
+                }
+                pw.dismiss();
+            }
+        });
+    }
 
     private List<DurationItem> durationData;
 

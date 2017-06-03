@@ -16,6 +16,7 @@ import david.itime_calendar.R;
 import david.itime_calendar.bean.TimeSlot;
 import david.itimecalendar.calendar.calendar.mudules.monthview.TimeSlotController;
 import david.itimecalendar.calendar.calendar.mudules.weekview.TimeSlotView;
+import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
 import david.itimecalendar.calendar.unitviews.DraggableTimeSlotView;
 import david.itimecalendar.calendar.unitviews.RecommendedSlotView;
 import david.itimecalendar.calendar.unitviews.TimeSlotInnerCalendarView;
@@ -107,6 +108,12 @@ public class TimeSlotActivity extends AppCompatActivity {
 
             @Override
             public void onTimeSlotEdit(DraggableTimeSlotView draggableTimeSlotView) {
+                long news = draggableTimeSlotView.getNewStartTime();
+                long newe = draggableTimeSlotView.getNewEndTime();
+                Calendar cal = Calendar.getInstance();
+                cal.setTimeInMillis(news);
+                draggableTimeSlotView.getTimeslot().setStartTime(news);
+                draggableTimeSlotView.getTimeslot().setEndTime(draggableTimeSlotView.getNewEndTime());
             }
 
             @Override

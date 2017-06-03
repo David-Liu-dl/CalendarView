@@ -66,7 +66,6 @@ public class MyCalendar {
         this.millisecond = millisecond;
     }
 
-
     public int getDayOfWeek(){
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR,this.getYear());

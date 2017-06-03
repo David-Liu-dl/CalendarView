@@ -13,6 +13,7 @@ import com.daasuu.bl.BubbleLayout;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
@@ -186,9 +187,11 @@ public class TimeSlotController {
                     currentEventNewHour = Integer.valueOf(time_parts[0]);
                     currentEventNewMinutes = Integer.valueOf(time_parts[1]);
 
-                    tsView.setCalendar(container.getCalendar());
-                    tsView.getCalendar().setHour(currentEventNewHour);
-                    tsView.getCalendar().setMinute(currentEventNewMinutes);
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTimeInMillis(container.getCalendar().getBeginOfDayMilliseconds());
+                    cal.set(Calendar.HOUR_OF_DAY, currentEventNewHour);
+                    cal.set(Calendar.MINUTE, currentEventNewMinutes);
+                    tsView.setNewStartTime(cal.getTimeInMillis());
 
                     if (container.tempDragView == null && onTimeSlotListener != null) {
                         onTimeSlotListener.onTimeSlotDragDrop(tsView, 0, 0);

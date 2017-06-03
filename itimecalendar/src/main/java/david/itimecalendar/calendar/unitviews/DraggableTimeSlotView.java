@@ -34,9 +34,6 @@ public class DraggableTimeSlotView extends FrameLayout {
     private long newEndTime = 0;
     private long duration;
 
-//    private ImageView icon;
-    private MyCalendar calendar = new MyCalendar(Calendar.getInstance());
-
     private WrapperTimeSlot wrapper;
     private ITimeTimeSlotInterface timeslot;
 
@@ -96,19 +93,19 @@ public class DraggableTimeSlotView extends FrameLayout {
         this.duration = endTime - startTime;
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(startTime);
-        this.calendar.cloneFromCalendar(cal);
     }
 
     public void setIsSelected(boolean isSelect){
         this.wrapper.setSelected(isSelect);
     }
 
-    public void setNewStartTime(Long newStartTime) {
+    public void setNewStartTime(long newStartTime) {
         this.newStartTime = newStartTime;
     }
 
     public long getDuration() {
-        return newEndTime - newStartTime == 0 ? duration : (newEndTime - newStartTime);
+//        return newEndTime - newStartTime == 0 ? duration : (newEndTime - newStartTime);
+        return duration;
     }
 
     public void setDuration(long duration) {
@@ -116,7 +113,7 @@ public class DraggableTimeSlotView extends FrameLayout {
     }
 
     public long getNewStartTime(){
-        return this.calendar.getCalendar().getTimeInMillis();
+        return newStartTime;
     }
 
     public long getNewEndTime(){
@@ -131,24 +128,12 @@ public class DraggableTimeSlotView extends FrameLayout {
         return wrapper;
     }
     
-    public MyCalendar getCalendar() {
-        return calendar;
-    }
-
-    public void setCalendar(MyCalendar calendar) {
-        this.calendar = calendar;
-    }
-
     public int getType() {
         return type;
     }
 
     public void setType(int type) {
         this.type = type;
-    }
-
-    public MyCalendar getNewCalendar() {
-        return calendar;
     }
 
     public void showAlphaAnim(){

@@ -142,7 +142,7 @@ public class WeekView extends RelativeLayout{
 
             @Override
             public void onHorizontalScroll(int dx, int preOffsetX) {
-                headerRG.scrollByX(dx);
+                headerRG.followScrollByX(dx);
             }
 
             @Override

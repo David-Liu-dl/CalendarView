@@ -849,7 +849,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
         }
         int distance = (-1) * moveOffset * childWidth;
 
-        if (Math.abs(distance) >= 2 * childWidth){
+        if (Math.abs(distance) >= childWidth){
             // this is page jump, then refresh page
             int pageScroll = moveOffset;
             updateIndexes(pageScroll);

@@ -129,9 +129,9 @@ public class EventController {
     }
 
     private void addRegularEvent(WrapperEvent wrapper) {
-        final DayInnerBodyEventLayout eventLayout = container.eventLayout;
+        final DayInnerBodyLayout eventLayout = container.eventLayout;
         final DraggableEventView newDragEventView = this.createDayDraggableEventView(wrapper, false);
-        final DraggableEventView.LayoutParams params = (DraggableEventView.LayoutParams) newDragEventView.getLayoutParams();
+        final DayInnerBodyLayout.LayoutParams params = (DayInnerBodyLayout.LayoutParams) newDragEventView.getLayoutParams();
         newDragEventView.setId(View.generateViewId());
         this.regularEventViewMap.put(wrapper, newDragEventView.getId());
 
@@ -207,7 +207,11 @@ public class EventController {
             long duration = event.getEndTime() - event.getStartTime();
             int eventHeight =(int) (duration * container.heightPerMillisd);
             int height = getDayCrossHeight(wrapper);
-            DraggableEventView.LayoutParams params = new DraggableEventView.LayoutParams(eventHeight, height);
+//            DraggableEventView.LayoutParams params = new DraggableEventView.LayoutParams(eventHeight, height);
+            DayInnerBodyLayout.LayoutParams params = new DayInnerBodyLayout.LayoutParams(eventHeight, height);
+            params.relativeMarginLeft = container.unitViewLeftMargin;
+            params.relativeMarginRight = container.unitViewRightMargin;
+
             if (!container.isTimeSlotEnable && getRegularEventType(wrapper) != DAY_CROSS_ALL_DAY){
                 event_view.setOnLongClickListener(new EventLongClickListener());
             }
@@ -266,7 +270,8 @@ public class EventController {
         event_view.setPadding(0,padding,0,0);
 
         int eventHeight = 1 * container.hourHeight;//one hour
-        DraggableEventView.LayoutParams params = new DraggableEventView.LayoutParams(200, eventHeight);
+//        DraggableEventView.LayoutParams params = new DraggableEventView.LayoutParams(200, eventHeight);
+        DayInnerBodyLayout.LayoutParams params = new DayInnerBodyLayout.LayoutParams(200, eventHeight);
         event_view.setY(tapY - eventHeight / 2);
         event_view.setOnLongClickListener(new EventLongClickListener());
         event_view.setLayoutParams(params);
@@ -278,7 +283,7 @@ public class EventController {
      * calculate the position of event
      * it needs to be called when setting event or event position changed
      */
-    private void calculateEventLayout(DayInnerBodyEventLayout eventLayout) {
+    private void calculateEventLayout(DayInnerBodyLayout eventLayout) {
         List<ArrayList<OverlapHelper.OverlappedEvent>> overlapGroups
                 = xHelper.computeOverlapXForEvents(eventLayout.getEvents());
         for (ArrayList<OverlapHelper.OverlappedEvent> overlapGroup : overlapGroups
@@ -293,7 +298,7 @@ public class EventController {
         }
     }
 
-    private void calculateTimeSlotLayout(DayInnerBodyEventLayout eventLayout) {
+    private void calculateTimeSlotLayout(DayInnerBodyLayout eventLayout) {
         List<ArrayList<OverlapHelper.OverlappedEvent>> overlapGroups
                 = xHelper.computeOverlapXForEvents(eventLayout.getEvents());
         for (ArrayList<OverlapHelper.OverlappedEvent> overlapGroup : overlapGroups
@@ -498,7 +503,7 @@ public class EventController {
         @Override
         public boolean onLongClick(View v) {
 //            if (container.tempDragView == null) {
-            DayInnerBodyEventLayout container = (DayInnerBodyEventLayout) v;
+            DayInnerBodyLayout container = (DayInnerBodyLayout) v;
             EventController.this.container.tempDragView = createTempDayDraggableEventView(EventController.this.container.nowTapX, EventController.this.container.nowTapY);
             EventController.this.container.tempDragView.setAlpha(1);
             container.addView(EventController.this.container.tempDragView);

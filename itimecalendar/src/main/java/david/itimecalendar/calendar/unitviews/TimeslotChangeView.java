@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import david.itimecalendar.R;
@@ -67,12 +68,12 @@ public class TimeslotChangeView extends LinearLayout {
     private void initParams(){
         Context context = getContext();
         labelTextSize = 17;
-        labelContainerHeight = DensityUtil.dip2px(context,30);
+        labelContainerHeight = DensityUtil.dip2px(context,50);
 
         timeInfoTextSize = 12;
         timeTextSize = 20;
         timeContainerHeight = DensityUtil.dip2px(context,80);
-        timeBlockMarginLR = DensityUtil.dip2px(context,20);
+        timeBlockMarginLR = DensityUtil.dip2px(context,35);
         timeBlockMarginTB = DensityUtil.dip2px(context,20);
 
         btnTextSize = 15;
@@ -102,7 +103,7 @@ public class TimeslotChangeView extends LinearLayout {
         startInfoTvParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         startInfoTvParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         startInfoTv.setLayoutParams(startInfoTvParams);
-        startInfoTv.setText("FRI,20 APR");
+        startInfoTv.setText("Start At");
         startInfoTv.setTextSize(timeInfoTextSize);
         this.infoContainer.addView(startInfoTv);
 
@@ -120,7 +121,7 @@ public class TimeslotChangeView extends LinearLayout {
         endInfoTvParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         endInfoTvParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         endInfoTv.setLayoutParams(endInfoTvParams);
-        endInfoTv.setText("FRI,20 APR");
+        endInfoTv.setText("End At");
         endInfoTv.setTextSize(timeInfoTextSize);
         this.infoContainer.addView(endInfoTv);
 
@@ -139,7 +140,17 @@ public class TimeslotChangeView extends LinearLayout {
         this.addView(timePickerBlk);
 
         timePicker = (TimePicker) timePickerBlk.findViewById(R.id.timepicker);
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(timeslot.getStartTime());
+        timePicker.setCurrentHour(cal.get(Calendar.HOUR_OF_DAY));
+        timePicker.setCurrentMinute(cal.get(Calendar.MINUTE));
         timePicker.setIs24HourView(true);
+        timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+            @Override
+            public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+                updateTimeInfo();
+            }
+        });
 
         optBlock = new LinearLayout(context);
         optBlock.setOrientation(HORIZONTAL);
@@ -184,6 +195,8 @@ public class TimeslotChangeView extends LinearLayout {
             }
         });
         optBlock.addView(saveBtn);
+
+        updateTimeInfo();
     }
 
     OnPopupWindowListener onPopupWindowListener;
@@ -195,5 +208,21 @@ public class TimeslotChangeView extends LinearLayout {
     public interface OnPopupWindowListener{
         void onCancel();
         void onSave(long startTime);
+    }
+
+    private void updateTimeInfo(){
+        int hour = timePicker.getCurrentHour();
+        int minute = timePicker.getCurrentMinute();
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(timeslot.getStartTime());
+        cal.set(Calendar.HOUR_OF_DAY, hour);
+        cal.set(Calendar.MINUTE, minute);
+
+        String startTime = new SimpleDateFormat("HH:mm").format(cal.getTime());
+        cal.setTimeInMillis(cal.getTimeInMillis() + (timeslot.getEndTime() - timeslot.getStartTime()));
+        String endTime = new SimpleDateFormat("HH:mm").format(cal.getTime());
+
+        startTimeTv.setText(startTime);
+        endTimeTv.setText(endTime);
     }
 }

@@ -2,8 +2,6 @@ package david.itimecalendar.calendar.calendar.mudules.monthview;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -17,7 +15,7 @@ import david.itimecalendar.calendar.wrapper.WrapperEvent;
 /**
  * Created by yuhaoliu on 21/09/16.
  */
-public class DayInnerBodyEventLayout extends ViewGroup {
+public class DayInnerBodyLayout extends ViewGroup {
     private static final String TAG = "DayInnerBodyEventLayout";
     ArrayList<WrapperEvent> events = new ArrayList<>();
     ArrayList<DraggableEventView> dgEvents = new ArrayList<>();
@@ -38,17 +36,20 @@ public class DayInnerBodyEventLayout extends ViewGroup {
         this.dgEvents = dgEvents;
     }
 
-    public DayInnerBodyEventLayout(Context context) {
+    public DayInnerBodyLayout(Context context) {
         super(context);
     }
 
-    public DayInnerBodyEventLayout(Context context, AttributeSet attrs) {
+    public DayInnerBodyLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
     public static class LayoutParams extends ViewGroup.LayoutParams {
         public int left = 0;
         public int top = 0;
+
+        public int relativeMarginLeft = 0;
+        public int relativeMarginRight = 0;
 
         public LayoutParams(Context arg0, AttributeSet arg1) {
             super(arg0, arg1);
@@ -95,7 +96,7 @@ public class DayInnerBodyEventLayout extends ViewGroup {
                 continue;
             }
             DraggableEventView eventView = (DraggableEventView) getChildAt(i);
-            DraggableEventView.LayoutParams params = (DraggableEventView.LayoutParams) eventView.getLayoutParams();
+            DayInnerBodyLayout.LayoutParams params =  (DayInnerBodyLayout.LayoutParams) eventView.getLayoutParams();
             DraggableEventView.PosParam pos = eventView.getPosParam();
             if (pos == null) {
                 // for creating a new event
@@ -103,9 +104,10 @@ public class DayInnerBodyEventLayout extends ViewGroup {
                 params.width = width;
                 continue;
             }
-            int eventWidth = width / pos.widthFactor;
-            int leftMargin = eventWidth * pos.startX;
-            params.width = eventWidth;
+            int eventConsumedWidth = width/pos.widthFactor;
+//            int eventShowWidth = eventConsumedWidth - pos.widthFactor * (params.relativeMarginLeft + params.relativeMarginRight);
+            int leftMargin = eventConsumedWidth * pos.startX;
+            params.width = eventConsumedWidth;
             params.left = leftMargin + 1 * pos.startX;
             params.top = pos.topMargin;
         }
@@ -119,12 +121,16 @@ public class DayInnerBodyEventLayout extends ViewGroup {
         for (int i = 0; i < cCount; i++) {
             View child = getChildAt(i);
             if (child instanceof DraggableEventView){
-                DraggableEventView.LayoutParams params = (DraggableEventView.LayoutParams) child.getLayoutParams();
-                child.layout(paddingLeft + params.left, params.top, paddingLeft + params.left + child.getLayoutParams().width, params.top + child.getLayoutParams().height);
+                DayInnerBodyLayout.LayoutParams params = (DayInnerBodyLayout.LayoutParams) child.getLayoutParams();
+                child.layout(
+                        paddingLeft + params.left + params.relativeMarginLeft,
+                        params.top,
+                        paddingLeft + params.left + child.getLayoutParams().width - (params.relativeMarginLeft + params.relativeMarginRight),
+                        params.top + child.getLayoutParams().height);
             }
 
             if (child instanceof DraggableTimeSlotView || child instanceof RecommendedSlotView){
-                DayInnerBodyEventLayout.LayoutParams params = (DayInnerBodyEventLayout.LayoutParams) child.getLayoutParams();
+                DayInnerBodyLayout.LayoutParams params = (DayInnerBodyLayout.LayoutParams) child.getLayoutParams();
                 child.layout(paddingLeft + params.left, params.top, paddingLeft + params.left + child.getLayoutParams().width, params.top + child.getLayoutParams().height);
             }
         }

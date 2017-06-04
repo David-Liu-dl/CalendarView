@@ -679,4 +679,8 @@ public class DayViewBody extends FrameLayout {
             return recyclerViewWidth;
         }
     }
+
+    public ITimeRecycleViewGroup getRecycler(){
+        return this.bodyRecyclerView;
+    }
 }

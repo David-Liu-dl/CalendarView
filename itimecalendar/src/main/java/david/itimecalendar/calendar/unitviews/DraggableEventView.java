@@ -106,23 +106,23 @@ public class DraggableEventView extends ViewGroup {
         title.layout(baseL+leftBar.getLayoutParams().width,baseT, width,height - baseT);
     }
 
-    public static class LayoutParams extends ViewGroup.LayoutParams {
-        public int left = 0;
-        public int top = 0;
-
-        public LayoutParams(Context arg0, AttributeSet arg1) {
-            super(arg0, arg1);
-        }
-
-        public LayoutParams(int arg0, int arg1) {
-            super(arg0, arg1);
-        }
-
-        public LayoutParams(ViewGroup.LayoutParams arg0) {
-            super(arg0);
-        }
-
-    }
+//    public static class LayoutParams extends ViewGroup.LayoutParams {
+//        public int left = 0;
+//        public int top = 0;
+//
+//        public LayoutParams(Context arg0, AttributeSet arg1) {
+//            super(arg0, arg1);
+//        }
+//
+//        public LayoutParams(int arg0, int arg1) {
+//            super(arg0, arg1);
+//        }
+//
+//        public LayoutParams(ViewGroup.LayoutParams arg0) {
+//            super(arg0);
+//        }
+//
+//    }
 
     public MyCalendar getCalendar() {
         return calendar;

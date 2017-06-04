@@ -108,11 +108,7 @@ public class TimeSlotActivity extends AppCompatActivity {
 
             @Override
             public void onTimeSlotEdit(DraggableTimeSlotView draggableTimeSlotView) {
-                long news = draggableTimeSlotView.getNewStartTime();
-                long newe = draggableTimeSlotView.getNewEndTime();
-                Calendar cal = Calendar.getInstance();
-                cal.setTimeInMillis(news);
-                draggableTimeSlotView.getTimeslot().setStartTime(news);
+                draggableTimeSlotView.getTimeslot().setStartTime(draggableTimeSlotView.getNewStartTime());
                 draggableTimeSlotView.getTimeslot().setEndTime(draggableTimeSlotView.getNewEndTime());
             }
 

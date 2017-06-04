@@ -244,6 +244,7 @@ public class TimeSlotView extends WeekView {
         final TimeslotChangeView timeslotChangeView = new TimeslotChangeView(context,dgTimeslot.getTimeslot());
         timeslotChangeView.setBackground(getResources().getDrawable(R.drawable.itime_round_corner_bg));
         final PopupWindow pw = new PopupWindow(timeslotChangeView, 700, LinearLayout.LayoutParams.WRAP_CONTENT, true);
+        pw.setElevation(50);
         pw.setAnimationStyle(R.style.Widget_AppCompat_PopupWindow);
         pw.showAtLocation(timeslotChangeView, Gravity.CENTER,0,0);
         timeslotChangeView.setOnPopupWindowListener(new TimeslotChangeView.OnPopupWindowListener() {

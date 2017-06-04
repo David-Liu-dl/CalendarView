@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         long interval = 3600 * 1000;
         long startTime = calendar.getTimeInMillis();
         long endTime;
-        for (int i = 1; i < 10; i++) {
+        for (int i = 1; i < 4; i++) {
             endTime = startTime + (3600 * 1000);
 
             Event event = new Event();
@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
             event.setEndTime(endTime);
             events.add(event);
 
-            startTime = startTime + 24 * 3600 * 1000;
+//            startTime = startTime + 24 * 3600 * 1000;
         }
 
         dbManager.insertEventList(events);

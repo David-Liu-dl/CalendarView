@@ -107,6 +107,22 @@ public class WeekView extends RelativeLayout{
 
     private void setUpHeader(){
         headerRG = new ITimeRecycleViewGroup(context, NUM_CELL);
+        headerRG.setOnScrollListener(new ITimeRecycleViewGroup.OnScroll<WeekViewHeaderCell>() {
+            @Override
+            public void onPageSelected(WeekViewHeaderCell view) {
+
+            }
+
+            @Override
+            public void onHorizontalScroll(int dx, int preOffsetX) {
+                dayViewBody.getRecycler().followScrollByX(dx);
+            }
+
+            @Override
+            public void onVerticalScroll(int dy, int preOffsetY) {
+
+            }
+        });
         headerRG.setOnSetting(new ITimeRecycleViewGroup.OnSetting() {
             @Override
             public int getItemHeight(int i) {

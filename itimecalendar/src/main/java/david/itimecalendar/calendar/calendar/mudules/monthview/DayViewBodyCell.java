@@ -3,12 +3,10 @@ package david.itimecalendar.calendar.calendar.mudules.monthview;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.media.Image;
 import android.os.Handler;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.LoginFilter;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -17,12 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.daasuu.bl.ArrowDirection;
-import com.daasuu.bl.BubbleLayout;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,7 +24,6 @@ import java.util.TreeMap;
 
 import david.itimecalendar.R;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
-import david.itimecalendar.calendar.unitviews.DraggableTimeSlotView;
 import david.itimecalendar.calendar.util.BaseUtil;
 import david.itimecalendar.calendar.util.DensityUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
@@ -78,7 +70,7 @@ public class DayViewBodyCell extends FrameLayout{
 
     private FrameLayout timeLayout;
     FrameLayout dividerBgRLayout;
-    DayInnerBodyEventLayout eventLayout;
+    DayInnerBodyLayout eventLayout;
 
     public MyCalendar myCalendar;
     protected Context context;
@@ -101,6 +93,10 @@ public class DayViewBodyCell extends FrameLayout{
     //dp
     protected int hourHeight = 30;
     private int spaceTop = 30;
+
+    //dp
+    protected int unitViewLeftMargin = 3;
+    protected int unitViewRightMargin = 0;
 
     private int timeTextSize = 20;
     protected int topAllDayHeight;
@@ -158,6 +154,8 @@ public class DayViewBodyCell extends FrameLayout{
 
     private void initLayoutParams(){
         this.heightPerMillisd = (float) hourHeight /(3600*1000);
+        this.unitViewLeftMargin = DensityUtil.dip2px(context,this.unitViewLeftMargin);
+        this.unitViewRightMargin = DensityUtil.dip2px(context,this.unitViewRightMargin);
     }
 
     private void initView(){
@@ -180,7 +178,7 @@ public class DayViewBodyCell extends FrameLayout{
 //    }
 
     private void initContentView(){
-        eventLayout = new DayInnerBodyEventLayout(context);
+        eventLayout = new DayInnerBodyLayout(context);
 //        eventLayout.setBackgroundColor(getResources().getColor(displayLen == 1 ? color_bg_day_odd : (i%2 == 0 ? color_bg_day_even : color_bg_day_odd)));
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 

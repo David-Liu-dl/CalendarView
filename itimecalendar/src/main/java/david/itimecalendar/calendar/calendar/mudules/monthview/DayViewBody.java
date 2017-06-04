@@ -429,8 +429,6 @@ public class DayViewBody extends FrameLayout {
         bodyPagerAdapter.notifyDataSetChanged();
     }
 
-    /******/
-//    private ArrayList<WrapperTimeSlot> timeSlotPackage = new ArrayList<>();
     private TimeSlotView.TimeSlotPackage timeSlotPackage = new TimeSlotView.TimeSlotPackage();
 
     public TimeSlotView.TimeSlotPackage getTimeSlotPackage(){
@@ -605,6 +603,7 @@ public class DayViewBody extends FrameLayout {
     }
 
     private class AutoSwipeHelper{
+        private final long moveInterval = 700;
         private final int DIRECTION_LEFT = -1;
         private final int DIRECTION_STAY = 0;
         private final int DIRECTION_RIGHT = 1;
@@ -616,12 +615,22 @@ public class DayViewBody extends FrameLayout {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                isSwiping = false;
+                postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        isSwiping = false;
+                    }
+                },moveInterval/NUM_LAYOUTS);
             }
 
             @Override
             public void onAnimationCancel(Animator animation) {
-                isSwiping = false;
+                postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        isSwiping = false;
+                    }
+                },moveInterval/NUM_LAYOUTS);
             }
 
             @Override
@@ -632,7 +641,7 @@ public class DayViewBody extends FrameLayout {
 
         void bodyAutoSwipe(int x){
             int direction = x > (bodyRecyclerView.getWidth()/2) ? DIRECTION_RIGHT:DIRECTION_LEFT;
-            float threshold = getSwipeThreshHold(0.7f, direction);
+            float threshold = getSwipeThreshHold(0.85f, direction);
 
             switch (direction){
                 case DIRECTION_LEFT:
@@ -669,7 +678,7 @@ public class DayViewBody extends FrameLayout {
             float cellWidth = (float) recyclerViewWidth/NUM_LAYOUTS;
 
             if (direction == DIRECTION_LEFT){
-                return cellWidth * percentFactor;
+                return cellWidth * (1 - percentFactor);
             }
 
             if (direction == DIRECTION_RIGHT){

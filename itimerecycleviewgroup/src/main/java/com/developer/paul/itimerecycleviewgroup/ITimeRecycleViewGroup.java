@@ -783,24 +783,11 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
         }
     }
 
-
     @Override
     public void scrollByYSmoothly(int y) {
         scrollByYSmoothly(y, 200);
     }
-    /*** new V ***/
 
-//    public interface OnScroll{
-//        void onPageSelected(View v);
-//        void onHorizontalScroll(int dx, int preOffsetX);
-//        void onVerticalScroll(int dy, int preOffsetY);
-//    }
-//
-//    public void setOnScroll(OnScroll onScroll) {
-//        this.onScroll = onScroll;
-//    }
-
-    /*** old V ***/
     private OnScroll onScroll;
 
     public void setOnScrollListener(OnScroll onScroll){
@@ -817,7 +804,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
         this.onSetting = onSetting;
     }
 
-    public interface OnScroll<V>{
+    public interface OnScroll<V extends View>{
         void onPageSelected(V view);
         void onHorizontalScroll(int dx, int preOffsetX);
         void onVerticalScroll(int dy, int preOffsetY);
@@ -864,5 +851,14 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
 
     public View getFirstShowItem(){
         return getFirstShownAwesomeViewGroup(awesomeViewGroupList).getItem();
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+
+        if (onScroll!=null){
+            onScroll.onPageSelected(getFirstShowItem());
+        }
     }
 }

@@ -39,6 +39,6 @@ public class ScrollHelper {
     }
 
     public static boolean shouldFling(float v){
-        return Math.abs(v) > 200;
+        return Math.abs(v) > 400;
     }
 }

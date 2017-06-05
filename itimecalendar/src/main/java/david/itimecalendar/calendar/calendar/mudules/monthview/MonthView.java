@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.developer.paul.itimerecycleviewgroup.ITimeRecycleViewGroup;
+import com.developer.paul.itimerecycleviewgroup.LogUtil;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -149,6 +151,8 @@ public class MonthView extends LinearLayout{
             @Override
             public void onPageSelected(DayViewBodyCell v) {
                 MyCalendar fstItemDate = v.getCalendar();
+
+                LogUtil.log("mycalendar", fstItemDate.getDay() + "");
                 headerScrollToDate(fstItemDate.getCalendar(), false);
             }
 

@@ -115,7 +115,7 @@ public class TimeSlotController {
             DayInnerBodyLayout.LayoutParams params = (DayInnerBodyLayout.LayoutParams)TimeSlotController.this.container.tempDragView.getLayoutParams();
             params.top = (int) TimeSlotController.this.container.nowTapY;
             container.addView(TimeSlotController.this.container.tempDragView);
-            BaseUtil.relayoutChildren(container);
+//            BaseUtil.relayoutChildren(container);
             TimeSlotController.this.container.tempDragView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -350,7 +350,7 @@ public class TimeSlotController {
             tsV.getTimeslot().setEndTime(startTime + duration);
             resizeTimeSlot(tsV,animate);
         }
-        BaseUtil.relayoutChildren(container.eventLayout);
+//        BaseUtil.relayoutChildren(container.eventLayout);
     }
 
     void clearTimeSlots(){

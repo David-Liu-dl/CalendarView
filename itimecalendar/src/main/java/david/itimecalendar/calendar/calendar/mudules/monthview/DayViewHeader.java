@@ -324,7 +324,7 @@ public class DayViewHeader extends LinearLayout {
         }
     }
     /***************************************************************/
-    class cellOnClickListener implements OnClickListener{
+    private class cellOnClickListener implements OnClickListener{
 
         @Override
         public void onClick(View view) {

@@ -3,6 +3,7 @@ package com.developer.paul.itimerecycleviewgroup;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -85,10 +86,13 @@ public class AwesomeViewGroup extends ViewGroup {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         int newW = r - l;
         int newH = b - t;
+        if (newW == 0 || newH == 0){
+            Log.i(TAG, "onLayout: newW: " + newW + " newH: " + newH);
+        }
+        item.layout(0,0,newW,newH);
 
         if (changed && item != null){
             if (!isInRange(newH, height, tolerance) || !isInRange(newW, width, tolerance)){
-                item.layout(0,0,newW,newH);
                 width = newW;
                 height = newH;
             }
@@ -110,9 +114,6 @@ public class AwesomeViewGroup extends ViewGroup {
         View parent = (View) getParent();
         return lp.left>parent.getWidth();
     }
-
-
-
 
     public boolean isLeftOutOfParent() {
         AwesomeLayoutParams lp = (AwesomeLayoutParams) getLayoutParams();

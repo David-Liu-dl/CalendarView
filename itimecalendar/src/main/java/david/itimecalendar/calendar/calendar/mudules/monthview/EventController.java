@@ -82,9 +82,7 @@ public class EventController {
                     if (event.isShownInCalendar() == View.VISIBLE){
                         WrapperEvent wrapperEvent = new WrapperEvent(event);
                         wrapperEvent.setFromDayBegin(startTime);
-                        if (BaseUtil.isAllDayEvent(event)){
-//                            this.addAllDayEvent(wrapperEvent, i);
-                        }else {
+                        if (!event.isAllDay()){
                             this.addRegularEvent(wrapperEvent);
                         }
                     }
@@ -97,9 +95,7 @@ public class EventController {
                     if (event.isShownInCalendar() == View.VISIBLE){
                         WrapperEvent wrapperEvent = new WrapperEvent(event);
                         wrapperEvent.setFromDayBegin(startTime);
-                        if (BaseUtil.isAllDayEvent(event)){
-//                            this.addAllDayEvent(wrapperEvent, i);
-                        }else {
+                        if (!event.isAllDay()){
                             this.addRegularEvent(wrapperEvent);
                         }
                     }
@@ -507,7 +503,7 @@ public class EventController {
             EventController.this.container.tempDragView = createTempDayDraggableEventView(EventController.this.container.nowTapX, EventController.this.container.nowTapY);
             EventController.this.container.tempDragView.setAlpha(1);
             container.addView(EventController.this.container.tempDragView);
-            BaseUtil.relayoutChildren(container);
+//            BaseUtil.relayoutChildren(container);
 
             ObjectAnimator scaleX = ObjectAnimator.ofFloat(EventController.this.container.tempDragView, "scaleX", 0f,1f);
             ObjectAnimator scaleY = ObjectAnimator.ofFloat(EventController.this.container.tempDragView, "scaleY", 0f,1f);
@@ -612,14 +608,14 @@ public class EventController {
 
     private ITimeEventInterface initializeEvent() {
         try {
-            ITimeEventInterface t = new EventPackage();
+            ITimeEventInterface t = new EventModule();
             return t;
         } catch (Exception e) {
             return null;
         }
     }
 
-    class EventPackage implements ITimeEventInterface{
+    class EventModule implements ITimeEventInterface{
 
         @Override
         public String getEventUid() {
@@ -688,6 +684,16 @@ public class EventController {
 
         @Override
         public boolean isHighlighted() {
+            return false;
+        }
+
+        @Override
+        public void setIsAllDay(boolean isAllDay) {
+
+        }
+
+        @Override
+        public boolean isAllDay() {
             return false;
         }
 

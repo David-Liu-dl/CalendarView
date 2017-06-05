@@ -1,6 +1,7 @@
 package david.itimecalendar.calendar.calendar.mudules.monthview;
 
 import android.animation.Animator;
+import android.animation.LayoutTransition;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -17,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.daasuu.bl.ArrowDirection;
@@ -43,9 +45,10 @@ import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
  * Created by yuhaoliu on 11/05/2017.
  */
 
-public class DayViewBody extends FrameLayout {
+public class DayViewBody extends RelativeLayout {
     private static final String TAG = "DayViewBody";
 
+    private DayViewAllDay allDayView;
     private FrameLayout leftTimeBarLayout;
     private ITimeRecycleViewGroup bodyRecyclerView;
     private BubbleLayout bubble;
@@ -59,6 +62,7 @@ public class DayViewBody extends FrameLayout {
     private int topSpace = 30;
     private int leftBarWidth = 100;
     private int NUM_LAYOUTS = 3;
+    private int allDayEventHeight = 100;
 
     private int color_time_text = R.color.text_enable;
 
@@ -91,6 +95,7 @@ public class DayViewBody extends FrameLayout {
                 topSpace = (int)typedArray.getDimension(R.styleable.viewBody_topSpace, topSpace);
                 leftBarWidth = (int)typedArray.getDimension(R.styleable.viewBody_leftBarWidth, leftBarWidth);
                 hourHeight = (int)typedArray.getDimension(R.styleable.viewBody_hourHeight, hourHeight);
+                allDayEventHeight = (int)typedArray.getDimension(R.styleable.viewBody_allDayHeight, allDayEventHeight);
             } finally {
                 typedArray.recycle();
             }
@@ -127,12 +132,22 @@ public class DayViewBody extends FrameLayout {
 
     private void init(){
         this.context = getContext();
+        this.setLayoutTransition(new LayoutTransition());
+        setUpAllDay();
         setUpBody();
+    }
+
+    private void setUpAllDay(){
+        allDayView = new DayViewAllDay(context, attrs);
+        allDayView.setId(generateViewId());
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, allDayEventHeight);
+        this.addView(allDayView,params);
     }
 
     private void setUpBody(){
         setUpLeftTimeBar();
         setUpCalendarBody();
+        allDayView.bringToFront();
         initBubbleView();
     }
 
@@ -148,7 +163,7 @@ public class DayViewBody extends FrameLayout {
         bodyRecyclerView.setOnSetting(new ITimeRecycleViewGroup.OnSetting() {
             @Override
             public int getItemHeight(int i) {
-                int childMaxHeight = hourHeight * 25;
+                int childMaxHeight = (int)(hourHeight * 24.5f);
                 return childMaxHeight;
             }
         });
@@ -162,6 +177,8 @@ public class DayViewBody extends FrameLayout {
 
             @Override
             public void onHorizontalScroll(int dx, int preOffsetX) {
+                allDayView.getRecycleViewGroup().followScrollByX(dx);
+
                 if (onScroll != null){
                     onScroll.onHorizontalScroll(dx, preOffsetX);
                 }
@@ -169,15 +186,17 @@ public class DayViewBody extends FrameLayout {
 
             @Override
             public void onVerticalScroll(int dy, int preOffsetY) {
-                synViewsVerticalPosition(preOffsetY + dy, leftTimeBarLayout);
+                synViewsVerticalPosition(dy, leftTimeBarLayout);
                 if (onScroll != null){
                     onScroll.onVerticalScroll(dy, preOffsetY);
                 }
             }
         });
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.leftMargin = leftBarWidth;
-        this.addView(bodyRecyclerView, params);
+        params.addRule(BELOW, allDayView.getId());
+        bodyRecyclerView.setLayoutParams(params);
+        this.addView(bodyRecyclerView);
 
         //set up inner body listener
         setUpBodyCellInnerListener();
@@ -259,18 +278,18 @@ public class DayViewBody extends FrameLayout {
         dctView.setPadding(0, 0, 0, 0);
         this.leftTimeBarLayout.addView(dctView);
 
-        this.addView(leftTimeBarLayout, new FrameLayout.LayoutParams(leftBarWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
+        RelativeLayout.LayoutParams leftTimeBarParams = new RelativeLayout.LayoutParams(leftBarWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
+        leftTimeBarParams.addRule(BELOW, allDayView.getId());
+        leftTimeBarLayout.setLayoutParams(leftTimeBarParams);
+        this.addView(leftTimeBarLayout);
     }
 
-    private void synViewsVerticalPosition(float toPositionY, View targetV){
-        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) targetV.getLayoutParams();
+    private void synViewsVerticalPosition(float dy, View targetView){
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) targetView.getLayoutParams();
         if (params!=null){
-            params.topMargin = (int) toPositionY;
-            targetV.layout(0,params.topMargin, leftBarWidth,this.getHeight());
+            params.topMargin += dy;
+            targetView.setLayoutParams(params);
         }
-    }
-
-    private void scrollVertical(float dy, View view){
     }
 
     private int initTimeText(String[] HOURS) {
@@ -324,7 +343,7 @@ public class DayViewBody extends FrameLayout {
         bubble.setVisibility(GONE);
         bubble.setArrowPosition(bubbleWidth/2 - bubble.getArrowWidth()/2);
 
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(bubbleWidth, bubbleHeight);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(bubbleWidth, bubbleHeight);
         this.addView(bubble,params);
 
         LinearLayout bubbleMenuContainer = new LinearLayout(getContext());
@@ -400,6 +419,7 @@ public class DayViewBody extends FrameLayout {
     /************************************************************************************/
     public void setEventPackage(ITimeEventPackageInterface eventPackage){
         this.bodyPagerAdapter.setEventPackage(eventPackage);
+        this.allDayView.setEventPackage(eventPackage);
     }
 
     private EventController.OnEventListener onEventListener;
@@ -418,6 +438,10 @@ public class DayViewBody extends FrameLayout {
     }
 
     public void scrollToDate(Date date){
+        if (bodyRecyclerView.getFirstShowItem() == null){
+            return;
+        }
+
         MyCalendar currentFstShowDay = ((DayViewBodyCell) bodyRecyclerView.getFirstShowItem()).getCalendar();
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);

@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -66,17 +67,11 @@ public class DayViewBodyCell extends FrameLayout{
     protected boolean isTimeSlotEnable = false;
     protected boolean isRemoveOptListener = false;
 
-    private FrameLayout bodyContainerLayout;
-
-    private FrameLayout timeLayout;
     FrameLayout dividerBgRLayout;
     DayInnerBodyLayout eventLayout;
 
-    public MyCalendar myCalendar;
+    public MyCalendar myCalendar = new MyCalendar(Calendar.getInstance());
     protected Context context;
-
-    protected ArrayList<DayInnerHeaderEventLayout> allDayEventLayouts = new ArrayList<>();
-//    protected ArrayList<DayInnerBodyEventLayout> eventLayouts = new ArrayList<>();
 
     protected TreeMap<Integer, String> positionToTimeTreeMap = new TreeMap<>();
     protected TreeMap<Integer, String> positionToTimeQuarterTreeMap = new TreeMap<>();
@@ -304,7 +299,8 @@ public class DayViewBodyCell extends FrameLayout{
     }
 
     public void refresh(){
-        BaseUtil.relayoutChildren(eventLayout);
+//        BaseUtil.relayoutChildren(eventLayout);
+        requestLayout();
     }
 
     protected int[] reComputePositionToSet(int actualX, int actualY, View draggableObj, View container) {

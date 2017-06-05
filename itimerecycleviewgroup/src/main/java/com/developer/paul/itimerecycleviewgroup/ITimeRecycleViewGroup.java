@@ -15,6 +15,7 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Scroller;
@@ -27,6 +28,7 @@ import java.util.List;
  */
 
 public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface{
+    private static final String TAG = "crazyMove";
     private List<AwesomeViewGroup> awesomeViewGroupList = new ArrayList<>();
     private int NUM_SHOW = 7;
     int[] colors =new int[]{Color.RED, Color.BLUE, Color.GRAY, Color.YELLOW, Color.GREEN, Color.WHITE, Color.MAGENTA, Color.DKGRAY, Color.CYAN};
@@ -98,8 +100,35 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
         mTouchSlop = vc.getScaledTouchSlop();
         mMaxVelocity = ViewConfiguration.get(getContext()).getScaledMaximumFlingVelocity();
         mScroller = new Scroller(getContext());
+
+        ViewTreeObserver vto = this.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener (new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                ITimeRecycleViewGroup.this.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                initViewWhenShown();
+            }
+        });
     }
 
+    private void initViewWhenShown(){
+        for (int i = 0 ; i < awesomeViewGroupList.size() ; i ++){
+            AwesomeViewGroup awesomeViewGroup = awesomeViewGroupList.get(i);
+            AwesomeViewGroup.AwesomeLayoutParams lp = (AwesomeViewGroup.AwesomeLayoutParams) awesomeViewGroup.getLayoutParams();
+
+            lp.parentHeight = viewHeight;
+            lp.width = childWidth;
+            lp.height = childHeight;
+
+            lp.left = (i-1) * childWidth;
+            lp.right = lp.left + childWidth;
+            lp.bottom = lp.top + lp.height;
+        }
+
+        if (onScroll!=null){
+            onScroll.onPageSelected(getFirstShowItem());
+        }
+    }
 
     private void moveXPostCheck(List<AwesomeViewGroup> awesomeViewGroups, int scrollDir){
         int viewGroupSize = awesomeViewGroups.size();
@@ -112,18 +141,16 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
                     tempList.add(awesomeViewGroups.get(i));
                 }
             }
-
             for (int i = 0 ; i < tempList.size() ; i++){
                 // redraw must before move, because of the index
                 reDrawViewGroupToLast(tempList.get(i), awesomeViewGroups.get(viewGroupSize - 1));
                 moveViewGroupToLast(tempList.get(i), awesomeViewGroups);
-//                Log.i("aaa", "moveXPostCheck: left : " + tempList.get(i).getInRecycledViewIndex());
                 if (adapter!=null) {
                     adapter.notifyDataSetChanged(tempList.get(i));
                 }
                 pageChanged = true;
-
             }
+
         }else if (scrollDir == SCROLL_RIGHT){
             for (int i = 0 ; i < viewGroupSize ; i ++){
                 if (awesomeViewGroups.get(i).isLeftOutOfParentRight()){
@@ -145,7 +172,6 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
         }
 
         if (pageChanged){
-//            LogUtil.logAwesomes(awesomeViewGroups);
             if (onScroll!=null){
                 onScroll.onPageSelected(getFirstShowItem());
             }
@@ -216,13 +242,14 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
     }
 
     private AwesomeViewGroup getFirstShownAwesomeViewGroup(List<AwesomeViewGroup> awesomeViewgroups){
-        for (AwesomeViewGroup awesomeViewgroup : awesomeViewgroups){
-            AwesomeViewGroup.AwesomeLayoutParams lp = (AwesomeViewGroup.AwesomeLayoutParams) awesomeViewgroup.getLayoutParams();
-            if (lp.left<=0 && lp.right > 0){
-                return awesomeViewgroup;
-            }
-        }
-        return null;
+//        for (AwesomeViewGroup awesomeViewgroup : awesomeViewgroups){
+//            AwesomeViewGroup.AwesomeLayoutParams lp = (AwesomeViewGroup.AwesomeLayoutParams) awesomeViewgroup.getLayoutParams();
+//            if (lp.left<=0 && lp.right > 0){
+//                return awesomeViewgroup;
+//            }
+                return awesomeViewgroups.get(1);
+//        }
+//        return null;
     }
 
     private void scrollToClosestPosition(List<AwesomeViewGroup> awesomeViewGroups){
@@ -288,11 +315,6 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
         toBeDrawLp.left = toBeDrawLp.right - toBeDrawLp.width;
     }
 
-
-
-
-
-
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -320,9 +342,6 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
             lp.width = childWidth;
             lp.height = childHeight;
 
-            lp.left = (i-1) * childWidth;
-            lp.right = lp.left + childWidth;
-            lp.bottom = lp.top + lp.height;
         }
     }
 
@@ -514,7 +533,6 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
                         } else if (moveX < 0) {
                             scrollDir = SCROLL_LEFT;
                         }
-
                         scrollByX((int) moveX);
                         preX = newX;
                     } else if (scrollModel == SCROLL_VERTICAL) {
@@ -597,6 +615,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
 
     @Override
     public void scrollByX(int x) {
+
         if (x > 0){
             scrollDir = SCROLL_RIGHT;
         }else if (x < 0){
@@ -851,14 +870,5 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
 
     public View getFirstShowItem(){
         return getFirstShownAwesomeViewGroup(awesomeViewGroupList).getItem();
-    }
-
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-
-        if (onScroll!=null){
-            onScroll.onPageSelected(getFirstShowItem());
-        }
     }
 }

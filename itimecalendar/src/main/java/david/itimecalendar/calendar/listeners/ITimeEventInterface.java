@@ -28,6 +28,8 @@ public interface ITimeEventInterface<T> extends Comparable<T> {
     void setHighLighted(boolean highlighted);
     boolean isHighlighted();
 
+    void setIsAllDay(boolean isAllDay);
+    boolean isAllDay();
     /**
      *
      * @return View.VISIBILITY

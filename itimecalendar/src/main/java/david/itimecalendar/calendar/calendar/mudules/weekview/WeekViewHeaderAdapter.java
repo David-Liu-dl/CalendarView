@@ -18,7 +18,7 @@ import david.itimecalendar.calendar.util.MyCalendar;
  * Created by yuhaoliu on 29/05/2017.
  */
 
-public class WeekViewHeaderAdapter extends ITimeAdapter {
+public class WeekViewHeaderAdapter extends ITimeAdapter<WeekViewHeaderCell> {
     private Context context;
 
     public WeekViewHeaderAdapter(Context context) {
@@ -26,19 +26,17 @@ public class WeekViewHeaderAdapter extends ITimeAdapter {
     }
 
     @Override
-    public View onCreateViewHolder() {
-        View head = new WeekViewHeaderCell(context);
+    public WeekViewHeaderCell onCreateViewHolder() {
+        WeekViewHeaderCell head = new WeekViewHeaderCell(context);
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         head.setLayoutParams(params);
         return head;
     }
 
     @Override
-    public void onBindViewHolder(View view, int i) {
+    public void onBindViewHolder(WeekViewHeaderCell view, int i) {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, i);
-
-        WeekViewHeaderCell headerCell = (WeekViewHeaderCell) view;
-        headerCell.setCalendar(new MyCalendar(cal));
+        view.setCalendar(new MyCalendar(cal));
     }
 }

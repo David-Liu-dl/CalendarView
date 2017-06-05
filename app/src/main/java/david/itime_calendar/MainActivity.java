@@ -63,13 +63,16 @@ public class MainActivity extends AppCompatActivity {
         List<Contact> contacts = initContact();
         int[] type = {0, 1, 2};
         int[] status = {0, 1};
-        long interval = 3600 * 1000;
+        long allDayInterval = (24 * 3600 * 1000);
+        long interval = (3600 * 1000);
         long startTime = calendar.getTimeInMillis();
         long endTime;
-        for (int i = 1; i < 200; i++) {
-            endTime = startTime + (3600 * 1000);
+        for (int i = 1; i < 3; i++) {
+            endTime = startTime + interval;
 
             Event event = new Event();
+            event.setIsAllDay(true);
+//            event.setIsAllDay(false);
             event.setEventUid("" + i);
             event.setTitle("adawdwadwadaw" + i);
             event.setDisplayEventType(1);
@@ -97,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
             event.setEndTime(endTime);
             events.add(event);
 
-            startTime = startTime + interval;
+            startTime = startTime + allDayInterval;
         }
 
         dbManager.insertEventList(events);
@@ -161,6 +164,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        timeslotBtn.performClick();
+//        dayBtn.performClick();
     }
 }

@@ -24,7 +24,7 @@ import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
  * Created by yuhaoliu on 9/05/2017.
  */
 
-public class BodyAdapter extends ITimeAdapter {
+public class BodyAdapter extends ITimeAdapter<DayViewBodyCell> {
     private ITimeEventPackageInterface eventPackage;
     private TimeSlotView.TimeSlotPackage slotsInfo;
     private Context context;
@@ -64,18 +64,18 @@ public class BodyAdapter extends ITimeAdapter {
     }
 
     @Override
-    public View onCreateViewHolder() {
-        View view = new DayViewBodyCell(context, attrs);
+    public DayViewBodyCell onCreateViewHolder() {
+        DayViewBodyCell view = new DayViewBodyCell(context, attrs);
         viewItems.add(view);
         return view;
     }
 
     @Override
-    public void onBindViewHolder(View item, int offset) {
+    public void onBindViewHolder(DayViewBodyCell item, int offset) {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, offset);
 
-        DayViewBodyCell body = (DayViewBodyCell) item;
+        DayViewBodyCell body = item;
 
         //setBorderColor
         if (offset % NUM_CELL == 0){

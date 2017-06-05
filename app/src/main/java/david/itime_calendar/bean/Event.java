@@ -45,6 +45,8 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
     private double locationLatitude;
     private double locationLongitude;
     private String note;
+    private boolean isAllDay;
+
 
 
     private transient List<PhotoUrl> photoList = null;
@@ -107,11 +109,11 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
     public Event() {
     }
 
-    @Generated(hash = 217815341)
+    @Generated(hash = 1553904812)
     public Event(String eventUid, String eventId, String recurringEventUid, String recurringEventId,
             String calendarUid, String iCalUID, String hostUserUid, String summary, String url,
             String location, String locationNote, double locationLatitude, double locationLongitude,
-            String note, String photo, long startTime, long endTime, int eventType,
+            String note, boolean isAllDay, String photo, long startTime, long endTime, int eventType,
             @NotNull String display) {
         this.eventUid = eventUid;
         this.eventId = eventId;
@@ -127,14 +129,13 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
         this.locationLatitude = locationLatitude;
         this.locationLongitude = locationLongitude;
         this.note = note;
+        this.isAllDay = isAllDay;
         this.photo = photo;
         this.startTime = startTime;
         this.endTime = endTime;
         this.eventType = eventType;
         this.display = display;
     }
-
-
 
     @Override
     public void setTitle(String summary) {
@@ -162,6 +163,16 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
     @Override
     public boolean isHighlighted() {
         return this.highlighted;
+    }
+
+    @Override
+    public void setIsAllDay(boolean isAllDay) {
+        this.isAllDay = isAllDay;
+    }
+
+    @Override
+    public boolean isAllDay() {
+        return this.isAllDay;
     }
 
     @Override
@@ -538,6 +549,10 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
 
     public void setDisplay(String display) {
         this.display = display;
+    }
+
+    public boolean getIsAllDay() {
+        return this.isAllDay;
     }
 
 }

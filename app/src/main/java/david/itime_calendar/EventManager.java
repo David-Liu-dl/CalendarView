@@ -28,7 +28,7 @@ public class EventManager {
     private ArrayList<Event> orgRepeatedEventList = new ArrayList<>();
     private Map<Long, List<ITimeEventInterface>> repeatedEventMap = new HashMap<>();
 
-    //<UUID, List of tracer> : For tracking event on Day of repeated event map
+    //<UUID, List of tracer> : For tracking item on Day of repeated item map
     private Map<String,ArrayList<EventTracer>> uidTracerMap = new HashMap();
 
     private EventsPackage eventsPackage = new EventsPackage();
@@ -59,8 +59,8 @@ public class EventManager {
     }
 
     public void addEvent(Event event){
-//        if (isAllDayEvent(event)){
-//            allDayEventList.add(event);
+//        if (isAllDayEvent(item)){
+//            allDayEventList.add(item);
 //            return;
 //        }
         //if not repeated
@@ -119,7 +119,7 @@ public class EventManager {
 
             EventTracer tracer = new EventTracer(this.repeatedEventMap, dup_event, dayBeginMilliseconds);
 
-            //add event to uuid - tracer map for tracking back to delete on day map.
+            //add item to uuid - tracer map for tracking back to delete on day map.
             if (uidTracerMap.containsKey(event.getEventUid())){
                 uidTracerMap.get(event.getEventUid()).add(tracer);
             }else {
@@ -127,7 +127,7 @@ public class EventManager {
                 uidTracerMap.get(event.getEventUid()).add(tracer);
             }
 
-            //add event to repeated map
+            //add item to repeated map
             if (repeatedEventMap.containsKey(dayBeginMilliseconds)){
                 repeatedEventMap.get(dayBeginMilliseconds).add(dup_event);
             }else {
@@ -178,7 +178,7 @@ public class EventManager {
             Log.i(TAG, "oldEvent: " + oldEvent);
             for (ITimeEventInterface event :this.regularEventMap.get(oldBeginTime)
                  ) {
-                Log.i(TAG, "event: " + event);
+                Log.i(TAG, "item: " + event);
             }
             this.regularEventMap.get(oldBeginTime).remove(oldEvent);
             oldEvent.setStartTime(newStartTime);

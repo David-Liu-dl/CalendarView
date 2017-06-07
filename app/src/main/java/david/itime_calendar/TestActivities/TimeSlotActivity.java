@@ -14,9 +14,9 @@ import david.itime_calendar.EventManager;
 import david.itime_calendar.MainActivity;
 import david.itime_calendar.R;
 import david.itime_calendar.bean.TimeSlot;
-import david.itimecalendar.calendar.calendar.mudules.monthview.TimeSlotController;
+import david.itimecalendar.calendar.calendar.mudules.monthview.DayViewBody;
 import david.itimecalendar.calendar.calendar.mudules.weekview.TimeSlotView;
-import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
+import david.itimecalendar.calendar.listeners.ITimeEventInterface;
 import david.itimecalendar.calendar.unitviews.DraggableTimeSlotView;
 import david.itimecalendar.calendar.unitviews.RecommendedSlotView;
 import david.itimecalendar.calendar.unitviews.TimeSlotInnerCalendarView;
@@ -69,10 +69,31 @@ public class TimeSlotActivity extends AppCompatActivity {
                 timeslotView.setTimeslotDuration(duration,false);
             }
         });
-        timeslotView.setOnTimeSlotListener(new TimeSlotController.OnTimeSlotListener() {
+        timeslotView.setOnTimeSlotListener(new DayViewBody.OnTimeSlotViewBodyListener() {
+            @Override
+            public void onAllDayEventClick(ITimeEventInterface event) {
+
+            }
+
+            @Override
+            public void onAllDayRcdTimeslotClick(RecommendedSlotView rcdView) {
+                rcdView.getWrapper().setSelected(true);
+                TimeSlot newSlot = new TimeSlot();
+                newSlot.setIsAllDay(true);
+                //ensure set the start time correctly, otherwise it cannot be shown
+                newSlot.setStartTime(rcdView.getWrapper().getTimeSlot().getStartTime());
+                newSlot.setEndTime(rcdView.getWrapper().getTimeSlot().getEndTime());
+                timeslotView.addTimeSlot(newSlot);
+            }
+
+            @Override
+            public void onAllDayTimeslotClick(DraggableTimeSlotView timeSlotView) {
+
+            }
+
             @Override
             public void onTimeSlotCreate(DraggableTimeSlotView draggableTimeSlotView) {
-                Log.i("", "onTimeSlotCreate: ");
+
             }
 
             @Override
@@ -116,8 +137,8 @@ public class TimeSlotActivity extends AppCompatActivity {
             public void onTimeSlotDelete(DraggableTimeSlotView draggableTimeSlotView) {
                 timeslotView.removeTimeslot(draggableTimeSlotView.getWrapper());
             }
-        });
 
+        });
 
         for (TimeSlot slot:slots
                 ) {
@@ -129,14 +150,16 @@ public class TimeSlotActivity extends AppCompatActivity {
         Calendar cal = Calendar.getInstance();
         long startTime = cal.getTimeInMillis();
         long duration = 3*3600*1000;
+        long dayInterval = 24 * 3600 * 1000;
         for (int i = 0; i < 10; i++) {
             TimeSlot slot = new TimeSlot();
             slot.setStartTime(startTime);
             slot.setEndTime(startTime+duration);
             slot.setRecommended(true);
+            slot.setIsAllDay(i == 2);
             slots.add(slot);
 
-            startTime += 5 * 3600 * 1000;
+            startTime += dayInterval;
         }
     }
 

@@ -11,6 +11,7 @@ import david.itimecalendar.calendar.unitviews.DraggableEventView;
 import david.itimecalendar.calendar.unitviews.DraggableTimeSlotView;
 import david.itimecalendar.calendar.unitviews.RecommendedSlotView;
 import david.itimecalendar.calendar.wrapper.WrapperEvent;
+import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
 
 /**
  * Created by yuhaoliu on 21/09/16.
@@ -19,6 +20,7 @@ public class DayInnerBodyLayout extends ViewGroup {
     private static final String TAG = "DayInnerBodyEventLayout";
     ArrayList<WrapperEvent> events = new ArrayList<>();
     ArrayList<DraggableEventView> dgEvents = new ArrayList<>();
+    ArrayList<WrapperTimeSlot> slots = new ArrayList<>();
 
     public ArrayList<WrapperEvent> getEvents() {
         return events;
@@ -34,6 +36,14 @@ public class DayInnerBodyLayout extends ViewGroup {
 
     public void setDgEvents(ArrayList<DraggableEventView> dgEvents) {
         this.dgEvents = dgEvents;
+    }
+
+    public ArrayList<WrapperTimeSlot> getSlots() {
+        return slots;
+    }
+
+    public void setSlots(ArrayList<WrapperTimeSlot> slots) {
+        this.slots = slots;
     }
 
     public DayInnerBodyLayout(Context context) {
@@ -80,7 +90,25 @@ public class DayInnerBodyLayout extends ViewGroup {
                 getChildAt(i).getLayoutParams().width = width;
                 if (getChildAt(i).getVisibility() != View.GONE) {
                     //Make or work out measurements for children here (MeasureSpec.make...)
-                    measureChild (getChildAt(i), widthMeasureSpec, heightMeasureSpec);
+                    DraggableTimeSlotView timeSlotView = (DraggableTimeSlotView) getChildAt(i);
+                    DayInnerBodyLayout.LayoutParams params =  (DayInnerBodyLayout.LayoutParams) timeSlotView.getLayoutParams();
+                    DraggableTimeSlotView.PosParam pos = timeSlotView.getPosParam();
+                    if (pos == null) {
+                        // for creating a new item
+                        // the pos parameter is null, because we just mock it
+                        params.width = width;
+                        continue;
+                    }
+                    int timeslotConsumedWidth = width/pos.widthFactor;
+                    int leftMargin = timeslotConsumedWidth * pos.startX;
+                    params.width = timeslotConsumedWidth;
+                    params.left = leftMargin + 1 * pos.startX;
+                    params.top = pos.topMargin;
+
+                    // measure child with correct spec
+                    int childWidthSpec = MeasureSpec.makeMeasureSpec(timeslotConsumedWidth,MeasureSpec.EXACTLY);
+                    int childHeightSpec = heightMeasureSpec;
+                    measureChild(getChildAt(i), childWidthSpec, childHeightSpec);
                 }
             }
 
@@ -99,17 +127,20 @@ public class DayInnerBodyLayout extends ViewGroup {
             DayInnerBodyLayout.LayoutParams params =  (DayInnerBodyLayout.LayoutParams) eventView.getLayoutParams();
             DraggableEventView.PosParam pos = eventView.getPosParam();
             if (pos == null) {
-                // for creating a new event
+                // for creating a new item
                 // the pos parameter is null, because we just mock it
                 params.width = width;
                 continue;
             }
             int eventConsumedWidth = width/pos.widthFactor;
-//            int eventShowWidth = eventConsumedWidth - pos.widthFactor * (params.relativeMarginLeft + params.relativeMarginRight);
             int leftMargin = eventConsumedWidth * pos.startX;
             params.width = eventConsumedWidth;
             params.left = leftMargin + 1 * pos.startX;
             params.top = pos.topMargin;
+            // measure child with correct spec
+            int childWidthSpec = MeasureSpec.makeMeasureSpec(eventConsumedWidth,MeasureSpec.EXACTLY);
+            int childHeightSpec = heightMeasureSpec;
+            measureChild(getChildAt(i), childWidthSpec, childHeightSpec);
         }
     }
 
@@ -136,9 +167,10 @@ public class DayInnerBodyLayout extends ViewGroup {
         }
     }
 
-    public void resetView(){
+    public void clearViews(){
         this.removeAllViews();
         events.clear();
         dgEvents.clear();
+        slots.clear();
     }
 }

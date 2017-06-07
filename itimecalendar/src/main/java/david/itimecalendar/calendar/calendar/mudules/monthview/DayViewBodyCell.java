@@ -18,16 +18,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Map;
 import java.util.TreeMap;
 
 import david.itimecalendar.R;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
-import david.itimecalendar.calendar.util.BaseUtil;
 import david.itimecalendar.calendar.util.DensityUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
+import david.itimecalendar.calendar.util.OverlapHelper;
 import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
 
 /**
@@ -36,7 +35,7 @@ import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
 
 public class DayViewBodyCell extends FrameLayout{
     public final String TAG = "DayViewBodyCell";
-    //FOR event inner type
+    //FOR item inner type
     public static final int UNDEFINED = -1;
     public static final int REGULAR = 0;
     public static final int DAY_CROSS_BEGIN = 1;
@@ -66,6 +65,7 @@ public class DayViewBodyCell extends FrameLayout{
 
     protected boolean isTimeSlotEnable = false;
     protected boolean isRemoveOptListener = false;
+    protected OverlapHelper xHelper = new OverlapHelper();
 
     FrameLayout dividerBgRLayout;
     DayInnerBodyLayout eventLayout;
@@ -159,10 +159,10 @@ public class DayViewBodyCell extends FrameLayout{
     }
 
 //    @Override
-//    public boolean onTouchEvent(MotionEvent event) {
-//        boolean value = super.onTouchEvent(event);
-//        Log.i(TAG, "DayViewBodyCell onTouchEvent:Action: " + event.getAction() + " R:" + value);
-//        return super.onTouchEvent(event);
+//    public boolean onTouchEvent(MotionEvent item) {
+//        boolean value = super.onTouchEvent(item);
+//        Log.i(TAG, "DayViewBodyCell onTouchEvent:Action: " + item.getAction() + " R:" + value);
+//        return super.onTouchEvent(item);
 //    }
 //
 //    @Override
@@ -298,11 +298,6 @@ public class DayViewBodyCell extends FrameLayout{
         this.myCalendar = myCalendar;
     }
 
-    public void refresh(){
-//        BaseUtil.relayoutChildren(eventLayout);
-        requestLayout();
-    }
-
     protected int[] reComputePositionToSet(int actualX, int actualY, View draggableObj, View container) {
         int containerWidth = container.getWidth();
         int containerHeight = container.getHeight();
@@ -372,12 +367,9 @@ public class DayViewBodyCell extends FrameLayout{
         this.eventController.setOnEventListener(onEventListener);
     }
 
-    public void resetViews() {
-        clearAllEvents();
-    }
-
-    public void clearAllEvents() {
-        eventController.clearAllEvents();
+    public void resetView() {
+        eventController.clearEvents();
+        timeSlotController.clearTimeslots();
     }
 
     /**
@@ -422,11 +414,11 @@ public class DayViewBodyCell extends FrameLayout{
 
     /*** for time slot ***/
     public void clearTimeSlots(){
-        timeSlotController.clearTimeSlots();
+        timeSlotController.clearTimeslots();
     }
 
     public void resetTimeSlotViews(){
-        timeSlotController.resetTimeSlotViews();
+        timeSlotController.clearTimeslots();
     }
 
     public void addSlot(WrapperTimeSlot wrapper, boolean animate){

@@ -1,13 +1,18 @@
 package david.itimecalendar.calendar.wrapper;
 
 
+import android.support.annotation.NonNull;
+
 import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
+import david.itimecalendar.calendar.unitviews.DraggableTimeSlotView;
+import david.itimecalendar.calendar.util.OverlapHelper;
 
 /**
  * Created by yuhaoliu on 4/01/2017.
  */
 
-public class WrapperTimeSlot {
+public class WrapperTimeSlot implements OverlapHelper.OverlapInput<WrapperTimeSlot>{
+    private DraggableTimeSlotView draggableTimeSlotView;
     private ITimeTimeSlotInterface timeSlot = null;
     private boolean isSelected = false;
     private boolean isAnimated = false;
@@ -69,4 +74,26 @@ public class WrapperTimeSlot {
         isRecommended = recommended;
     }
 
+    public DraggableTimeSlotView getDraggableTimeSlotView() {
+        return draggableTimeSlotView;
+    }
+
+    public void setDraggableTimeSlotView(DraggableTimeSlotView draggableTimeSlotView) {
+        this.draggableTimeSlotView = draggableTimeSlotView;
+    }
+
+    @Override
+    public long getStartTime() {
+        return this.getTimeSlot().getStartTime();
+    }
+
+    @Override
+    public long getEndTime() {
+        return this.getTimeSlot().getEndTime();
+    }
+
+    @Override
+    public int compareTo(@NonNull WrapperTimeSlot o) {
+        return this.getTimeSlot().compareTo(o.getTimeSlot());
+    }
 }

@@ -18,7 +18,6 @@ import java.util.Calendar;
 import david.itimecalendar.R;
 import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
 import david.itimecalendar.calendar.util.DensityUtil;
-import david.itimecalendar.calendar.util.MyCalendar;
 import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
 
 /**
@@ -29,6 +28,7 @@ public class DraggableTimeSlotView extends FrameLayout {
     public static int TYPE_TEMP = 1;
 
     public boolean onScreen = false;
+    public boolean isAllday = false;
     private int type = 0;
     private long newStartTime = 0;
     private long newEndTime = 0;
@@ -41,10 +41,12 @@ public class DraggableTimeSlotView extends FrameLayout {
     private ValueAnimator frameAlphaAnimation;
     private TextView title;
 
+    private PosParam posParam;
 
-    public DraggableTimeSlotView(Context context, WrapperTimeSlot wrapper) {
+    public DraggableTimeSlotView(Context context, WrapperTimeSlot wrapper, boolean isAllday) {
         super(context);
         this.wrapper = wrapper;
+        this.isAllday = isAllday;
         this.timeslot = wrapper.getTimeSlot();
         if (timeslot != null){
             this.newStartTime = timeslot.getStartTime();
@@ -62,8 +64,18 @@ public class DraggableTimeSlotView extends FrameLayout {
     }
 
     public void initViews(){
+        this.addOnLayoutChangeListener(new OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                final int width = right - left;
+                title.measure(0,0);
+                if (width < title.getMeasuredWidth()){
+                    title.setText(getTimeText(false));
+                }
+            }
+        });
         title = new TextView(getContext());
-        title.setText(getTimeText());
+        title.setText(isAllday?"All Day":getTimeText(true));
         title.setGravity(Gravity.CENTER);
         title.setTextColor(getResources().getColor(R.color.event_as_bg_title));
         title.setTextSize(12);
@@ -71,16 +83,6 @@ public class DraggableTimeSlotView extends FrameLayout {
         layoutParams.topMargin = DensityUtil.dip2px(getContext(),5);
         layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
         this.addView(title,layoutParams);
-    }
-
-    public void resetView(){
-        this.onScreen = false;
-        if (this.bgAlphaAnimation != null){
-//            this.bgAlphaAnimation.cancel();
-        }
-        if (this.frameAlphaAnimation != null){
-//            this.frameAlphaAnimation.cancel();
-        }
     }
 
     public void initBackground(){
@@ -142,7 +144,7 @@ public class DraggableTimeSlotView extends FrameLayout {
         }
     }
 
-    private String getTimeText(){
+    private String getTimeText(boolean oneLine){
         if (wrapper == null || wrapper.getTimeSlot() == null){
             return "";
         }
@@ -151,7 +153,7 @@ public class DraggableTimeSlotView extends FrameLayout {
         String starTime = String.format("%02d:%02d", cal.get(Calendar.HOUR_OF_DAY),cal.get(Calendar.MINUTE));
         cal.setTimeInMillis(wrapper.getTimeSlot().getEndTime());
         String endTime = String.format("%02d:%02d", cal.get(Calendar.HOUR_OF_DAY),cal.get(Calendar.MINUTE));
-        return starTime + "-" + endTime;
+        return starTime + (oneLine?"-":"\n-\n") + endTime;
     }
 
     private void initAnimation(){
@@ -187,5 +189,39 @@ public class DraggableTimeSlotView extends FrameLayout {
     public boolean onTouchEvent(MotionEvent event) {
         return super.onTouchEvent(event);
 //        return false;
+    }
+
+    /**
+     * the display position of draggable item,
+     * for overlapping algorithm
+     *
+     */
+    public static class PosParam{
+        public int startY;
+        public int startX;
+        public int widthFactor;
+        public int topMargin;
+
+        public PosParam(int startY, int startX, int widthFactor, int topMargin) {
+            this.startY = startY;
+            this.startX = startX;
+            this.widthFactor = widthFactor;
+            this.topMargin = topMargin;
+        }
+    }
+
+    public PosParam getPosParam() {
+        return posParam;
+    }
+
+    public void setPosParam(PosParam posParam) {
+        this.posParam = posParam;
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int width = MeasureSpec.getSize(widthMeasureSpec);
+//        int labelWidth = width
     }
 }

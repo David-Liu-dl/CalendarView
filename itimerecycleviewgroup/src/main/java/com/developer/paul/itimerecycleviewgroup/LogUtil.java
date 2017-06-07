@@ -10,7 +10,7 @@ import java.util.List;
 
 public class LogUtil {
     private static String TAG = "LogUtil";
-    public static boolean debug = false;
+    public static boolean debug = true;
 
     public static void log(String tag,String logString){
         if (debug) {

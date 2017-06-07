@@ -7,7 +7,6 @@
       <module fileurl="file://$PROJECT_DIR$/innerCalLibrary/innerCalLibrary.iml" filepath="$PROJECT_DIR$/innerCalLibrary/innerCalLibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/itimecalendar/itimecalendar.iml" filepath="$PROJECT_DIR$/itimecalendar/itimecalendar.iml" />
       <module fileurl="file://$PROJECT_DIR$/itimerecycleviewgroup/itimerecycleviewgroup.iml" filepath="$PROJECT_DIR$/itimerecycleviewgroup/itimerecycleviewgroup.iml" />
-      <module fileurl="file://$PROJECT_DIR$/itimerecycleviewgroup/itimerecycleviewgroup.iml" filepath="$PROJECT_DIR$/itimerecycleviewgroup/itimerecycleviewgroup.iml" />
       <module fileurl="file://$PROJECT_DIR$/recycleviewgroup/recycleviewgroup.iml" filepath="$PROJECT_DIR$/recycleviewgroup/recycleviewgroup.iml" />
     </modules>
   </component>

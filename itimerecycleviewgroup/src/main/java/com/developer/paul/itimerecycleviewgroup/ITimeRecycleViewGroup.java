@@ -322,7 +322,6 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
         if (this.getVisibility() == GONE){
             return;
@@ -330,7 +329,6 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
 
         viewWidth = MeasureSpec.getSize(widthMeasureSpec);
         viewHeight = MeasureSpec.getSize(heightMeasureSpec);
-        setMeasuredDimension(viewWidth, viewHeight);
 
         childWidth = viewWidth/NUM_SHOW;
         if (onSetting==null) {
@@ -342,16 +340,20 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
         int childWidthSpec = MeasureSpec.makeMeasureSpec(childWidth, MeasureSpec.EXACTLY);
         int childHeightSpec = MeasureSpec.makeMeasureSpec(childHeight, MeasureSpec.EXACTLY);
 
+        measureChildren(childWidthSpec, childHeightSpec);
+
         for (int i = 0 ; i < awesomeViewGroupList.size() ; i ++){
+
             AwesomeViewGroup awesomeViewGroup = awesomeViewGroupList.get(i);
-            measureChild(awesomeViewGroup, childWidthSpec, childHeightSpec);
             AwesomeViewGroup.AwesomeLayoutParams lp = (AwesomeViewGroup.AwesomeLayoutParams) awesomeViewGroup.getLayoutParams();
 
             lp.parentHeight = viewHeight;
             lp.width = childWidth;
             lp.height = childHeight;
-
         }
+
+        setMeasuredDimension(viewWidth, viewHeight);
+
     }
 
     private boolean isTouchOutOfParent(MotionEvent ev){
@@ -442,7 +444,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
                         }else if (moveX < 0){
                             scrollDir = SCROLL_LEFT;
                         }
-                        scrollByX((int) moveX);
+                        scrollByX( moveX);
                         preX = newX;
                     }else if (scrollModel == SCROLL_VERTICAL){
                         setStatus(VERTICAL_MOVE);
@@ -645,7 +647,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
             AwesomeViewGroup.AwesomeLayoutParams lp = (AwesomeViewGroup.AwesomeLayoutParams) awesomeViewGroup.getLayoutParams();
             lp.left += x;
             lp.right += x;
-            awesomeViewGroup.layout(lp.left, lp.top, lp.right, lp.bottom);
+            awesomeViewGroup.requestLayout();
         }
 
         if (onScroll!=null){
@@ -743,11 +745,8 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
                 if (onScroll!=null){
                     AwesomeViewGroup a = getFirstShownAwesomeViewGroup(awesomeViewGroupList);
                     AwesomeViewGroup.AwesomeLayoutParams lp = (AwesomeViewGroup.AwesomeLayoutParams) a.getLayoutParams();
-                    LogUtil.log("postcheck : index : ", a.getInRecycledViewIndex() + " l : " + lp.left + " r : " + lp.right);
                     onScroll.onPageSelected(getFirstShowItem());
                 }
-
-//                LogUtil.logAwesomes(awesomeViewGroupList);
             }
 
             @Override

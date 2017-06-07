@@ -87,7 +87,6 @@ public class AwesomeViewGroup extends ViewGroup {
         int newW = r - l;
         int newH = b - t;
         if (newW == 0 || newH == 0){
-            Log.i(TAG, "onLayout: newW: " + newW + " newH: " + newH);
         }
         item.layout(0,0,newW,newH);
 

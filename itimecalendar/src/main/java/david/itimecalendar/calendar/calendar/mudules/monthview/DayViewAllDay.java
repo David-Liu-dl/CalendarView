@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 
 import com.developer.paul.itimerecycleviewgroup.ITimeAdapter;
 import com.developer.paul.itimerecycleviewgroup.ITimeRecycleViewGroup;
+import com.developer.paul.itimerecycleviewgroup.LogUtil;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -239,12 +241,6 @@ public class DayViewAllDay extends FrameLayout {
         public AllDayCell(Context context) {
             super(context);
             initViews();
-            /**
-             *
-             */
-            this.setBackgroundColor(Color.RED);
-            this.timeslotLayout.setBackgroundColor(Color.LTGRAY);
-            this.eventLayout.setBackgroundColor(Color.BLUE);
         }
 
         private void initViews(){
@@ -287,7 +283,6 @@ public class DayViewAllDay extends FrameLayout {
 
         private void addAllDayRcdTimeslot(WrapperTimeSlot wrapperTimeSlot, MyCalendar calendar) {
             RecommendedSlotView recommendedSlotView = new RecommendedSlotView(getContext(),wrapperTimeSlot,true);
-            recommendedSlotView.setBackgroundColor(Color.GREEN);
             recommendedSlotView.setMyCalendar(calendar);
             recommendedSlotView.setOnClickListener(new OnAllDayRcdTimeslotClick());
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, allDayTimeslotHeight);
@@ -372,8 +367,9 @@ public class DayViewAllDay extends FrameLayout {
     private long animDuration = 300;
     private ValueAnimator layoutAnimator;
 
-    int oldTargetValue = 0;
+    int oldTargetValue = -1;
     private void performLayoutChanged(int targetHeight){
+        LogUtil.log(TAG, targetHeight + "");
         if (targetHeight == oldTargetValue){
             return;
         }
@@ -518,4 +514,6 @@ public class DayViewAllDay extends FrameLayout {
             }
         }
     }
+
+
 }

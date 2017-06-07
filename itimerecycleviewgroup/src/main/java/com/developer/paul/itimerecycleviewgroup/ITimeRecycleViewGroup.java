@@ -66,7 +66,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
     private float newX, newY, preX, preY;
 
     private float totalMoveY = 0.0f;
-    private float totalMoveX = 0.0f;
+    private int totalMoveX = 0;
 
     private float lastMoveY = 0.0f;
 
@@ -442,7 +442,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
                         }else if (moveX < 0){
                             scrollDir = SCROLL_LEFT;
                         }
-                        scrollByX((int) moveX);
+                        scrollByX(moveX);
                         preX = newX;
                     }else if (scrollModel == SCROLL_VERTICAL){
                         setStatus(VERTICAL_MOVE);
@@ -619,16 +619,24 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
 //        LogUtil.logAwesomes(awesomeViewGroupList);
     }
 
+
+    /**
+     * after test, if has a maxmove condition, the head wont match body if scroll very fast
+     * @param x
+     */
     public void followScrollByX(int x){
-        if (this.getVisibility() != GONE && Math.abs(x) >= 2 * childWidth){
-            // this is page jump, then refresh page
-            int pageScroll = -x/childWidth;
-            updateIndexes(pageScroll);
-            if (adapter!=null){
-                adapter.notifyDataSetChanged();
-            }
-            return;
-        }
+//        if (this.getVisibility() != GONE && Math.abs(x) >= 5 * childWidth){
+//            // this is page jump, then refresh page
+//            // this should never be called when human scroll
+//            int pageScroll = -x/childWidth;
+//            updateIndexes(pageScroll);
+//            LogUtil.log("follow ", x + " , " + childWidth);
+//
+//            if (adapter!=null){
+//                adapter.notifyDataSetChanged();
+//            }
+//            return;
+//        }
         scrollByX(x);
     }
 
@@ -649,10 +657,11 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
         }
 
         if (onScroll!=null){
-            onScroll.onHorizontalScroll(x, (int) totalMoveX);
+            onScroll.onHorizontalScroll(x, totalMoveX);
         }
 
         totalMoveX += x;
+        LogUtil.log("movex : " , x + " , " + "total " + totalMoveX);
 
         moveXPostCheck(awesomeViewGroupList, scrollDir);
     }

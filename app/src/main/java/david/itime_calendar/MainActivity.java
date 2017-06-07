@@ -67,12 +67,12 @@ public class MainActivity extends AppCompatActivity {
         long interval = (3600 * 1000);
         long startTime = calendar.getTimeInMillis();
         long endTime;
-        for (int i = 1; i < 5; i++) {
+        for (int i = 1; i < 20; i++) {
             endTime = startTime + interval;
 
             Event event = new Event();
-            event.setIsAllDay(true);
-//            event.setIsAllDay(false);
+//            event.setIsAllDay(true);
+            event.setIsAllDay(false);
 //            event.setIsAllDay(i == 4);
             event.setEventUid("" + i);
             event.setTitle("adawdwadwadaw" + i);
@@ -165,6 +165,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        timeslotBtn.performClick();
+//        timeslotBtn.performClick();
     }
 }

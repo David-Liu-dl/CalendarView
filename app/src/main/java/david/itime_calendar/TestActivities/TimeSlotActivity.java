@@ -44,7 +44,6 @@ public class TimeSlotActivity extends AppCompatActivity {
         final TimeSlotView timeslotView = (TimeSlotView) findViewById(R.id.timeslot_view);
         timeslotView.setEventPackage(eventManager.getEventsMap());
         timeslotView.enableTimeSlot();
-        timeslotView.setTimeslotDurationItems(initList());
         timeslotView.setOnTimeSlotInnerCalendar(new TimeSlotInnerCalendarView.OnTimeSlotInnerCalendar() {
             @Override
             public void onCalendarBtnClick(View v, boolean result) {
@@ -66,7 +65,13 @@ public class TimeSlotActivity extends AppCompatActivity {
         timeslotView.setOnTimeslotDurationChangedListener(new TimeSlotView.OnTimeslotDurationChangedListener() {
             @Override
             public void onTimeslotDurationChanged(long duration) {
-                timeslotView.setTimeslotDuration(duration,false);
+                if (duration == -1){
+                    //means all day
+                    timeslotView.setViewMode(DayViewBody.Mode.ALL_DAY);
+                }else{
+                    timeslotView.setViewMode(DayViewBody.Mode.REGULAR);
+                    timeslotView.setTimeslotDuration(duration,false);
+                }
             }
         });
         timeslotView.setOnTimeSlotListener(new DayViewBody.OnTimeSlotViewBodyListener() {
@@ -76,13 +81,11 @@ public class TimeSlotActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onAllDayRcdTimeslotClick(RecommendedSlotView rcdView) {
-                rcdView.getWrapper().setSelected(true);
+            public void onAllDayRcdTimeslotClick(long dayBeginMilliseconds) {
                 TimeSlot newSlot = new TimeSlot();
                 newSlot.setIsAllDay(true);
                 //ensure set the start time correctly, otherwise it cannot be shown
-                newSlot.setStartTime(rcdView.getWrapper().getTimeSlot().getStartTime());
-                newSlot.setEndTime(rcdView.getWrapper().getTimeSlot().getEndTime());
+                newSlot.setStartTime(dayBeginMilliseconds);
                 timeslotView.addTimeSlot(newSlot);
             }
 
@@ -139,6 +142,8 @@ public class TimeSlotActivity extends AppCompatActivity {
             }
 
         });
+        //Note: ensure calling setTimeslotDurationItems after setting listeners
+        timeslotView.setTimeslotDurationItems(initList());
 
         for (TimeSlot slot:slots
                 ) {
@@ -165,10 +170,17 @@ public class TimeSlotActivity extends AppCompatActivity {
 
     private List initList(){
         List<TimeSlotView.DurationItem> list= new ArrayList<>();
-        for (int i = 1; i < 20; i++) {
+        int target = 5;
+        for (int i = 1; i < target+1; i++) {
             TimeSlotView.DurationItem item = new TimeSlotView.DurationItem();
-            item.showName = "" + i + " hrs";
-            item.duration = i * 3600 * 1000;
+            if (i == target){
+                item.showName = "All Day";
+                item.duration = -1;
+            }else{
+                item.showName = "" + i + " hrs";
+                item.duration = i * 3600 * 1000;
+            }
+
             list.add(item);
         }
 

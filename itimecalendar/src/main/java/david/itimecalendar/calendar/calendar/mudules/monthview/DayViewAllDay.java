@@ -1,5 +1,6 @@
 package david.itimecalendar.calendar.calendar.mudules.monthview;
 
+import android.animation.LayoutTransition;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -49,7 +50,8 @@ public class DayViewAllDay extends FrameLayout {
     private int allDayTimeslotHeight = 0;
     private float leftBarWidth;
     private int NUM_CELL;
-    private boolean isTimeSlotEnable = true;
+    private boolean isTimeslotEnable = true;
+    private boolean isAlldayTimeslotEnable = true;
     private TimeSlotView.TimeSlotPackage slotsInfo;
 
     public DayViewAllDay(@NonNull Context context, @Nullable AttributeSet attrs) {
@@ -73,8 +75,6 @@ public class DayViewAllDay extends FrameLayout {
     }
 
     private void initViews(){
-        this.setBackgroundColor(Color.LTGRAY);
-
         Context context = getContext();
         label = new TextView(context);
         label.setText("All day");
@@ -101,9 +101,12 @@ public class DayViewAllDay extends FrameLayout {
     private class AllDayAdapter extends ITimeAdapter<AllDayCell>{
         private ITimeEventPackageInterface eventPackage;
 
+        private List<AllDayCell> cells = new ArrayList<>();
+
         @Override
         public AllDayCell onCreateViewHolder() {
             AllDayCell allDayCell = new AllDayCell(getContext());
+            cells.add(allDayCell);
             return allDayCell;
         }
 
@@ -111,7 +114,7 @@ public class DayViewAllDay extends FrameLayout {
         public void onBindViewHolder(AllDayCell item, int index) {
             item.reset();
             //should update visibility first, because current setting item should not be considered.
-            updateVisibility();
+            updateLayout();
 
             Calendar cal = Calendar.getInstance();
             cal.add(Calendar.DATE, index);
@@ -123,14 +126,21 @@ public class DayViewAllDay extends FrameLayout {
 
             //for timeslots
             //set timeslots
-            if (isTimeSlotEnable && DayViewAllDay.this.slotsInfo != null){
+            if (isTimeslotEnable && DayViewAllDay.this.slotsInfo != null){
+                //add rcd button
+                WrapperTimeSlot wrapperTimeSlot = new WrapperTimeSlot(null);
+                item.addAllDayRcdTimeslot(wrapperTimeSlot, calendar);
+                /**
+                 * should not add all day Rcd, it is embedded in every single day.
+                 * DO NOT DELETE, in case of using later on.
+                 */
                 //add rcd first
-                for (WrapperTimeSlot struct : slotsInfo.rcdSlots
-                        ) {
-                    if (struct.getTimeSlot().isAllDay() && calendar.contains(struct.getTimeSlot().getStartTime())){
-                        item.addAllDayRcdTimeslot(struct);
-                    }
-                }
+//                for (WrapperTimeSlot struct : slotsInfo.rcdSlots
+//                        ) {
+//                    if (struct.getTimeSlot().isAllDay() && calendar.contains(struct.getTimeSlot().getStartTime())){
+//                        item.addAllDayRcdTimeslot(struct);
+//                    }
+//                }
                 //add timeslot on top index
                 for (WrapperTimeSlot struct : slotsInfo.realSlots
                         ) {
@@ -139,30 +149,49 @@ public class DayViewAllDay extends FrameLayout {
                     }
                 }
             }
-
         }
 
         public void setPackageInterface(ITimeEventPackageInterface eventPackage) {
             this.eventPackage = eventPackage;
         }
+
+        public List<AllDayCell> getAllCells(){
+            return this.cells;
+        }
     }
 
     private void updateVisibility(){
+        List<AllDayCell> cells = adapter.getAllCells();
+        for (AllDayCell cell:cells
+                ) {
+            if (isTimeslotEnable && isAlldayTimeslotEnable) {
+                cell.getTimeslotLayout().setVisibility(VISIBLE);
+            }else {
+                cell.getTimeslotLayout().setVisibility(GONE);
+            }
+        }
+    }
+
+    private void updateLayout(){
         boolean hasAllDayEvent = hasAllDayEvent();
         ViewGroup.LayoutParams params = this.getLayoutParams();
         if (params == null){
             return;
         }
 
-        if (hasAllDayEvent){
-            performExpand();
-            return;
+        int targetHeight = 0;
+
+        if (isTimeslotEnable && isAlldayTimeslotEnable){
+            targetHeight += allDayTimeslotHeight;
         }
 
-        if (!hasAllDayEvent){
-            performCollapse();
+        if (hasAllDayEvent){
+            targetHeight += allDayEventHeight;
         }
+
+        performLayoutChanged(targetHeight);
     }
+
 
     private boolean hasAllDayEvent(){
         List<AllDayCell> items = adapter.getAllCompeletedItems();
@@ -174,6 +203,22 @@ public class DayViewAllDay extends FrameLayout {
         for (AllDayCell item:items
              ) {
             if (item.allDayEvents.size() > 0){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasAllDayTimeslot(){
+        List<AllDayCell> items = adapter.getAllCompeletedItems();
+
+        if (items == null){
+            return false;
+        }
+
+        for (AllDayCell item:items
+                ) {
+            if (item.allDaySlots.size() > 0){
                 return true;
             }
         }
@@ -194,9 +239,16 @@ public class DayViewAllDay extends FrameLayout {
         public AllDayCell(Context context) {
             super(context);
             initViews();
+            /**
+             *
+             */
+            this.setBackgroundColor(Color.RED);
+            this.timeslotLayout.setBackgroundColor(Color.LTGRAY);
+            this.eventLayout.setBackgroundColor(Color.BLUE);
         }
 
         private void initViews(){
+            this.setLayoutTransition(new LayoutTransition());
             this.setPadding(0,paddingBT,0,paddingBT);
             this.setOrientation(VERTICAL);
             Context context = getContext();
@@ -233,8 +285,10 @@ public class DayViewAllDay extends FrameLayout {
             this.allDaySlots.add(wrapperTimeSlot.getTimeSlot());
         }
 
-        private void addAllDayRcdTimeslot(WrapperTimeSlot wrapperTimeSlot) {
+        private void addAllDayRcdTimeslot(WrapperTimeSlot wrapperTimeSlot, MyCalendar calendar) {
             RecommendedSlotView recommendedSlotView = new RecommendedSlotView(getContext(),wrapperTimeSlot,true);
+            recommendedSlotView.setBackgroundColor(Color.GREEN);
+            recommendedSlotView.setMyCalendar(calendar);
             recommendedSlotView.setOnClickListener(new OnAllDayRcdTimeslotClick());
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, allDayTimeslotHeight);
             recommendedSlotView.setLayoutParams(params);
@@ -288,13 +342,16 @@ public class DayViewAllDay extends FrameLayout {
             this.allDaySlots.clear();
         }
 
-        public void setCalendar(MyCalendar calendar) {
+        private void setCalendar(MyCalendar calendar) {
             this.calendar = calendar;
         }
 
-        @Override
-        protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        public FrameLayout getTimeslotLayout() {
+            return timeslotLayout;
+        }
+
+        public void setTimeslotLayout(FrameLayout timeslotLayout) {
+            this.timeslotLayout = timeslotLayout;
         }
     }
 
@@ -313,21 +370,22 @@ public class DayViewAllDay extends FrameLayout {
     }
 
     private long animDuration = 300;
-    private ValueAnimator showAnim;
-    private ValueAnimator hideAnim;
+    private ValueAnimator layoutAnimator;
 
-    private void performCollapse(){
-        if (hideAnim != null && hideAnim.isRunning()){
+    int oldTargetValue = 0;
+    private void performLayoutChanged(int targetHeight){
+        if (targetHeight == oldTargetValue){
             return;
         }
 
-        if (showAnim != null && showAnim.isRunning()){
-            showAnim.cancel();
+        if (layoutAnimator != null && layoutAnimator.isRunning()){
+            layoutAnimator.cancel();
         }
+        oldTargetValue = targetHeight;
 
-        hideAnim = ValueAnimator.ofInt(this.getHeight(), 0);
-        hideAnim.setDuration(animDuration);
-        hideAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        layoutAnimator = ValueAnimator.ofInt(this.getHeight(), targetHeight);
+        layoutAnimator.setDuration(animDuration);
+        layoutAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             public void onAnimationUpdate(ValueAnimator animation) {
                 Integer value = (Integer) animation.getAnimatedValue();
                 DayViewAllDay.this.getLayoutParams().height = value.intValue();
@@ -335,37 +393,69 @@ public class DayViewAllDay extends FrameLayout {
             }
         });
 
-        hideAnim.start();
+        layoutAnimator.start();
     }
 
-    private void performExpand(){
-        if (showAnim != null && showAnim.isRunning()){
-            return;
-        }
+//    private void performLayoutChanged(int targetHeight){
+//        if (hideAnim != null && hideAnim.isRunning()){
+//            return;
+//        }
+//
+//        if (showAnim != null && showAnim.isRunning()){
+//            showAnim.cancel();
+//        }
+//
+//        hideAnim = ValueAnimator.ofInt(this.getHeight(), targetHeight);
+//        hideAnim.setDuration(animDuration);
+//        hideAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//            public void onAnimationUpdate(ValueAnimator animation) {
+//                Integer value = (Integer) animation.getAnimatedValue();
+//                DayViewAllDay.this.getLayoutParams().height = value.intValue();
+//                DayViewAllDay.this.requestLayout();
+//            }
+//        });
+//
+//        hideAnim.start();
+//    }
 
-        if (hideAnim != null && hideAnim.isRunning()){
-            hideAnim.cancel();
-        }
+//    private void performExpand(int targetHeight){
+//        if (showAnim != null && showAnim.isRunning()){
+//            return;
+//        }
+//
+//        if (hideAnim != null && hideAnim.isRunning()){
+//            hideAnim.cancel();
+//        }
+//
+//        showAnim = ValueAnimator.ofInt(this.getHeight(), targetHeight);
+//        showAnim.setDuration(animDuration);
+//        showAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//            public void onAnimationUpdate(ValueAnimator animation) {
+//                Integer value = (Integer) animation.getAnimatedValue();
+//                DayViewAllDay.this.getLayoutParams().height = value.intValue();
+//                DayViewAllDay.this.requestLayout();
+//            }
+//        });
+//
+//        showAnim.start();
+//    }
 
-        showAnim = ValueAnimator.ofInt(this.getHeight(), allDayEventHeight);
-        showAnim.setDuration(animDuration);
-        showAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            public void onAnimationUpdate(ValueAnimator animation) {
-                Integer value = (Integer) animation.getAnimatedValue();
-                DayViewAllDay.this.getLayoutParams().height = value.intValue();
-                DayViewAllDay.this.requestLayout();
-            }
-        });
-
-        showAnim.start();
+    public boolean isTimeslotEnable() {
+        return isTimeslotEnable;
     }
 
-    public boolean isTimeSlotEnable() {
-        return isTimeSlotEnable;
+    public void setTimeslotEnable(boolean timeslotEnable) {
+        isTimeslotEnable = timeslotEnable;
     }
 
-    public void setTimeSlotEnable(boolean timeSlotEnable) {
-        isTimeSlotEnable = timeSlotEnable;
+    public boolean isAlldayTimeslotEnable() {
+        return isAlldayTimeslotEnable;
+    }
+
+    public void setAlldayTimeslotEnable(boolean alldayTimeslotEnable) {
+        isAlldayTimeslotEnable = alldayTimeslotEnable;
+        updateVisibility();
+        updateLayout();
     }
 
     public TimeSlotView.TimeSlotPackage getSlotsInfo() {
@@ -392,7 +482,7 @@ public class DayViewAllDay extends FrameLayout {
 
     public interface AllDayListener{
         void onAllDayEventClick(ITimeEventInterface event);
-        void onAllDayRcdTimeslotClick(RecommendedSlotView rcdView);
+        void onAllDayRcdTimeslotClick(long dayBeginMilliseconds);
         void onAllDayTimeslotClick(DraggableTimeSlotView timeSlotView);
     }
 
@@ -424,7 +514,7 @@ public class DayViewAllDay extends FrameLayout {
         public void onClick(View v) {
             RecommendedSlotView recommendedSlotView = (RecommendedSlotView) v;
             if (allDayListener != null){
-                allDayListener.onAllDayRcdTimeslotClick(recommendedSlotView);
+                allDayListener.onAllDayRcdTimeslotClick(recommendedSlotView.getAllDayBeginTime());
             }
         }
     }

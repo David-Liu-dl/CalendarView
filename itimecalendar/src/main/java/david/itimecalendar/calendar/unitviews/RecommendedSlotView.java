@@ -18,7 +18,9 @@ import android.widget.TextView;
 import java.util.Calendar;
 
 import david.itimecalendar.R;
+import david.itimecalendar.calendar.util.BaseUtil;
 import david.itimecalendar.calendar.util.DensityUtil;
+import david.itimecalendar.calendar.util.MyCalendar;
 import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
 
 /**
@@ -65,7 +67,7 @@ public class RecommendedSlotView extends RelativeLayout {
         this.addView(label,labelPrams);
 
         title = new TextView(getContext());
-        title.setText(getTimeText());
+        title.setText(isAllday ? "":getTimeText());
         title.setGravity(Gravity.CENTER);
         title.setTextColor(getResources().getColor(R.color.timeslot_rcd_title));
         title.setTextSize(12);
@@ -82,7 +84,10 @@ public class RecommendedSlotView extends RelativeLayout {
 
         icon = new ImageView(getContext());
         icon.setImageDrawable(getResources().getDrawable(R.drawable.icon_timeslot_plus));
-        int size = getPlusIconSize(wrapper.getTimeSlot().getEndTime() - wrapper.getTimeSlot().getStartTime());
+
+        int size = getPlusIconSize(isAllday ?
+                BaseUtil.getAllDayLong(Calendar.getInstance().getTimeInMillis())
+                : wrapper.getTimeSlot().getEndTime() - wrapper.getTimeSlot().getStartTime());
         FrameLayout.LayoutParams iconPrams = new FrameLayout.LayoutParams(size, size);
         iconPrams.gravity = Gravity.CENTER;
         frameLayout.addView(icon, iconPrams);
@@ -117,5 +122,15 @@ public class RecommendedSlotView extends RelativeLayout {
 
     public void setWrapper(WrapperTimeSlot wrapper) {
         this.wrapper = wrapper;
+    }
+
+    private MyCalendar myCalendar;
+
+    public long getAllDayBeginTime(){
+        return myCalendar.getBeginOfDayMilliseconds();
+    }
+
+    public void setMyCalendar(MyCalendar myCalendar) {
+        this.myCalendar = myCalendar;
     }
 }

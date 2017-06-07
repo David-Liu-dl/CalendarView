@@ -274,9 +274,9 @@ public class TimeSlotView extends WeekView {
         }
 
         @Override
-        public void onAllDayRcdTimeslotClick(RecommendedSlotView rcdView) {
+        public void onAllDayRcdTimeslotClick(long dayBeginMilliseconds) {
             if (onTimeSlotViewBodyOuterListener != null){
-                onTimeSlotViewBodyOuterListener.onAllDayRcdTimeslotClick(rcdView);
+                onTimeSlotViewBodyOuterListener.onAllDayRcdTimeslotClick(dayBeginMilliseconds);
             }
         }
 
@@ -451,5 +451,7 @@ public class TimeSlotView extends WeekView {
         return list;
     }
 
-
+    public void setViewMode(DayViewBody.Mode mode){
+        dayViewBody.setViewMode(mode);
+    }
 }

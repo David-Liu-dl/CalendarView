@@ -4,25 +4,18 @@ import android.animation.Animator;
 import android.animation.LayoutTransition;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Color;
-import android.graphics.Rect;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.daasuu.bl.ArrowDirection;
-import com.daasuu.bl.BubbleLayout;
 import com.developer.paul.itimerecycleviewgroup.ITimeRecycleViewGroup;
 
 import java.util.Calendar;
@@ -51,9 +44,8 @@ public class DayViewBody extends RelativeLayout {
     private DayViewAllDay allDayView;
     private FrameLayout leftTimeBarLayout;
     private ITimeRecycleViewGroup bodyRecyclerView;
-    private BubbleLayout bubble;
 
-    private BodyAdapter bodyPagerAdapter;
+    private BodyAdapter dayViewBodyAdapter;
     private Context context;
 
     // unit with px
@@ -102,26 +94,7 @@ public class DayViewBody extends RelativeLayout {
         }
     }
 
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (bubble.getVisibility() == VISIBLE){
-            if (ev.getAction() == MotionEvent.ACTION_DOWN){
-                Rect viewRect = new Rect();
-                bubble.getGlobalVisibleRect(viewRect);
-                if (viewRect.contains((int) ev.getRawX(), (int) ev.getRawY())) {
-                    //when click on tooltips and it's visible
-                    // pass it to tooltips
-                }else {
-                    //when click outside of tooltips and it's visible
-                    bubble.setVisibility(GONE);
-                }
-            }else {
-                bubble.setVisibility(GONE);
-            }
-        }
 
-        return super.onInterceptTouchEvent(ev);
-    }
 
     public int getLeftBarWidth() {
         return leftBarWidth;
@@ -148,7 +121,6 @@ public class DayViewBody extends RelativeLayout {
         setUpLeftTimeBar();
         setUpCalendarBody();
         allDayView.bringToFront();
-        initBubbleView();
     }
 
 //    public void setScrollInterface(ITimeRecycleViewGroup.ScrollInterface scrollInterface){
@@ -156,10 +128,10 @@ public class DayViewBody extends RelativeLayout {
 //    }
 
     private void setUpCalendarBody(){
-        bodyPagerAdapter = new BodyAdapter(getContext(), this.attrs);
-        bodyPagerAdapter.setSlotsInfo(this.timeSlotPackage);
+        dayViewBodyAdapter = new BodyAdapter(getContext(), this.attrs);
+        dayViewBodyAdapter.setSlotsInfo(this.timeSlotPackage);
         bodyRecyclerView = new ITimeRecycleViewGroup(context, NUM_LAYOUTS);
-        bodyRecyclerView.setAdapter(bodyPagerAdapter);
+        bodyRecyclerView.setAdapter(dayViewBodyAdapter);
         bodyRecyclerView.setOnSetting(new ITimeRecycleViewGroup.OnSetting() {
             @Override
             public int getItemHeight(int i) {
@@ -209,8 +181,8 @@ public class DayViewBody extends RelativeLayout {
     private boolean isSwiping = false;
     private AutoSwipeHelper swipeHelper = new AutoSwipeHelper();
     private void setUpBodyCellInnerListener(){
-        if (this.bodyPagerAdapter != null){
-            List<View> items = bodyPagerAdapter.getViewItems();
+        if (this.dayViewBodyAdapter != null){
+            List<View> items = dayViewBodyAdapter.getViewItems();
             for (View view:items
                     ) {
                 DayViewBodyCell cell = (DayViewBodyCell) view;
@@ -330,95 +302,11 @@ public class DayViewBody extends RelativeLayout {
         return HOURS;
     }
 
-    private void initBubbleView(){
-        bubble = new BubbleLayout(getContext());
-        int bubbleWidth = DensityUtil.dip2px(getContext(),110);
-        int bubbleHeight = DensityUtil.dip2px(getContext(),35);
-        bubble.setArrowDirection(ArrowDirection.BOTTOM);
-        bubble.setCornersRadius(DensityUtil.dip2px(getContext(),10));
-        bubble.setBubbleColor(getResources().getColor(R.color.timeslot_bubble_bg));
-        bubble.setArrowHeight(20);
-        bubble.setArrowWidth(20);
-        bubble.setStrokeWidth(0);
-        bubble.setVisibility(GONE);
-        bubble.setArrowPosition(bubbleWidth/2 - bubble.getArrowWidth()/2);
 
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(bubbleWidth, bubbleHeight);
-        this.addView(bubble,params);
-
-        LinearLayout bubbleMenuContainer = new LinearLayout(getContext());
-        FrameLayout.LayoutParams bubbleParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        bubble.addView(bubbleMenuContainer,bubbleParams);
-
-        TextView editBtn = new TextView(getContext());
-        editBtn.setText("Edit");
-        editBtn.setTextColor(Color.WHITE);
-        editBtn.setTextSize(12);
-        editBtn.setGravity(Gravity.CENTER);
-        LinearLayout.LayoutParams editBtnParams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT);
-        editBtnParams.weight = 10;
-        editBtn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Object tag = bubble.getTag();
-                if (tag != null){
-                    DraggableTimeSlotView slotView = (DraggableTimeSlotView) tag;
-                    bubble.setVisibility(GONE);
-                    bubble.setTag(null);
-                    onTimeSlotInnerListener.onTimeSlotEdit(slotView);
-                }
-            }
-        });
-        bubbleMenuContainer.addView(editBtn,editBtnParams);
-
-        ImageView slash = new ImageView(getContext());
-        slash.setImageDrawable(getResources().getDrawable(R.drawable.icon_slash));
-        slash.setPadding(0,20,0,20);
-        LinearLayout.LayoutParams slashParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        bubbleMenuContainer.addView(slash,slashParams);
-
-        TextView deleteBtn = new TextView(getContext());
-        deleteBtn.setText("Delete");
-        deleteBtn.setTextSize(12);
-        deleteBtn.setTextColor(Color.WHITE);
-        deleteBtn.setGravity(Gravity.CENTER);
-        LinearLayout.LayoutParams dltBtnParams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT);
-        dltBtnParams.weight = 10;
-        deleteBtn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Object tag = bubble.getTag();
-                if (tag != null){
-                    DraggableTimeSlotView slotView = (DraggableTimeSlotView) tag;
-                    bubble.setVisibility(GONE);
-                    bubble.setTag(null);
-                    onTimeSlotInnerListener.onTimeSlotDelete(slotView);
-                }
-            }
-        });
-        bubbleMenuContainer.addView(deleteBtn,dltBtnParams);
-    }
-
-    private void showTimeSlotTools(DraggableTimeSlotView slotView){
-        int slotRect[] = {0, 0};
-        int bodyRect[] = {0, 0};
-        slotView.getLocationOnScreen(slotRect);
-        this.getLocationOnScreen(bodyRect);
-        float posX = slotRect[0] - bodyRect[0];
-        float posY = slotRect[1] - bodyRect[1];
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) bubble.getLayoutParams();
-        int topMargin = (int)(posY - params.height);
-
-        params.topMargin = topMargin>0?topMargin:0;
-        params.leftMargin = (int)posX;
-
-        bubble.setVisibility(View.VISIBLE);
-        bubble.requestLayout();
-    }
 
     /************************************************************************************/
     public void setEventPackage(ITimeEventPackageInterface eventPackage){
-        this.bodyPagerAdapter.setEventPackage(eventPackage);
+        this.dayViewBodyAdapter.setEventPackage(eventPackage);
         this.allDayView.setEventPackage(eventPackage);
     }
 
@@ -450,7 +338,7 @@ public class DayViewBody extends RelativeLayout {
     }
 
     public void refresh(){
-        bodyPagerAdapter.notifyDataSetChanged();
+        dayViewBodyAdapter.notifyDataSetChanged();
     }
 
     private TimeSlotView.TimeSlotPackage timeSlotPackage = new TimeSlotView.TimeSlotPackage();
@@ -461,8 +349,8 @@ public class DayViewBody extends RelativeLayout {
 
     public void enableTimeSlot(){
         allDayView.setTimeSlotEnable(true);
-        if (bodyPagerAdapter != null){
-            List<View> items = bodyPagerAdapter.getViewItems();
+        if (dayViewBodyAdapter != null){
+            List<View> items = dayViewBodyAdapter.getViewItems();
             for (View view:items
                     ) {
                 DayViewBodyCell cell = (DayViewBodyCell) view;
@@ -475,8 +363,8 @@ public class DayViewBody extends RelativeLayout {
         WrapperTimeSlot wrapper = new WrapperTimeSlot(slotInfo);
         addSlotToPackage(wrapper);
 
-        if (bodyPagerAdapter != null){
-            bodyPagerAdapter.notifyDataSetChanged();
+        if (dayViewBodyAdapter != null){
+            dayViewBodyAdapter.notifyDataSetChanged();
         }
 
         allDayView.notifyDataSetChanged();
@@ -484,8 +372,8 @@ public class DayViewBody extends RelativeLayout {
 
     public void addTimeSlot(WrapperTimeSlot wrapperTimeSlot){
         addSlotToPackage(wrapperTimeSlot);
-        if (bodyPagerAdapter != null){
-            bodyPagerAdapter.notifyDataSetChanged();
+        if (dayViewBodyAdapter != null){
+            dayViewBodyAdapter.notifyDataSetChanged();
         }
         allDayView.notifyDataSetChanged();
     }
@@ -494,8 +382,8 @@ public class DayViewBody extends RelativeLayout {
 //        WrapperTimeSlot wrapper = new WrapperTimeSlot(slotInfo);
 //        wrapper.setSelected(isSelected);
 //        addSlotToPackage(wrapper);
-//        if (bodyPagerAdapter != null){
-//            bodyPagerAdapter.notifyDataSetChanged();
+//        if (dayViewBodyAdapter != null){
+//            dayViewBodyAdapter.notifyDataSetChanged();
 //        }
 //        allDayView.notifyDataSetChanged();
 //    }
@@ -521,8 +409,8 @@ public class DayViewBody extends RelativeLayout {
     }
 
     public void updateTimeSlotsDuration(long duration, boolean animate){
-        if (bodyPagerAdapter != null){
-            List<View> items = bodyPagerAdapter.getViewItems();
+        if (dayViewBodyAdapter != null){
+            List<View> items = dayViewBodyAdapter.getViewItems();
             for (View view:items
                     ) {
                 DayViewBodyCell cell = (DayViewBodyCell) view;
@@ -536,8 +424,8 @@ public class DayViewBody extends RelativeLayout {
 
     private void initOnTimeSlotListener(){
         onTimeSlotInnerListener = new OnTimeSlotInnerListener();
-        if (bodyPagerAdapter != null){
-            List<View> items = bodyPagerAdapter.getViewItems();
+        if (dayViewBodyAdapter != null){
+            List<View> items = dayViewBodyAdapter.getViewItems();
             for (View view:items
                     ) {
                 DayViewBodyCell cell = (DayViewBodyCell) view;
@@ -559,19 +447,16 @@ public class DayViewBody extends RelativeLayout {
             if (onTimeSlotOuterListener != null){
                 onTimeSlotOuterListener.onTimeSlotCreate(draggableTimeSlotView);
             }
-//            bodyPagerAdapter.notifyDataSetChanged();
+//            dayViewBodyAdapter.notifyDataSetChanged();
         }
 
         @Override
         public void onTimeSlotClick(DraggableTimeSlotView draggableTimeSlotView) {
-            bubble.setTag(draggableTimeSlotView);
-            showTimeSlotTools(draggableTimeSlotView);
-
             if (onTimeSlotOuterListener != null){
                 onTimeSlotOuterListener.onTimeSlotClick(draggableTimeSlotView);
             }
 
-            bodyPagerAdapter.notifyDataSetChanged();
+            dayViewBodyAdapter.notifyDataSetChanged();
         }
 
         @Override
@@ -580,7 +465,7 @@ public class DayViewBody extends RelativeLayout {
                 onTimeSlotOuterListener.onRcdTimeSlotClick(v);
             }
 
-            bodyPagerAdapter.notifyDataSetChanged();
+            dayViewBodyAdapter.notifyDataSetChanged();
         }
 
         @Override
@@ -588,7 +473,7 @@ public class DayViewBody extends RelativeLayout {
             if (onTimeSlotOuterListener != null){
                 onTimeSlotOuterListener.onTimeSlotDragStart(draggableTimeSlotView);
             }
-            bodyPagerAdapter.notifyDataSetChanged();
+            dayViewBodyAdapter.notifyDataSetChanged();
         }
 
         @Override
@@ -611,25 +496,25 @@ public class DayViewBody extends RelativeLayout {
             if (onTimeSlotOuterListener != null){
                 onTimeSlotOuterListener.onTimeSlotDragDrop(draggableTimeSlotView, draggableTimeSlotView.getNewStartTime(), draggableTimeSlotView.getNewEndTime());
             }
-            bodyPagerAdapter.notifyDataSetChanged();
+            dayViewBodyAdapter.notifyDataSetChanged();
         }
 
         @Override
         public void onTimeSlotEdit(DraggableTimeSlotView draggableTimeSlotView) {
-            if (onTimeSlotOuterListener != null){
-                onTimeSlotOuterListener.onTimeSlotEdit(draggableTimeSlotView);
-            }
-
-            bodyPagerAdapter.notifyDataSetChanged();
+//            if (onTimeSlotOuterListener != null){
+//                onTimeSlotOuterListener.onTimeSlotEdit(draggableTimeSlotView);
+//            }
+//
+//            dayViewBodyAdapter.notifyDataSetChanged();
         }
 
         @Override
         public void onTimeSlotDelete(DraggableTimeSlotView draggableTimeSlotView) {
-            if (onTimeSlotOuterListener != null){
-                onTimeSlotOuterListener.onTimeSlotDelete(draggableTimeSlotView);
-            }
-
-            bodyPagerAdapter.notifyDataSetChanged();
+//            if (onTimeSlotOuterListener != null){
+//                onTimeSlotOuterListener.onTimeSlotDelete(draggableTimeSlotView);
+//            }
+//
+//            dayViewBodyAdapter.notifyDataSetChanged();
         }
     }
 
@@ -730,5 +615,10 @@ public class DayViewBody extends RelativeLayout {
     }
 
     public interface OnTimeSlotViewBodyListener extends TimeSlotController.OnTimeSlotListener,DayViewAllDay.AllDayListener{
+    }
+
+    public void notifyDataSetChanged(){
+        dayViewBodyAdapter.notifyDataSetChanged();
+        allDayView.notifyDataSetChanged();
     }
 }

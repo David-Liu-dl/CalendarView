@@ -148,20 +148,20 @@ public class DayViewAllDay extends FrameLayout {
     }
 
     private void updateVisibility(){
-//        boolean hasAllDayEvent = hasAllDayEvent();
-//        ViewGroup.LayoutParams params = this.getLayoutParams();
-//        if (params == null){
-//            return;
-//        }
-//
-//        if (hasAllDayEvent){
-//            performExpand();
-//            return;
-//        }
-//
-//        if (!hasAllDayEvent){
-//            performCollapse();
-//        }
+        boolean hasAllDayEvent = hasAllDayEvent();
+        ViewGroup.LayoutParams params = this.getLayoutParams();
+        if (params == null){
+            return;
+        }
+
+        if (hasAllDayEvent){
+            performExpand();
+            return;
+        }
+
+        if (!hasAllDayEvent){
+            performCollapse();
+        }
     }
 
     private boolean hasAllDayEvent(){

@@ -156,7 +156,7 @@ public class TimeSlotActivity extends AppCompatActivity {
             slot.setStartTime(startTime);
             slot.setEndTime(startTime+duration);
             slot.setRecommended(true);
-            slot.setIsAllDay(true);
+            slot.setIsAllDay(i == 2);
             slots.add(slot);
 
             startTime += dayInterval;

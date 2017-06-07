@@ -171,7 +171,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
         }
 
         if (pageChanged){
-            LogUtil.logAwesomes(awesomeViewGroups);
+//            LogUtil.logAwesomes(awesomeViewGroups);
             if (onScroll!=null){
                 AwesomeViewGroup a = getFirstShownAwesomeViewGroup(awesomeViewGroupList);
                 AwesomeViewGroup.AwesomeLayoutParams lp = (AwesomeViewGroup.AwesomeLayoutParams) a.getLayoutParams();
@@ -756,7 +756,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
                     onScroll.onPageSelected(getFirstShowItem());
                 }
 
-//                LogUtil.logAwesomes(awesomeViewGroupList);
+                LogUtil.logAwesomes(awesomeViewGroupList);
             }
 
             @Override

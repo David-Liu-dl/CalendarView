@@ -103,7 +103,8 @@ public class EventController {
 
         calculateEventLayout(this.container.eventLayout);
 
-        this.container.eventLayout.invalidate();
+//        this.container.eventLayout.invalidate();
+        this.container.eventLayout.requestLayout(); // paul try
     }
 
     private void addAllDayEvent(WrapperEvent wrapper, int index) {

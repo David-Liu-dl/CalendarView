@@ -88,6 +88,12 @@ public class DraggableEventView extends FrameLayout {
     }
 
     @Override
+    public String toString() {
+        String str = " height : "+ height  + " width : " + width; // paul try
+        return str;
+    }
+
+    @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         int baseL = getPaddingLeft();
         int baseT = getPaddingTop();

@@ -76,7 +76,7 @@ public class BodyAdapter extends ITimeAdapter<DayViewBodyCell> {
         cal.add(Calendar.DATE, offset);
 
         DayViewBodyCell body = item;
-
+        body.resetView();
         //setBorderColor
         if (offset % NUM_CELL == 0){
             body.highlightCellBorder();
@@ -96,6 +96,9 @@ public class BodyAdapter extends ITimeAdapter<DayViewBodyCell> {
             //add rcd first
             for (WrapperTimeSlot struct : slotsInfo.rcdSlots
                     ) {
+                if (struct.getTimeSlot().isAllDay()){
+                    continue;
+                }
                 if (calendar.contains(struct.getTimeSlot().getStartTime())){
                     body.addRcdSlot(struct);
                 }
@@ -103,13 +106,16 @@ public class BodyAdapter extends ITimeAdapter<DayViewBodyCell> {
             //add timeslot on top index
             for (WrapperTimeSlot struct : slotsInfo.realSlots
                     ) {
+                if (struct.getTimeSlot().isAllDay()){
+                    continue;
+                }
                 if (calendar.contains(struct.getTimeSlot().getStartTime())){
                     body.addSlot(struct,false);
                 }
             }
         }
-        Log.i("onBindViewHolder", "onBindViewHolder: ");
-        body.refresh();
+
+        body.requestLayout();
     }
 
     public List<View> getViewItems(){

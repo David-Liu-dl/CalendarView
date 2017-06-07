@@ -57,7 +57,6 @@ public class EventController {
     private Map<ITimeEventInterface, DraggableEventView> uidDragViewMap = new HashMap<>();
     private ArrayList<DraggableEventView> allDayDgEventViews = new ArrayList<>();
 
-    private OverlapHelper xHelper = new OverlapHelper();
 
     private Class<?> eventClassName;
 
@@ -69,7 +68,7 @@ public class EventController {
     }
 
     void setEventList(ITimeEventPackageInterface eventPackage) {
-        this.clearAllEvents();
+        this.clearEvents();
         Map<Long, List<ITimeEventInterface>> regularDayEventMap = eventPackage.getRegularEventDayMap();
         Map<Long, List<ITimeEventInterface>> repeatedDayEventMap = eventPackage.getRepeatedEventDayMap();
 
@@ -120,7 +119,7 @@ public class EventController {
 //            allDayEventLayout.getDgEvents().add(new_dgEvent);
 //            allDayEventLayout.getEvents().add(wrapper.getEvent());
 //        }else {
-//            Log.i(TAG, "event in header offset error: " + offset);
+//            Log.i(TAG, "item in header offset error: " + offset);
 //        }
     }
 
@@ -160,16 +159,9 @@ public class EventController {
                 todayEndTime >= startTime && todayStartTime <= endTime;
     }
 
-    void clearAllEvents() {
-//        if (container.topAllDayEventLayouts != null) {
-//            for (DayInnerHeaderEventLayout allDayEventLayout:container.allDayEventLayouts
-//                    ) {
-//                allDayEventLayout.resetView();
-//            }
-//        }
-
+    void clearEvents() {
         if (container.eventLayout != null) {
-            container.eventLayout.resetView();
+            container.eventLayout.clearViews();
         }
 
         this.regularEventViewMap.clear();
@@ -276,34 +268,19 @@ public class EventController {
     }
 
     /**
-     * calculate the position of event
-     * it needs to be called when setting event or event position changed
+     * calculate the position of item
+     * it needs to be called when setting item or item position changed
      */
     private void calculateEventLayout(DayInnerBodyLayout eventLayout) {
         List<ArrayList<OverlapHelper.OverlappedEvent>> overlapGroups
-                = xHelper.computeOverlapXForEvents(eventLayout.getEvents());
+                = container.xHelper.computeOverlapXForEvents(eventLayout.getEvents());
         for (ArrayList<OverlapHelper.OverlappedEvent> overlapGroup : overlapGroups
                 ) {
             for (int i = 0; i < overlapGroup.size(); i++) {
-                int startY = getEventY((WrapperEvent) overlapGroup.get(i).event);
+                int startY = getEventY((WrapperEvent) overlapGroup.get(i).item);
                 int overlapCount = overlapGroup.get(i).params.overlapCount;
                 int indexInRow = overlapGroup.get(i).params.indexInRow;
-                DraggableEventView eventView = (DraggableEventView) eventLayout.findViewById(regularEventViewMap.get(overlapGroup.get(i).event));
-                eventView.setPosParam(new DraggableEventView.PosParam(startY, indexInRow, overlapCount, startY));
-            }
-        }
-    }
-
-    private void calculateTimeSlotLayout(DayInnerBodyLayout eventLayout) {
-        List<ArrayList<OverlapHelper.OverlappedEvent>> overlapGroups
-                = xHelper.computeOverlapXForEvents(eventLayout.getEvents());
-        for (ArrayList<OverlapHelper.OverlappedEvent> overlapGroup : overlapGroups
-                ) {
-            for (int i = 0; i < overlapGroup.size(); i++) {
-                int startY = getEventY((WrapperEvent) overlapGroup.get(i).event);
-                int overlapCount = overlapGroup.get(i).params.overlapCount;
-                int indexInRow = overlapGroup.get(i).params.indexInRow;
-                DraggableEventView eventView = (DraggableEventView) eventLayout.findViewById(regularEventViewMap.get(overlapGroup.get(i).event));
+                DraggableEventView eventView = (DraggableEventView) eventLayout.findViewById(regularEventViewMap.get(overlapGroup.get(i).item));
                 eventView.setPosParam(new DraggableEventView.PosParam(startY, indexInRow, overlapCount, startY));
             }
         }
@@ -411,14 +388,14 @@ public class EventController {
 
                     int rawX = (int) event.getX();
                     int rawY = (int) event.getY();
-//                    container.scrollViewAutoScroll(event);
+//                    container.scrollViewAutoScroll(item);
 
                     if (onEventListener != null) {
                         onEventListener.onEventDragging(dgView, container.getCalendar(), rawX, (int) event.getY());
                     } else {
                         Log.i(TAG, "onDrag: null onEventDragListener");
                     }
-//                    container.msgWindowFollow(rawX, (int) event.getY(), index, (View) event.getLocalState());
+//                    container.msgWindowFollow(rawX, (int) item.getY(), index, (View) item.getLocalState());
                     break;
                 case DragEvent.ACTION_DRAG_ENTERED:
 //                    Log.i(TAG, "ACTION_DRAG_ENTERED:" + container.getCalendar().getCalendar().getTime());
@@ -450,9 +427,9 @@ public class EventController {
                     int newY = (int) actionStopY;
                     int[] reComputeResult = container.reComputePositionToSet(newX, newY, dgView, v);
 
-                    //update the event time
+                    //update the item time
                     String new_time = container.positionToTimeQuarterTreeMap.get(reComputeResult[1]);
-                    //important! update event time after drag
+                    //important! update item time after drag
                     String[] time_parts = new_time.split(":");
                     currentEventNewHour = Integer.valueOf(time_parts[0]);
                     currentEventNewMinutes = Integer.valueOf(time_parts[1]);
@@ -474,7 +451,7 @@ public class EventController {
                         if(parent != null){
                             parent.removeView(dgView);
                         }
-                        //important! update event time after drag via listener
+                        //important! update item time after drag via listener
                         if (onEventListener != null) {
                             onEventListener.onEventCreate(dgView);
                         }
@@ -503,7 +480,6 @@ public class EventController {
             EventController.this.container.tempDragView = createTempDayDraggableEventView(EventController.this.container.nowTapX, EventController.this.container.nowTapY);
             EventController.this.container.tempDragView.setAlpha(1);
             container.addView(EventController.this.container.tempDragView);
-//            BaseUtil.relayoutChildren(container);
 
             ObjectAnimator scaleX = ObjectAnimator.ofFloat(EventController.this.container.tempDragView, "scaleX", 0f,1f);
             ObjectAnimator scaleY = ObjectAnimator.ofFloat(EventController.this.container.tempDragView, "scaleY", 0f,1f);
@@ -712,11 +688,11 @@ public class EventController {
      * DayDraggableEventView contains data source and all information about new status
      */
     public interface OnEventListener {
-        //If current event view is draggable
+        //If current item view is draggable
         boolean isDraggable(DraggableEventView eventView);
-        //while creating event view
+        //while creating item view
         void onEventCreate(DraggableEventView eventView);
-        //while clicking event
+        //while clicking item
         void onEventClick(DraggableEventView eventView);
         //When start dragging
         void onEventDragStart(DraggableEventView eventView);

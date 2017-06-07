@@ -84,7 +84,7 @@ public class MonthAgendaView extends RelativeLayout{
      ***************************************************************************/
 
     /**
-     * Set the event data package
+     * Set the item data package
      * @param eventPackage
      */
     public void setDayEventMap(ITimeEventPackageInterface eventPackage){

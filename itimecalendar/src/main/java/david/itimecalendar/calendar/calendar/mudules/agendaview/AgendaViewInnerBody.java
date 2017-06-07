@@ -259,7 +259,7 @@ public class AgendaViewInnerBody extends RelativeLayout {
 
 //    private void setTimeLeftTv(TextView timeLeftTv) {
 //        if (this.currentDayType == 0) {
-//            String str = getEventMentionStr(this.event);
+//            String str = getEventMentionStr(this.item);
 //            timeLeftTv.setText(str);
 //            timeLeftTv.setTextColor(getResources().getColor(str.equals("Now") ? color_now : color_normal));
 //        }

@@ -16,11 +16,11 @@ public class OverlapHelper <I extends OverlapHelper.OverlapInput<I>> {
     public List<ArrayList<OverlappedEvent>> computeOverlapXForEvents(ArrayList<I> eventModules){
         this.eventModules = eventModules;
         groupedOlpEventList.clear();
-        // sort event by start time first
+        // sort item by start time first
         this.sortEvent();
         // get overlapped Groups
         ArrayList<ArrayList<I>> overlapEventGroups = divideOverlapGroup();
-        // compute each event X in every group in overlapped groups
+        // compute each item X in every group in overlapped groups
         for (ArrayList<I> list: overlapEventGroups
                 ) {
             if (list.size() > 1){
@@ -28,7 +28,7 @@ public class OverlapHelper <I extends OverlapHelper.OverlapInput<I>> {
             }else {
                 //<overlapCount, indexInRow>
                 OverlappedParams params = new OverlappedParams(1,0);
-                //<params, event>
+                //<params, item>
                 OverlappedEvent param_event = new OverlappedEvent(params, list.get(0));
                 ArrayList<OverlappedEvent> group = new ArrayList<>();
                 group.add(param_event);
@@ -52,9 +52,9 @@ public class OverlapHelper <I extends OverlapHelper.OverlapInput<I>> {
 
         for (I wrapper:eventModules
                 ) {
-//            ITimeEventInterface event = wrapper.getEvent();
-//            long startTime = event.getStartTime();
-//            long endTime = event.getEndTime();
+//            ITimeEventInterface item = wrapper.getEvent();
+//            long startTime = item.getStartTime();
+//            long endTime = item.getEndTime();
 
             long startTime = wrapper.getStartTime();
             long endTime = wrapper.getEndTime();
@@ -81,7 +81,7 @@ public class OverlapHelper <I extends OverlapHelper.OverlapInput<I>> {
         int curColumn = 0;
 
         //iterate all events
-        //init the very first event as root.
+        //init the very first item as root.
         for (int i = 0; i < group.size(); i++) {
             if (columnEvents.size() == 0){
                 EventSlot rootSlot = new EventSlot();
@@ -96,10 +96,10 @@ public class OverlapHelper <I extends OverlapHelper.OverlapInput<I>> {
             long currentEventStartTime = group.get(i).getStartTime();
             boolean foundRoot = false;
 
-            //finding the root for current event
+            //finding the root for current item
             for (ColumnPackage columnEvent:columnEvents
                  ) {
-                //compare with last event in column event
+                //compare with last item in column item
                 if (currentEventStartTime >= (columnEvent.eventSlots.get(columnEvent.eventSlots.size() -1).event.getEndTime() - overlapTolerance)){
                     EventSlot childSlot = new EventSlot();
                     childSlot.event = group.get(i);
@@ -111,7 +111,7 @@ public class OverlapHelper <I extends OverlapHelper.OverlapInput<I>> {
                 }
             }
 
-            //if root not found, this event is a new root for new column.
+            //if root not found, this item is a new root for new column.
             if (!foundRoot){
                 EventSlot rootSlot = new EventSlot();
                 rootSlot.event = group.get(i);
@@ -125,7 +125,7 @@ public class OverlapHelper <I extends OverlapHelper.OverlapInput<I>> {
 
         ArrayList<OverlappedEvent> overlappedEventList = new ArrayList<>();
 
-        //compose the event with its parameters
+        //compose the item with its parameters
         for (ColumnPackage columnEvent:columnEvents
              ) {
             OverlappedParams param = new OverlappedParams(curColumn, columnEvent.column);
@@ -175,11 +175,11 @@ public class OverlapHelper <I extends OverlapHelper.OverlapInput<I>> {
 
     public class OverlappedEvent {
         public OverlappedParams params;
-        public I event;
+        public I item;
 
-        private OverlappedEvent(OverlappedParams params, I event) {
+        private OverlappedEvent(OverlappedParams params, I item) {
             this.params = params;
-            this.event = event;
+            this.item = item;
         }
     }
 

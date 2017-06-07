@@ -202,7 +202,7 @@ public class DayViewHeader extends LinearLayout {
                 String date = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
                 dateView.setGravity(Gravity.CENTER);
 
-                //check if today has event
+                //check if today has item
                 Calendar checkCalendar = this.currentCalendar.getCalendar();
                 checkCalendar.add(Calendar.DATE, day);
                 checkCalendar.set(Calendar.HOUR_OF_DAY, 0);

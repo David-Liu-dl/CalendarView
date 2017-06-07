@@ -318,12 +318,16 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        if (this.getVisibility() == GONE){
+            return;
+        }
+
         viewWidth = MeasureSpec.getSize(widthMeasureSpec);
         viewHeight = MeasureSpec.getSize(heightMeasureSpec);
         setMeasuredDimension(viewWidth, viewHeight);
 
         childWidth = viewWidth/NUM_SHOW;
-
         if (onSetting==null) {
             childHeight = 2 * viewHeight;
         }else{
@@ -601,7 +605,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
     }
 
     public void followScrollByX(int x){
-        if (Math.abs(x) >= 2 * childWidth){
+        if (this.getVisibility() != GONE && Math.abs(x) >= 2 * childWidth){
             // this is page jump, then refresh page
             int pageScroll = -x/childWidth;
             updateIndexes(pageScroll);

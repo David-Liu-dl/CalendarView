@@ -1,6 +1,7 @@
 package david.itimecalendar.calendar.unitviews;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -29,9 +30,11 @@ public class RecommendedSlotView extends RelativeLayout {
     private TextView title;
     private ImageView icon;
     private WrapperTimeSlot wrapper;
+    private boolean isAllday;
 
-    public RecommendedSlotView(@NonNull Context context, WrapperTimeSlot wrapper) {
+    public RecommendedSlotView(@NonNull Context context, WrapperTimeSlot wrapper, boolean isAllday) {
         super(context);
+        this.isAllday = isAllday;
         this.wrapper = wrapper;
         init();
     }
@@ -50,12 +53,13 @@ public class RecommendedSlotView extends RelativeLayout {
         this.setBackgroundResource(R.drawable.icon_timeslot_rcd);
         this.getBackground().setAlpha(217);
         label = new TextView(getContext());
-        label.setText("Recommended");
+        label.setText(isAllday ? "All Day":"Recommended");
         label.setTextColor(getResources().getColor(R.color.timeslot_rcd_label));
         label.setGravity(Gravity.CENTER);
-        label.setTextSize(9);
+        label.setTextSize(isAllday?12:9);
         label.setId(generateViewId());
         LayoutParams labelPrams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        labelPrams.topMargin = isAllday?DensityUtil.dip2px(getContext(),10):0;
         labelPrams.addRule(ALIGN_PARENT_TOP);
         labelPrams.addRule(CENTER_HORIZONTAL);
         this.addView(label,labelPrams);
@@ -66,11 +70,10 @@ public class RecommendedSlotView extends RelativeLayout {
         title.setTextColor(getResources().getColor(R.color.timeslot_rcd_title));
         title.setTextSize(12);
         title.setId(View.generateViewId());
-        LayoutParams titlePrams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        LayoutParams titlePrams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, isAllday ? 0 : ViewGroup.LayoutParams.WRAP_CONTENT);
         titlePrams.addRule(BELOW,label.getId());
         titlePrams.addRule(CENTER_HORIZONTAL);
         this.addView(title, titlePrams);
-
 
         FrameLayout frameLayout = new FrameLayout(getContext());
         LayoutParams frameLayoutPrams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);

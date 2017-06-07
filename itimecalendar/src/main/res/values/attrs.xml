@@ -9,14 +9,16 @@
     <attr name="leftBarWidth" format="dimension"/>
     <attr name="topSpace" format="dimension"/>
     <attr name="headerHeight" format="dimension"/>
-    <attr name="allDayHeight" format="dimension"/>
+    <attr name="allDayEventHeight" format="dimension"/>
+    <attr name="allDayTimeslotHeight" format="dimension"/>
 
     <declare-styleable name="viewBody">
         <attr name="cellNum"/>
         <attr name="leftBarWidth"/>
         <attr name="topSpace"/>
         <attr name="hourHeight"/>
-        <attr name="allDayHeight"/>
+        <attr name="allDayEventHeight"/>
+        <attr name="allDayTimeslotHeight"/>
     </declare-styleable>
 
     <declare-styleable name="viewHeader">
@@ -29,7 +31,7 @@
         <attr name="topSpace"/>
         <attr name="hourHeight"/>
         <attr name="headerHeight"/>
-        <attr name="allDayHeight"/>
+        <attr name="allDayEventHeight"/>
     </declare-styleable>
 
     <declare-styleable name="TimeSlotView">
@@ -38,7 +40,8 @@
         <attr name="topSpace"/>
         <attr name="hourHeight"/>
         <attr name="headerHeight"/>
-        <attr name="allDayHeight"/>
+        <attr name="allDayEventHeight"/>
+        <attr name="allDayTimeslotHeight"/>
     </declare-styleable>
 
     <declare-styleable name="MonthView">
@@ -46,7 +49,7 @@
         <attr name="leftBarWidth"/>
         <attr name="topSpace"/>
         <attr name="hourHeight"/>
-        <attr name="allDayHeight"/>
+        <attr name="allDayEventHeight"/>
     </declare-styleable>
 
     <declare-styleable name="MonthAgendaView">

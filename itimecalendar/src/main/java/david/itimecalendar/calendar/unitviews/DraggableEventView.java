@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -30,7 +31,7 @@ import david.itimecalendar.calendar.util.VendorAnimation;
 /**
  * Created by yuhaoliu on 3/08/16.
  */
-public class DraggableEventView extends ViewGroup {
+public class DraggableEventView extends FrameLayout {
     private final String TAG = "MyAPP";
 
     public static int TYPE_NORMAL = 0;
@@ -87,11 +88,6 @@ public class DraggableEventView extends ViewGroup {
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    }
-
-    @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         int baseL = getPaddingLeft();
         int baseT = getPaddingTop();
@@ -105,24 +101,6 @@ public class DraggableEventView extends ViewGroup {
         icon.layout(width - baseL - icon.getLayoutParams().width -icon_margin,icon_margin + baseT,width,icon_margin + icon.getLayoutParams().height + baseT);
         title.layout(baseL+leftBar.getLayoutParams().width,baseT, width,height - baseT);
     }
-
-//    public static class LayoutParams extends ViewGroup.LayoutParams {
-//        public int left = 0;
-//        public int top = 0;
-//
-//        public LayoutParams(Context arg0, AttributeSet arg1) {
-//            super(arg0, arg1);
-//        }
-//
-//        public LayoutParams(int arg0, int arg1) {
-//            super(arg0, arg1);
-//        }
-//
-//        public LayoutParams(ViewGroup.LayoutParams arg0) {
-//            super(arg0);
-//        }
-//
-//    }
 
     public MyCalendar getCalendar() {
         return calendar;
@@ -162,7 +140,7 @@ public class DraggableEventView extends ViewGroup {
             color = getResources().getColor(R.color.private_et);
         }
 
-        //if event is grouped && not confirmed
+        //if item is grouped && not confirmed
         if(event != null
                 && this.event.getDisplayEventType() == 1
                 && status != null
@@ -250,8 +228,8 @@ public class DraggableEventView extends ViewGroup {
         icon.setImageResource(R.drawable.itime_question_mark_small);
         LayoutParams params = new LayoutParams(DensityUtil.dip2px(getContext(), 15),DensityUtil.dip2px(getContext(), 15));
         icon.setPadding(0,0,0,0);
-
-        this.addView(icon,params);
+        icon.setLayoutParams(params);
+        this.addView(icon);
     }
 
     private void initEventTitle(){
@@ -320,7 +298,7 @@ public class DraggableEventView extends ViewGroup {
     }
 
     /**
-     * the display position of draggable event,
+     * the display position of draggable item,
      * for overlapping algorithm
      *
      */
@@ -329,10 +307,6 @@ public class DraggableEventView extends ViewGroup {
         public int startX;
         public int widthFactor;
         public int topMargin;
-
-        public PosParam(){
-
-        }
 
         public PosParam(int startY, int startX, int widthFactor, int topMargin) {
             this.startY = startY;

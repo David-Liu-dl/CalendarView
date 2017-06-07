@@ -95,7 +95,7 @@ public class DayViewBody extends RelativeLayout {
                 topSpace = (int)typedArray.getDimension(R.styleable.viewBody_topSpace, topSpace);
                 leftBarWidth = (int)typedArray.getDimension(R.styleable.viewBody_leftBarWidth, leftBarWidth);
                 hourHeight = (int)typedArray.getDimension(R.styleable.viewBody_hourHeight, hourHeight);
-                allDayEventHeight = (int)typedArray.getDimension(R.styleable.viewBody_allDayHeight, allDayEventHeight);
+                allDayEventHeight = (int)typedArray.getDimension(R.styleable.viewBody_allDayEventHeight, allDayEventHeight);
             } finally {
                 typedArray.recycle();
             }
@@ -111,15 +111,12 @@ public class DayViewBody extends RelativeLayout {
                 if (viewRect.contains((int) ev.getRawX(), (int) ev.getRawY())) {
                     //when click on tooltips and it's visible
                     // pass it to tooltips
-//                    return false;
                 }else {
                     //when click outside of tooltips and it's visible
                     bubble.setVisibility(GONE);
-//                    return true;
                 }
             }else {
                 bubble.setVisibility(GONE);
-//                return false;
             }
         }
 
@@ -139,9 +136,12 @@ public class DayViewBody extends RelativeLayout {
 
     private void setUpAllDay(){
         allDayView = new DayViewAllDay(context, attrs);
+        allDayView.setSlotsInfo(this.timeSlotPackage);
+        allDayView.setTimeSlotEnable(false);
         allDayView.setId(generateViewId());
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, allDayEventHeight);
-        this.addView(allDayView,params);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        allDayView.setLayoutParams(params);
+        this.addView(allDayView);
     }
 
     private void setUpBody(){
@@ -406,7 +406,7 @@ public class DayViewBody extends RelativeLayout {
         this.getLocationOnScreen(bodyRect);
         float posX = slotRect[0] - bodyRect[0];
         float posY = slotRect[1] - bodyRect[1];
-        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) bubble.getLayoutParams();
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) bubble.getLayoutParams();
         int topMargin = (int)(posY - params.height);
 
         params.topMargin = topMargin>0?topMargin:0;
@@ -460,6 +460,7 @@ public class DayViewBody extends RelativeLayout {
     }
 
     public void enableTimeSlot(){
+        allDayView.setTimeSlotEnable(true);
         if (bodyPagerAdapter != null){
             List<View> items = bodyPagerAdapter.getViewItems();
             for (View view:items
@@ -473,9 +474,12 @@ public class DayViewBody extends RelativeLayout {
     public void addTimeSlot(ITimeTimeSlotInterface slotInfo){
         WrapperTimeSlot wrapper = new WrapperTimeSlot(slotInfo);
         addSlotToPackage(wrapper);
+
         if (bodyPagerAdapter != null){
             bodyPagerAdapter.notifyDataSetChanged();
         }
+
+        allDayView.notifyDataSetChanged();
     }
 
     public void addTimeSlot(WrapperTimeSlot wrapperTimeSlot){
@@ -483,16 +487,18 @@ public class DayViewBody extends RelativeLayout {
         if (bodyPagerAdapter != null){
             bodyPagerAdapter.notifyDataSetChanged();
         }
+        allDayView.notifyDataSetChanged();
     }
 
-    public void addTimeSlot(ITimeTimeSlotInterface slotInfo, boolean isSelected){
-        WrapperTimeSlot wrapper = new WrapperTimeSlot(slotInfo);
-        wrapper.setSelected(isSelected);
-        addSlotToPackage(wrapper);
-        if (bodyPagerAdapter != null){
-            bodyPagerAdapter.notifyDataSetChanged();
-        }
-    }
+//    public void addTimeSlot(ITimeTimeSlotInterface slotInfo, boolean isSelected){
+//        WrapperTimeSlot wrapper = new WrapperTimeSlot(slotInfo);
+//        wrapper.setSelected(isSelected);
+//        addSlotToPackage(wrapper);
+//        if (bodyPagerAdapter != null){
+//            bodyPagerAdapter.notifyDataSetChanged();
+//        }
+//        allDayView.notifyDataSetChanged();
+//    }
 
     private void addSlotToPackage(WrapperTimeSlot wrapperSlot){
         if (wrapperSlot.isRecommended() && !wrapperSlot.isSelected()){
@@ -540,8 +546,9 @@ public class DayViewBody extends RelativeLayout {
         }
     }
 
-    public void setOnTimeSlotListener(TimeSlotController.OnTimeSlotListener onTimeSlotOuterListener) {
+    public void setOnTimeSlotListener(OnTimeSlotViewBodyListener onTimeSlotOuterListener) {
         this.initOnTimeSlotListener();
+        this.allDayView.setAllDayListener(onTimeSlotOuterListener);
         this.onTimeSlotOuterListener = onTimeSlotOuterListener;
     }
 
@@ -715,5 +722,13 @@ public class DayViewBody extends RelativeLayout {
 
     public ITimeRecycleViewGroup getRecycler(){
         return this.bodyRecyclerView;
+    }
+
+
+    public void setAllDayListener(DayViewAllDay.AllDayListener allDayListener) {
+        this.allDayView.setAllDayListener(allDayListener);
+    }
+
+    public interface OnTimeSlotViewBodyListener extends TimeSlotController.OnTimeSlotListener,DayViewAllDay.AllDayListener{
     }
 }

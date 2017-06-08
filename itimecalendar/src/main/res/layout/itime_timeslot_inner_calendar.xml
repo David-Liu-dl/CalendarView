@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.github.sundeepk.compactcalendarview.ITimeInnerCalendar xmlns:app="http://schemas.android.com/apk/res-auto"
+<com.github.sundeepk.compactcalendarview.ITimeTimeslotCalendar xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@drawable/itime_shadow_bg"
     android:id="@+id/compactcalendar_view"

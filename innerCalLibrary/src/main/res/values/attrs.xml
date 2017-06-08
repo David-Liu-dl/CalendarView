@@ -13,7 +13,7 @@
         <enum name="fill_large_indicator" value="1" />
         <enum name="no_fill_large_indicator" value="2" />
     </attr>
-    <declare-styleable name="ITimeInnerCalendar">
+    <declare-styleable name="ITimeTimeslotCalendar">
         <attr name="itimeTimeslotCircleColor" format="color"/>
         <attr name="itimeTimeslotTextColor" format="color"/>
         <attr name="compactCalendarTextSize" format="dimension"/>

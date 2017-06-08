@@ -533,9 +533,9 @@ public class EventController {
 //                    ObjectAnimator scaleX = ObjectAnimator.ofFloat(EventController.this.container.tempDragView, "scaleX", 0f,1f);
 //                    ObjectAnimator scaleY = ObjectAnimator.ofFloat(EventController.this.container.tempDragView, "scaleY", 0f,1f);
 //                    ObjectAnimator alpha = ObjectAnimator.ofFloat(EventController.this.container.tempDragView, "alpha", 0f,1f);
-//                    alpha.setDuration(180);
-//                    scaleX.setDuration(120);
-//                    scaleY.setDuration(120);
+//                    alpha.setShownDuration(180);
+//                    scaleX.setShownDuration(120);
+//                    scaleY.setShownDuration(120);
 //
 //                    AnimatorSet scaleDown = new AnimatorSet();
 //                    scaleDown.play(alpha).with(scaleY).with(scaleX);

@@ -17,7 +17,6 @@ import com.github.sundeepk.compactcalendarview.domain.Event;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -104,7 +103,7 @@ public class CompactCalendarView extends View {
         this.invalidate();
     }
 
-    public void setSlotNumMap(ITimeInnerCalendar.InnerCalendarTimeslotPackage innerSlotPackage) {
+    public void setSlotNumMap(ITimeTimeslotCalendar.InnerCalendarTimeslotPackage innerSlotPackage) {
         compactCalendarController.setSlotNumMap(innerSlotPackage);
     }
 

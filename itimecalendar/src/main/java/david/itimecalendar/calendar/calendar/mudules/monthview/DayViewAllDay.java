@@ -183,12 +183,19 @@ public class DayViewAllDay extends FrameLayout {
 
         int targetHeight = 0;
 
+        //add timeslot height
         if (isTimeslotEnable && isAlldayTimeslotEnable){
             targetHeight += allDayTimeslotHeight;
         }
 
+        //add event height
         if (hasAllDayEvent){
             targetHeight += allDayEventHeight;
+        }
+
+        //if only timeslot add margin bottom
+        if (!hasAllDayEvent && isTimeslotEnable && isAlldayTimeslotEnable){
+            targetHeight += DensityUtil.dip2px(getContext(),5);
         }
 
         performLayoutChanged(targetHeight);
@@ -365,9 +372,9 @@ public class DayViewAllDay extends FrameLayout {
     }
 
     private long animDuration = 300;
+    private int oldTargetValue = -1;
     private ValueAnimator layoutAnimator;
 
-    int oldTargetValue = -1;
     private void performLayoutChanged(int targetHeight){
         LogUtil.log(TAG, targetHeight + "");
         if (targetHeight == oldTargetValue){
@@ -402,7 +409,7 @@ public class DayViewAllDay extends FrameLayout {
 //        }
 //
 //        hideAnim = ValueAnimator.ofInt(this.getHeight(), targetHeight);
-//        hideAnim.setDuration(animDuration);
+//        hideAnim.setShownDuration(animDuration);
 //        hideAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
 //            public void onAnimationUpdate(ValueAnimator animation) {
 //                Integer value = (Integer) animation.getAnimatedValue();
@@ -424,7 +431,7 @@ public class DayViewAllDay extends FrameLayout {
 //        }
 //
 //        showAnim = ValueAnimator.ofInt(this.getHeight(), targetHeight);
-//        showAnim.setDuration(animDuration);
+//        showAnim.setShownDuration(animDuration);
 //        showAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
 //            public void onAnimationUpdate(ValueAnimator animation) {
 //                Integer value = (Integer) animation.getAnimatedValue();

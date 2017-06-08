@@ -18,7 +18,6 @@ import android.view.ViewConfiguration;
 import android.widget.OverScroller;
 import com.github.sundeepk.compactcalendarview.domain.Event;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -117,7 +116,7 @@ class CompactCalendarController {
     private int otherMonthDaysTextColor;
     private TimeZone timeZone;
 
-    private ITimeInnerCalendar.InnerCalendarTimeslotPackage innerSlotPackage;
+    private ITimeTimeslotCalendar.InnerCalendarTimeslotPackage innerSlotPackage;
 
     /**
      * Only used in onDrawCurrentMonth to temporarily calculate previous month days
@@ -150,9 +149,9 @@ class CompactCalendarController {
         init(context);
     }
 
-    void setSlotNumMap(ITimeInnerCalendar.InnerCalendarTimeslotPackage innerSlotPackage) {
+    void setSlotNumMap(ITimeTimeslotCalendar.InnerCalendarTimeslotPackage innerSlotPackage) {
         this.innerSlotPackage = innerSlotPackage;
-        this.innerSlotPackage.setOnUpdate(new ITimeInnerCalendar.InnerCalendarTimeslotPackage.OnUpdate() {
+        this.innerSlotPackage.setOnUpdate(new ITimeTimeslotCalendar.InnerCalendarTimeslotPackage.OnUpdate() {
             @Override
             public void onUpdate() {
                 updateCurrentMonthSlotMap();
@@ -163,25 +162,25 @@ class CompactCalendarController {
 
     private void loadAttributes(AttributeSet attrs, Context context) {
         if (attrs != null && context != null) {
-            TypedArray typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.ITimeInnerCalendar, 0, 0);
+            TypedArray typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.ITimeTimeslotCalendar, 0, 0);
             try {
-                timeslotIndicatorColor = typedArray.getColor(R.styleable.ITimeInnerCalendar_itimeTimeslotCircleColor, timeslotIndicatorColor);
-                timeslotTextColor = typedArray.getColor(R.styleable.ITimeInnerCalendar_itimeTimeslotTextColor, timeslotTextColor);
-                currentDayBackgroundColor = typedArray.getColor(R.styleable.ITimeInnerCalendar_compactCalendarCurrentDayBackgroundColor, currentDayBackgroundColor);
-                calenderTextColor = typedArray.getColor(R.styleable.ITimeInnerCalendar_compactCalendarTextColor, calenderTextColor);
-                otherMonthDaysTextColor = typedArray.getColor(R.styleable.ITimeInnerCalendar_compactCalendarOtherMonthDaysTextColor, otherMonthDaysTextColor);
-                currentSelectedDayBackgroundColor = typedArray.getColor(R.styleable.ITimeInnerCalendar_compactCalendarCurrentSelectedDayBackgroundColor, currentSelectedDayBackgroundColor);
-                calenderBackgroundColor = typedArray.getColor(R.styleable.ITimeInnerCalendar_compactCalendarBackgroundColor, calenderBackgroundColor);
-                multiEventIndicatorColor = typedArray.getColor(R.styleable.ITimeInnerCalendar_compactCalendarMultiEventIndicatorColor, multiEventIndicatorColor);
-                textSize = typedArray.getDimensionPixelSize(R.styleable.ITimeInnerCalendar_compactCalendarTextSize,
+                timeslotIndicatorColor = typedArray.getColor(R.styleable.ITimeTimeslotCalendar_itimeTimeslotCircleColor, timeslotIndicatorColor);
+                timeslotTextColor = typedArray.getColor(R.styleable.ITimeTimeslotCalendar_itimeTimeslotTextColor, timeslotTextColor);
+                currentDayBackgroundColor = typedArray.getColor(R.styleable.ITimeTimeslotCalendar_compactCalendarCurrentDayBackgroundColor, currentDayBackgroundColor);
+                calenderTextColor = typedArray.getColor(R.styleable.ITimeTimeslotCalendar_compactCalendarTextColor, calenderTextColor);
+                otherMonthDaysTextColor = typedArray.getColor(R.styleable.ITimeTimeslotCalendar_compactCalendarOtherMonthDaysTextColor, otherMonthDaysTextColor);
+                currentSelectedDayBackgroundColor = typedArray.getColor(R.styleable.ITimeTimeslotCalendar_compactCalendarCurrentSelectedDayBackgroundColor, currentSelectedDayBackgroundColor);
+                calenderBackgroundColor = typedArray.getColor(R.styleable.ITimeTimeslotCalendar_compactCalendarBackgroundColor, calenderBackgroundColor);
+                multiEventIndicatorColor = typedArray.getColor(R.styleable.ITimeTimeslotCalendar_compactCalendarMultiEventIndicatorColor, multiEventIndicatorColor);
+                textSize = typedArray.getDimensionPixelSize(R.styleable.ITimeTimeslotCalendar_compactCalendarTextSize,
                         (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, textSize, context.getResources().getDisplayMetrics()));
-                targetHeight = typedArray.getDimensionPixelSize(R.styleable.ITimeInnerCalendar_compactCalendarTargetHeight,
+                targetHeight = typedArray.getDimensionPixelSize(R.styleable.ITimeTimeslotCalendar_compactCalendarTargetHeight,
                         (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, targetHeight, context.getResources().getDisplayMetrics()));
-                eventIndicatorStyle = typedArray.getInt(R.styleable.ITimeInnerCalendar_compactCalendarEventIndicatorStyle, SMALL_INDICATOR);
-                currentDayIndicatorStyle = typedArray.getInt(R.styleable.ITimeInnerCalendar_compactCalendarCurrentDayIndicatorStyle, FILL_LARGE_INDICATOR);
-                currentSelectedDayIndicatorStyle = typedArray.getInt(R.styleable.ITimeInnerCalendar_compactCalendarCurrentSelectedDayIndicatorStyle, FILL_LARGE_INDICATOR);
-                displayOtherMonthDays = typedArray.getBoolean(R.styleable.ITimeInnerCalendar_compactCalendarDisplayOtherMonthDays, displayOtherMonthDays);
-                shouldSelectFirstDayOfMonthOnScroll = typedArray.getBoolean(R.styleable.ITimeInnerCalendar_compactCalendarShouldSelectFirstDayOfMonthOnScroll, shouldSelectFirstDayOfMonthOnScroll);
+                eventIndicatorStyle = typedArray.getInt(R.styleable.ITimeTimeslotCalendar_compactCalendarEventIndicatorStyle, SMALL_INDICATOR);
+                currentDayIndicatorStyle = typedArray.getInt(R.styleable.ITimeTimeslotCalendar_compactCalendarCurrentDayIndicatorStyle, FILL_LARGE_INDICATOR);
+                currentSelectedDayIndicatorStyle = typedArray.getInt(R.styleable.ITimeTimeslotCalendar_compactCalendarCurrentSelectedDayIndicatorStyle, FILL_LARGE_INDICATOR);
+                displayOtherMonthDays = typedArray.getBoolean(R.styleable.ITimeTimeslotCalendar_compactCalendarDisplayOtherMonthDays, displayOtherMonthDays);
+                shouldSelectFirstDayOfMonthOnScroll = typedArray.getBoolean(R.styleable.ITimeTimeslotCalendar_compactCalendarShouldSelectFirstDayOfMonthOnScroll, shouldSelectFirstDayOfMonthOnScroll);
             } finally {
                 typedArray.recycle();
             }
@@ -579,9 +578,6 @@ class CompactCalendarController {
         if (calendarWithFirstDayOfMonth.get(Calendar.MONTH) != currentCalender.get(Calendar.MONTH) && shouldSelectFirstDayOfMonthOnScroll) {
             setCalenderToFirstDayOfMonth(currentCalender, currentDate, -monthsScrolledSoFar, 0);
         }
-
-        //refresh map
-        updateCurrentMonthSlotMap();
     }
 
     private int computeVelocity() {
@@ -626,6 +622,8 @@ class CompactCalendarController {
         if (listener != null) {
             listener.onMonthScroll(getFirstDayOfCurrentMonth());
         }
+
+        updateCurrentMonthSlotMap();
     }
 
     private void performScroll() {

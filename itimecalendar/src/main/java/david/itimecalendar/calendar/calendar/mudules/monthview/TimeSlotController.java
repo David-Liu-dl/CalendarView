@@ -19,7 +19,6 @@ import david.itimecalendar.calendar.unitviews.RecommendedSlotView;
 import david.itimecalendar.calendar.util.DensityUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
 import david.itimecalendar.calendar.util.OverlapHelper;
-import david.itimecalendar.calendar.wrapper.WrapperEvent;
 import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
 
 import static android.view.View.INVISIBLE;
@@ -251,8 +250,8 @@ public class TimeSlotController {
             DayInnerBodyLayout.LayoutParams params = new DayInnerBodyLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, container.layoutWidthPerDay);
             draggableTimeSlotView.setLayoutParams(params);
         }else {
-            long duration = this.slotViews.size() == 0 ? defaultTsDuration : this.slotViews.get(0).getDuration();
-            draggableTimeSlotView.setDuration(duration);
+            long duration = this.slotViews.size() == 0 ? defaultTsDuration : this.slotViews.get(0).getShownDuration();
+            draggableTimeSlotView.setShownDuration(duration);
             int tempViewHeight = (int)(duration/((float)(3600*1000)) * container.hourHeight);
             draggableTimeSlotView.setType(DraggableTimeSlotView.TYPE_TEMP);
             DayInnerBodyLayout.LayoutParams params = new DayInnerBodyLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, tempViewHeight);
@@ -358,9 +357,9 @@ public class TimeSlotController {
                 ) {
             long startTime = tsV.getTimeslot().getStartTime();
             tsV.getTimeslot().setEndTime(startTime + duration);
+            tsV.setShownDuration(duration);
             resizeTimeSlot(tsV,animate);
         }
-//        BaseUtil.relayoutChildren(container.eventLayout);
     }
 
     void clearTimeslots(){

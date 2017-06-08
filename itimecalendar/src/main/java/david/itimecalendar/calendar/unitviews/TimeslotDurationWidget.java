@@ -39,7 +39,7 @@ import static android.widget.RelativeLayout.CENTER_VERTICAL;
  * Created by yuhaoliu on 31/05/2017.
  */
 
-public class PopUpMenuBar<T> extends FrameLayout{
+public class TimeslotDurationWidget<T> extends FrameLayout{
     View bgView;
     LinearLayout container;
 
@@ -59,21 +59,21 @@ public class PopUpMenuBar<T> extends FrameLayout{
     private WheelPicker wheelPicker;
     private int CurrentSelectedPosition;
 
-    public PopUpMenuBar(@NonNull Context context) {
+    public TimeslotDurationWidget(@NonNull Context context) {
         super(context);
         initViews();
         initViewState();
         initListeners();
     }
 
-    public PopUpMenuBar(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public TimeslotDurationWidget(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         initViews();
         initViewState();
         initListeners();
     }
 
-    public PopUpMenuBar(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
+    public TimeslotDurationWidget(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initViews();
         initViewState();
@@ -119,7 +119,7 @@ public class PopUpMenuBar<T> extends FrameLayout{
         nowValue.setText("20");
         nowValue.setTextSize(DensityUtil.px2sp(context, textSizePx));
         nowValue.setGravity(Gravity.CENTER);
-        RelativeLayout.LayoutParams nowValueParams = new RelativeLayout.LayoutParams(150, ViewGroup.LayoutParams.MATCH_PARENT);
+        RelativeLayout.LayoutParams nowValueParams = new RelativeLayout.LayoutParams(200, ViewGroup.LayoutParams.MATCH_PARENT);
         nowValueParams.rightMargin = DensityUtil.dip2px(context,15);
         nowValueParams.addRule(ALIGN_PARENT_RIGHT);
         nowValueParams.addRule(CENTER_VERTICAL);
@@ -130,7 +130,7 @@ public class PopUpMenuBar<T> extends FrameLayout{
         doneBtn.setText("Done");
         doneBtn.setTextSize(DensityUtil.px2sp(context, textSizePx));
         doneBtn.setGravity(Gravity.CENTER);
-        RelativeLayout.LayoutParams buttonParams = new RelativeLayout.LayoutParams(150, ViewGroup.LayoutParams.MATCH_PARENT);
+        RelativeLayout.LayoutParams buttonParams = new RelativeLayout.LayoutParams(200, ViewGroup.LayoutParams.MATCH_PARENT);
         buttonParams.rightMargin = DensityUtil.dip2px(context,15);
         buttonParams.addRule(ALIGN_PARENT_RIGHT);
         buttonParams.addRule(CENTER_VERTICAL);
@@ -138,7 +138,7 @@ public class PopUpMenuBar<T> extends FrameLayout{
 
         highlighter = new View(context);
         highlighter.setBackgroundColor(getResources().getColor(R.color.calendar_timeslot_duration_highlighter));
-        RelativeLayout.LayoutParams highlighterParams = new RelativeLayout.LayoutParams(150, DensityUtil.dip2px(context,3));
+        RelativeLayout.LayoutParams highlighterParams = new RelativeLayout.LayoutParams(200, DensityUtil.dip2px(context,3));
         highlighterParams.rightMargin = DensityUtil.dip2px(context,15);
         highlighterParams.bottomMargin = DensityUtil.dip2px(context,7);
         highlighterParams.addRule(ALIGN_PARENT_RIGHT);

@@ -17,7 +17,7 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 
 import com.developer.paul.itimerecycleviewgroup.ITimeRecycleViewGroup;
-import com.github.sundeepk.compactcalendarview.ITimeInnerCalendar.InnerCalendarTimeslotPackage;
+import com.github.sundeepk.compactcalendarview.ITimeTimeslotCalendar.InnerCalendarTimeslotPackage;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,7 +29,7 @@ import david.itimecalendar.calendar.calendar.mudules.monthview.DayViewBodyCell;
 import david.itimecalendar.calendar.listeners.ITimeEventInterface;
 import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
 import david.itimecalendar.calendar.unitviews.DraggableTimeSlotView;
-import david.itimecalendar.calendar.unitviews.PopUpMenuBar;
+import david.itimecalendar.calendar.unitviews.TimeslotDurationWidget;
 import david.itimecalendar.calendar.unitviews.RecommendedSlotView;
 import david.itimecalendar.calendar.unitviews.TimeSlotInnerCalendarView;
 import david.itimecalendar.calendar.unitviews.TimeslotChangeView;
@@ -44,7 +44,7 @@ import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
 
 public class TimeSlotView extends WeekView {
     private TimeSlotInnerCalendarView innerCalView;
-    private PopUpMenuBar<String> popUpMenuBar;
+    private TimeslotDurationWidget<String> popUpMenuBar;
 
     private FrameLayout staticLayer;
     private InnerCalendarTimeslotPackage innerSlotPackage = new InnerCalendarTimeslotPackage();
@@ -92,7 +92,7 @@ public class TimeSlotView extends WeekView {
         this.dayViewBody.setOnScrollListener(new ITimeRecycleViewGroup.OnScroll<DayViewBodyCell>() {
             @Override
             public void onPageSelected(DayViewBodyCell view) {
-                innerCalView.setShowMonth(view.getCalendar().getCalendar().getTime());
+                innerCalView.setCurrentDate(view.getCalendar().getCalendar().getTime());
             }
 
             @Override
@@ -162,12 +162,12 @@ public class TimeSlotView extends WeekView {
 
     private void setUpTimeslotDurationWidget(){
         int popUpMenuHeight = DensityUtil.dip2px(context,50);
-        popUpMenuBar = new PopUpMenuBar<>(context);
+        popUpMenuBar = new TimeslotDurationWidget<>(context);
         popUpMenuBar.setOptHeight(popUpMenuHeight);
         RelativeLayout.LayoutParams popUpMenuBarParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         popUpMenuBarParams.addRule(ALIGN_PARENT_BOTTOM);
         popUpMenuBar.setLayoutParams(popUpMenuBarParams);
-        popUpMenuBar.setOnItemSelectedListener(new PopUpMenuBar.OnItemSelectedListener() {
+        popUpMenuBar.setOnItemSelectedListener(new TimeslotDurationWidget.OnItemSelectedListener() {
             @Override
             public void onItemSelected(int position) {
                 DurationItem selectedItem = durationData.get(position);

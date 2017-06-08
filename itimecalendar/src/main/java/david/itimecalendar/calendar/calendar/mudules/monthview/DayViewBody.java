@@ -4,16 +4,19 @@ import android.animation.Animator;
 import android.animation.LayoutTransition;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.developer.paul.itimerecycleviewgroup.ITimeRecycleViewGroup;
@@ -43,6 +46,7 @@ public class DayViewBody extends RelativeLayout {
 
     private DayViewAllDay allDayView;
     private FrameLayout leftTimeBarLayout;
+    private ScrollView leftTimeBarLayoutContainer;
     private ITimeRecycleViewGroup bodyRecyclerView;
 
     private BodyAdapter dayViewBodyAdapter;
@@ -107,6 +111,8 @@ public class DayViewBody extends RelativeLayout {
 
     private void setUpAllDay(){
         allDayView = new DayViewAllDay(context, attrs);
+        allDayView.setBackgroundColor(Color.LTGRAY);
+        allDayView.setElevation(50);
         allDayView.setSlotsInfo(this.timeSlotPackage);
         allDayView.setTimeslotEnable(false);
         allDayView.setId(generateViewId());
@@ -156,7 +162,8 @@ public class DayViewBody extends RelativeLayout {
 
             @Override
             public void onVerticalScroll(int dy, int preOffsetY) {
-                synViewsVerticalPosition(dy, leftTimeBarLayout);
+//                synViewsVerticalPosition(dy, leftTimeBarLayout);
+                leftTimeBarLayoutContainer.scrollBy(0,-dy);
                 if (onScroll != null){
                     onScroll.onVerticalScroll(dy, preOffsetY);
                 }
@@ -237,6 +244,29 @@ public class DayViewBody extends RelativeLayout {
     }
 
     private void setUpLeftTimeBar(){
+        this.leftTimeBarLayoutContainer = new ScrollView(getContext()){
+            /**
+             * Disable scrolling on hand
+             * @param ev
+             * @return
+             */
+            @Override
+            public boolean onInterceptTouchEvent(MotionEvent ev) {
+                return false;
+            }
+
+            @Override
+            public boolean onTouchEvent(MotionEvent ev) {
+                    return false;
+            }
+        };
+        //hide scrollbar
+        this.leftTimeBarLayoutContainer.setVerticalScrollBarEnabled(false);
+        RelativeLayout.LayoutParams leftTimeBarLayoutContainerParams = new RelativeLayout.LayoutParams(leftBarWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
+        leftTimeBarLayoutContainerParams.addRule(BELOW, allDayView.getId());
+        leftTimeBarLayoutContainer.setLayoutParams(leftTimeBarLayoutContainerParams);
+        this.addView(leftTimeBarLayoutContainer);
+
         this.leftTimeBarLayout = new FrameLayout(getContext());
         int leftBarHeight = this.initTimeText(getHours());
         //add right side decoration
@@ -248,19 +278,20 @@ public class DayViewBody extends RelativeLayout {
         dctView.setPadding(0, 0, 0, 0);
         this.leftTimeBarLayout.addView(dctView);
 
-        RelativeLayout.LayoutParams leftTimeBarParams = new RelativeLayout.LayoutParams(leftBarWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
-        leftTimeBarParams.addRule(BELOW, allDayView.getId());
-        leftTimeBarLayout.setLayoutParams(leftTimeBarParams);
-        this.addView(leftTimeBarLayout);
+//        RelativeLayout.LayoutParams leftTimeBarParams = new RelativeLayout.LayoutParams(leftBarWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
+//        leftTimeBarParams.addRule(BELOW, allDayView.getId());
+//        leftTimeBarLayout.setLayoutParams(leftTimeBarParams);
+//        this.addView(leftTimeBarLayout);
+        this.leftTimeBarLayoutContainer.addView(leftTimeBarLayout);
     }
 
-    private void synViewsVerticalPosition(float dy, View targetView){
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) targetView.getLayoutParams();
-        if (params!=null){
-            params.topMargin += dy;
-            targetView.setLayoutParams(params);
-        }
-    }
+//    private void synViewsVerticalPosition(float dy, View targetView){
+//        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) targetView.getLayoutParams();
+//        if (params!=null){
+//            params.topMargin += dy;
+//            targetView.setLayoutParams(params);
+//        }
+//    }
 
     private int initTimeText(String[] HOURS) {
         int height = DensityUtil.dip2px(context,20);
@@ -493,7 +524,7 @@ public class DayViewBody extends RelativeLayout {
 
         @Override
         public void onTimeSlotDragDrop(DraggableTimeSlotView draggableTimeSlotView, long start, long end) {
-
+            // calendar pass the start - 0, end - 0, calling outer listener with real start&end time
             if (onTimeSlotOuterListener != null){
                 onTimeSlotOuterListener.onTimeSlotDragDrop(draggableTimeSlotView, draggableTimeSlotView.getNewStartTime(), draggableTimeSlotView.getNewEndTime());
             }

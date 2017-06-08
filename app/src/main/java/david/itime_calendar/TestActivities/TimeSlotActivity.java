@@ -52,9 +52,7 @@ public class TimeSlotActivity extends AppCompatActivity {
 
             @Override
             public void onDayClick(Date dateClicked) {
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(dateClicked);
-                timeslotView.scrollToDate(cal.getTime());
+                timeslotView.scrollToDate(dateClicked);
             }
 
             @Override

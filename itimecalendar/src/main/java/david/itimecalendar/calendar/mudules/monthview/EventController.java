@@ -57,9 +57,7 @@ public class EventController {
     private Map<ITimeEventInterface, DraggableEventView> uidDragViewMap = new HashMap<>();
     private ArrayList<DraggableEventView> allDayDgEventViews = new ArrayList<>();
 
-
-    private Class<?> eventClassName;
-
+    private long defaultEventDuration = 3600 * 1000;
     private boolean isTimeSlot = false;
 
     EventController(DayViewBodyCell container) {
@@ -247,12 +245,14 @@ public class EventController {
         return height;
     }
 
+
     private DraggableEventView createTempDayDraggableEventView(float tapX, float tapY) {
         ITimeEventInterface event = this.initializeEvent();
         if (event == null) {
             throw new RuntimeException("need Class name in 'setEventClassName()'");
         }
         DraggableEventView event_view = new DraggableEventView(context, event, false);
+        event_view.setDuration(defaultEventDuration);
         event_view.setType(DraggableEventView.TYPE_TEMP);
         int padding = DensityUtil.dip2px(context,1);
         event_view.setPadding(0,padding,0,0);
@@ -438,7 +438,6 @@ public class EventController {
                     dgView.getCalendar().setHour(currentEventNewHour);
                     dgView.getCalendar().setMinute(currentEventNewMinutes);
                     //set dropped container index
-//                    dgView.setIndexInView(index);
 
                     if (container.tempDragView == null && onEventListener != null) {
                         onEventListener.onEventDragDrop(dgView);

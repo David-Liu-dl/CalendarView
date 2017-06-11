@@ -339,6 +339,14 @@ public class DraggableEventView extends FrameLayout {
         this.type = type;
     }
 
+    public long getDuration() {
+        return duration;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
+    }
+
     private Path path = new Path();
     private RectF rect = new RectF();
 

@@ -89,7 +89,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
     private void init(){
         for (int i = 0 ; i < NUM_SHOW+2 ; i ++){
             AwesomeViewGroup awesomeViewGroup = new AwesomeViewGroup(getContext());
-            awesomeViewGroup.setBackgroundColor(colors[i]);
+//            awesomeViewGroup.setBackgroundColor(colors[i]);
             awesomeViewGroup.setInRecycledViewIndex(i-1);
             awesomeViewGroup.setLayoutParams(new AwesomeViewGroup.AwesomeLayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
             awesomeViewGroupList.add(awesomeViewGroup);
@@ -676,8 +676,8 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
             AwesomeViewGroup.AwesomeLayoutParams lp = (AwesomeViewGroup.AwesomeLayoutParams) awesomeViewGroup.getLayoutParams();
             lp.top += y;
             lp.bottom += y;
-//            awesomeViewGroup.layout(lp.left, lp.top, lp.right, lp.bottom);
-            requestLayout();
+            awesomeViewGroup.layout(lp.left, lp.top, lp.right, lp.bottom);
+//            requestLayout();
         }
 
 

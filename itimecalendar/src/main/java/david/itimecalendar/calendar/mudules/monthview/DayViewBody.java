@@ -202,6 +202,7 @@ public class DayViewBody extends RelativeLayout {
                         if (onEventListener != null){
                             onEventListener.onEventCreate(eventView);
                         }
+                        dayViewBodyAdapter.notifyDataSetChanged();
                     }
 
                     @Override
@@ -237,6 +238,7 @@ public class DayViewBody extends RelativeLayout {
                         if (onEventListener != null){
                             onEventListener.onEventDragDrop(eventView);
                         }
+                        dayViewBodyAdapter.notifyDataSetChanged();
                     }
                 });
             }
@@ -483,7 +485,7 @@ public class DayViewBody extends RelativeLayout {
             if (onTimeSlotOuterListener != null){
                 onTimeSlotOuterListener.onTimeSlotCreate(draggableTimeSlotView);
             }
-//            dayViewBodyAdapter.notifyDataSetChanged();
+            dayViewBodyAdapter.notifyDataSetChanged();
         }
 
         @Override

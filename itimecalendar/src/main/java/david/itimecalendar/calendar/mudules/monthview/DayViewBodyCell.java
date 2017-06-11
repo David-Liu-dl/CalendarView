@@ -158,23 +158,8 @@ public class DayViewBodyCell extends FrameLayout{
         initContentView();
     }
 
-//    @Override
-//    public boolean onTouchEvent(MotionEvent item) {
-//        boolean value = super.onTouchEvent(item);
-//        Log.i(TAG, "DayViewBodyCell onTouchEvent:Action: " + item.getAction() + " R:" + value);
-//        return super.onTouchEvent(item);
-//    }
-//
-//    @Override
-//    public boolean onInterceptTouchEvent(MotionEvent ev) {
-//        boolean value = super.onInterceptTouchEvent(ev);
-//        Log.i(TAG, "onInterceptTouchEvent: " + value);
-//        return super.onInterceptTouchEvent(ev);
-//    }
-
     private void initContentView(){
         eventLayout = new DayInnerBodyLayout(context);
-//        eventLayout.setBackgroundColor(getResources().getColor(displayLen == 1 ? color_bg_day_odd : (i%2 == 0 ? color_bg_day_even : color_bg_day_odd)));
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
         this.addView(eventLayout,params);
@@ -199,7 +184,6 @@ public class DayViewBodyCell extends FrameLayout{
 
     private void initBgView(){
         initDividerLine(getHours());
-//        initBubbleView();
     }
 
 

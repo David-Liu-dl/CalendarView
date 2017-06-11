@@ -69,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
         long endTime;
         for (int i = 1; i < 20; i++) {
             endTime = startTime + interval;
-
             Event event = new Event();
 //            event.setIsAllDay(true);
             event.setIsAllDay(false);

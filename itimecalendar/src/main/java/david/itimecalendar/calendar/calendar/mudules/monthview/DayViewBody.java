@@ -94,8 +94,6 @@ public class DayViewBody extends RelativeLayout {
         }
     }
 
-
-
     public int getLeftBarWidth() {
         return leftBarWidth;
     }
@@ -110,7 +108,7 @@ public class DayViewBody extends RelativeLayout {
     private void setUpAllDay(){
         allDayView = new DayViewAllDay(context, attrs);
         allDayView.setSlotsInfo(this.timeSlotPackage);
-        allDayView.setTimeSlotEnable(false);
+        allDayView.setTimeslotEnable(false);
         allDayView.setId(generateViewId());
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         allDayView.setLayoutParams(params);
@@ -334,7 +332,10 @@ public class DayViewBody extends RelativeLayout {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         int offset = BaseUtil.getDatesDifference(currentFstShowDay.getCalendar().getTimeInMillis(), cal.getTimeInMillis());
+        //move body layout
         bodyRecyclerView.moveWithOffsetX(offset);
+        //move allday layout
+        allDayView.getRecycleViewGroup().moveWithOffsetX(offset);
     }
 
     public void refresh(){
@@ -348,7 +349,7 @@ public class DayViewBody extends RelativeLayout {
     }
 
     public void enableTimeSlot(){
-        allDayView.setTimeSlotEnable(true);
+        allDayView.setTimeslotEnable(true);
         if (dayViewBodyAdapter != null){
             List<View> items = dayViewBodyAdapter.getViewItems();
             for (View view:items
@@ -620,5 +621,24 @@ public class DayViewBody extends RelativeLayout {
     public void notifyDataSetChanged(){
         dayViewBodyAdapter.notifyDataSetChanged();
         allDayView.notifyDataSetChanged();
+    }
+
+    private Mode mode = Mode.REGULAR;
+
+    public enum Mode{
+        ALL_DAY, REGULAR
+    }
+
+    public void setViewMode(Mode mode){
+        this.mode = mode;
+
+        switch (this.mode){
+            case ALL_DAY:
+                allDayView.setAlldayTimeslotEnable(true);
+                break;
+            case REGULAR:
+                allDayView.setAlldayTimeslotEnable(false);
+                break;
+        }
     }
 }

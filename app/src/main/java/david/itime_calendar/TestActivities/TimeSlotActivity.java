@@ -2,7 +2,6 @@ package david.itime_calendar.TestActivities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -14,8 +13,8 @@ import david.itime_calendar.EventManager;
 import david.itime_calendar.MainActivity;
 import david.itime_calendar.R;
 import david.itime_calendar.bean.TimeSlot;
-import david.itimecalendar.calendar.calendar.mudules.monthview.DayViewBody;
-import david.itimecalendar.calendar.calendar.mudules.weekview.TimeSlotView;
+import david.itimecalendar.calendar.mudules.monthview.DayViewBody;
+import david.itimecalendar.calendar.mudules.weekview.TimeSlotView;
 import david.itimecalendar.calendar.listeners.ITimeEventInterface;
 import david.itimecalendar.calendar.unitviews.DraggableTimeSlotView;
 import david.itimecalendar.calendar.unitviews.RecommendedSlotView;
@@ -44,23 +43,21 @@ public class TimeSlotActivity extends AppCompatActivity {
         final TimeSlotView timeslotView = (TimeSlotView) findViewById(R.id.timeslot_view);
         timeslotView.setEventPackage(eventManager.getEventsMap());
         timeslotView.enableTimeSlot();
-        timeslotView.setOnTimeSlotInnerCalendar(new TimeSlotInnerCalendarView.OnTimeSlotInnerCalendar() {
-            @Override
-            public void onCalendarBtnClick(View v, boolean result) {
-
-            }
-
-            @Override
-            public void onDayClick(Date dateClicked) {
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(dateClicked);
-                timeslotView.scrollToDate(cal.getTime());
-            }
-
-            @Override
-            public void onMonthScroll(Date firstDayOfNewMonth) {
-            }
-        });
+//        timeslotView.setOnTimeSlotInnerCalendar(new TimeSlotInnerCalendarView.OnTimeSlotInnerCalendar() {
+//            @Override
+//            public void onCalendarBtnClick(View v, boolean result) {
+//
+//            }
+//
+//            @Override
+//            public void onDayClick(Date dateClicked) {
+//                timeslotView.scrollToDate(dateClicked);
+//            }
+//
+//            @Override
+//            public void onMonthScroll(Date firstDayOfNewMonth) {
+//            }
+//        });
 
         timeslotView.setOnTimeslotDurationChangedListener(new TimeSlotView.OnTimeslotDurationChangedListener() {
             @Override
@@ -74,12 +71,7 @@ public class TimeSlotActivity extends AppCompatActivity {
                 }
             }
         });
-        timeslotView.setOnTimeSlotListener(new DayViewBody.OnTimeSlotViewBodyListener() {
-            @Override
-            public void onAllDayEventClick(ITimeEventInterface event) {
-
-            }
-
+        timeslotView.setOnTimeSlotListener(new DayViewBody.OnViewBodyTimeSlotListener() {
             @Override
             public void onAllDayRcdTimeslotClick(long dayBeginMilliseconds) {
                 TimeSlot newSlot = new TimeSlot();

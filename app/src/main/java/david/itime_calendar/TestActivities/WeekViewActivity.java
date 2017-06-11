@@ -7,8 +7,9 @@ import david.itime_calendar.EventManager;
 import david.itime_calendar.MainActivity;
 import david.itime_calendar.R;
 import david.itime_calendar.bean.Event;
-import david.itimecalendar.calendar.calendar.mudules.monthview.EventController;
-import david.itimecalendar.calendar.calendar.mudules.weekview.WeekView;
+import david.itimecalendar.calendar.mudules.monthview.DayViewBody;
+import david.itimecalendar.calendar.mudules.monthview.EventController;
+import david.itimecalendar.calendar.mudules.weekview.WeekView;
 import david.itimecalendar.calendar.listeners.ITimeEventInterface;
 import david.itimecalendar.calendar.unitviews.DraggableEventView;
 import david.itimecalendar.calendar.util.MyCalendar;
@@ -31,7 +32,12 @@ public class WeekViewActivity extends AppCompatActivity {
         final WeekView weekview = (WeekView) findViewById(R.id.week_view);
         weekview.setEventPackage(eventManager.getEventsMap());
 //        weekview.setDisableCellScroll(true);
-        weekview.setOnBodyListener(new EventController.OnEventListener() {
+        weekview.setOnBodyEventListener(new DayViewBody.OnViewBodyEventListener() {
+            @Override
+            public void onAllDayEventClick(ITimeEventInterface event) {
+
+            }
+
             @Override
             public boolean isDraggable(DraggableEventView eventView) {
                 return true;

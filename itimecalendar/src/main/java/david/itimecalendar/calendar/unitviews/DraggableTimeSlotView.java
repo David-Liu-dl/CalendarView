@@ -5,7 +5,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -32,7 +31,7 @@ public class DraggableTimeSlotView extends FrameLayout {
     private int type = 0;
     private long newStartTime = 0;
     private long newEndTime = 0;
-    private long duration;
+    private long shownDuration;
 
     private WrapperTimeSlot wrapper;
     private ITimeTimeSlotInterface timeslot;
@@ -51,7 +50,7 @@ public class DraggableTimeSlotView extends FrameLayout {
         if (timeslot != null){
             this.newStartTime = timeslot.getStartTime();
             this.newEndTime = timeslot.getEndTime();
-            this.duration = this.newEndTime - this.newStartTime;
+            this.shownDuration = this.newEndTime - this.newStartTime;
         }
         init();
     }
@@ -92,7 +91,7 @@ public class DraggableTimeSlotView extends FrameLayout {
     public void setTimes(long startTime, long endTime){
         this.newStartTime = startTime;
         this.newEndTime = endTime;
-        this.duration = endTime - startTime;
+        this.shownDuration = endTime - startTime;
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(startTime);
     }
@@ -105,13 +104,13 @@ public class DraggableTimeSlotView extends FrameLayout {
         this.newStartTime = newStartTime;
     }
 
-    public long getDuration() {
-//        return newEndTime - newStartTime == 0 ? duration : (newEndTime - newStartTime);
-        return duration;
+    public long getShownDuration() {
+//        return newEndTime - newStartTime == 0 ? shownDuration : (newEndTime - newStartTime);
+        return shownDuration;
     }
 
-    public void setDuration(long duration) {
-        this.duration = duration;
+    public void setShownDuration(long shownDuration) {
+        this.shownDuration = shownDuration;
     }
 
     public long getNewStartTime(){
@@ -119,7 +118,7 @@ public class DraggableTimeSlotView extends FrameLayout {
     }
 
     public long getNewEndTime(){
-        return this.getNewStartTime() + getDuration();
+        return this.getNewStartTime() + getShownDuration();
     }
 
     public boolean isSelect() {

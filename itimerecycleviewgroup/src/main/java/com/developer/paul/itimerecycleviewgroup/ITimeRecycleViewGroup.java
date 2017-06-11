@@ -89,7 +89,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
     private void init(){
         for (int i = 0 ; i < NUM_SHOW+2 ; i ++){
             AwesomeViewGroup awesomeViewGroup = new AwesomeViewGroup(getContext());
-//            awesomeViewGroup.setBackgroundColor(colors[i]);
+            awesomeViewGroup.setBackgroundColor(colors[i]);
             awesomeViewGroup.setInRecycledViewIndex(i-1);
             awesomeViewGroup.setLayoutParams(new AwesomeViewGroup.AwesomeLayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
             awesomeViewGroupList.add(awesomeViewGroup);
@@ -125,6 +125,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
             lp.bottom = lp.top + lp.height;
         }
 
+        requestLayout();
         if (onScroll!=null){
             onScroll.onPageSelected(getFirstShowItem());
         }
@@ -322,15 +323,11 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-        if (this.getVisibility() == GONE){
-            return;
-        }
-
+//        if (this.getVisibility() == GONE){
+//            return;
+//        }
         viewWidth = MeasureSpec.getSize(widthMeasureSpec);
         viewHeight = MeasureSpec.getSize(heightMeasureSpec);
-        setMeasuredDimension(viewWidth, viewHeight);
 
         childWidth = viewWidth/NUM_SHOW;
         if (onSetting==null) {
@@ -342,16 +339,20 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
         int childWidthSpec = MeasureSpec.makeMeasureSpec(childWidth, MeasureSpec.EXACTLY);
         int childHeightSpec = MeasureSpec.makeMeasureSpec(childHeight, MeasureSpec.EXACTLY);
 
+        measureChildren(childWidthSpec, childHeightSpec);
+
         for (int i = 0 ; i < awesomeViewGroupList.size() ; i ++){
+
             AwesomeViewGroup awesomeViewGroup = awesomeViewGroupList.get(i);
-            measureChild(awesomeViewGroup, childWidthSpec, childHeightSpec);
             AwesomeViewGroup.AwesomeLayoutParams lp = (AwesomeViewGroup.AwesomeLayoutParams) awesomeViewGroup.getLayoutParams();
 
             lp.parentHeight = viewHeight;
             lp.width = childWidth;
             lp.height = childHeight;
-
         }
+
+        setMeasuredDimension(viewWidth, viewHeight);
+
     }
 
     private boolean isTouchOutOfParent(MotionEvent ev){
@@ -442,7 +443,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
                         }else if (moveX < 0){
                             scrollDir = SCROLL_LEFT;
                         }
-                        scrollByX(moveX);
+                        scrollByX( moveX);
                         preX = newX;
                     }else if (scrollModel == SCROLL_VERTICAL){
                         setStatus(VERTICAL_MOVE);
@@ -609,14 +610,15 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        Log.i("showntest", "RV onLayout: w:" + (r-l) + " h:" + (b-t));
+        Log.i("showntest", "RV onLayout: l:" + l + " r:" + r + " t:" + t + " b:" + b);
+
         int childCount = awesomeViewGroupList.size();
         for (int i = 0 ; i < childCount; i ++){
             AwesomeViewGroup child = awesomeViewGroupList.get(i);
             AwesomeViewGroup.AwesomeLayoutParams lp = (AwesomeViewGroup.AwesomeLayoutParams) child.getLayoutParams();
             child.layout(lp.left, lp.top, lp.right, lp.bottom);
         }
-        LogUtil.log("height", childHeight + "");
-//        LogUtil.logAwesomes(awesomeViewGroupList);
     }
 
 
@@ -653,7 +655,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
             AwesomeViewGroup.AwesomeLayoutParams lp = (AwesomeViewGroup.AwesomeLayoutParams) awesomeViewGroup.getLayoutParams();
             lp.left += x;
             lp.right += x;
-            awesomeViewGroup.layout(lp.left, lp.top, lp.right, lp.bottom);
+            awesomeViewGroup.requestLayout();
         }
 
         if (onScroll!=null){
@@ -679,12 +681,13 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
         if (y==0){
             return;
         }
-        LogUtil.log("aaa after: ", y + "");
+
         for (AwesomeViewGroup awesomeViewGroup : awesomeViewGroupList){
             AwesomeViewGroup.AwesomeLayoutParams lp = (AwesomeViewGroup.AwesomeLayoutParams) awesomeViewGroup.getLayoutParams();
             lp.top += y;
             lp.bottom += y;
-            awesomeViewGroup.layout(lp.left, lp.top, lp.right, lp.bottom);
+//            awesomeViewGroup.layout(lp.left, lp.top, lp.right, lp.bottom);
+            requestLayout();
         }
 
 
@@ -752,7 +755,6 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
                 if (onScroll!=null){
                     AwesomeViewGroup a = getFirstShownAwesomeViewGroup(awesomeViewGroupList);
                     AwesomeViewGroup.AwesomeLayoutParams lp = (AwesomeViewGroup.AwesomeLayoutParams) a.getLayoutParams();
-                    LogUtil.log("postcheck : index : ", a.getInRecycledViewIndex() + " l : " + lp.left + " r : " + lp.right);
                     onScroll.onPageSelected(getFirstShowItem());
                 }
 

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main$Generated" generated="true"><source path="/Users/Paul/programming/iTime-Calendar/innerCalLibrary/src/main/res"/><source path="/Users/Paul/programming/iTime-Calendar/innerCalLibrary/build/generated/res/rs/release"/><source path="/Users/Paul/programming/iTime-Calendar/innerCalLibrary/build/generated/res/resValues/release"/></dataSet><dataSet config="release$Generated" generated="true"><source path="/Users/Paul/programming/iTime-Calendar/innerCalLibrary/src/release/res"/></dataSet><dataSet config="main" generated-set="main$Generated"><source path="/Users/Paul/programming/iTime-Calendar/innerCalLibrary/src/main/res"><file name="alpha_grad_bg" path="/Users/Paul/programming/iTime-Calendar/innerCalLibrary/src/main/res/drawable/alpha_grad_bg.xml" qualifiers="" type="drawable"/><file name="divider_with_shadow" path="/Users/Paul/programming/iTime-Calendar/innerCalLibrary/src/main/res/drawable/divider_with_shadow.xml" qualifiers="" type="drawable"/><file name="indicator_more_left" path="/Users/Paul/programming/iTime-Calendar/innerCalLibrary/src/main/res/drawable/indicator_more_left.png" qualifiers="" type="drawable"/><file name="indicator_more_right" path="/Users/Paul/programming/iTime-Calendar/innerCalLibrary/src/main/res/drawable/indicator_more_right.png" qualifiers="" type="drawable"/><file path="/Users/Paul/programming/iTime-Calendar/innerCalLibrary/src/main/res/values/attrs.xml" qualifiers=""><attr format="enum" name="compactCalendarCurrentDayIndicatorStyle">
+        <enum name="fill_large_indicator" value="1"/>
+        <enum name="no_fill_large_indicator" value="2"/>
+    </attr><attr format="enum" name="compactCalendarEventIndicatorStyle">
+        <enum name="fill_large_indicator" value="1"/>
+        <enum name="no_fill_large_indicator" value="2"/>
+        <enum name="small_indicator" value="3"/>
+    </attr><attr format="enum" name="compactCalendarCurrentSelectedDayIndicatorStyle">
+        <enum name="fill_large_indicator" value="1"/>
+        <enum name="no_fill_large_indicator" value="2"/>
+    </attr><declare-styleable name="ITimeInnerCalendar">
+        <attr format="color" name="itimeTimeslotCircleColor"/>
+        <attr format="color" name="itimeTimeslotTextColor"/>
+        <attr format="dimension" name="compactCalendarTextSize"/>
+        <attr format="color" name="compactCalendarBackgroundColor"/>
+        <attr format="color" name="compactCalendarCurrentDayBackgroundColor"/>
+        <attr format="color" name="compactCalendarCurrentSelectedDayBackgroundColor"/>
+        <attr format="color" name="compactCalendarTextColor"/>
+        <attr format="color" name="compactCalendarMultiEventIndicatorColor"/>
+        <attr format="dimension" name="compactCalendarTargetHeight"/>
+        <attr name="compactCalendarEventIndicatorStyle"/>
+        <attr name="compactCalendarCurrentDayIndicatorStyle"/>
+        <attr name="compactCalendarCurrentSelectedDayIndicatorStyle"/>
+        <attr format="boolean" name="compactCalendarDisplayOtherMonthDays"/>
+        <attr format="boolean" name="compactCalendarShouldSelectFirstDayOfMonthOnScroll"/>
+        <attr format="color" name="compactCalendarOtherMonthDaysTextColor"/>
+    </declare-styleable></file><file path="/Users/Paul/programming/iTime-Calendar/innerCalLibrary/src/main/res/values/colors.xml" qualifiers=""><color name="calendar_alpha_bg">#B3ffffff</color><color name="divider_nav">#eeeeee</color></file></source><source path="/Users/Paul/programming/iTime-Calendar/innerCalLibrary/build/generated/res/rs/release"/><source path="/Users/Paul/programming/iTime-Calendar/innerCalLibrary/build/generated/res/resValues/release"/></dataSet><dataSet config="release" generated-set="release$Generated"><source path="/Users/Paul/programming/iTime-Calendar/innerCalLibrary/src/release/res"/></dataSet><mergedItems><configuration qualifiers=""><declare-styleable name="ITimeInnerCalendar"><attr format="color" name="itimeTimeslotCircleColor"/><attr format="color" name="itimeTimeslotTextColor"/><attr format="dimension" name="compactCalendarTextSize"/><attr format="color" name="compactCalendarBackgroundColor"/><attr format="color" name="compactCalendarCurrentDayBackgroundColor"/><attr format="color" name="compactCalendarCurrentSelectedDayBackgroundColor"/><attr format="color" name="compactCalendarTextColor"/><attr format="color" name="compactCalendarMultiEventIndicatorColor"/><attr format="dimension" name="compactCalendarTargetHeight"/><attr name="compactCalendarEventIndicatorStyle"/><attr name="compactCalendarCurrentDayIndicatorStyle"/><attr name="compactCalendarCurrentSelectedDayIndicatorStyle"/><attr format="boolean" name="compactCalendarDisplayOtherMonthDays"/><attr format="boolean" name="compactCalendarShouldSelectFirstDayOfMonthOnScroll"/><attr format="color" name="compactCalendarOtherMonthDaysTextColor"/></declare-styleable></configuration></mergedItems></merger>

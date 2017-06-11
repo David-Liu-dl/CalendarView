@@ -1,4 +1,7 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+group "org.unimelb.itime.calendar"
+version = '1.0.0'
 
 android {
     compileSdkVersion 25
@@ -37,6 +40,6 @@ dependencies {
     compile 'com.daasuu:BubbleLayout:1.1.1'
     compile 'cn.aigestudio.wheelpicker:WheelPicker:1.1.2'
     testCompile 'junit:junit:4.12'
-    compile project(':innerCalLibrary')
+    compile project(':timeslotcalendar')
     compile project(':itimerecycleviewgroup')
 }

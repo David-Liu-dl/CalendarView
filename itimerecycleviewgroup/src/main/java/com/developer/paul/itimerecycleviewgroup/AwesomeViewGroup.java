@@ -51,8 +51,9 @@ public class AwesomeViewGroup extends ViewGroup {
     @Override
     public String toString() {
         AwesomeLayoutParams lp = (AwesomeLayoutParams) getLayoutParams();
-        String str = "inRecycledViewIndex : " + inRecycledViewIndex + " ,l : " + lp.left + " ,t : " + lp.top +
-                " ,r : " + lp.right + " ,b : " + lp.bottom;
+//        String str = "inRecycledViewIndex : " + inRecycledViewIndex + " ,l : " + lp.left + " ,t : " + lp.top +
+//                " ,r : " + lp.right + " ,b : " + lp.bottom;
+        String str = "children count : " + ((ViewGroup)getItem()).getChildCount();
         return str;
     }
 

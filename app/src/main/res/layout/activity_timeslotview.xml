@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <david.itimecalendar.calendar.calendar.mudules.weekview.TimeSlotView
+    <david.itimecalendar.calendar.mudules.weekview.TimeSlotView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/timeslot_view"
@@ -14,5 +14,5 @@
         app:hourHeight="40dp"
         app:allDayEventHeight="40dp"
         app:allDayTimeslotHeight="100dp">
-    </david.itimecalendar.calendar.calendar.mudules.weekview.TimeSlotView>
+    </david.itimecalendar.calendar.mudules.weekview.TimeSlotView>
 </LinearLayout>

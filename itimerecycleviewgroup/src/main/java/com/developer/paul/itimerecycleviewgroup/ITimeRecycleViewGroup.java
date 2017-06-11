@@ -89,7 +89,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
     private void init(){
         for (int i = 0 ; i < NUM_SHOW+2 ; i ++){
             AwesomeViewGroup awesomeViewGroup = new AwesomeViewGroup(getContext());
-//            awesomeViewGroup.setBackgroundColor(colors[i]);
+            awesomeViewGroup.setBackgroundColor(colors[i]);
             awesomeViewGroup.setInRecycledViewIndex(i-1);
             awesomeViewGroup.setLayoutParams(new AwesomeViewGroup.AwesomeLayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
             awesomeViewGroupList.add(awesomeViewGroup);
@@ -322,11 +322,9 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-
-        if (this.getVisibility() == GONE){
-            return;
-        }
-
+//        if (this.getVisibility() == GONE){
+//            return;
+//        }
         viewWidth = MeasureSpec.getSize(widthMeasureSpec);
         viewHeight = MeasureSpec.getSize(heightMeasureSpec);
 
@@ -611,14 +609,15 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        Log.i("showntest", "RV onLayout: w:" + (r-l) + " h:" + (b-t));
+        Log.i("showntest", "RV onLayout: l:" + l + " r:" + r + " t:" + t + " b:" + b);
+
         int childCount = awesomeViewGroupList.size();
         for (int i = 0 ; i < childCount; i ++){
             AwesomeViewGroup child = awesomeViewGroupList.get(i);
             AwesomeViewGroup.AwesomeLayoutParams lp = (AwesomeViewGroup.AwesomeLayoutParams) child.getLayoutParams();
             child.layout(lp.left, lp.top, lp.right, lp.bottom);
         }
-        LogUtil.log("height", childHeight + "");
-//        LogUtil.logAwesomes(awesomeViewGroupList);
     }
 
     public void followScrollByX(int x){
@@ -672,12 +671,13 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
         if (y==0){
             return;
         }
-        LogUtil.log("aaa after: ", y + "");
+
         for (AwesomeViewGroup awesomeViewGroup : awesomeViewGroupList){
             AwesomeViewGroup.AwesomeLayoutParams lp = (AwesomeViewGroup.AwesomeLayoutParams) awesomeViewGroup.getLayoutParams();
             lp.top += y;
             lp.bottom += y;
-            awesomeViewGroup.layout(lp.left, lp.top, lp.right, lp.bottom);
+//            awesomeViewGroup.layout(lp.left, lp.top, lp.right, lp.bottom);
+            requestLayout();
         }
 
 

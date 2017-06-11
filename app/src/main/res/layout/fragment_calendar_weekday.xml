@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <david.itimecalendar.calendar.mudules.weekview.WeekView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/week_view"
+            app:cellNum="7"
+            app:leftBarWidth="45dp"
+            app:topSpace="5dp"
+            app:hourHeight="40dp"
+            app:allDayEventHeight="40dp"
+            />
+    </LinearLayout>
+</layout>

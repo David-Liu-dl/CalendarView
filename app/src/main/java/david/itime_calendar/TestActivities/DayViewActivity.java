@@ -5,8 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 
 import david.itime_calendar.R;
 import david.itime_calendar.bean.Event;
-import david.itimecalendar.calendar.calendar.mudules.monthview.EventController;
-import david.itimecalendar.calendar.calendar.mudules.monthview.MonthView;
+import david.itimecalendar.calendar.mudules.monthview.DayViewBody;
+import david.itimecalendar.calendar.mudules.monthview.EventController;
+import david.itimecalendar.calendar.mudules.monthview.MonthView;
 import david.itimecalendar.calendar.listeners.ITimeEventInterface;
 import david.itimecalendar.calendar.unitviews.DraggableEventView;
 import david.itimecalendar.calendar.util.BaseUtil;
@@ -28,7 +29,12 @@ public class DayViewActivity extends AppCompatActivity {
 
     private void doTest(){
         final MonthView monthView = (MonthView) findViewById(R.id.day_view);
-        monthView.setOnBodyListener(new EventController.OnEventListener() {
+        monthView.setOnBodyEventListener(new DayViewBody.OnViewBodyEventListener() {
+            @Override
+            public void onAllDayEventClick(ITimeEventInterface event) {
+
+            }
+
             @Override
             public boolean isDraggable(DraggableEventView eventView) {
                 return true;

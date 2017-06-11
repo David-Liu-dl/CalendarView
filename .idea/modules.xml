@@ -4,11 +4,9 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/iTime-Calendar.iml" filepath="$PROJECT_DIR$/iTime-Calendar.iml" />
-      <module fileurl="file://$PROJECT_DIR$/innerCalLibrary/innerCalLibrary.iml" filepath="$PROJECT_DIR$/innerCalLibrary/innerCalLibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/itimecalendar/itimecalendar.iml" filepath="$PROJECT_DIR$/itimecalendar/itimecalendar.iml" />
       <module fileurl="file://$PROJECT_DIR$/itimerecycleviewgroup/itimerecycleviewgroup.iml" filepath="$PROJECT_DIR$/itimerecycleviewgroup/itimerecycleviewgroup.iml" />
-      <module fileurl="file://$PROJECT_DIR$/itimerecycleviewgroup/itimerecycleviewgroup.iml" filepath="$PROJECT_DIR$/itimerecycleviewgroup/itimerecycleviewgroup.iml" />
-      <module fileurl="file://$PROJECT_DIR$/recycleviewgroup/recycleviewgroup.iml" filepath="$PROJECT_DIR$/recycleviewgroup/recycleviewgroup.iml" />
+      <module fileurl="file://$PROJECT_DIR$/timeslotcalendar/timeslotcalendar.iml" filepath="$PROJECT_DIR$/timeslotcalendar/timeslotcalendar.iml" />
     </modules>
   </component>
 </project>

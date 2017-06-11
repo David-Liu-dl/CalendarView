@@ -78,6 +78,9 @@ public class AwesomeViewGroup extends ViewGroup {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         measureChildren(widthMeasureSpec, heightMeasureSpec);
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int width = MeasureSpec.getSize(widthMeasureSpec);
+        int height = MeasureSpec.getSize(heightMeasureSpec);
+        Log.i("showntest", "AW onMeasure: w:" + width + " h:" + height);
     }
 
     private int tolerance = 2;
@@ -88,6 +91,11 @@ public class AwesomeViewGroup extends ViewGroup {
         int newH = b - t;
         if (newW == 0 || newH == 0){
         }
+
+
+        Log.i("showntest", "AW onLayout: w:" + (r-l) + " h:" + (b-t));
+        Log.i("showntest", "AW onLayout: l:" + l + " r:" + r + " t:" + t + " b:" + b);
+
         item.layout(0,0,newW,newH);
 
         if (changed && item != null){

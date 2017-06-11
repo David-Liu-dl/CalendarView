@@ -135,7 +135,6 @@ public class WeekView extends RelativeLayout{
         });
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) headerHeight);
         params.leftMargin = (int)leftBarWidth;
-        headerRG.setBackgroundColor(Color.LTGRAY);
         headerRG.setLayoutParams(params);
         headerAdapter = new WeekViewHeaderAdapter(context);
         headerRG.setAdapter(headerAdapter);

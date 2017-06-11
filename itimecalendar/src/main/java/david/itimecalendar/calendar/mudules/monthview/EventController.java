@@ -385,10 +385,9 @@ public class EventController {
 //                    Log.i(TAG, "ACTION_DRAG_STARTED: " + container.getCalendar().getCalendar().getTime());
                     break;
                 case DragEvent.ACTION_DRAG_LOCATION:
-                    Log.i(TAG, "ACTION_DRAG_LOCATION: " + this + " " + container.getCalendar().getCalendar().getTime());
-
                     int rawX = (int) event.getX();
                     int rawY = (int) event.getY();
+                    Log.i(TAG, "aaaaaaa: " + rawY);
 //                    container.scrollViewAutoScroll(item);
 
                     if (onEventListener != null) {
@@ -399,7 +398,6 @@ public class EventController {
 //                    container.msgWindowFollow(rawX, (int) item.getY(), index, (View) item.getLocalState());
                     break;
                 case DragEvent.ACTION_DRAG_ENTERED:
-//                    Log.i(TAG, "ACTION_DRAG_ENTERED:" + container.getCalendar().getCalendar().getTime());
 //                    container.msgWindow.setVisibility(View.VISIBLE);
                     if (dgView.getType() == DraggableEventView.TYPE_TEMP){
                         container.tempDragView = dgView;
@@ -408,7 +406,6 @@ public class EventController {
                     }
                     break;
                 case DragEvent.ACTION_DRAG_EXITED:
-//                    Log.i(TAG, "ACTION_DRAG_EXITED:" + container.getCalendar().getCalendar().getTime());
 //                    container.msgWindow.setVisibility(View.INVISIBLE);
                     container.tempDragView = null;
                     break;
@@ -525,58 +522,6 @@ public class EventController {
             });
 
             scaleDown.start();
-
-//            EventController.this.container.tempDragView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-//                @Override
-//                public void onGlobalLayout() {
-//                    EventController.this.container.tempDragView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-//                    ObjectAnimator scaleX = ObjectAnimator.ofFloat(EventController.this.container.tempDragView, "scaleX", 0f,1f);
-//                    ObjectAnimator scaleY = ObjectAnimator.ofFloat(EventController.this.container.tempDragView, "scaleY", 0f,1f);
-//                    ObjectAnimator alpha = ObjectAnimator.ofFloat(EventController.this.container.tempDragView, "alpha", 0f,1f);
-//                    alpha.setShownDuration(180);
-//                    scaleX.setShownDuration(120);
-//                    scaleY.setShownDuration(120);
-//
-//                    AnimatorSet scaleDown = new AnimatorSet();
-//                    scaleDown.play(alpha).with(scaleY).with(scaleX);
-//                    scaleX.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-//                        @Override
-//                        public void onAnimationUpdate(ValueAnimator valueAnimator) {
-//                            View p= (View) EventController.this.container.tempDragView.getParent();
-//                            if (p != null){
-//                                p.invalidate();
-//                            }
-//                        }
-//                    });
-//                    scaleDown.addListener(new Animator.AnimatorListener() {
-//                        @Override
-//                        public void onAnimationStart(Animator animation) {
-//                            Log.i(TAG, "onAnimationStart: ");
-//                        }
-//
-//                        @Override
-//                        public void onAnimationEnd(Animator animation) {
-//                            if (EventController.this.container.tempDragView != null
-//                                    && EventController.this.container.tempDragView.getParent() != null){
-//                                EventController.this.container.tempDragView.performLongClick();
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onAnimationCancel(Animator animation) {
-//
-//                        }
-//
-//                        @Override
-//                        public void onAnimationRepeat(Animator animation) {
-//
-//                        }
-//                    });
-//
-//                    scaleDown.start();
-//                }
-//            });
-//            }
 
             return true;
         }

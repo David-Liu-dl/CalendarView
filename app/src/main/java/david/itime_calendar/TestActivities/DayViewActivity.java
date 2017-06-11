@@ -2,6 +2,9 @@ package david.itime_calendar.TestActivities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+
+import java.util.Calendar;
 
 import david.itime_calendar.R;
 import david.itime_calendar.bean.Event;
@@ -42,7 +45,17 @@ public class DayViewActivity extends AppCompatActivity {
 
             @Override
             public void onEventCreate(DraggableEventView eventView) {
-
+                Event event = new Event();
+                Calendar cal = Calendar.getInstance();
+                cal.setTimeInMillis(eventView.getStartTimeM());
+                String sStr = cal.getTime().toString();
+                cal.setTimeInMillis(eventView.getEndTimeM());
+                String eStr = cal.getTime().toString();
+                Log.i("timetest", "start: " + sStr);
+                Log.i("timetest", "end: " + eStr);
+                event.setStartTime(eventView.getStartTimeM());
+                event.setEndTime(eventView.getEndTimeM());
+                eventManager.addEvent(event);
             }
 
             @Override

@@ -86,8 +86,8 @@ public class DayViewBodyCell extends FrameLayout{
     protected View tempDragView = null;
     private View dctView;
     //dp
-    protected int hourHeight = 30;
-    private int spaceTop = 30;
+    protected int hourHeight = 90;
+    private int spaceTop = 0;
 
     //dp
     protected int unitViewLeftMargin = 3;
@@ -161,7 +161,6 @@ public class DayViewBodyCell extends FrameLayout{
     private void initContentView(){
         eventLayout = new DayInnerBodyLayout(context);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-
         this.addView(eventLayout,params);
 
         eventLayout.setOnTouchListener(new OnTouchListener() {

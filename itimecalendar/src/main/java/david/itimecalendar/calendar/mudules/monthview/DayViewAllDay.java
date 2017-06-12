@@ -78,8 +78,9 @@ public class DayViewAllDay extends FrameLayout {
         Context context = getContext();
         label = new TextView(context);
         label.setText("All day");
-        label.setGravity(Gravity.CENTER_VERTICAL);
-        FrameLayout.LayoutParams labelParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        label.setTextSize(11);
+        label.setGravity(Gravity.CENTER);
+        FrameLayout.LayoutParams labelParams = new LayoutParams((int)leftBarWidth, ViewGroup.LayoutParams.MATCH_PARENT);
         label.setLayoutParams(labelParams);
         this.addView(label);
 
@@ -262,7 +263,7 @@ public class DayViewAllDay extends FrameLayout {
 
             eventLayout = new LinearLayout(context);
             eventLayout.setOrientation(HORIZONTAL);
-            eventLayout.setPadding(paddingLR,paddingBT,paddingLR,0);
+            eventLayout.setPadding(paddingLR,paddingBT,paddingLR,paddingBT);
             LinearLayout.LayoutParams eventParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,allDayEventHeight);
             eventLayout.setLayoutParams(eventParams);
             this.addView(eventLayout);
@@ -271,7 +272,7 @@ public class DayViewAllDay extends FrameLayout {
         private void addAllDayEvent(WrapperEvent wrapper) {
             DraggableEventView new_dgEvent = new DraggableEventView(getContext(),wrapper.getEvent(),true);
             new_dgEvent.setOnClickListener(new OnAllDayEventClick());
-            LinearLayout.LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, allDayEventHeight,1f);
+            LinearLayout.LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, allDayEventHeight - paddingBT*3, 1f);
             new_dgEvent.setLayoutParams(params);
             this.eventLayout.addView(new_dgEvent);
             this.allDayEvents.add(wrapper.getEvent());
@@ -396,50 +397,6 @@ public class DayViewAllDay extends FrameLayout {
 
         layoutAnimator.start();
     }
-
-//    private void performLayoutChanged(int targetHeight){
-//        if (hideAnim != null && hideAnim.isRunning()){
-//            return;
-//        }
-//
-//        if (showAnim != null && showAnim.isRunning()){
-//            showAnim.cancel();
-//        }
-//
-//        hideAnim = ValueAnimator.ofInt(this.getHeight(), targetHeight);
-//        hideAnim.setShownDuration(animDuration);
-//        hideAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-//            public void onAnimationUpdate(ValueAnimator animation) {
-//                Integer value = (Integer) animation.getAnimatedValue();
-//                DayViewAllDay.this.getLayoutParams().height = value.intValue();
-//                DayViewAllDay.this.requestLayout();
-//            }
-//        });
-//
-//        hideAnim.start();
-//    }
-
-//    private void performExpand(int targetHeight){
-//        if (showAnim != null && showAnim.isRunning()){
-//            return;
-//        }
-//
-//        if (hideAnim != null && hideAnim.isRunning()){
-//            hideAnim.cancel();
-//        }
-//
-//        showAnim = ValueAnimator.ofInt(this.getHeight(), targetHeight);
-//        showAnim.setShownDuration(animDuration);
-//        showAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-//            public void onAnimationUpdate(ValueAnimator animation) {
-//                Integer value = (Integer) animation.getAnimatedValue();
-//                DayViewAllDay.this.getLayoutParams().height = value.intValue();
-//                DayViewAllDay.this.requestLayout();
-//            }
-//        });
-//
-//        showAnim.start();
-//    }
 
     public boolean isTimeslotEnable() {
         return isTimeslotEnable;

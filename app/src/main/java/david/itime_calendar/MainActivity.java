@@ -73,8 +73,8 @@ public class MainActivity extends AppCompatActivity {
             endTime = startTime + interval;
             Event event = new Event();
 //            event.setIsAllDay(true);
-            event.setIsAllDay(false);
-//            event.setIsAllDay(i == 4);
+//            event.setIsAllDay(false);
+            event.setIsAllDay(i%2==0);
             event.setEventUid("" + i);
             event.setTitle("adawdwadwadaw" + i);
             event.setDisplayEventType(1);
@@ -184,6 +184,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        tstBtn.performClick();
+//        tstBtn.performClick();
     }
 }

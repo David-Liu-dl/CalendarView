@@ -41,8 +41,9 @@ public class TimeSlotActivity extends AppCompatActivity {
         initSlots(slots);
 
         final TimeSlotView timeslotView = (TimeSlotView) findViewById(R.id.timeslot_view);
-        timeslotView.setEventPackage(eventManager.getEventsMap());
+        //ensure 'enableTimeSlot()' is called immediately after creating TimeSlotView.
         timeslotView.enableTimeSlot();
+        timeslotView.setEventPackage(eventManager.getEventsMap());
 //        timeslotView.setOnTimeSlotInnerCalendar(new TimeSlotInnerCalendarView.OnTimeSlotInnerCalendar() {
 //            @Override
 //            public void onCalendarBtnClick(View v, boolean result) {
@@ -136,11 +137,11 @@ public class TimeSlotActivity extends AppCompatActivity {
         });
         //Note: ensure calling setTimeslotDurationItems after setting listeners
         timeslotView.setTimeslotDurationItems(initList());
-
-        for (TimeSlot slot:slots
-                ) {
-            timeslotView.addTimeSlot(slot);
-        }
+//
+//        for (TimeSlot slot:slots
+//                ) {
+//            timeslotView.addTimeSlot(slot);
+//        }
     }
 
     private void initSlots(ArrayList<TimeSlot> slots){

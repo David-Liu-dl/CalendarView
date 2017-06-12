@@ -26,7 +26,6 @@ import java.util.List;
 import david.itimecalendar.R;
 import david.itimecalendar.calendar.mudules.monthview.DayViewBody;
 import david.itimecalendar.calendar.mudules.monthview.DayViewBodyCell;
-import david.itimecalendar.calendar.listeners.ITimeEventInterface;
 import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
 import david.itimecalendar.calendar.unitviews.DraggableTimeSlotView;
 import david.itimecalendar.calendar.unitviews.TimeslotDurationWidget;
@@ -197,6 +196,20 @@ public class TimeSlotView extends WeekView {
         RelativeLayout.LayoutParams stcPageParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
         innerCalView = new TimeSlotInnerCalendarView(context);
+        innerCalView.setOnTimeSlotInnerCalendar(new TimeSlotInnerCalendarView.OnTimeSlotInnerCalendar() {
+            @Override
+            public void onCalendarBtnClick(View v, boolean result) {
+            }
+
+            @Override
+            public void onDayClick(Date dateClicked) {
+                TimeSlotView.this.scrollToDate(dateClicked);
+            }
+
+            @Override
+            public void onMonthScroll(Date firstDayOfNewMonth) {
+            }
+        });
         innerCalView.setHeaderHeight((int)headerHeight);
         innerCalView.setSlotNumMap(innerSlotPackage);
 

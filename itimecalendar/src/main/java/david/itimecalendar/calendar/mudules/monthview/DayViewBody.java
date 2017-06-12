@@ -111,8 +111,8 @@ public class DayViewBody extends RelativeLayout {
 
     private void setUpAllDay(){
         allDayView = new DayViewAllDay(context, attrs);
-        allDayView.setBackgroundColor(Color.LTGRAY);
-        allDayView.setElevation(50);
+        allDayView.setBackgroundColor(getResources().getColor(R.color.divider_calbg));
+        allDayView.setElevation(20);
         allDayView.setSlotsInfo(this.timeSlotPackage);
         allDayView.setTimeslotEnable(false);
         allDayView.setId(generateViewId());

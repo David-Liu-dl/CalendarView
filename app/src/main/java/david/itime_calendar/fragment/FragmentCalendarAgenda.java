@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 
 import david.itime_calendar.R;
 import david.itimecalendar.calendar.listeners.ITimeEventInterface;
-import david.itimecalendar.calendar.mudules.agendaview.AgendaViewBody;
-import david.itimecalendar.calendar.mudules.agendaview.MonthAgendaView;
+import david.itimecalendar.calendar.ui.agendaview.AgendaViewBody;
+import david.itimecalendar.calendar.ui.agendaview.MonthAgendaView;
 
 /**
  * Created by yuhaoliu on 8/06/2017.

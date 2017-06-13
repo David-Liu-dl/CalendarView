@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <david.itimecalendar.calendar.mudules.monthview.MonthView
+    <david.itimecalendar.calendar.ui.monthview.MonthView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/day_view"
@@ -13,6 +13,6 @@
         app:topSpace="5dp"
         app:hourHeight="40dp"
         app:allDayEventHeight="50dp">
-    </david.itimecalendar.calendar.mudules.monthview.MonthView>
+    </david.itimecalendar.calendar.ui.monthview.MonthView>
 
 </LinearLayout>

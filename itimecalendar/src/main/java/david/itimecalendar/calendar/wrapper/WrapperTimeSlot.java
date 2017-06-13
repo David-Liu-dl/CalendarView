@@ -4,7 +4,7 @@ package david.itimecalendar.calendar.wrapper;
 import android.support.annotation.NonNull;
 
 import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
-import david.itimecalendar.calendar.unitviews.DraggableTimeSlotView;
+import david.itimecalendar.calendar.ui.unitviews.DraggableTimeSlotView;
 import david.itimecalendar.calendar.util.OverlapHelper;
 
 /**

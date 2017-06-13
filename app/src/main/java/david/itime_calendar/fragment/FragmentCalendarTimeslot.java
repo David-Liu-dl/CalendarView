@@ -10,10 +10,10 @@ import android.view.ViewGroup;
 
 import david.itime_calendar.EventManager;
 import david.itime_calendar.R;
-import david.itimecalendar.calendar.mudules.monthview.DayViewBody;
-import david.itimecalendar.calendar.mudules.weekview.TimeSlotView;
-import david.itimecalendar.calendar.unitviews.DraggableTimeSlotView;
-import david.itimecalendar.calendar.unitviews.RecommendedSlotView;
+import david.itimecalendar.calendar.ui.monthview.DayViewBody;
+import david.itimecalendar.calendar.ui.weekview.TimeSlotView;
+import david.itimecalendar.calendar.ui.unitviews.DraggableTimeSlotView;
+import david.itimecalendar.calendar.ui.unitviews.RecommendedSlotView;
 import david.itimecalendar.calendar.util.MyCalendar;
 
 /**

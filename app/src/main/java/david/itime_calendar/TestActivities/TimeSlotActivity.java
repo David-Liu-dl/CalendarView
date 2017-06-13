@@ -2,23 +2,19 @@ package david.itime_calendar.TestActivities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import david.itime_calendar.EventManager;
 import david.itime_calendar.MainActivity;
 import david.itime_calendar.R;
 import david.itime_calendar.bean.TimeSlot;
-import david.itimecalendar.calendar.mudules.monthview.DayViewBody;
-import david.itimecalendar.calendar.mudules.weekview.TimeSlotView;
-import david.itimecalendar.calendar.listeners.ITimeEventInterface;
-import david.itimecalendar.calendar.unitviews.DraggableTimeSlotView;
-import david.itimecalendar.calendar.unitviews.RecommendedSlotView;
-import david.itimecalendar.calendar.unitviews.TimeSlotInnerCalendarView;
+import david.itimecalendar.calendar.ui.monthview.DayViewBody;
+import david.itimecalendar.calendar.ui.weekview.TimeSlotView;
+import david.itimecalendar.calendar.ui.unitviews.DraggableTimeSlotView;
+import david.itimecalendar.calendar.ui.unitviews.RecommendedSlotView;
 import david.itimecalendar.calendar.util.MyCalendar;
 
 /**
@@ -137,11 +133,11 @@ public class TimeSlotActivity extends AppCompatActivity {
         });
         //Note: ensure calling setTimeslotDurationItems after setting listeners
         timeslotView.setTimeslotDurationItems(initList());
-//
-//        for (TimeSlot slot:slots
-//                ) {
-//            timeslotView.addTimeSlot(slot);
-//        }
+
+        for (TimeSlot slot:slots
+                ) {
+            timeslotView.addTimeSlot(slot);
+        }
     }
 
     private void initSlots(ArrayList<TimeSlot> slots){

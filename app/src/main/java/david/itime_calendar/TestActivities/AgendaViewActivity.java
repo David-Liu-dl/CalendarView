@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import david.itime_calendar.R;
-import david.itimecalendar.calendar.mudules.agendaview.MonthAgendaView;
+import david.itimecalendar.calendar.ui.agendaview.MonthAgendaView;
 
 import static david.itime_calendar.MainActivity.eventManager;
 

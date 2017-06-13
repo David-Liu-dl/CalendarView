@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-        <david.itimecalendar.calendar.mudules.agendaview.MonthAgendaView
+        <david.itimecalendar.calendar.ui.agendaview.MonthAgendaView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/agenda_view"

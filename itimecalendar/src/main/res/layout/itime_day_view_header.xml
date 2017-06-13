@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<david.itimecalendar.calendar.mudules.monthview.DayViewHeader
+<david.itimecalendar.calendar.ui.monthview.DayViewHeader
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -11,4 +11,4 @@
     app:todaySelectedCircleBgColor="@color/color_F45B69"
     app:otherSelectedCircleBgColor="@color/group_et"
     xmlns:android="http://schemas.android.com/apk/res/android">
-</david.itimecalendar.calendar.mudules.monthview.DayViewHeader>
+</david.itimecalendar.calendar.ui.monthview.DayViewHeader>

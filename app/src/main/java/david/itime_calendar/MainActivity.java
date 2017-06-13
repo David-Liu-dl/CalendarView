@@ -69,12 +69,12 @@ public class MainActivity extends AppCompatActivity {
         long interval = (3600 * 1000);
         long startTime = calendar.getTimeInMillis();
         long endTime;
-        for (int i = 1; i < 20; i++) {
+        for (int i = 1; i < 2; i++) {
             endTime = startTime + interval;
             Event event = new Event();
-//            event.setIsAllDay(true);
+            event.setIsAllDay(true);
 //            event.setIsAllDay(false);
-            event.setIsAllDay(i%2==0);
+//            event.setIsAllDay(i%2==0);
             event.setEventUid("" + i);
             event.setTitle("adawdwadwadaw" + i);
             event.setDisplayEventType(1);

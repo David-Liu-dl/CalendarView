@@ -11,9 +11,9 @@ import android.view.ViewGroup;
 import david.itime_calendar.EventManager;
 import david.itime_calendar.R;
 import david.itimecalendar.calendar.listeners.ITimeEventInterface;
-import david.itimecalendar.calendar.mudules.monthview.DayViewBody;
-import david.itimecalendar.calendar.mudules.weekview.WeekView;
-import david.itimecalendar.calendar.unitviews.DraggableEventView;
+import david.itimecalendar.calendar.ui.monthview.DayViewBody;
+import david.itimecalendar.calendar.ui.weekview.WeekView;
+import david.itimecalendar.calendar.ui.unitviews.DraggableEventView;
 import david.itimecalendar.calendar.util.MyCalendar;
 
 /**

@@ -610,8 +610,6 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        Log.i("showntest", "RV onLayout: w:" + (r-l) + " h:" + (b-t));
-        Log.i("showntest", "RV onLayout: l:" + l + " r:" + r + " t:" + t + " b:" + b);
 
         int childCount = awesomeViewGroupList.size();
         for (int i = 0 ; i < childCount; i ++){

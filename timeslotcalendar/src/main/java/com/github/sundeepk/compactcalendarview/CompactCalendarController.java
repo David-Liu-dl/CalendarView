@@ -956,6 +956,10 @@ class CompactCalendarController {
     HashMap<Integer, String> currentMonthSlotMap = new HashMap<>();
 
     private void updateCurrentMonthSlotMap(){
+        if (innerSlotPackage == null){
+            return;
+        }
+        //Timeslot mode
         currentMonthSlotMap.clear();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(getFirstDayOfCurrentMonth());

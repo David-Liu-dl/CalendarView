@@ -213,7 +213,6 @@ public class ITimeTimeslotCalendar extends RelativeLayout {
         public HashMap<String, Integer> numSlotMap = new HashMap<>();
 
         public void add(String strDate){
-            Log.i("test-add", "add: " + strDate);
             if (numSlotMap.containsKey(strDate)){
                 numSlotMap.put(strDate, numSlotMap.get(strDate) + 1);
             }else {

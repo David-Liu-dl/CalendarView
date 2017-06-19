@@ -236,9 +236,7 @@ public class TimeSlotInnerCalendarView extends LinearLayout {
         calendarView.refreshSlotNum();
     }
 
-    public interface OnTimeSlotInnerCalendar{
+    public interface OnTimeSlotInnerCalendar extends CompactCalendarView.CompactCalendarViewListener{
         void onCalendarBtnClick(View v, boolean result);
-        void onDayClick(Date dateClicked);
-        void onMonthScroll(Date firstDayOfNewMonth);
     }
 }

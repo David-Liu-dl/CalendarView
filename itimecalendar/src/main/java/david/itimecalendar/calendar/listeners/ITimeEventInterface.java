@@ -20,9 +20,6 @@ public interface ITimeEventInterface<T> extends Comparable<T> {
     int getDisplayEventType();
     String getDisplayStatus();
 
-    void setLocation(String location);
-    String getLocation();
-
     List<? extends ITimeInviteeInterface> getDisplayInvitee();
 
     void setHighLighted(boolean highlighted);

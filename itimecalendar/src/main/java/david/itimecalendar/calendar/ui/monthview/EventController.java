@@ -581,23 +581,12 @@ public class EventController {
         }
 
         @Override
-        public void setLocation(String location) {
-
-        }
-
-        @Override
-        public String getLocation() {
-            return null;
-        }
-
-        @Override
         public List<? extends ITimeInviteeInterface> getDisplayInvitee() {
             return null;
         }
 
         @Override
         public void setHighLighted(boolean highlighted) {
-
         }
 
         @Override

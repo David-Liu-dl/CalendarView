@@ -233,14 +233,10 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
         this.eventUid = eventUid;
     }
 
-    @Override
     public String getLocation() {
         return location;
     }
 
-
-
-    @Override
     public void setLocation(String location) {
         this.location = location;
     }

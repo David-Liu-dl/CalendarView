@@ -230,7 +230,8 @@ public class AgendaViewInnerBody extends RelativeLayout {
         locationTv.setCompoundDrawables(scaleDb, null, null, null);
         locationTv.setSingleLine(true);
         locationTv.setEllipsize(TextUtils.TruncateAt.END);
-        locationTv.setVisibility(event.getLocation().equals("")? View.GONE: View.VISIBLE);
+        locationTv.setVisibility(View.VISIBLE);
+//        locationTv.setVisibility(event.getLocation().equals("")? View.GONE: View.VISIBLE);
         rightInfo.addView(locationTv);
 
         //status icon
@@ -375,7 +376,8 @@ public class AgendaViewInnerBody extends RelativeLayout {
                                 minutes == 0 ? hours + "hrs " :
                                         hours + "hrs " + minutes + "min";
         eventName = event.getTitle();
-        location = event.getLocation();
+//        location = event.getLocation();
+        location = "N/A";
 
         List<? extends ITimeInviteeInterface> inviteeList = event.getDisplayInvitee();
         List<String> allUrls = new ArrayList<>();

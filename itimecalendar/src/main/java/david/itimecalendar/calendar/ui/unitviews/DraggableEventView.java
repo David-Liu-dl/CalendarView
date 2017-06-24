@@ -72,6 +72,8 @@ public class DraggableEventView extends FrameLayout {
         initDataInViews();
     }
 
+
+
     private void initAttrs(){
         String dpStatus = event.getDisplayStatus();
         if (dpStatus != null && !dpStatus.equals("")){

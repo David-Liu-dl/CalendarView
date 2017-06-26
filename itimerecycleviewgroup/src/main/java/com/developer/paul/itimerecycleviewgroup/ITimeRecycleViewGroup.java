@@ -101,85 +101,68 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
         mMaxVelocity = ViewConfiguration.get(getContext()).getScaledMaximumFlingVelocity();
         mScroller = new Scroller(getContext());
 
-        ViewTreeObserver vto = this.getViewTreeObserver();
-        vto.addOnGlobalLayoutListener (new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                ITimeRecycleViewGroup.this.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                initViewWhenShown();
-            }
-        });
+//        ViewTreeObserver vto = this.getViewTreeObserver();
+//        vto.addOnGlobalLayoutListener (new ViewTreeObserver.OnGlobalLayoutListener() {
+//            @Override
+//            public void onGlobalLayout() {
+//                ITimeRecycleViewGroup.this.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+//                initViewWhenShown();
+//            }
+//        });
     }
 
-    private void initViewWhenShown(){
-        for (int i = 0 ; i < awesomeViewGroupList.size() ; i ++){
-            AwesomeViewGroup awesomeViewGroup = awesomeViewGroupList.get(i);
-            AwesomeViewGroup.AwesomeLayoutParams lp = (AwesomeViewGroup.AwesomeLayoutParams) awesomeViewGroup.getLayoutParams();
-
-            lp.parentHeight = viewHeight;
-            lp.width = childWidth;
-            lp.height = childHeight;
-
-            lp.left = (i-1) * childWidth;
-            lp.right = lp.left + childWidth;
-            lp.bottom = lp.top + lp.height;
-        }
-
-        requestLayout();
-        if (onScroll!=null){
-            onScroll.onPageSelected(getFirstShowItem());
-        }
-    }
+//    private void initViewWhenShown(){
+//        for (int i = 0 ; i < awesomeViewGroupList.size() ; i ++){
+//            AwesomeViewGroup awesomeViewGroup = awesomeViewGroupList.get(i);
+//            AwesomeViewGroup.AwesomeLayoutParams lp = (AwesomeViewGroup.AwesomeLayoutParams) awesomeViewGroup.getLayoutParams();
+//
+//            lp.parentHeight = viewHeight;
+//            lp.width = childWidth;
+//            lp.height = childHeight;
+//
+//            lp.left = (i-1) * childWidth;
+//            lp.right = lp.left + childWidth;
+//            lp.bottom = lp.top + lp.height;
+//        }
+//
+//        requestLayout();
+//        if (onScroll!=null){
+//            onScroll.onPageSelected(getFirstShowItem());
+//        }
+//    }
 
     private void moveXPostCheck(List<AwesomeViewGroup> awesomeViewGroups, int scrollDir){
         int viewGroupSize = awesomeViewGroups.size();
         boolean pageChanged = false;
-        List<AwesomeViewGroup> tempList = new ArrayList<>();
-        if (scrollDir == SCROLL_LEFT){
-            for (int i = 0 ; i < viewGroupSize ; i++){
-                if (awesomeViewGroups.get(i).isRightOutOfParentLeft()){
-                    tempList.add(awesomeViewGroups.get(i));
-                    pageChanged = true;
-                }
-            }
-            for (int i = 0 ; i < tempList.size() ; i++){
-                // redraw must before move, because of the index
-                reDrawViewGroupToLast(tempList.get(i), awesomeViewGroups.get(viewGroupSize - 1));
-                moveViewGroupToLast(tempList.get(i), awesomeViewGroups);
-                if (adapter!=null) {
-                    adapter.notifyDataSetChanged(tempList.get(i));
-                }
-                pageChanged = true;
-            }
-
-        }else if (scrollDir == SCROLL_RIGHT){
-            for (int i = 0 ; i < viewGroupSize ; i ++){
-                if (awesomeViewGroups.get(i).isLeftOutOfParentRight()){
-                    tempList.add(awesomeViewGroups.get(i));
-                    pageChanged = true;
-                }
-            }
-
-            for (int i = tempList.size() - 1 ; i >= 0 ; i --){
-                // redraw must before move, because of the index
-                reDrawViewGroupToFirst(tempList.get(i), awesomeViewGroups.get(0));
-                moveViewGroupToFirst(tempList.get(i), awesomeViewGroups);
-                pageChanged = true;
-                if (adapter!=null) {
-                    adapter.notifyDataSetChanged(tempList.get(i));
-                }
-            }
+        if (Math.abs(offset)>=childWidth){
+            pageChanged = true;
         }
 
         if (pageChanged){
-//            LogUtil.logAwesomes(awesomeViewGroups);
-            if (onScroll!=null){
-                AwesomeViewGroup a = getFirstShownAwesomeViewGroup(awesomeViewGroupList);
-                AwesomeViewGroup.AwesomeLayoutParams lp = (AwesomeViewGroup.AwesomeLayoutParams) a.getLayoutParams();
-                LogUtil.log("postcheck", a.getInRecycledViewIndex() + " "  + "l : " + lp.left  + " r : " + lp.right);
-                onScroll.onPageSelected(getFirstShowItem());
+            if (scrollDir == SCROLL_LEFT) {
+                reDrawViewGroupToLast(awesomeViewGroups.get(0), awesomeViewGroups.get(viewGroupSize - 1));
+                moveViewGroupToLast(awesomeViewGroups.get(0), awesomeViewGroups);
+                if (adapter != null) {
+                    adapter.notifyDataSetChanged(awesomeViewGroups.get(0));
+                }
+            }else if (scrollDir == SCROLL_RIGHT){
+                reDrawViewGroupToFirst(awesomeViewGroups.get(awesomeViewGroups.size()-1), awesomeViewGroups.get(0));
+                moveViewGroupToFirst(awesomeViewGroups.get(awesomeViewGroups.size()-1), awesomeViewGroups);
+                if (adapter!=null) {
+                    adapter.notifyDataSetChanged(awesomeViewGroups.get(0));
+                }
             }
-        }
+
+            if (onScroll!=null){
+                    AwesomeViewGroup a = getFirstShownAwesomeViewGroup(awesomeViewGroupList);
+                    AwesomeViewGroup.AwesomeLayoutParams lp = (AwesomeViewGroup.AwesomeLayoutParams) a.getLayoutParams();
+                    onScroll.onPageSelected(getFirstShowItem());
+                }
+            if (offset!=0){
+                int sign = offset/ Math.abs(offset);
+                offset = Math.abs(offset)%childWidth * sign;
+                }
+            }
     }
 
     private void touchUpPostCheck(){
@@ -321,6 +304,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
         toBeDrawLp.left = toBeDrawLp.right - toBeDrawLp.width;
     }
 
+    private int offset = 0;
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 //        if (this.getVisibility() == GONE){
@@ -349,8 +333,17 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
             lp.parentHeight = viewHeight;
             lp.width = childWidth;
             lp.height = childHeight;
+
+            lp.left = (i-1) * childWidth + offset;
+            lp.right = lp.left + childWidth;
+            lp.bottom = lp.top + lp.height;
+
+            if (i==0){
+                Log.i(TAG, "onMeasure: left : " + lp.left + " offset : " + offset );
+            }
         }
 
+        moveXPostCheck(awesomeViewGroupList, scrollDir);
         setMeasuredDimension(viewWidth, viewHeight);
 
     }
@@ -507,7 +500,6 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
                     mVelocityTracker = VelocityTracker.obtain();
                 }else{
                     mVelocityTracker.clear();
-                    LogUtil.log("clear", "clear");
                 }
                 mVelocityX = 0;
                 mVelocityY = 0;
@@ -525,7 +517,6 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
                 }
                 newX = event.getX();
                 newY = event.getY();
-                LogUtil.log("onTouchEvent", "Move");
                 if (!scrollOverTouchSlop) {
                     if (mTouchSlop <= Math.abs(newX - preX)) {
                         setStatus(HORIZONTAL_MOVE);
@@ -549,7 +540,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
                             scrollDir = SCROLL_LEFT;
                         }
 
-                        scrollByX((int) moveX);
+                        scrollByX(moveX);
                         preX = newX;
                     } else if (scrollModel == SCROLL_VERTICAL) {
                         setStatus(VERTICAL_MOVE);
@@ -569,7 +560,6 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
                     mVelocityX = mVelocityTracker.getXVelocity();
                     mVelocityY = mVelocityTracker.getYVelocity();
 
-                    Log.i("ddd", "onTouchEvent: " + mVelocityX +  " dir : " + scrollDir );
                 }
                 return super.onTouchEvent(event);
 
@@ -577,7 +567,6 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
                 newX = getEventXFilterOutside(event);
                 newY = event.getY();
 
-                LogUtil.log("upup", scrollDir + "");
                 if (scrollOverTouchSlop){
 //                    LogUtil.log("velocityX", " : " + mVelocityX + " dir : " + scrollDir );
                     touchUpPostCheck();
@@ -588,7 +577,6 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
                 preY = newY;
                 break;
             case MotionEvent.ACTION_CANCEL:
-                Log.i("", "onTouchEvent: " + "cancel");
                 break;
             case MotionEvent.ACTION_OUTSIDE:
                 break;
@@ -649,21 +637,29 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
             scrollDir = SCROLL_LEFT;
         }
 
-        for (AwesomeViewGroup awesomeViewGroup: awesomeViewGroupList){
-            AwesomeViewGroup.AwesomeLayoutParams lp = (AwesomeViewGroup.AwesomeLayoutParams) awesomeViewGroup.getLayoutParams();
-            lp.left += x;
-            lp.right += x;
-            awesomeViewGroup.requestLayout();
-        }
+//        for (AwesomeViewGroup awesomeViewGroup: awesomeViewGroupList){
+//            AwesomeViewGroup.AwesomeLayoutParams lp = (AwesomeViewGroup.AwesomeLayoutParams) awesomeViewGroup.getLayoutParams();
+//            lp.left += x;
+//            lp.right += x;
+//            awesomeViewGroup.requestLayout();
+//        }
 
         if (onScroll!=null){
             onScroll.onHorizontalScroll(x, totalMoveX);
         }
 
         totalMoveX += x;
-        LogUtil.log("movex : " , x + " , " + "total " + totalMoveX);
+        offset += x;
 
-        moveXPostCheck(awesomeViewGroupList, scrollDir);
+        for (int i = 0 ; i < awesomeViewGroupList.size() ; i ++) {
+
+            AwesomeViewGroup awesomeViewGroup = awesomeViewGroupList.get(i);
+            AwesomeViewGroup.AwesomeLayoutParams lp = (AwesomeViewGroup.AwesomeLayoutParams) awesomeViewGroup.getLayoutParams();
+            lp.left = (i - 1) * childWidth + offset;
+            lp.right = lp.left + childWidth;
+            lp.bottom = lp.top + lp.height;
+        }
+        requestLayout();
     }
 
     @Override

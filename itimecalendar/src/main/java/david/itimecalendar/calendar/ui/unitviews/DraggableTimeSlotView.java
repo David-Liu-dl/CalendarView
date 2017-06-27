@@ -61,7 +61,7 @@ public class DraggableTimeSlotView extends FrameLayout {
         initViews();
         initBackground();
 //        initIcon();
-        initAnimation();
+//        initAnimation();
     }
 
     public void initViews(){
@@ -87,11 +87,12 @@ public class DraggableTimeSlotView extends FrameLayout {
     }
 
     public void initBackground(){
-        GradientDrawable gd = (GradientDrawable) getResources().getDrawable(R.drawable.itime_round_corner_bg);
+        this.setBackground(getResources().getDrawable(R.drawable.itime_round_corner_bg));
+        GradientDrawable gd = (GradientDrawable) this.getBackground();
+        gd.mutate();
         gd.setColor(Color.parseColor("#0073FF")); //set color
         gd.setCornerRadius(DensityUtil.dip2px(getContext(),7));
         gd.setStroke(1, Color.parseColor("#0073FF"), 0, 0);
-        this.setBackgroundDrawable(gd);
     }
 
     public void setTimes(long startTime, long endTime){

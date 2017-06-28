@@ -28,7 +28,7 @@ import java.util.List;
  */
 
 public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface{
-    private static final String TAG = "crazyMove";
+    private static final String TAG = "lifecycle";
     private List<AwesomeViewGroup> awesomeViewGroupList = new ArrayList<>();
     private int NUM_SHOW = 7;
     int[] colors =new int[]{Color.RED, Color.BLUE, Color.GRAY, Color.YELLOW, Color.GREEN, Color.WHITE, Color.MAGENTA, Color.DKGRAY, Color.CYAN};
@@ -87,6 +87,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
     }
 
     private void init(){
+        Log.i(TAG, "init: " + "ITimeRecycleViewGroup");
         for (int i = 0 ; i < NUM_SHOW+2 ; i ++){
             AwesomeViewGroup awesomeViewGroup = new AwesomeViewGroup(getContext());
 //            awesomeViewGroup.setBackgroundColor(colors[i]);
@@ -101,21 +102,21 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
         mMaxVelocity = ViewConfiguration.get(getContext()).getScaledMaximumFlingVelocity();
         mScroller = new Scroller(getContext());
 
-        ViewTreeObserver vto = this.getViewTreeObserver();
-        vto.addOnGlobalLayoutListener (new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                ITimeRecycleViewGroup.this.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                initViewWhenShown();
-            }
-        });
+//        ViewTreeObserver vto = this.getViewTreeObserver();
+//        vto.addOnGlobalLayoutListener (new ViewTreeObserver.OnGlobalLayoutListener() {
+//            @Override
+//            public void onGlobalLayout() {
+//                ITimeRecycleViewGroup.this.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+//                initViewWhenShown();
+//                Log.i(TAG, "init-addOnGlobalLayoutListener: " + "ITimeRecycleViewGroup");
+//            }
+//        });
     }
 
     private void initViewWhenShown(){
         for (int i = 0 ; i < awesomeViewGroupList.size() ; i ++){
             AwesomeViewGroup awesomeViewGroup = awesomeViewGroupList.get(i);
             AwesomeViewGroup.AwesomeLayoutParams lp = (AwesomeViewGroup.AwesomeLayoutParams) awesomeViewGroup.getLayoutParams();
-
             lp.parentHeight = viewHeight;
             lp.width = childWidth;
             lp.height = childHeight;
@@ -125,7 +126,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
             lp.bottom = lp.top + lp.height;
         }
 
-        requestLayout();
+//        requestLayout();
         if (onScroll!=null){
             onScroll.onPageSelected(getFirstShowItem());
         }
@@ -323,6 +324,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        Log.i(TAG, "onMeasure: No super" + "ITimeRecycleViewGroup");
 //        if (this.getVisibility() == GONE){
 //            return;
 //        }
@@ -610,7 +612,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-
+        Log.i(TAG, "onLayout: noSuper " + "ITimeRecycleViewGroup");
         int childCount = awesomeViewGroupList.size();
         for (int i = 0 ; i < childCount; i ++){
             AwesomeViewGroup child = awesomeViewGroupList.get(i);
@@ -909,5 +911,24 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
 
     public View getFirstShowItem(){
         return getFirstShownAwesomeViewGroup(awesomeViewGroupList).getItem();
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        Log.i(TAG, "onAttachedToWindow: B" + " ITimeRecycleViewGroup");
+        super.onAttachedToWindow();
+        Log.i(TAG, "onAttachedToWindow: A" + " ITimeRecycleViewGroup");
+    }
+
+    boolean initialized = false;
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        Log.i(TAG, "onSizeChanged: B" + " ITimeRecycleViewGroup");
+        super.onSizeChanged(w, h, oldw, oldh);
+        Log.i(TAG, "onSizeChanged: A" + " ITimeRecycleViewGroup");
+//        if (!initialized){
+            initViewWhenShown();
+//            initialized = true;
+//        }
     }
 }

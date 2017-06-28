@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ import david.itimecalendar.calendar.util.MyCalendar;
  */
 
 public class MonthView extends LinearLayout{
+    private static final String TAG = "lifecycle";
     private Context context;
 
     private ITimeEventPackageInterface eventPackage;
@@ -298,6 +300,30 @@ public class MonthView extends LinearLayout{
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        Log.i(TAG, "onMeasure: B" + " MonthDayView");
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        Log.i(TAG, "onMeasure: A" + " MonthDayView");
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        Log.i(TAG, "onLayout: B" + " MonthDayView");
+
+        super.onLayout(changed, l, t, r, b);
+        Log.i(TAG, "onLayout: A" + " MonthDayView");
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        Log.i(TAG, "onSizeChanged: B" + " MonthDayView");
+        super.onSizeChanged(w, h, oldw, oldh);
+        Log.i(TAG, "onSizeChanged: A" + " MonthDayView");
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        Log.i(TAG, "onAttachedToWindow: B" + " MonthDayView");
+        super.onAttachedToWindow();
+        Log.i(TAG, "onAttachedToWindow: A" + " MonthDayView");
     }
 }

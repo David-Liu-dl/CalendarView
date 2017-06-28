@@ -102,9 +102,24 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
         mScroller = new Scroller(getContext());
     }
 
+    private boolean scrollMoreThanHalf = false;
     private void moveXPostCheck(List<AwesomeViewGroup> awesomeViewGroups, int scrollDir){
         int viewGroupSize = awesomeViewGroups.size();
         boolean pageChanged = false;
+
+       // here for notify change when more than half scrolled
+        if (Math.abs(offset)>=0.5 * childWidth){
+            if (onScroll!=null && !scrollMoreThanHalf){
+                onScroll.onPageSelected(getFirstShownAwesomeViewGroup(awesomeViewGroups).getItem());
+                scrollMoreThanHalf = true;
+            }
+        }else{
+            if (onScroll!=null && scrollMoreThanHalf){
+                onScroll.onPageSelected(getFirstShowAwesomeViewGroup().getItem());
+                scrollMoreThanHalf = false;
+            }
+        }
+
         if (Math.abs(offset)>=childWidth){
             pageChanged = true;
         }
@@ -124,11 +139,11 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
                 }
             }
 
-            if (onScroll!=null){
-                    AwesomeViewGroup a = getFirstShownAwesomeViewGroup(awesomeViewGroupList);
-                    AwesomeViewGroup.AwesomeLayoutParams lp = (AwesomeViewGroup.AwesomeLayoutParams) a.getLayoutParams();
-                    onScroll.onPageSelected(getFirstShowItem());
-                }
+//            if (onScroll!=null){
+//                    AwesomeViewGroup a = getFirstShownAwesomeViewGroup(awesomeViewGroupList);
+//                    AwesomeViewGroup.AwesomeLayoutParams lp = (AwesomeViewGroup.AwesomeLayoutParams) a.getLayoutParams();
+//                    onScroll.onPageSelected(getFirstShowItem());
+//                }
             if (offset!=0){
                 int sign = offset/ Math.abs(offset);
                 offset = Math.abs(offset)%childWidth * sign;
@@ -191,6 +206,14 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
     }
 
     private AwesomeViewGroup getFirstShownAwesomeViewGroup(List<AwesomeViewGroup> awesomeViewgroups){
+        for (AwesomeViewGroup awesomeViewGroup: awesomeViewgroups){
+            AwesomeViewGroup.AwesomeLayoutParams lp = (AwesomeViewGroup.AwesomeLayoutParams) awesomeViewGroup.getLayoutParams();
+            if (lp.right >= 0.5 * childWidth){
+                return awesomeViewGroup;
+            }
+        }
+
+        // just in case go error
         return awesomeViewgroups.get(1);
     }
 
@@ -616,13 +639,14 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
         totalMoveY += y;
     }
 
+
+
     @Override
     public void scrollByXSmoothly(int x) {
         scrollByXSmoothly(x, 200);
     }
 
     public void scrollByXSmoothly(int x, long duration, @Nullable Animator.AnimatorListener animatorListener){
-
         setStatus(HORIZONTAL_FLING);
         ValueAnimator animator = ValueAnimator.ofInt(0, x);
         animator.setDuration(duration);
@@ -821,6 +845,17 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
         }
 
         scrollByX(distance);
+    }
+
+    public AwesomeViewGroup getFirstShowAwesomeViewGroup(){
+        for (AwesomeViewGroup awesomeViewGroup: awesomeViewGroupList){
+            if (awesomeViewGroup.isVisibleInParent()){
+                return awesomeViewGroup;
+            }
+        }
+
+        // just in case error
+        return awesomeViewGroupList.get(0);
     }
 
     public View getFirstShowItem(){

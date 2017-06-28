@@ -102,24 +102,6 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
         mScroller = new Scroller(getContext());
     }
 
-    private void initViewWhenShown(){
-        for (int i = 0 ; i < awesomeViewGroupList.size() ; i ++){
-            AwesomeViewGroup awesomeViewGroup = awesomeViewGroupList.get(i);
-            AwesomeViewGroup.AwesomeLayoutParams lp = (AwesomeViewGroup.AwesomeLayoutParams) awesomeViewGroup.getLayoutParams();
-            lp.parentHeight = viewHeight;
-            lp.width = childWidth;
-            lp.height = childHeight;
-
-            lp.left = (i-1) * childWidth;
-            lp.right = lp.left + childWidth;
-            lp.bottom = lp.top + lp.height;
-        }
-
-        if (onScroll!=null){
-            onScroll.onPageSelected(getFirstShowItem());
-        }
-    }
-
     private void moveXPostCheck(List<AwesomeViewGroup> awesomeViewGroups, int scrollDir){
         int viewGroupSize = awesomeViewGroups.size();
         boolean pageChanged = false;

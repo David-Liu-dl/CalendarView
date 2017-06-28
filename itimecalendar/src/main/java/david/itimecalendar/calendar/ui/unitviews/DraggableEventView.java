@@ -65,27 +65,10 @@ public class DraggableEventView extends FrameLayout {
     public DraggableEventView(Context context, @Nullable ITimeEventInterface event, boolean isAllDayEvent) {
         super(context);
         this.setEvent(event);
-        initAttrs();
 
         this.isAllDayEvent = isAllDayEvent;
         initBackground();
         initDataInViews();
-    }
-
-
-
-    private void initAttrs(){
-        String dpStatus = event.getDisplayStatus();
-        if (dpStatus != null && !dpStatus.equals("")){
-            String[] attrs = dpStatus.split("\\|");
-            if (attrs.length < 3){
-                Log.i(TAG, "initAttrs: attrs is not sufficient.");
-            }else{
-                this.color = Color.parseColor(attrs[0]);
-                this.status = attrs[1];
-                this.iconName = attrs[2];
-            }
-        }
     }
 
     @Override
@@ -119,13 +102,13 @@ public class DraggableEventView extends FrameLayout {
     }
 
     private void setSummary(){
-        title.setText(event.getTitle());
+        title.setText(event.getSummary());
     }
 
     private void setType(){
         //if color is not determined
         if (color == 0){
-            switch (this.event.getDisplayEventType()){
+            switch (0){
                 case 0:
                     color = getContext().getResources().getColor(R.color.private_et);
                     break;
@@ -148,16 +131,7 @@ public class DraggableEventView extends FrameLayout {
             color = getResources().getColor(R.color.private_et);
         }
 
-        //if item is grouped && not confirmed
-        if(event != null
-                && this.event.getDisplayEventType() == 1
-                && status != null
-                && !status.equals("")
-                && status.equals("slash")){
-            ((GradientDrawable)bg.getBackground()).setColor(Color.WHITE);
-        }else {
-            ((GradientDrawable)bg.getBackground()).setColor(color);
-        }
+        ((GradientDrawable)bg.getBackground()).setColor(color);
 
         //set leftBar color base on type
         updateLeftBar(getResources().getDrawable(R.drawable.itime_draggable_event_bg), color);
@@ -167,13 +141,6 @@ public class DraggableEventView extends FrameLayout {
     public void setBackground(Drawable drawable){
         bg.setBackground(drawable);
         int actualColor = color;
-        if(event != null
-                && this.event.getDisplayEventType() == 1
-                && status != null
-                && !status.equals("")
-                && status.equals("slash")){
-            actualColor = Color.WHITE;
-        }
         ((GradientDrawable)bg.getBackground()).setColor(actualColor);
         if (!event.isHighlighted()){
             bg.getBackground().setAlpha(OPACITY_INT);

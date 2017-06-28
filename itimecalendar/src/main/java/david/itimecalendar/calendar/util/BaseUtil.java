@@ -35,18 +35,18 @@ public class BaseUtil {
         return myCal.getEndOfDayMilliseconds() - myCal.getBeginOfDayMilliseconds();
     }
 
-    public static boolean isAllDayEvent(ITimeEventInterface event) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(event.getStartTime());
-        int hour = cal.get(Calendar.HOUR);
-        int minutes = cal.get(Calendar.MINUTE);
-        long duration = event.getEndTime() - event.getStartTime();
-        boolean isAllDay = hour == 0
-                && minutes == 0
-                && duration >= (getAllDayLong(event.getStartTime()) * 0.9);
-
-        return isAllDay;
-    }
+//    public static boolean isAllDayEvent(ITimeEventInterface event) {
+//        Calendar cal = Calendar.getInstance();
+//        cal.setTimeInMillis(event.getStartTime());
+//        int hour = cal.get(Calendar.HOUR);
+//        int minutes = cal.get(Calendar.MINUTE);
+//        long duration = event.getEndTime() - event.getStartTime();
+//        boolean getIsAllDay = hour == 0
+//                && minutes == 0
+//                && duration >= (getAllDayLong(event.getStartTime()) * 0.9);
+//
+//        return getIsAllDay;
+//    }
 
     public static Drawable scaleDrawable(Drawable drawable, int width, int height){
         int wi = drawable.getIntrinsicWidth();
@@ -93,5 +93,9 @@ public class BaseUtil {
         dividerImgV.setLayoutParams(params);
         dividerImgV.setImageDrawable(context.getResources().getDrawable(resourceId));
         return dividerImgV;
+    }
+
+    public static boolean isAllDay(ITimeEventInterface event){
+        return event.getIsAllDay() == ITimeEventInterface.ALLDAY;
     }
 }

@@ -45,7 +45,7 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
     private double locationLatitude;
     private double locationLongitude;
     private String note;
-    private boolean isAllDay;
+    private int isAllDay;
 
 
 
@@ -109,11 +109,11 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
     public Event() {
     }
 
-    @Generated(hash = 1553904812)
+    @Generated(hash = 41280663)
     public Event(String eventUid, String eventId, String recurringEventUid, String recurringEventId,
             String calendarUid, String iCalUID, String hostUserUid, String summary, String url,
             String location, String locationNote, double locationLatitude, double locationLongitude,
-            String note, boolean isAllDay, String photo, long startTime, long endTime, int eventType,
+            String note, int isAllDay, String photo, long startTime, long endTime, int eventType,
             @NotNull String display) {
         this.eventUid = eventUid;
         this.eventId = eventId;
@@ -138,12 +138,12 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
     }
 
     @Override
-    public void setTitle(String summary) {
+    public void setSummary(String summary) {
         this.summary = summary;
     }
 
     @Override
-    public String getTitle() {
+    public String getSummary() {
         return this.summary;
     }
 
@@ -166,12 +166,12 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
     }
 
     @Override
-    public void setIsAllDay(boolean isAllDay) {
+    public void setIsAllDay(int isAllDay) {
         this.isAllDay = isAllDay;
     }
 
     @Override
-    public boolean isAllDay() {
+    public int getIsAllDay() {
         return this.isAllDay;
     }
 
@@ -330,17 +330,6 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
     public void setUrl(String url) {
         this.url = url;
     }
-
-
-    public String getSummary() {
-        return this.summary;
-    }
-
-
-    public void setSummary(String summary) {
-        this.summary = summary;
-    }
-
 
     public String[] getRecurrence() {
         return this.recurrence;
@@ -545,10 +534,6 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
 
     public void setDisplay(String display) {
         this.display = display;
-    }
-
-    public boolean getIsAllDay() {
-        return this.isAllDay;
     }
 
 }

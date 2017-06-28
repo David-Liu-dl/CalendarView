@@ -32,6 +32,7 @@ import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
 import david.itimecalendar.calendar.ui.unitviews.DraggableEventView;
 import david.itimecalendar.calendar.ui.unitviews.DraggableTimeSlotView;
 import david.itimecalendar.calendar.ui.unitviews.RecommendedSlotView;
+import david.itimecalendar.calendar.util.BaseUtil;
 import david.itimecalendar.calendar.util.DensityUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
 import david.itimecalendar.calendar.wrapper.WrapperEvent;
@@ -143,7 +144,7 @@ public class DayViewAllDay extends FrameLayout {
                 //add rcd first
 //                for (WrapperTimeSlot struct : slotsInfo.rcdSlots
 //                        ) {
-//                    if (struct.getTimeSlot().isAllDay() && calendar.contains(struct.getTimeSlot().getStartTime())){
+//                    if (struct.getTimeSlot().getIsAllDay() && calendar.contains(struct.getTimeSlot().getStartTime())){
 //                        item.addAllDayRcdTimeslot(struct);
 //                    }
 //                }
@@ -321,7 +322,7 @@ public class DayViewAllDay extends FrameLayout {
                     if (event.isShownInCalendar() == View.VISIBLE){
                         WrapperEvent wrapperEvent = new WrapperEvent(event);
                         wrapperEvent.setFromDayBegin(startTime);
-                        if (event.isAllDay()){
+                        if (BaseUtil.isAllDay(event)){
                             this.addAllDayEvent(wrapperEvent);
                         }
                     }
@@ -334,7 +335,7 @@ public class DayViewAllDay extends FrameLayout {
                     if (event.isShownInCalendar() == View.VISIBLE){
                         WrapperEvent wrapperEvent = new WrapperEvent(event);
                         wrapperEvent.setFromDayBegin(startTime);
-                        if (event.isAllDay()){
+                        if (BaseUtil.isAllDay(event)){
                             this.addAllDayEvent(wrapperEvent);
                         }
                     }

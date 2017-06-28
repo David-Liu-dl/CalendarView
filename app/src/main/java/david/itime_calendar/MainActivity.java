@@ -1,6 +1,5 @@
 package david.itime_calendar;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +20,7 @@ import david.itime_calendar.TestActivities.WeekViewActivity;
 import david.itime_calendar.bean.Contact;
 import david.itime_calendar.bean.Event;
 import david.itime_calendar.bean.Invitee;
+import david.itimecalendar.calendar.listeners.ITimeEventInterface;
 
 public class MainActivity extends AppCompatActivity {
     public static DBManager dbManager;
@@ -72,11 +72,10 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 1; i < 2; i++) {
             endTime = startTime + interval;
             Event event = new Event();
-            event.setIsAllDay(true);
-//            event.setIsAllDay(false);
-//            event.setIsAllDay(i%2==0);
+            event.setIsAllDay(ITimeEventInterface.ALLDAY);
+//            event.setIsAllDay(0);
             event.setEventUid("" + i);
-            event.setTitle("adawdwadwadaw" + i);
+            event.setSummary("adawdwadwadaw" + i);
             event.setDisplayEventType(1);
             event.setDisplayStatus("#63ADF2|slash|icon_normal");
             event.setLocation("here");

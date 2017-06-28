@@ -74,7 +74,7 @@ public class EventController {
                     if (event.isShownInCalendar() == View.VISIBLE){
                         WrapperEvent wrapperEvent = new WrapperEvent(event);
                         wrapperEvent.setFromDayBegin(startTime);
-                        if (!event.isAllDay()){
+                        if (!BaseUtil.isAllDay(event)){
                             this.addRegularEvent(wrapperEvent);
                         }
                     }
@@ -87,7 +87,7 @@ public class EventController {
                     if (event.isShownInCalendar() == View.VISIBLE){
                         WrapperEvent wrapperEvent = new WrapperEvent(event);
                         wrapperEvent.setFromDayBegin(startTime);
-                        if (!event.isAllDay()){
+                        if (!BaseUtil.isAllDay(event)){
                             this.addRegularEvent(wrapperEvent);
                         }
                     }
@@ -533,7 +533,7 @@ public class EventController {
         }
     }
 
-    class EventModule implements ITimeEventInterface{
+    private class EventModule implements ITimeEventInterface{
 
         @Override
         public String getEventUid() {
@@ -541,12 +541,12 @@ public class EventController {
         }
 
         @Override
-        public void setTitle(String title) {
+        public void setSummary(String title) {
 
         }
 
         @Override
-        public String getTitle() {
+        public String getSummary() {
             return null;
         }
 
@@ -562,22 +562,11 @@ public class EventController {
 
         @Override
         public void setEndTime(long endTime) {
-
         }
 
         @Override
         public long getEndTime() {
             return 0;
-        }
-
-        @Override
-        public int getDisplayEventType() {
-            return 0;
-        }
-
-        @Override
-        public String getDisplayStatus() {
-            return null;
         }
 
         @Override
@@ -595,13 +584,13 @@ public class EventController {
         }
 
         @Override
-        public void setIsAllDay(boolean isAllDay) {
+        public void setIsAllDay(int isAllDay) {
 
         }
 
         @Override
-        public boolean isAllDay() {
-            return false;
+        public int getIsAllDay() {
+            return 0;
         }
 
         @Override

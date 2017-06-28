@@ -99,7 +99,6 @@ public class AgendaViewInnerBody extends RelativeLayout {
     private String timeLeft;
     private String iconName;
 
-    private int type;
     private String status;
 //    private String status;
     private int currentDayType;
@@ -123,27 +122,12 @@ public class AgendaViewInnerBody extends RelativeLayout {
         initAllViews();
     }
 
-    public AgendaViewInnerBody(Context context, AttributeSet attrs, ITimeEventInterface event, int currentDayType) {
-        super(context, attrs);
-        this.context = context;
-        this.currentDayType = currentDayType;
-        this.event = event;
-        this.pic_height_width = DensityUtil.dip2px(context, 50);
-        this.paddingUpDown = DensityUtil.dip2px(context, 2);
-        setWillNotDraw(false);
-        initAttrs();
-        initEventShowAttrs(event);
-        initAllViews();
-    }
-
     private void initAllViews() {
         //left info
         leftInfo = new LinearLayout(context);
         leftInfo.setOrientation(LinearLayout.VERTICAL);
         LayoutParams leftInfoParams = new LayoutParams(DensityUtil.dip2px(context,60), ViewGroup.LayoutParams.WRAP_CONTENT);
         leftInfoParams.addRule(ALIGN_PARENT_LEFT);
-//        int paddingTop = DensityUtil.dip2px(context,8);
-//        leftInfo.setPadding(0,paddingTop,0,0);
         leftInfo.setGravity(Gravity.CENTER_VERTICAL);
         leftInfo.setId(generateViewId());
         this.addView(leftInfo, leftInfoParams);
@@ -166,9 +150,6 @@ public class AgendaViewInnerBody extends RelativeLayout {
 //        }
 
         leftTime2 = new TextView(context);
-//        if (duration.equals("All Day")) {
-//
-//        } else {
         leftTime2.setText(duration.equals("All Day") ? "" : timeStr2);
         leftTime2.setGravity(Gravity.RIGHT);
         leftTime2.setTextSize(textSmallSize);
@@ -185,7 +166,7 @@ public class AgendaViewInnerBody extends RelativeLayout {
         LayoutParams eventTypeViewParams = new LayoutParams(DensityUtil.dip2px(context,icon_wh), DensityUtil.dip2px(context,icon_wh));
         eventTypeViewParams.leftMargin = DensityUtil.dip2px(context,11);
         eventTypeViewParams.topMargin = DensityUtil.dip2px(context,4);
-        updateIcon(getEventIcon(type));
+//        updateIcon(getEventIcon(type));
 
         rightInfo = new LinearLayout(context);
         rightInfo.setOrientation(LinearLayout.VERTICAL);
@@ -292,18 +273,8 @@ public class AgendaViewInnerBody extends RelativeLayout {
     }
 
     private void initAttrs(){
-        String dpStatus = event.getDisplayStatus();
         isEnded = event.getEndTime() < System.currentTimeMillis();
         isHappennig = System.currentTimeMillis() > event.getStartTime() && !isEnded;
-        if (dpStatus != null && !dpStatus.equals("")){
-            String[] attrs = dpStatus.split("\\|");
-            if (attrs.length < 3){
-                Log.i(TAG, "initAttrs: attrs is not sufficient.");
-            }else{
-                this.status = attrs[1];
-                this.iconName = attrs[2];
-            }
-        }
     }
 
     private void initInviteeLayout(List<String> urls, LinearLayout container){
@@ -349,15 +320,6 @@ public class AgendaViewInnerBody extends RelativeLayout {
     }
 
     private void initEventShowAttrs(ITimeEventInterface event) {
-        type = event.getDisplayEventType();
-        if ((type == 1 || type == 2)){
-            if (iconName.equals("icon_question"))
-                type = 1;
-            else
-                type = 2;
-        }
-
-
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(event.getStartTime());
         Date startDateTime = calendar.getTime();
@@ -371,11 +333,11 @@ public class AgendaViewInnerBody extends RelativeLayout {
         int hours = (int) duration_m / (3600 * 1000);
         int minutes = (int) ((duration_m / (60 * 1000)) % 60);
         duration =
-                BaseUtil.isAllDayEvent(event) ? "All Day" :
+                BaseUtil.isAllDay(event) ? "All Day" :
                         hours == 0 ? minutes + "min" :
                                 minutes == 0 ? hours + "hrs " :
                                         hours + "hrs " + minutes + "min";
-        eventName = event.getTitle();
+        eventName = event.getSummary();
 //        location = event.getLocation();
         location = "N/A";
 

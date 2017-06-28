@@ -322,7 +322,7 @@ public class DayViewAllDay extends FrameLayout {
                     if (event.isShownInCalendar() == View.VISIBLE){
                         WrapperEvent wrapperEvent = new WrapperEvent(event);
                         wrapperEvent.setFromDayBegin(startTime);
-                        if (BaseUtil.isAllDay(event)){
+                        if (event.getIsAllDay()){
                             this.addAllDayEvent(wrapperEvent);
                         }
                     }
@@ -335,7 +335,7 @@ public class DayViewAllDay extends FrameLayout {
                     if (event.isShownInCalendar() == View.VISIBLE){
                         WrapperEvent wrapperEvent = new WrapperEvent(event);
                         wrapperEvent.setFromDayBegin(startTime);
-                        if (BaseUtil.isAllDay(event)){
+                        if (event.getIsAllDay()){
                             this.addAllDayEvent(wrapperEvent);
                         }
                     }

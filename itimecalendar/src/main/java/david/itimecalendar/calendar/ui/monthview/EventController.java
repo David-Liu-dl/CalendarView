@@ -74,7 +74,7 @@ public class EventController {
                     if (event.isShownInCalendar() == View.VISIBLE){
                         WrapperEvent wrapperEvent = new WrapperEvent(event);
                         wrapperEvent.setFromDayBegin(startTime);
-                        if (!BaseUtil.isAllDay(event)){
+                        if (!event.getIsAllDay()){
                             this.addRegularEvent(wrapperEvent);
                         }
                     }
@@ -87,7 +87,7 @@ public class EventController {
                     if (event.isShownInCalendar() == View.VISIBLE){
                         WrapperEvent wrapperEvent = new WrapperEvent(event);
                         wrapperEvent.setFromDayBegin(startTime);
-                        if (!BaseUtil.isAllDay(event)){
+                        if (!event.getIsAllDay()){
                             this.addRegularEvent(wrapperEvent);
                         }
                     }
@@ -584,14 +584,15 @@ public class EventController {
         }
 
         @Override
-        public void setIsAllDay(int isAllDay) {
+        public void setIsAllDay(boolean isAllDay) {
 
         }
 
         @Override
-        public int getIsAllDay() {
-            return 0;
+        public boolean getIsAllDay() {
+            return false;
         }
+
 
         @Override
         public int isShownInCalendar() {

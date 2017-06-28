@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 1; i < 2; i++) {
             endTime = startTime + interval;
             Event event = new Event();
-            event.setIsAllDay(ITimeEventInterface.ALLDAY);
+            event.setIsAllDay(false);
 //            event.setIsAllDay(0);
             event.setEventUid("" + i);
             event.setSummary("adawdwadwadaw" + i);

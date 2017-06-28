@@ -333,7 +333,7 @@ public class AgendaViewInnerBody extends RelativeLayout {
         int hours = (int) duration_m / (3600 * 1000);
         int minutes = (int) ((duration_m / (60 * 1000)) % 60);
         duration =
-                BaseUtil.isAllDay(event) ? "All Day" :
+                event.getIsAllDay() ? "All Day" :
                         hours == 0 ? minutes + "min" :
                                 minutes == 0 ? hours + "hrs " :
                                         hours + "hrs " + minutes + "min";

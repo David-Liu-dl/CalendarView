@@ -6,9 +6,6 @@ import java.util.List;
  * Created by yinchuandong on 22/08/2016.
  */
 public interface ITimeEventInterface<T> extends Comparable<T> {
-    int ALLDAY = 1;
-    int NON_ALLDAY = 0;
-
     String getEventUid();
 
     void setSummary(String summary);
@@ -29,8 +26,8 @@ public interface ITimeEventInterface<T> extends Comparable<T> {
      *
      * @param isAllDay
      */
-    void setIsAllDay(int isAllDay);
-    int getIsAllDay();
+    void setIsAllDay(boolean isAllDay);
+    boolean getIsAllDay();
     /**
      *
      * @return View.VISIBILITY

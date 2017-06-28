@@ -45,7 +45,7 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
     private double locationLatitude;
     private double locationLongitude;
     private String note;
-    private int isAllDay;
+    private boolean isAllDay;
 
 
 
@@ -109,11 +109,11 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
     public Event() {
     }
 
-    @Generated(hash = 41280663)
+    @Generated(hash = 1553904812)
     public Event(String eventUid, String eventId, String recurringEventUid, String recurringEventId,
             String calendarUid, String iCalUID, String hostUserUid, String summary, String url,
             String location, String locationNote, double locationLatitude, double locationLongitude,
-            String note, int isAllDay, String photo, long startTime, long endTime, int eventType,
+            String note, boolean isAllDay, String photo, long startTime, long endTime, int eventType,
             @NotNull String display) {
         this.eventUid = eventUid;
         this.eventId = eventId;
@@ -166,14 +166,15 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
     }
 
     @Override
-    public void setIsAllDay(int isAllDay) {
+    public void setIsAllDay(boolean isAllDay) {
         this.isAllDay = isAllDay;
     }
 
     @Override
-    public int getIsAllDay() {
-        return this.isAllDay;
+    public boolean getIsAllDay() {
+        return false;
     }
+
 
     @Override
     public int isShownInCalendar() {

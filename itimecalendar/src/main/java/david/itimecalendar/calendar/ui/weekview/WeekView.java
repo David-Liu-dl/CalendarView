@@ -21,6 +21,8 @@ import java.util.Calendar;
 import java.util.Date;
 
 import david.itimecalendar.R;
+import david.itimecalendar.calendar.listeners.ITimeCalendarMonthDayViewListener;
+import david.itimecalendar.calendar.listeners.ITimeCalendarWeekDayViewListener;
 import david.itimecalendar.calendar.ui.monthview.DayViewBody;
 import david.itimecalendar.calendar.ui.monthview.DayViewBodyCell;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
@@ -36,6 +38,7 @@ import static android.widget.LinearLayout.VERTICAL;
 public class WeekView extends RelativeLayout{
     private static final String TAG = "WeekView";
     protected LinearLayout container;
+    private ITimeCalendarWeekDayViewListener iTimeCalendarInterface;
 
     public WeekView(@NonNull Context context) {
         super(context);
@@ -150,7 +153,10 @@ public class WeekView extends RelativeLayout{
         dayViewBody.setOnScrollListener(new ITimeRecycleViewGroup.OnScroll<DayViewBodyCell>() {
             @Override
             public void onPageSelected(DayViewBodyCell view) {
-
+                //calling date changed
+                if (iTimeCalendarInterface != null){
+                    iTimeCalendarInterface.onDateChanged(view.getCalendar().getCalendar().getTime());
+                }
             }
 
             @Override
@@ -189,8 +195,9 @@ public class WeekView extends RelativeLayout{
         this.dayViewBody.setEventPackage(eventPackage);
     }
 
-    public void setOnBodyEventListener(DayViewBody.OnViewBodyEventListener onEventListener) {
-        this.dayViewBody.setOnBodyEventListener(onEventListener);
+    public void setITimeCalendarWeekDayViewListener(ITimeCalendarWeekDayViewListener weekDayViewListener) {
+        this.iTimeCalendarInterface = weekDayViewListener;
+        this.dayViewBody.setOnBodyEventListener(weekDayViewListener);
     }
 
     public void smoothMoveWithOffset(int moveOffset){
@@ -200,12 +207,6 @@ public class WeekView extends RelativeLayout{
     public void refresh(){
         dayViewBody.refresh();
     }
-
-
-//    public void setDisableCellScroll(boolean isDisabled){
-//        headerRG.setDisableCellScroll(isDisabled);
-//        dayViewBody.setDisableCellScroll(isDisabled);
-//    }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {

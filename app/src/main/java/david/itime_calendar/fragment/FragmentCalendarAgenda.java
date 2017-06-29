@@ -7,7 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.Date;
+
 import david.itime_calendar.R;
+import david.itimecalendar.calendar.listeners.ITimeCalendarMonthAgendaViewListener;
 import david.itimecalendar.calendar.listeners.ITimeEventInterface;
 import david.itimecalendar.calendar.ui.agendaview.AgendaViewBody;
 import david.itimecalendar.calendar.ui.agendaview.MonthAgendaView;
@@ -33,13 +36,16 @@ public class FragmentCalendarAgenda extends Fragment {
         //Set the data source with format of ITimeEventPackageInterface
         //ITimeEventPackageInterface is composed by two parts:
         //  1: regular events. 2: repeated events.
-        agendaView.setOnEventClickListener(new AgendaViewBodyListener());
-    }
+        agendaView.setITimeCalendarMonthAgendaViewListener(new ITimeCalendarMonthAgendaViewListener() {
+            @Override
+            public void onDateChanged(Date date) {
 
-    private class AgendaViewBodyListener implements AgendaViewBody.OnEventClickListener{
-        @Override
-        public void onEventClick(ITimeEventInterface iTimeEventInterface) {
+            }
 
-        }
+            @Override
+            public void onEventClick(ITimeEventInterface event) {
+
+            }
+        });
     }
 }

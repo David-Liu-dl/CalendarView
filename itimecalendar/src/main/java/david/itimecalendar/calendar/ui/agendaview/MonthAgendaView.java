@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import java.util.Calendar;
 
 import david.itimecalendar.R;
+import david.itimecalendar.calendar.listeners.ITimeCalendarMonthAgendaViewListener;
 import david.itimecalendar.calendar.ui.monthview.DayViewHeader;
 import david.itimecalendar.calendar.ui.monthview.DayViewHeaderRecyclerDivider;
 import david.itimecalendar.calendar.listeners.ITimeEventInterface;
@@ -31,12 +32,13 @@ import david.itimecalendar.calendar.util.MyCalendar;
 //        {
 //                @BindingMethod(type = MonthAgendaView.class, attribute = "agendaView:BackToday", method = "backToToday"),
 //                @BindingMethod(type = MonthAgendaView.class, attribute = "agendaView:onHeaderListener", method = "setOnHeaderListener"),
-//                @BindingMethod(type = MonthAgendaView.class, attribute = "agendaView:onEventClickListener", method = "setOnEventClickListener"),
+//                @BindingMethod(type = MonthAgendaView.class, attribute = "agendaView:onEventClickListener", method = "setITimeCalendarMonthAgendaViewListener"),
 //        }
 //)
 
 public class MonthAgendaView extends RelativeLayout{
     private final String TAG = "AgendaHeader";
+    private ITimeCalendarMonthAgendaViewListener iTimeCalendarInterface;
     private int upperBoundsOffset = 1;
     private int init_height;
     private int scroll_height;
@@ -53,9 +55,6 @@ public class MonthAgendaView extends RelativeLayout{
 
     private AgendaHeaderViewRecyclerAdapter headerRecyclerAdapter;
     private AgendaBodyViewRecyclerAdapter bodyRecyclerAdapter;
-
-    private OnHeaderListener onHeaderListener;
-    private AgendaViewBody.OnEventClickListener onEventClickListener;
 
     private MyCalendar monthAgendaViewCalendar;
     private ITimeEventPackageInterface eventPackage;
@@ -125,20 +124,6 @@ public class MonthAgendaView extends RelativeLayout{
         }else{
             headerScrollToDate(Calendar.getInstance());
         }
-//        agendaViewHeader.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//            @Override
-//            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-//                super.onScrollStateChanged(recyclerView, newState);
-//                if (newState == 0){
-//                    Calendar cal = Calendar.getInstance();
-//                    DayViewHeader headerView =
-//                            (DayViewHeader) headerLinearLayoutManager.findViewByPosition(headerLinearLayoutManager.findFirstVisibleItemPosition());
-//                    headerView.performNthDayClick(cal.get(Calendar.DAY_OF_WEEK) - 1);
-//                    agendaViewHeader.removeOnScrollListener(this);
-//                }
-//            }
-//        });
-//        agendaViewHeader.smoothScrollToPosition(upperBoundsOffset);
         this.bodyLinearLayoutManager.scrollToPosition(0);
     }
 
@@ -198,8 +183,8 @@ public class MonthAgendaView extends RelativeLayout{
         headerRecyclerAdapter.setOnHeaderListener(new AgendaHeaderViewRecyclerAdapter.OnHeaderListener() {
             @Override
             public void onClick(MyCalendar myCalendar) {
-                if (onHeaderListener != null){
-                    onHeaderListener.onMonthChanged(myCalendar);
+                if (iTimeCalendarInterface != null){
+                    iTimeCalendarInterface.onDateChanged(myCalendar.getCalendar().getTime());
                 }
             }
         });
@@ -238,7 +223,7 @@ public class MonthAgendaView extends RelativeLayout{
 
     private void setUpBody(){
         bodyRecyclerAdapter = new AgendaBodyViewRecyclerAdapter(context, upperBoundsOffset);
-        setOnEventClickListener(this.onEventClickListener);
+        setITimeCalendarMonthAgendaViewListener(this.iTimeCalendarInterface);
         agendaViewBody.setFlingScale(0.6f);
         agendaViewBody.setHasFixedSize(false);
         agendaViewBody.setAdapter(bodyRecyclerAdapter);
@@ -400,8 +385,8 @@ public class MonthAgendaView extends RelativeLayout{
             int index = headerLinearLayoutManager.findFirstCompletelyVisibleItemPosition();
             DayViewHeader fstVisibleHeader = (DayViewHeader) headerLinearLayoutManager.findViewByPosition(index);
             monthAgendaViewCalendar = fstVisibleHeader.getCalendar();
-            if (onHeaderListener != null){
-                onHeaderListener.onMonthChanged(monthAgendaViewCalendar);
+            if (iTimeCalendarInterface != null){
+                iTimeCalendarInterface.onDateChanged(monthAgendaViewCalendar.getCalendar().getTime());
             }
         }
     }
@@ -465,8 +450,8 @@ public class MonthAgendaView extends RelativeLayout{
             int index = bodyLinearLayoutManager.findFirstVisibleItemPosition();
             AgendaViewBody fstVisibleBody = (AgendaViewBody) bodyLinearLayoutManager.findViewByPosition(index);
             monthAgendaViewCalendar = fstVisibleBody.getCalendar();
-            if (onHeaderListener != null){
-                onHeaderListener.onMonthChanged(monthAgendaViewCalendar);
+            if (iTimeCalendarInterface != null){
+                iTimeCalendarInterface.onDateChanged(monthAgendaViewCalendar.getCalendar().getTime());
             }
 
             if (newState == 1){
@@ -483,18 +468,10 @@ public class MonthAgendaView extends RelativeLayout{
         }
     }
 
-    public void setOnEventClickListener(AgendaViewBody.OnEventClickListener onEventClickListener){
-        this.onEventClickListener = onEventClickListener;
+    public void setITimeCalendarMonthAgendaViewListener(ITimeCalendarMonthAgendaViewListener agendaViewListener){
+        this.iTimeCalendarInterface = agendaViewListener;
         if (bodyRecyclerAdapter != null){
-            bodyRecyclerAdapter.setOnEventClickListener(this.onEventClickListener);
+            bodyRecyclerAdapter.setOnEventClickListener(this.iTimeCalendarInterface);
         }
-    }
-
-    public void setOnHeaderListener(OnHeaderListener onHeaderListener){
-        this.onHeaderListener = onHeaderListener;
-    }
-
-    public interface OnHeaderListener{
-        void onMonthChanged(MyCalendar calendar);
     }
 }

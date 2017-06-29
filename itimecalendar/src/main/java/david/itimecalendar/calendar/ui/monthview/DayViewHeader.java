@@ -33,8 +33,8 @@ public class DayViewHeader extends LinearLayout {
     public String TAG = "DayViewHeader";
     public int rowPst = -1;
 
-    private int paddingWithBg;
-    private int paddingWithText;
+    private int paddingBg;
+    private int paddingText;
 
     private int textSize = 15;
 
@@ -101,8 +101,8 @@ public class DayViewHeader extends LinearLayout {
         monthTitlePaint.setTextSize(this.monthTitleSize);
         monthTitlePaint.setStyle(Paint.Style.FILL);
         monthTitlePaint.setTextAlign(Paint.Align.LEFT);
-        paddingWithBg = DensityUtil.dip2px(context,8);
-        paddingWithText = DensityUtil.dip2px(context,2);
+        paddingBg = DensityUtil.dip2px(context,6);
+        paddingText = DensityUtil.dip2px(context,2);
     }
     private void loadAttributes(AttributeSet attrs, Context context) {
         if (attrs != null && context != null) {
@@ -143,7 +143,7 @@ public class DayViewHeader extends LinearLayout {
             cell.getDateView().setBackgroundResource(0);
             cell.getTitleView().setText("");
             cell.getDotView().setImageDrawable(null);
-            cell.setPadding(paddingWithText,paddingWithText,paddingWithText,paddingWithText);
+            cell.setPadding(paddingText, paddingText, paddingText, paddingText);
 
             if (textViews.indexOf(cell) == todayPst)
                 cell.getDateView().setTextColor(color_headerTodayTextColor);
@@ -336,7 +336,7 @@ public class DayViewHeader extends LinearLayout {
                 //local changing
                 DayViewHeaderCell cell = (DayViewHeaderCell) view;
                 TextView tv = cell.getDateView();
-                cell.setPadding(paddingWithBg,paddingWithBg,paddingWithBg,paddingWithBg);
+                cell.setPadding(paddingBg, paddingBg, paddingBg, paddingBg);
                 cell.getTitleView().setText("");
                 cell.getDotView().setImageDrawable(null);
 

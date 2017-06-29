@@ -8,7 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +17,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.developer.paul.itimerecycleviewgroup.ITimeRecycleViewGroup;
-import com.developer.paul.itimerecycleviewgroup.LogUtil;
 
 import java.util.Calendar;
 import java.util.Date;
 
 import david.itimecalendar.R;
+import david.itimecalendar.calendar.listeners.ITimeCalendarMonthDayViewListener;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
 import david.itimecalendar.calendar.util.BaseUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
@@ -32,6 +32,8 @@ import david.itimecalendar.calendar.util.MyCalendar;
  */
 
 public class MonthView extends LinearLayout{
+    private ITimeCalendarMonthDayViewListener iTimeCalendarInterface;
+
     private static final String TAG = "lifecycle";
     private Context context;
 
@@ -40,11 +42,8 @@ public class MonthView extends LinearLayout{
     private RecyclerView headerRecyclerView;
     private DayViewHeaderRecyclerAdapter headerRecyclerAdapter;
 
-
-//    private ScrollView dayViewBodyContainer;
     private FrameLayout dayViewBodyContainer;
     private DayViewBody dayViewBody;
-
 
     private LinearLayoutManager headerLinearLayoutManager;
     private int upperBoundsOffset;
@@ -69,17 +68,18 @@ public class MonthView extends LinearLayout{
     private void initView(){
         this.context = getContext();
         this.setOrientation(VERTICAL);
-        this.upperBoundsOffset = 100000;
+        this.upperBoundsOffset = 5000;
 
         this.setUpHeader();
         this.setUpDivider();
         this.setUpBody();
     }
 
-    private interface OnHeaderScrollFinish{
-        void onScrollFinished();
-    }
     private void setUpHeader(){
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View dayOfWeek = inflater.inflate(R.layout.day_of_week, null, false);
+        this.addView(dayOfWeek);
+
         headerRecyclerView = new RecyclerView(context);
         headerRecyclerAdapter = new DayViewHeaderRecyclerAdapter(context, upperBoundsOffset);
 
@@ -152,9 +152,11 @@ public class MonthView extends LinearLayout{
             @Override
             public void onPageSelected(DayViewBodyCell v) {
                 MyCalendar fstItemDate = v.getCalendar();
-
-                LogUtil.log("mycalendar", fstItemDate.getDay() + "");
                 headerScrollToDate(fstItemDate.getCalendar(), false);
+                //calling date changed
+                if (iTimeCalendarInterface != null){
+                    iTimeCalendarInterface.onDateChanged(fstItemDate.getCalendar().getTime());
+                }
             }
 
             @Override
@@ -205,7 +207,7 @@ public class MonthView extends LinearLayout{
                     headerRecyclerAdapter.rowPst = newRowPst;
                 }
                 if (day_diff != 0){
-                    final int new_index = day_diff - 1;
+                    int new_index = day_diff - 1;
                     headerRecyclerAdapter.indexInRow = new_index;
                     headerRecyclerAdapter.notifyDataSetChanged();
                 }
@@ -286,8 +288,9 @@ public class MonthView extends LinearLayout{
         this.dayViewBody.setEventPackage(eventPackage);
     }
 
-    public void setOnBodyEventListener(DayViewBody.OnViewBodyEventListener onEventListener) {
-        this.dayViewBody.setOnBodyEventListener(onEventListener);
+    public void setITimeCalendarMonthDayViewListener(ITimeCalendarMonthDayViewListener monthDayViewListener) {
+        this.iTimeCalendarInterface = monthDayViewListener;
+        this.dayViewBody.setOnBodyEventListener(monthDayViewListener);
     }
 
     public void smoothMoveWithOffset(int moveOffset){
@@ -296,34 +299,5 @@ public class MonthView extends LinearLayout{
 
     public void refresh(){
         dayViewBody.refresh();
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        Log.i(TAG, "onMeasure: B" + " MonthDayView");
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        Log.i(TAG, "onMeasure: A" + " MonthDayView");
-    }
-
-    @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        Log.i(TAG, "onLayout: B" + " MonthDayView");
-
-        super.onLayout(changed, l, t, r, b);
-        Log.i(TAG, "onLayout: A" + " MonthDayView");
-    }
-
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        Log.i(TAG, "onSizeChanged: B" + " MonthDayView");
-        super.onSizeChanged(w, h, oldw, oldh);
-        Log.i(TAG, "onSizeChanged: A" + " MonthDayView");
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        Log.i(TAG, "onAttachedToWindow: B" + " MonthDayView");
-        super.onAttachedToWindow();
-        Log.i(TAG, "onAttachedToWindow: A" + " MonthDayView");
     }
 }

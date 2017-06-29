@@ -3,11 +3,13 @@ package david.itime_calendar.TestActivities;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import java.util.Date;
+
 import david.itime_calendar.EventManager;
 import david.itime_calendar.MainActivity;
 import david.itime_calendar.R;
 import david.itime_calendar.bean.Event;
-import david.itimecalendar.calendar.ui.monthview.DayViewBody;
+import david.itimecalendar.calendar.listeners.ITimeCalendarWeekDayViewListener;
 import david.itimecalendar.calendar.ui.weekview.WeekView;
 import david.itimecalendar.calendar.listeners.ITimeEventInterface;
 import david.itimecalendar.calendar.ui.unitviews.DraggableEventView;
@@ -31,7 +33,7 @@ public class WeekViewActivity extends AppCompatActivity {
         final WeekView weekview = (WeekView) findViewById(R.id.week_view);
         weekview.setEventPackage(eventManager.getEventsMap());
 //        weekview.setDisableCellScroll(true);
-        weekview.setOnBodyEventListener(new DayViewBody.OnViewBodyEventListener() {
+        weekview.setITimeCalendarWeekDayViewListener(new ITimeCalendarWeekDayViewListener() {
             @Override
             public void onAllDayEventClick(ITimeEventInterface event) {
 
@@ -68,6 +70,11 @@ public class WeekViewActivity extends AppCompatActivity {
 
                 eventManager.updateEvent((Event) event, eventView.getStartTimeM(), eventView.getEndTimeM());
                 weekview.refresh();
+            }
+
+            @Override
+            public void onDateChanged(Date date) {
+
             }
         });
     }

@@ -7,8 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.Date;
+
 import david.itime_calendar.EventManager;
 import david.itime_calendar.R;
+import david.itimecalendar.calendar.listeners.ITimeCalendarMonthDayViewListener;
 import david.itimecalendar.calendar.listeners.ITimeEventInterface;
 import david.itimecalendar.calendar.ui.monthview.DayViewBody;
 import david.itimecalendar.calendar.ui.monthview.MonthView;
@@ -39,10 +42,10 @@ public class FragmentCalendarMonthDay extends Fragment {
         //ITimeEventPackageInterface is composed by two parts:
         //  1: regular events. 2: repeated events.
         monthDayView.setEventPackage(eventManager.getEventsMap());
-        monthDayView.setOnBodyEventListener(new MonthViewBodyListener());
+        monthDayView.setITimeCalendarMonthDayViewListener(new MonthViewBodyListener());
     }
 
-    private class MonthViewBodyListener implements DayViewBody.OnViewBodyEventListener{
+    private class MonthViewBodyListener implements ITimeCalendarMonthDayViewListener{
 
         @Override
         public boolean isDraggable(DraggableEventView draggableEventView) {
@@ -76,6 +79,11 @@ public class FragmentCalendarMonthDay extends Fragment {
 
         @Override
         public void onAllDayEventClick(ITimeEventInterface iTimeEventInterface) {
+
+        }
+
+        @Override
+        public void onDateChanged(Date date) {
 
         }
     }

@@ -120,7 +120,7 @@ public class DayViewAllDay extends FrameLayout {
         @Override
         public void onBindViewHolder(AllDayCell item, int index) {
             item.reset();
-            //should update visibility first, because current setting item should not be considered.
+            //should update visibility first, because currently setting item should not be considered.
             updateLayout();
 
             Calendar cal = Calendar.getInstance();

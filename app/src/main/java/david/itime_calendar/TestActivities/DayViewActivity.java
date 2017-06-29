@@ -5,9 +5,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import java.util.Calendar;
+import java.util.Date;
 
 import david.itime_calendar.R;
 import david.itime_calendar.bean.Event;
+import david.itimecalendar.calendar.listeners.ITimeCalendarMonthDayViewListener;
 import david.itimecalendar.calendar.ui.monthview.DayViewBody;
 import david.itimecalendar.calendar.ui.monthview.MonthView;
 import david.itimecalendar.calendar.listeners.ITimeEventInterface;
@@ -22,6 +24,8 @@ import static david.itime_calendar.MainActivity.eventManager;
  */
 
 public class DayViewActivity extends AppCompatActivity {
+    private static final String TAG = "DayViewActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,7 +35,7 @@ public class DayViewActivity extends AppCompatActivity {
 
     private void doTest(){
         final MonthView monthView = (MonthView) findViewById(R.id.day_view);
-        monthView.setOnBodyEventListener(new DayViewBody.OnViewBodyEventListener() {
+        monthView.setITimeCalendarMonthDayViewListener(new ITimeCalendarMonthDayViewListener(){
             @Override
             public void onAllDayEventClick(ITimeEventInterface event) {
 
@@ -81,6 +85,11 @@ public class DayViewActivity extends AppCompatActivity {
 
                 BaseUtil.printEventTime("end",event);
                 monthView.refresh();
+            }
+
+            @Override
+            public void onDateChanged(Date date) {
+                Log.i(TAG, "onDateChanged: " + date);
             }
         });
         monthView.setEventPackage(eventManager.getEventsMap());

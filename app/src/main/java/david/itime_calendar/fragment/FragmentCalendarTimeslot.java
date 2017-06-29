@@ -8,8 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 
+import java.util.Date;
+
 import david.itime_calendar.EventManager;
 import david.itime_calendar.R;
+import david.itimecalendar.calendar.listeners.ITimeCalendarTimeslotViewListener;
 import david.itimecalendar.calendar.ui.monthview.DayViewBody;
 import david.itimecalendar.calendar.ui.weekview.TimeSlotView;
 import david.itimecalendar.calendar.ui.unitviews.DraggableTimeSlotView;
@@ -40,10 +43,10 @@ public class FragmentCalendarTimeslot extends Fragment {
         //ITimeEventPackageInterface is composed by two parts:
         //  1: regular events. 2: repeated events.
         timeSlotView.setEventPackage(eventManager.getEventsMap());
-        timeSlotView.setOnTimeSlotListener(new TimeslotViewBodyListener());
+        timeSlotView.setITimeCalendarTimeslotViewListener(new TimeslotViewBodyListener());
     }
 
-    private class TimeslotViewBodyListener implements DayViewBody.OnViewBodyTimeSlotListener{
+    private class TimeslotViewBodyListener implements ITimeCalendarTimeslotViewListener{
 
         @Override
         public void onAllDayRcdTimeslotClick(long l) {
@@ -92,6 +95,11 @@ public class FragmentCalendarTimeslot extends Fragment {
 
         @Override
         public void onTimeSlotDelete(DraggableTimeSlotView draggableTimeSlotView) {
+
+        }
+
+        @Override
+        public void onDateChanged(Date date) {
 
         }
     }

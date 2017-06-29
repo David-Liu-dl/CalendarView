@@ -52,7 +52,7 @@ public class DraggableEventView extends FrameLayout {
     private String status;
     private String iconName;
 
-    private Paint p = new Paint();
+//    private Paint p = new Paint();
     private ImageView bg;
     private TextView title;
     private ImageView icon;
@@ -85,7 +85,6 @@ public class DraggableEventView extends FrameLayout {
 
         width = (r-l) - baseL;
         height = b - t;
-        Log.i("DayViewAllDay", "DG onLayout: " + height);
 
         bg.layout(baseL,baseT,width,height + baseT);
         leftBar.layout(baseL, baseT, leftBar.getLayoutParams().width, height);
@@ -182,7 +181,6 @@ public class DraggableEventView extends FrameLayout {
                         && status != null
                         && !status.equals("")
                         && status.equals("slash")){
-                    drawSlash(canvas);
                 }
 
                 if (iconName != null && !iconName.equals("icon_question")){
@@ -217,24 +215,6 @@ public class DraggableEventView extends FrameLayout {
         title.setIncludeFontPadding(true);
         title.setPadding(padding,0,padding,0);
         this.addView(title);
-    }
-
-    private void drawSlash(Canvas canvas){
-        int slashColor = getContext().getResources().getColor(R.color.group_et);
-        p.setAntiAlias(true);
-        p.setColor(slashColor);
-        p.setAlpha((int)(255 * slashOpacity));
-        p.setStrokeWidth(DensityUtil.dip2px(getContext(),1));
-
-        int nowAtPxX = 0 - height;
-        int nowAtPxY = getPaddingTop();
-
-        int xGap = DensityUtil.dip2px(getContext(),10);
-
-        while (nowAtPxX <= width){
-            canvas.drawLine(nowAtPxX, nowAtPxY, nowAtPxX + height, height, p);
-            nowAtPxX += xGap;
-        }
     }
 
     private void updateLeftBar(Drawable db, int color){
@@ -321,27 +301,5 @@ public class DraggableEventView extends FrameLayout {
 
     public void setDuration(long duration) {
         this.duration = duration;
-    }
-
-    private Path path = new Path();
-    private RectF rect = new RectF();
-
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-
-        // compute the path
-        path.reset();
-        rect.set(0, 0, w, h);
-        path.addRoundRect(rect, 15, 15, Path.Direction.CW);
-        path.close();
-    }
-
-    @Override
-    protected void dispatchDraw(Canvas canvas) {
-        int save = canvas.save();
-        canvas.clipPath(path);
-        super.dispatchDraw(canvas);
-        canvas.restoreToCount(save);
     }
 }

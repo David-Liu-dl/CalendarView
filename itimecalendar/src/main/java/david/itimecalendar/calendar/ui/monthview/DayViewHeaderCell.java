@@ -58,7 +58,7 @@ public class DayViewHeaderCell extends RelativeLayout {
         LayoutParams dotParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         dotParams.addRule(CENTER_HORIZONTAL);
         dotParams.addRule(ALIGN_PARENT_BOTTOM);
-        dotParams.bottomMargin = DensityUtil.dip2px(getContext(),2);
+        dotParams.bottomMargin = DensityUtil.dip2px(getContext(),3);
         this.dotView.setLayoutParams(dotParams);
 
         this.addView(dateView);

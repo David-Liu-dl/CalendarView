@@ -382,7 +382,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
                         }else if (moveX < 0){
                             scrollDir = SCROLL_LEFT;
                         }
-                        scrollByX( moveX);
+                        scrollByX(moveX);
                         preX = newX;
                     }else if (scrollModel == SCROLL_VERTICAL){
                         setStatus(VERTICAL_MOVE);
@@ -668,11 +668,11 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
             public void onAnimationEnd(Animator animation) {
                 setStatus(STOP);
                 // when smoothly scroll end, page must changed, so need to call on page selected interface
-                if (onScroll!=null){
-                    AwesomeViewGroup a = getFirstShownAwesomeViewGroup(awesomeViewGroupList);
-                    AwesomeViewGroup.AwesomeLayoutParams lp = (AwesomeViewGroup.AwesomeLayoutParams) a.getLayoutParams();
+//                if (onScroll!=null){
+//                    AwesomeViewGroup a = getFirstShownAwesomeViewGroup(awesomeViewGroupList);
+//                    AwesomeViewGroup.AwesomeLayoutParams lp = (AwesomeViewGroup.AwesomeLayoutParams) a.getLayoutParams();
                     onScroll.onPageSelected(getFirstShowItem());
-                }
+//                }
 
                 LogUtil.logAwesomes(awesomeViewGroupList);
             }
@@ -718,6 +718,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
                 int offset = (nowValue - preAniY);
                 newY = preY + offset;
                 if (offset!=0) {
+
                 }
                 scrollByY(offset);
                 preAniY=nowValue;

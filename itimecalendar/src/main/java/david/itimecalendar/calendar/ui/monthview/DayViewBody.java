@@ -646,11 +646,6 @@ public class DayViewBody extends RelativeLayout {
         return this.bodyRecyclerView;
     }
 
-
-    public void setAllDayListener(DayViewAllDay.AllDayTimeslotListener allDayTimeslotListener) {
-        this.allDayView.setAllDayTimeslotListener(allDayTimeslotListener);
-    }
-
     public void notifyDataSetChanged(){
         dayViewBodyAdapter.notifyDataSetChanged();
         allDayView.notifyDataSetChanged();

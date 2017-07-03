@@ -115,7 +115,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
                 reDrawViewGroupToLast(awesomeViewGroups.get(0), awesomeViewGroups.get(viewGroupSize - 1));
                 moveViewGroupToLast(awesomeViewGroups.get(0), awesomeViewGroups);
                 if (adapter != null) {
-                    adapter.notifyDataSetChanged(awesomeViewGroups.get(0));
+                    adapter.notifyDataSetChanged(awesomeViewGroups.get(viewGroupSize - 1));
                 }
             } else if (scrollDir == SCROLL_RIGHT) {
                 reDrawViewGroupToFirst(awesomeViewGroups.get(awesomeViewGroups.size() - 1), awesomeViewGroups.get(0));

@@ -301,6 +301,7 @@
     <color name="color_FAFAFB">#99fafafb</color>
     <color name="color_f2f2f5">#73f2f2f5</color>
     <color name="color_75white">#73FFFFFF</color>
+
     <!--for dayView-->
     <color name="private_et">#05447e</color>
     <color name="group_et">#63ADF2</color>
@@ -316,7 +317,6 @@
     <color name="allday_container_bg">#929090</color>
     <!--for contact-->
     <color name="sidebar_text_color">#000000</color>
-
     <color name="whites">#ffffff</color>
     <color name="gray_color">#AFAFAF</color>
     <color name="bg_sort_color">#EDEDED</color>
@@ -343,8 +343,6 @@
     <color name="timeslot_selected">#0073FF</color>
     <color name="timeslot_bubble_bg">#262728</color>
 
-
-
     <!-- new color set-->
     <color name="text_calendar_weekdate">#757575</color>
     <color name="divider_calbg">#f5f5f5</color>
@@ -352,4 +350,14 @@
     <color name="calendar_today">#0089FF</color>
     <color name="calendar_timeslot_duration_bg">#f5f5f5</color>
     <color name="calendar_timeslot_duration_highlighter">#0089ff</color>
+    <color name="brand_main">#0089ff</color>
+    <color name="calendar_selected">#9E9E9E</color>
+    <!-- event color -->
+    <color name="confirmed_event_bg">#EEF7FF</color>
+    <color name="confirmed_event_bar">#71C8FF</color>
+    <color name="unconfirmed_event_bg">#FFF4D6</color>
+    <color name="unconfirmed_event_bar">#FFC529</color>
+    <!-- timeslot -->
+    <color name="allday_timeslot_text">#757575</color>
+    <color name="allday_timeslot_bg">#fafafa</color>
 </resources>

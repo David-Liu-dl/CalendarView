@@ -29,26 +29,20 @@ public class DraggableEventView extends RelativeLayout {
 
     public static int TYPE_NORMAL = 0;
     public static int TYPE_TEMP = 1;
-    // 30% alpha
-    public static int OPACITY_INT = 77;
-
-    private int width;
-    private int height;
     //0: default_normal, -1: temp view;
-    private int type = 0;
-    private int indexInView = 0;
-    private int color;
+    private int viewType = 0;
+    private int eventType = 0;
+    private int bgColor;
+    private int barColor;
 
     private boolean isAllDayEvent = false;
     private long duration = 0;
-
-    private String status;
-    private String iconName;
 
     private TextView title;
     private TextView location;
     private ImageView icon;
     private ImageView leftBar;
+    private View background;
 
     private MyCalendar calendar = new MyCalendar(Calendar.getInstance());
     private ITimeEventInterface event;
@@ -76,32 +70,48 @@ public class DraggableEventView extends RelativeLayout {
         location.setText("Nothing To Show");
     }
 
-    private void setType(){
-        //if color is not determined
-        if (color == 0){
-            switch (0){
-                case 0:
-                    color = getContext().getResources().getColor(R.color.private_et);
-                    break;
-                case 1:
-                    color = getContext().getResources().getColor(R.color.group_et);
-                    break;
-                case 2:
-                    color = getContext().getResources().getColor(R.color.public_et);
-                    break;
-            }
+    public void setToBg(){
+        leftBar.setVisibility(INVISIBLE);
+        bgColor = getResources().getColor(R.color.event_as_bg_bg);
+        ((GradientDrawable)background.getBackground()).setColor(bgColor);
+        title.setTextColor(getResources().getColor(R.color.event_as_bg_title));
+    }
+
+    private void updateView(){
+        //if bgColor is not determined
+        switch (this.eventType){
+            case 0:
+                bgColor = getContext().getResources().getColor(R.color.confirmed_event_bg);
+                barColor = getContext().getResources().getColor(R.color.confirmed_event_bar);
+                break;
+            case 1:
+                bgColor = getContext().getResources().getColor(R.color.unconfirmed_event_bg);
+                barColor = getContext().getResources().getColor(R.color.unconfirmed_event_bar);
+                break;
         }
 
+        GradientDrawable bg = (GradientDrawable) background.getBackground();
+        bg.mutate();
+        bg.setColor(bgColor);
+
+        leftBar.setBackgroundColor(barColor);
     }
 
     private void initDataInViews(){
         if (this.event != null){
+//            this.eventType = event.getEventType();
             this.setText();
-            this.setType();
+            this.updateView();
         }
     }
 
     private void initBackground(){
+        background = new View(getContext());
+        ViewGroup.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        background.setLayoutParams(params);
+        background.setBackground(getResources().getDrawable(R.drawable.itime_draggable_event_bg));
+        this.addView(background);
+
         initDarkLeftBorder();
         initIcon();
         initEventTitle();
@@ -122,6 +132,7 @@ public class DraggableEventView extends RelativeLayout {
         icon.setId(generateViewId());
         icon.setImageResource(R.drawable.itime_question_mark_small);
         LayoutParams params = new LayoutParams(DensityUtil.dip2px(getContext(), 12),DensityUtil.dip2px(getContext(), 12));
+        params.topMargin = DensityUtil.dip2px(getContext(),6);
         params.addRule(RIGHT_OF,leftBar.getId());
         icon.setLayoutParams(params);
         this.addView(icon);
@@ -157,13 +168,6 @@ public class DraggableEventView extends RelativeLayout {
         this.addView(location);
     }
 
-
-
-    private void updateLeftBar(Drawable db, int color){
-        leftBar.setImageDrawable(db);
-        ((GradientDrawable)leftBar.getDrawable()).setColor(color);
-    }
-
     public ITimeEventInterface getEvent() {
         return event;
     }
@@ -171,14 +175,6 @@ public class DraggableEventView extends RelativeLayout {
     public void setEvent(ITimeEventInterface event) {
         this.event = event;
         this.duration = event.getEndTime() - event.getStartTime();
-    }
-
-    public int getIndexInView() {
-        return indexInView;
-    }
-
-    public void setIndexInView(int indexInView) {
-        this.indexInView = indexInView;
     }
 
     public void showAlphaAnim(){
@@ -221,12 +217,12 @@ public class DraggableEventView extends RelativeLayout {
         return this.getStartTimeM() + duration;
     }
 
-    public int getType() {
-        return type;
+    public int getViewType() {
+        return viewType;
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public void setViewType(int viewType) {
+        this.viewType = viewType;
     }
 
     public long getDuration() {
@@ -236,21 +232,4 @@ public class DraggableEventView extends RelativeLayout {
     public void setDuration(long duration) {
         this.duration = duration;
     }
-//
-//
-//    @Override
-//    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-//        int baseL = getPaddingLeft();
-//        int baseT = getPaddingTop();
-//        int icon_margin = DensityUtil.dip2px(getContext(),1);
-//
-//        width = (r-l) - baseL;
-//        height = b - t;
-//
-//        bg.layout(baseL,baseT,width,height + baseT);
-//        leftBar.layout(baseL, baseT, leftBar.getLayoutParams().width, height);
-//        icon.layout(width - baseL - icon.getLayoutParams().width -icon_margin,icon_margin + baseT,width,icon_margin + icon.getLayoutParams().height + baseT);
-//        title.layout(baseL+leftBar.getLayoutParams().width,baseT, width,height - baseT);
-//    }
-
 }

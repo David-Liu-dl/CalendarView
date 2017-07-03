@@ -129,6 +129,10 @@ public class DayInnerBodyLayout extends ViewGroup {
                 // for creating a new item
                 // the pos parameter is null, because we just mock it
                 params.width = width;
+                // measure child with correct spec
+                int childWidthSpec = MeasureSpec.makeMeasureSpec(width,MeasureSpec.EXACTLY);
+                int childHeightSpec = heightMeasureSpec;
+                measureChild(getChildAt(i), childWidthSpec, childHeightSpec);
                 continue;
             }
             int eventConsumedWidth = width/pos.widthFactor;
@@ -159,11 +163,6 @@ public class DayInnerBodyLayout extends ViewGroup {
                         paddingLeft + params.left + child.getLayoutParams().width - (params.relativeMarginLeft + params.relativeMarginRight),
                         params.top + child.getLayoutParams().height + paddingTop);
             }
-
-//            if (){
-//                DayInnerBodyLayout.LayoutParams params = (DayInnerBodyLayout.LayoutParams) child.getLayoutParams();
-//                child.layout(paddingLeft + params.left, params.top, paddingLeft + params.left + child.getLayoutParams().width, params.top + child.getLayoutParams().height);
-//            }
         }
     }
 

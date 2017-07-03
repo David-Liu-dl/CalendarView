@@ -7,7 +7,6 @@ import android.content.res.TypedArray;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,6 @@ import android.widget.TextView;
 
 import com.developer.paul.itimerecycleviewgroup.ITimeAdapter;
 import com.developer.paul.itimerecycleviewgroup.ITimeRecycleViewGroup;
-import com.developer.paul.itimerecycleviewgroup.LogUtil;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -25,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import david.itimecalendar.R;
+import david.itimecalendar.calendar.ui.unitviews.AllDaySlotView;
 import david.itimecalendar.calendar.ui.weekview.TimeSlotView;
 import david.itimecalendar.calendar.listeners.ITimeEventInterface;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
@@ -32,7 +31,6 @@ import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
 import david.itimecalendar.calendar.ui.unitviews.DraggableEventView;
 import david.itimecalendar.calendar.ui.unitviews.DraggableTimeSlotView;
 import david.itimecalendar.calendar.ui.unitviews.RecommendedSlotView;
-import david.itimecalendar.calendar.util.BaseUtil;
 import david.itimecalendar.calendar.util.DensityUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
 import david.itimecalendar.calendar.wrapper.WrapperEvent;
@@ -136,7 +134,7 @@ public class DayViewAllDay extends FrameLayout {
             if (isTimeslotEnable && DayViewAllDay.this.slotsInfo != null){
                 //add rcd button
                 WrapperTimeSlot wrapperTimeSlot = new WrapperTimeSlot(null);
-                item.addAllDayRcdTimeslot(wrapperTimeSlot, calendar);
+                item.addAllDayTimeslotButton(wrapperTimeSlot, calendar);
                 /**
                  * should not add all day Rcd, it is embedded in every single day.
                  * DO NOT DELETE, in case of using later on.
@@ -145,7 +143,7 @@ public class DayViewAllDay extends FrameLayout {
 //                for (WrapperTimeSlot struct : slotsInfo.rcdSlots
 //                        ) {
 //                    if (struct.getTimeSlot().getIsAllDay() && calendar.contains(struct.getTimeSlot().getStartTime())){
-//                        item.addAllDayRcdTimeslot(struct);
+//                        item.addAllDayTimeslotButton(struct);
 //                    }
 //                }
                 //add timeslot on top index
@@ -295,13 +293,13 @@ public class DayViewAllDay extends FrameLayout {
             this.allDaySlots.add(wrapperTimeSlot.getTimeSlot());
         }
 
-        private void addAllDayRcdTimeslot(WrapperTimeSlot wrapperTimeSlot, MyCalendar calendar) {
-            RecommendedSlotView recommendedSlotView = new RecommendedSlotView(getContext(),wrapperTimeSlot,true);
-            recommendedSlotView.setMyCalendar(calendar);
-            recommendedSlotView.setOnClickListener(new OnAllDayRcdTimeslotClick());
+        private void addAllDayTimeslotButton(WrapperTimeSlot wrapperTimeSlot, MyCalendar calendar) {
+            AllDaySlotView allDaySlotView = new AllDaySlotView(getContext(),wrapperTimeSlot);
+            allDaySlotView.setMyCalendar(calendar);
+            allDaySlotView.setOnClickListener(new OnAllDayRcdTimeslotClick());
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            recommendedSlotView.setLayoutParams(params);
-            this.timeslotLayout.addView(recommendedSlotView);
+            allDaySlotView.setLayoutParams(params);
+            this.timeslotLayout.addView(allDaySlotView);
             this.allDaySlots.add(wrapperTimeSlot.getTimeSlot());
         }
 
@@ -489,9 +487,9 @@ public class DayViewAllDay extends FrameLayout {
 
         @Override
         public void onClick(View v) {
-            RecommendedSlotView recommendedSlotView = (RecommendedSlotView) v;
+            AllDaySlotView allDaySlotView = (AllDaySlotView) v;
             if (allDayTimeslotListener != null){
-                allDayTimeslotListener.onAllDayRcdTimeslotClick(recommendedSlotView.getAllDayBeginTime());
+                allDayTimeslotListener.onAllDayRcdTimeslotClick(allDaySlotView.getAllDayBeginTime());
             }
         }
     }

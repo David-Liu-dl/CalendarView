@@ -47,8 +47,6 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
     private String note;
     private boolean isAllDay;
 
-
-
     private transient List<PhotoUrl> photoList = null;
     private transient String[] recurrence = {};
 
@@ -92,10 +90,7 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
     private long endTime;
     @Property
     @NotNull
-    private int eventType;
-    @Property
-    @NotNull
-    private String display;
+    private String eventType = "";
 
     @ToMany(referencedJoinProperty = "eventUid")
     private List<Invitee> invitee = null;
@@ -109,12 +104,12 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
     public Event() {
     }
 
-    @Generated(hash = 1553904812)
+    @Generated(hash = 1329278022)
     public Event(String eventUid, String eventId, String recurringEventUid, String recurringEventId,
             String calendarUid, String iCalUID, String hostUserUid, String summary, String url,
             String location, String locationNote, double locationLatitude, double locationLongitude,
-            String note, boolean isAllDay, String photo, long startTime, long endTime, int eventType,
-            @NotNull String display) {
+            String note, boolean isAllDay, String photo, long startTime, long endTime,
+            @NotNull String eventType) {
         this.eventUid = eventUid;
         this.eventId = eventId;
         this.recurringEventUid = recurringEventUid;
@@ -134,8 +129,8 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
         this.startTime = startTime;
         this.endTime = endTime;
         this.eventType = eventType;
-        this.display = display;
     }
+
 
     @Override
     public void setSummary(String summary) {
@@ -193,22 +188,6 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
 
     public long getEndTime(){return endTime;}
 
-    public void setDisplayEventType(int eventType) {
-        this.eventType = eventType;
-    }
-
-    public int getDisplayEventType() {
-        return eventType;
-    }
-
-    public String getDisplayStatus() {
-        return display;
-    }
-
-    public void setDisplayStatus(String display) {
-        this.display = display;
-    }
-
     public int getDuration(){
         return (int)((endTime - startTime) /(1000*60));
     }
@@ -236,6 +215,11 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
 
     public String getLocation() {
         return location;
+    }
+
+    @Override
+    public String getEventType() {
+        return this.eventType;
     }
 
     public void setLocation(String location) {
@@ -520,21 +504,8 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
         this.photo = photo;
     }
 
-
-    public int getEventType() {
-        return this.eventType;
-    }
-
-    public void setEventType(int eventType) {
+    public void setEventType(String eventType) {
         this.eventType = eventType;
-    }
-
-    public String getDisplay() {
-        return this.display;
-    }
-
-    public void setDisplay(String display) {
-        this.display = display;
     }
 
 }

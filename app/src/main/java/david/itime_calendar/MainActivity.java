@@ -76,8 +76,6 @@ public class MainActivity extends AppCompatActivity {
 //            event.setIsAllDay(0);
             event.setEventUid("" + i);
             event.setSummary("adawdwadwadaw" + i);
-            event.setDisplayEventType(1);
-            event.setDisplayStatus("#63ADF2|slash|icon_normal");
             event.setLocation("here");
             event.setStartTime(startTime);
 
@@ -183,6 +181,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        tstBtn.performClick();
+//        dayBtn.performClick();
     }
 }

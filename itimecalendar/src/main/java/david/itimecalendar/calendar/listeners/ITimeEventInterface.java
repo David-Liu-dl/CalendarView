@@ -6,6 +6,9 @@ import java.util.List;
  * Created by yinchuandong on 22/08/2016.
  */
 public interface ITimeEventInterface<T> extends Comparable<T> {
+    String TYPE_GROUP = "group";
+    String TYPE_SOLO = "solo";
+
     String getEventUid();
 
     void setSummary(String summary);
@@ -33,4 +36,7 @@ public interface ITimeEventInterface<T> extends Comparable<T> {
      * @return View.VISIBILITY
      */
     int isShownInCalendar();
+
+    String getLocation();
+    String getEventType();
 }

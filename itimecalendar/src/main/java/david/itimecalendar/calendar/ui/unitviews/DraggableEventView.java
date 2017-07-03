@@ -1,21 +1,15 @@
 package david.itimecalendar.calendar.ui.unitviews;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
@@ -30,7 +24,7 @@ import david.itimecalendar.calendar.util.VendorAnimation;
 /**
  * Created by yuhaoliu on 3/08/16.
  */
-public class DraggableEventView extends FrameLayout {
+public class DraggableEventView extends RelativeLayout {
     private final String TAG = "MyAPP";
 
     public static int TYPE_NORMAL = 0;
@@ -44,7 +38,6 @@ public class DraggableEventView extends FrameLayout {
     private int type = 0;
     private int indexInView = 0;
     private int color;
-    private float slashOpacity = 0.30f;
 
     private boolean isAllDayEvent = false;
     private long duration = 0;
@@ -52,9 +45,8 @@ public class DraggableEventView extends FrameLayout {
     private String status;
     private String iconName;
 
-//    private Paint p = new Paint();
-    private ImageView bg;
     private TextView title;
+    private TextView location;
     private ImageView icon;
     private ImageView leftBar;
 
@@ -65,31 +57,10 @@ public class DraggableEventView extends FrameLayout {
     public DraggableEventView(Context context, @Nullable ITimeEventInterface event, boolean isAllDayEvent) {
         super(context);
         this.setEvent(event);
-
         this.isAllDayEvent = isAllDayEvent;
+
         initBackground();
         initDataInViews();
-    }
-
-    @Override
-    public String toString() {
-        String str = " height : "+ height  + " width : " + width; // paul try
-        return str;
-    }
-
-    @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        int baseL = getPaddingLeft();
-        int baseT = getPaddingTop();
-        int icon_margin = DensityUtil.dip2px(getContext(),1);
-
-        width = (r-l) - baseL;
-        height = b - t;
-
-        bg.layout(baseL,baseT,width,height + baseT);
-        leftBar.layout(baseL, baseT, leftBar.getLayoutParams().width, height);
-        icon.layout(width - baseL - icon.getLayoutParams().width -icon_margin,icon_margin + baseT,width,icon_margin + icon.getLayoutParams().height + baseT);
-        title.layout(baseL+leftBar.getLayoutParams().width,baseT, width,height - baseT);
     }
 
     public MyCalendar getCalendar() {
@@ -100,8 +71,9 @@ public class DraggableEventView extends FrameLayout {
         this.calendar = calendar;
     }
 
-    private void setSummary(){
+    private void setText(){
         title.setText(event.getSummary());
+        location.setText("Nothing To Show");
     }
 
     private void setType(){
@@ -120,102 +92,72 @@ public class DraggableEventView extends FrameLayout {
             }
         }
 
-        //set background color base on type
-        bg.setBackground(getResources().getDrawable(R.drawable.itime_draggable_event_bg));
-
-        if (!event.isHighlighted()){
-            ((GradientDrawable)bg.getBackground()).setColor(color);
-            bg.getBackground().setAlpha(OPACITY_INT);
-        }else {
-            color = getResources().getColor(R.color.private_et);
-        }
-
-        ((GradientDrawable)bg.getBackground()).setColor(color);
-
-        //set leftBar color base on type
-        updateLeftBar(getResources().getDrawable(R.drawable.itime_draggable_event_bg), color);
-    }
-
-    @Override
-    public void setBackground(Drawable drawable){
-        bg.setBackground(drawable);
-        int actualColor = color;
-        ((GradientDrawable)bg.getBackground()).setColor(actualColor);
-        if (!event.isHighlighted()){
-            bg.getBackground().setAlpha(OPACITY_INT);
-        }
-    }
-
-    @Override
-    public Drawable getBackground() {
-        return this.bg.getBackground();
-    }
-
-    private void initDarkLeftBorder(){
-        leftBar = new ImageView(this.getContext());
-        LayoutParams param = new LayoutParams(DensityUtil.dip2px(getContext(), 2.5f),0);
-        this.addView(leftBar,param);
     }
 
     private void initDataInViews(){
         if (this.event != null){
-            this.setSummary();
+            this.setText();
             this.setType();
         }
     }
 
     private void initBackground(){
-        initBackgroundView();
         initDarkLeftBorder();
-        initEventTitle();
         initIcon();
+        initEventTitle();
+        initEventLocation();
     }
 
-    private void initBackgroundView(){
-        bg = new android.support.v7.widget.AppCompatImageView(getContext()){
-            @Override
-            protected void onDraw(Canvas canvas) {
-                super.onDraw(canvas);
-
-                if(event != null
-                        && status != null
-                        && !status.equals("")
-                        && status.equals("slash")){
-                }
-
-                if (iconName != null && !iconName.equals("icon_question")){
-                    icon.setVisibility(View.INVISIBLE);
-                }
-            }
-        };
-
-        bg.setBackgroundDrawable(getResources().getDrawable(R.drawable.itime_draggable_event_bg));
-        ((GradientDrawable)bg.getBackground()).setColor(Color.BLUE);
-        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-
-        this.addView(bg,params);
+    private void initDarkLeftBorder(){
+        leftBar = new ImageView(this.getContext());
+        leftBar.setId(View.generateViewId());
+        LayoutParams param = new LayoutParams(DensityUtil.dip2px(getContext(), 2), ViewGroup.LayoutParams.MATCH_PARENT);
+        param.rightMargin = DensityUtil.dip2px(getContext(),3);
+        leftBar.setLayoutParams(param);
+        this.addView(leftBar);
     }
 
     private void initIcon(){
         icon = new ImageView(getContext());
+        icon.setId(generateViewId());
         icon.setImageResource(R.drawable.itime_question_mark_small);
-        LayoutParams params = new LayoutParams(DensityUtil.dip2px(getContext(), 15),DensityUtil.dip2px(getContext(), 15));
-        icon.setPadding(0,0,0,0);
+        LayoutParams params = new LayoutParams(DensityUtil.dip2px(getContext(), 12),DensityUtil.dip2px(getContext(), 12));
+        params.addRule(RIGHT_OF,leftBar.getId());
         icon.setLayoutParams(params);
         this.addView(icon);
     }
 
     private void initEventTitle(){
-        int padding = DensityUtil.dip2px(getContext(), isAllDayEvent ? 1 : 3);
         title = new TextView(getContext());
-        title.setTextSize(11);
+        title.setId(generateViewId());
+        title.setTextSize(14);
         title.setTextColor(getResources().getColor(event.isHighlighted() ? R.color.white : R.color.black));
         title.setEllipsize(TextUtils.TruncateAt.END);
         title.setGravity(Gravity.CENTER_VERTICAL);
         title.setIncludeFontPadding(true);
-        title.setPadding(padding,0,padding,0);
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.leftMargin =  DensityUtil.dip2px(getContext(),3);
+        params.addRule(RIGHT_OF, icon.getId());
+        title.setLayoutParams(params);
         this.addView(title);
     }
+
+    private void initEventLocation(){
+        location = new TextView(getContext());
+        location.setTextSize(12);
+        location.setTextColor(getResources().getColor(event.isHighlighted() ? R.color.white : R.color.black));
+        location.setEllipsize(TextUtils.TruncateAt.END);
+        location.setGravity(Gravity.CENTER_VERTICAL);
+        location.setIncludeFontPadding(true);
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.leftMargin =  DensityUtil.dip2px(getContext(),3);
+        params.addRule(RIGHT_OF, icon.getId());
+        params.addRule(BELOW, title.getId());
+        location.setLayoutParams(params);
+        this.addView(location);
+    }
+
+
 
     private void updateLeftBar(Drawable db, int color){
         leftBar.setImageDrawable(db);
@@ -224,14 +166,6 @@ public class DraggableEventView extends FrameLayout {
 
     public ITimeEventInterface getEvent() {
         return event;
-    }
-
-    public void setToBg(){
-        leftBar.setVisibility(INVISIBLE);
-        color = getResources().getColor(R.color.event_as_bg_bg);
-        ((GradientDrawable)bg.getBackground()).setColor(color);
-        bg.getBackground().setAlpha(255);
-        title.setTextColor(getResources().getColor(R.color.event_as_bg_title));
     }
 
     public void setEvent(ITimeEventInterface event) {
@@ -302,4 +236,21 @@ public class DraggableEventView extends FrameLayout {
     public void setDuration(long duration) {
         this.duration = duration;
     }
+//
+//
+//    @Override
+//    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+//        int baseL = getPaddingLeft();
+//        int baseT = getPaddingTop();
+//        int icon_margin = DensityUtil.dip2px(getContext(),1);
+//
+//        width = (r-l) - baseL;
+//        height = b - t;
+//
+//        bg.layout(baseL,baseT,width,height + baseT);
+//        leftBar.layout(baseL, baseT, leftBar.getLayoutParams().width, height);
+//        icon.layout(width - baseL - icon.getLayoutParams().width -icon_margin,icon_margin + baseT,width,icon_margin + icon.getLayoutParams().height + baseT);
+//        title.layout(baseL+leftBar.getLayoutParams().width,baseT, width,height - baseT);
+//    }
+
 }

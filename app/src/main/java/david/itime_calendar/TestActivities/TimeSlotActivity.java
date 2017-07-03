@@ -5,12 +5,14 @@ import android.support.v7.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import david.itime_calendar.EventManager;
 import david.itime_calendar.MainActivity;
 import david.itime_calendar.R;
 import david.itime_calendar.bean.TimeSlot;
+import david.itimecalendar.calendar.listeners.ITimeCalendarTimeslotViewListener;
 import david.itimecalendar.calendar.ui.monthview.DayViewBody;
 import david.itimecalendar.calendar.ui.weekview.TimeSlotView;
 import david.itimecalendar.calendar.ui.unitviews.DraggableTimeSlotView;
@@ -68,7 +70,7 @@ public class TimeSlotActivity extends AppCompatActivity {
                 }
             }
         });
-        timeslotView.setOnTimeSlotListener(new DayViewBody.OnViewBodyTimeSlotListener() {
+        timeslotView.setITimeCalendarTimeslotViewListener(new ITimeCalendarTimeslotViewListener()  {
             @Override
             public void onAllDayRcdTimeslotClick(long dayBeginMilliseconds) {
                 TimeSlot newSlot = new TimeSlot();
@@ -130,6 +132,10 @@ public class TimeSlotActivity extends AppCompatActivity {
                 timeslotView.removeTimeslot(draggableTimeSlotView.getWrapper());
             }
 
+            @Override
+            public void onDateChanged(Date date) {
+
+            }
         });
         //Note: ensure calling setTimeslotDurationItems after setting listeners
         timeslotView.setTimeslotDurationItems(initList());

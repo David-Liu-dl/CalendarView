@@ -6,10 +6,13 @@ import java.util.List;
  * Created by yinchuandong on 22/08/2016.
  */
 public interface ITimeEventInterface<T> extends Comparable<T> {
+    String TYPE_GROUP = "group";
+    String TYPE_SOLO = "solo";
+
     String getEventUid();
 
-    void setTitle(String title);
-    String getTitle();
+    void setSummary(String summary);
+    String getSummary();
 
     void setStartTime(long startTime);
     long getStartTime();
@@ -17,19 +20,23 @@ public interface ITimeEventInterface<T> extends Comparable<T> {
     void setEndTime(long endTime);
     long getEndTime();
 
-    int getDisplayEventType();
-    String getDisplayStatus();
-
     List<? extends ITimeInviteeInterface> getDisplayInvitee();
 
     void setHighLighted(boolean highlighted);
     boolean isHighlighted();
 
+    /**
+     *
+     * @param isAllDay
+     */
     void setIsAllDay(boolean isAllDay);
-    boolean isAllDay();
+    boolean getIsAllDay();
     /**
      *
      * @return View.VISIBILITY
      */
     int isShownInCalendar();
+
+    String getLocationName();
+    String getEventType();
 }

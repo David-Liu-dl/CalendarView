@@ -6,6 +6,7 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.ClipData;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -74,7 +75,7 @@ public class EventController {
                     if (event.isShownInCalendar() == View.VISIBLE){
                         WrapperEvent wrapperEvent = new WrapperEvent(event);
                         wrapperEvent.setFromDayBegin(startTime);
-                        if (!event.isAllDay()){
+                        if (!event.getIsAllDay()){
                             this.addRegularEvent(wrapperEvent);
                         }
                     }
@@ -87,7 +88,7 @@ public class EventController {
                     if (event.isShownInCalendar() == View.VISIBLE){
                         WrapperEvent wrapperEvent = new WrapperEvent(event);
                         wrapperEvent.setFromDayBegin(startTime);
-                        if (!event.isAllDay()){
+                        if (!event.getIsAllDay()){
                             this.addRegularEvent(wrapperEvent);
                         }
                     }
@@ -167,7 +168,7 @@ public class EventController {
         ITimeEventInterface event = wrapper.getEvent();
         DraggableEventView event_view = new DraggableEventView(context, event, isAllDayEvent);
         event_view.setCalendar(container.getCalendar());
-        event_view.setType(DraggableEventView.TYPE_NORMAL);
+        event_view.setViewType(DraggableEventView.TYPE_NORMAL);
         int padding = DensityUtil.dip2px(context,1);
         event_view.setPadding(0,padding,0,padding);
         if (!container.isTimeSlotEnable){
@@ -250,7 +251,7 @@ public class EventController {
 
         DraggableEventView event_view = new DraggableEventView(context, event, false);
         event_view.setDuration(defaultEventDuration);
-        event_view.setType(DraggableEventView.TYPE_TEMP);
+        event_view.setViewType(DraggableEventView.TYPE_TEMP);
         int padding = DensityUtil.dip2px(context,1);
         event_view.setPadding(0,padding,0,0);
 
@@ -344,23 +345,6 @@ public class EventController {
                 } else {
                     view.setVisibility(View.VISIBLE);
                 }
-//                YoYo.with(Techniques.Bounce).
-//                        pivot(YoYo.CENTER_PIVOT, YoYo.CENTER_PIVOT)
-//                        .interpolate(new AccelerateDecelerateInterpolator())
-//                        .duration(1000)
-//                        .playOn(view);
-//
-//                ValueAnimator alpha = ValueAnimator.ofObject(new ArgbEvaluator(), DraggableEventView.OPACITY_INT, 255);
-//                alpha.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-//
-//                    @Override
-//                    public void onAnimationUpdate(ValueAnimator animator) {
-//                        view.getBackground().setAlpha((int) animator.getAnimatedValue());
-//                    }
-//
-//                });
-//                alpha.setDuration(500);
-//                alpha.start();
                 view.startDrag(data, shadowBuilder, view, 0);
             }
 
@@ -382,7 +366,6 @@ public class EventController {
                 case DragEvent.ACTION_DRAG_LOCATION:
                     int rawX = (int) event.getX();
                     int rawY = (int) event.getY();
-                    Log.i(TAG, "aaaaaaa: " + rawY);
 //                    container.scrollViewAutoScroll(item);
 
                     if (onEventListener != null) {
@@ -394,7 +377,7 @@ public class EventController {
                     break;
                 case DragEvent.ACTION_DRAG_ENTERED:
 //                    container.msgWindow.setVisibility(View.VISIBLE);
-                    if (dgView.getType() == DraggableEventView.TYPE_TEMP){
+                    if (dgView.getViewType() == DraggableEventView.TYPE_TEMP){
                         container.tempDragView = dgView;
                     }else{
                         container.tempDragView= null;
@@ -407,9 +390,7 @@ public class EventController {
                 case DragEvent.ACTION_DROP:
 //                    Log.i(TAG, "ACTION_DROP:" + container.getCalendar().getCalendar().getTime());
                     //handler ended things in here, because ended some time is not triggered
-                    dgView.getBackground().setAlpha(DraggableEventView.OPACITY_INT);
                     View finalView = (View) event.getLocalState();
-                    finalView.getBackground().setAlpha(DraggableEventView.OPACITY_INT);
                     finalView.setVisibility(View.VISIBLE);
 //                    container.msgWindow.setVisibility(View.INVISIBLE);
 
@@ -438,7 +419,7 @@ public class EventController {
                         Log.i(TAG, "onDrop Not Called");
                     }
 
-                    if (dgView.getType() == DraggableEventView.TYPE_TEMP) {
+                    if (dgView.getViewType() == DraggableEventView.TYPE_TEMP) {
                         ViewGroup parent = (ViewGroup) dgView.getParent();
                         if(parent != null){
                             parent.removeView(dgView);
@@ -453,9 +434,7 @@ public class EventController {
                     Log.i(TAG, "onDrag: drop ");
                     break;
                 case DragEvent.ACTION_DRAG_ENDED:
-                    if (dgView != null){
-                        dgView.getBackground().setAlpha(DraggableEventView.OPACITY_INT);
-                    }
+
                     break;
             }
 
@@ -467,10 +446,8 @@ public class EventController {
 
         @Override
         public boolean onLongClick(View v) {
-//            if (container.tempDragView == null) {
             DayInnerBodyLayout container = (DayInnerBodyLayout) v;
             EventController.this.container.tempDragView = createTempDayDraggableEventView(EventController.this.container.nowTapX, EventController.this.container.nowTapY);
-            EventController.this.container.tempDragView.setAlpha(1);
             container.addView(EventController.this.container.tempDragView);
 
             ObjectAnimator scaleX = ObjectAnimator.ofFloat(EventController.this.container.tempDragView, "scaleX", 0f,1f);
@@ -481,8 +458,7 @@ public class EventController {
             scaleY.setDuration(120);
 
             AnimatorSet createAnim = new AnimatorSet();
-//            createAnim.play(alpha).with(scaleY).with(scaleX);
-            createAnim.play(alpha);
+            createAnim.play(alpha).with(scaleY).with(scaleX);
             scaleX.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator valueAnimator) {
@@ -518,7 +494,6 @@ public class EventController {
             });
 
             createAnim.start();
-//            EventController.this.container.tempDragView.performLongClick();
 
             return true;
         }
@@ -533,7 +508,7 @@ public class EventController {
         }
     }
 
-    class EventModule implements ITimeEventInterface{
+    private class EventModule implements ITimeEventInterface{
 
         @Override
         public String getEventUid() {
@@ -541,12 +516,12 @@ public class EventController {
         }
 
         @Override
-        public void setTitle(String title) {
+        public void setSummary(String title) {
 
         }
 
         @Override
-        public String getTitle() {
+        public String getSummary() {
             return null;
         }
 
@@ -562,22 +537,11 @@ public class EventController {
 
         @Override
         public void setEndTime(long endTime) {
-
         }
 
         @Override
         public long getEndTime() {
             return 0;
-        }
-
-        @Override
-        public int getDisplayEventType() {
-            return 0;
-        }
-
-        @Override
-        public String getDisplayStatus() {
-            return null;
         }
 
         @Override
@@ -600,13 +564,24 @@ public class EventController {
         }
 
         @Override
-        public boolean isAllDay() {
+        public boolean getIsAllDay() {
             return false;
         }
+
 
         @Override
         public int isShownInCalendar() {
             return 0;
+        }
+
+        @Override
+        public String getLocationName() {
+            return "";
+        }
+
+        @Override
+        public String getEventType() {
+            return "";
         }
 
         @Override

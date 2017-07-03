@@ -19,33 +19,11 @@ import david.itimecalendar.calendar.listeners.ITimeEventInterface;
 
 public class BaseUtil {
 
-    private static final String TAG = "test";
-
-//    public static void relayoutChildren(View view) {
-//        view.measure(
-//                View.MeasureSpec.makeMeasureSpec(view.getMeasuredWidth(), View.MeasureSpec.EXACTLY),
-//                View.MeasureSpec.makeMeasureSpec(view.getMeasuredHeight(), View.MeasureSpec.EXACTLY));
-//        view.layout(view.getLeft(), view.getTop(), view.getRight(), view.getBottom());
-//    }
-
     public static long getAllDayLong(long withInDayTime){
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(withInDayTime);
         MyCalendar myCal = new MyCalendar(cal);
         return myCal.getEndOfDayMilliseconds() - myCal.getBeginOfDayMilliseconds();
-    }
-
-    public static boolean isAllDayEvent(ITimeEventInterface event) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(event.getStartTime());
-        int hour = cal.get(Calendar.HOUR);
-        int minutes = cal.get(Calendar.MINUTE);
-        long duration = event.getEndTime() - event.getStartTime();
-        boolean isAllDay = hour == 0
-                && minutes == 0
-                && duration >= (getAllDayLong(event.getStartTime()) * 0.9);
-
-        return isAllDay;
     }
 
     public static Drawable scaleDrawable(Drawable drawable, int width, int height){
@@ -66,8 +44,6 @@ public class BaseUtil {
         String sT = cal.getTime().toString();
         cal.setTimeInMillis(eventInterface.getEndTime());
         String eT = cal.getTime().toString();
-
-        Log.i(TAG, "printEventTime: " + "|" +preTag +"|" + "start at: " + sT + " end at: " + eT);
     }
 
     public static int getDatesDifference(long from, long to){

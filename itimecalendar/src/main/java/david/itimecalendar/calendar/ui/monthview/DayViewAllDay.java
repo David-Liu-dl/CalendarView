@@ -7,7 +7,6 @@ import android.content.res.TypedArray;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,6 @@ import android.widget.TextView;
 
 import com.developer.paul.itimerecycleviewgroup.ITimeAdapter;
 import com.developer.paul.itimerecycleviewgroup.ITimeRecycleViewGroup;
-import com.developer.paul.itimerecycleviewgroup.LogUtil;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -25,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import david.itimecalendar.R;
+import david.itimecalendar.calendar.ui.unitviews.AllDaySlotView;
 import david.itimecalendar.calendar.ui.weekview.TimeSlotView;
 import david.itimecalendar.calendar.listeners.ITimeEventInterface;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
@@ -119,7 +118,7 @@ public class DayViewAllDay extends FrameLayout {
         @Override
         public void onBindViewHolder(AllDayCell item, int index) {
             item.reset();
-            //should update visibility first, because current setting item should not be considered.
+            //should update visibility first, because currently setting item should not be considered.
             updateLayout();
 
             Calendar cal = Calendar.getInstance();
@@ -135,7 +134,7 @@ public class DayViewAllDay extends FrameLayout {
             if (isTimeslotEnable && DayViewAllDay.this.slotsInfo != null){
                 //add rcd button
                 WrapperTimeSlot wrapperTimeSlot = new WrapperTimeSlot(null);
-                item.addAllDayRcdTimeslot(wrapperTimeSlot, calendar);
+                item.addAllDayTimeslotButton(wrapperTimeSlot, calendar);
                 /**
                  * should not add all day Rcd, it is embedded in every single day.
                  * DO NOT DELETE, in case of using later on.
@@ -143,8 +142,8 @@ public class DayViewAllDay extends FrameLayout {
                 //add rcd first
 //                for (WrapperTimeSlot struct : slotsInfo.rcdSlots
 //                        ) {
-//                    if (struct.getTimeSlot().isAllDay() && calendar.contains(struct.getTimeSlot().getStartTime())){
-//                        item.addAllDayRcdTimeslot(struct);
+//                    if (struct.getTimeSlot().getIsAllDay() && calendar.contains(struct.getTimeSlot().getStartTime())){
+//                        item.addAllDayTimeslotButton(struct);
 //                    }
 //                }
                 //add timeslot on top index
@@ -283,6 +282,11 @@ public class DayViewAllDay extends FrameLayout {
             new_dgEvent.setLayoutParams(params);
             this.eventLayout.addView(new_dgEvent);
             this.allDayEvents.add(wrapper.getEvent());
+
+            //if bg mode
+            if (isTimeslotEnable){
+                new_dgEvent.setToBg();
+            }
         }
 
         private void addAllDayTimeslot(WrapperTimeSlot wrapperTimeSlot) {
@@ -294,13 +298,13 @@ public class DayViewAllDay extends FrameLayout {
             this.allDaySlots.add(wrapperTimeSlot.getTimeSlot());
         }
 
-        private void addAllDayRcdTimeslot(WrapperTimeSlot wrapperTimeSlot, MyCalendar calendar) {
-            RecommendedSlotView recommendedSlotView = new RecommendedSlotView(getContext(),wrapperTimeSlot,true);
-            recommendedSlotView.setMyCalendar(calendar);
-            recommendedSlotView.setOnClickListener(new OnAllDayRcdTimeslotClick());
+        private void addAllDayTimeslotButton(WrapperTimeSlot wrapperTimeSlot, MyCalendar calendar) {
+            AllDaySlotView allDaySlotView = new AllDaySlotView(getContext(),wrapperTimeSlot);
+            allDaySlotView.setMyCalendar(calendar);
+            allDaySlotView.setOnClickListener(new OnAllDayRcdTimeslotClick());
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            recommendedSlotView.setLayoutParams(params);
-            this.timeslotLayout.addView(recommendedSlotView);
+            allDaySlotView.setLayoutParams(params);
+            this.timeslotLayout.addView(allDaySlotView);
             this.allDaySlots.add(wrapperTimeSlot.getTimeSlot());
         }
 
@@ -321,7 +325,7 @@ public class DayViewAllDay extends FrameLayout {
                     if (event.isShownInCalendar() == View.VISIBLE){
                         WrapperEvent wrapperEvent = new WrapperEvent(event);
                         wrapperEvent.setFromDayBegin(startTime);
-                        if (event.isAllDay()){
+                        if (event.getIsAllDay()){
                             this.addAllDayEvent(wrapperEvent);
                         }
                     }
@@ -334,7 +338,7 @@ public class DayViewAllDay extends FrameLayout {
                     if (event.isShownInCalendar() == View.VISIBLE){
                         WrapperEvent wrapperEvent = new WrapperEvent(event);
                         wrapperEvent.setFromDayBegin(startTime);
-                        if (event.isAllDay()){
+                        if (event.getIsAllDay()){
                             this.addAllDayEvent(wrapperEvent);
                         }
                     }
@@ -488,9 +492,9 @@ public class DayViewAllDay extends FrameLayout {
 
         @Override
         public void onClick(View v) {
-            RecommendedSlotView recommendedSlotView = (RecommendedSlotView) v;
+            AllDaySlotView allDaySlotView = (AllDaySlotView) v;
             if (allDayTimeslotListener != null){
-                allDayTimeslotListener.onAllDayRcdTimeslotClick(recommendedSlotView.getAllDayBeginTime());
+                allDayTimeslotListener.onAllDayRcdTimeslotClick(allDaySlotView.getAllDayBeginTime());
             }
         }
     }

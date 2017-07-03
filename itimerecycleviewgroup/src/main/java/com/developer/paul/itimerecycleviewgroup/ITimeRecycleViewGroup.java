@@ -102,7 +102,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
         mScroller = new Scroller(getContext());
     }
 
-    
+
     private void moveXPostCheck(List<AwesomeViewGroup> awesomeViewGroups, int scrollDir) {
         int viewGroupSize = awesomeViewGroups.size();
         boolean pageChanged = false;

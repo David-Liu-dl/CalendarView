@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 
 import david.itimecalendar.R;
+import david.itimecalendar.calendar.listeners.ITimeCalendarTimeslotViewListener;
 import david.itimecalendar.calendar.ui.monthview.DayViewBody;
 import david.itimecalendar.calendar.ui.monthview.DayViewBodyCell;
 import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
@@ -42,6 +43,8 @@ import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
  */
 
 public class TimeSlotView extends WeekView {
+    private ITimeCalendarTimeslotViewListener iTimeCalendarListener;
+
     private TimeSlotInnerCalendarView innerCalView;
     private TimeslotDurationWidget<String> popUpMenuBar;
 
@@ -240,10 +243,6 @@ public class TimeSlotView extends WeekView {
         staticLayer.setVisibility(VISIBLE);
     }
 
-//    public void setOnTimeSlotInnerCalendar(TimeSlotInnerCalendarView.OnTimeSlotInnerCalendar onTimeSlotInnerCalendar) {
-//        this.innerCalView.setOnTimeSlotInnerCalendar(onTimeSlotInnerCalendar);
-//    }
-
     public void addTimeSlot(ITimeTimeSlotInterface slotInfo){
         super.dayViewBody.addTimeSlot(slotInfo);
         updateInnerCalendarPackage();
@@ -264,8 +263,8 @@ public class TimeSlotView extends WeekView {
         updateInnerCalendarPackage();
     }
 
-    public void setOnTimeSlotListener(DayViewBody.OnViewBodyTimeSlotListener onTimeSlotViewBodyListener) {
-        this.onTimeSlotViewBodyOuterListener = onTimeSlotViewBodyListener;
+    public void setITimeCalendarTimeslotViewListener(ITimeCalendarTimeslotViewListener timeCalendarTimeslotViewListener) {
+        this.iTimeCalendarListener = timeCalendarTimeslotViewListener;
         super.dayViewBody.setOnTimeSlotListener(onTimeSlotViewBodyInnerListener);
     }
 
@@ -274,14 +273,13 @@ public class TimeSlotView extends WeekView {
         innerSlotPackage.numSlotMap.clear();
     }
 
-    DayViewBody.OnViewBodyTimeSlotListener onTimeSlotViewBodyOuterListener;
 
     // add self needs to passed listener
     DayViewBody.OnViewBodyTimeSlotListener onTimeSlotViewBodyInnerListener = new DayViewBody.OnViewBodyTimeSlotListener() {
         @Override
         public void onAllDayRcdTimeslotClick(long dayBeginMilliseconds) {
-            if (onTimeSlotViewBodyOuterListener != null){
-                onTimeSlotViewBodyOuterListener.onAllDayRcdTimeslotClick(dayBeginMilliseconds);
+            if (iTimeCalendarListener != null){
+                iTimeCalendarListener.onAllDayRcdTimeslotClick(dayBeginMilliseconds);
             }
         }
 
@@ -290,16 +288,16 @@ public class TimeSlotView extends WeekView {
             timeslotToolBar.setTag(timeSlotView);
             showTimeSlotTools(timeSlotView, false);
 
-            if (onTimeSlotViewBodyOuterListener != null){
-                onTimeSlotViewBodyOuterListener.onAllDayTimeslotClick(timeSlotView);
+            if (iTimeCalendarListener != null){
+                iTimeCalendarListener.onAllDayTimeslotClick(timeSlotView);
             }
 
         }
 
         @Override
         public void onTimeSlotCreate(DraggableTimeSlotView draggableTimeSlotView) {
-            if (onTimeSlotViewBodyOuterListener != null){
-                onTimeSlotViewBodyOuterListener.onTimeSlotCreate(draggableTimeSlotView);
+            if (iTimeCalendarListener != null){
+                iTimeCalendarListener.onTimeSlotCreate(draggableTimeSlotView);
             }
         }
 
@@ -308,36 +306,36 @@ public class TimeSlotView extends WeekView {
             timeslotToolBar.setTag(draggableTimeSlotView);
             showTimeSlotTools(draggableTimeSlotView, true);
 
-            if (onTimeSlotViewBodyOuterListener != null){
-                onTimeSlotViewBodyOuterListener.onTimeSlotClick(draggableTimeSlotView);
+            if (iTimeCalendarListener != null){
+                iTimeCalendarListener.onTimeSlotClick(draggableTimeSlotView);
             }
         }
 
         @Override
         public void onRcdTimeSlotClick(RecommendedSlotView v) {
-            if (onTimeSlotViewBodyOuterListener != null){
-                onTimeSlotViewBodyOuterListener.onRcdTimeSlotClick(v);
+            if (iTimeCalendarListener != null){
+                iTimeCalendarListener.onRcdTimeSlotClick(v);
             }
         }
 
         @Override
         public void onTimeSlotDragStart(DraggableTimeSlotView draggableTimeSlotView) {
-            if (onTimeSlotViewBodyOuterListener != null){
-                onTimeSlotViewBodyOuterListener.onTimeSlotDragStart(draggableTimeSlotView);
+            if (iTimeCalendarListener != null){
+                iTimeCalendarListener.onTimeSlotDragStart(draggableTimeSlotView);
             }
         }
 
         @Override
         public void onTimeSlotDragging(DraggableTimeSlotView draggableTimeSlotView, MyCalendar curAreaCal, int x, int y) {
-            if (onTimeSlotViewBodyOuterListener != null){
-                onTimeSlotViewBodyOuterListener.onTimeSlotDragging(draggableTimeSlotView, curAreaCal, x, y);
+            if (iTimeCalendarListener != null){
+                iTimeCalendarListener.onTimeSlotDragging(draggableTimeSlotView, curAreaCal, x, y);
             }
         }
 
         @Override
         public void onTimeSlotDragDrop(DraggableTimeSlotView draggableTimeSlotView, long startTime, long endTime) {
-            if (onTimeSlotViewBodyOuterListener != null){
-                onTimeSlotViewBodyOuterListener.onTimeSlotDragDrop(draggableTimeSlotView, startTime, endTime);
+            if (iTimeCalendarListener != null){
+                iTimeCalendarListener.onTimeSlotDragDrop(draggableTimeSlotView, startTime, endTime);
             }
             updateInnerCalendarPackage();
         }
@@ -349,8 +347,8 @@ public class TimeSlotView extends WeekView {
 
         @Override
         public void onTimeSlotDelete(DraggableTimeSlotView draggableTimeSlotView) {
-            if (onTimeSlotViewBodyOuterListener != null){
-                onTimeSlotViewBodyOuterListener.onTimeSlotDelete(draggableTimeSlotView);
+            if (iTimeCalendarListener != null){
+                iTimeCalendarListener.onTimeSlotDelete(draggableTimeSlotView);
             }
 
             dayViewBody.notifyDataSetChanged();
@@ -373,8 +371,8 @@ public class TimeSlotView extends WeekView {
             @Override
             public void onSave(long startTime) {
                 dgTimeslot.setNewStartTime( startTime);
-                if (onTimeSlotViewBodyOuterListener != null){
-                    onTimeSlotViewBodyOuterListener.onTimeSlotEdit(dgTimeslot);
+                if (iTimeCalendarListener != null){
+                    iTimeCalendarListener.onTimeSlotEdit(dgTimeslot);
                     dayViewBody.refresh();
                 }
                 pw.dismiss();

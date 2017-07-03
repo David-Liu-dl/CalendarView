@@ -575,7 +575,7 @@ public class EventController {
         }
 
         @Override
-        public String getLocation() {
+        public String getLocationName() {
             return "";
         }
 

@@ -37,6 +37,6 @@ public interface ITimeEventInterface<T> extends Comparable<T> {
      */
     int isShownInCalendar();
 
-    String getLocation();
+    String getLocationName();
     String getEventType();
 }

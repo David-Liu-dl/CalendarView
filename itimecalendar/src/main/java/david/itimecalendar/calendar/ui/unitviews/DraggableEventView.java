@@ -1,7 +1,6 @@
 package david.itimecalendar.calendar.ui.unitviews;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -67,7 +66,7 @@ public class DraggableEventView extends RelativeLayout {
 
     private void setText(){
         title.setText(event.getSummary());
-        location.setText("Nothing To Show");
+        location.setText(event.getLocationName());
     }
 
     public void setToBg(){
@@ -99,7 +98,6 @@ public class DraggableEventView extends RelativeLayout {
 
     private void initDataInViews(){
         if (this.event != null){
-//            this.eventType = event.getEventType();
             this.setText();
             this.updateView();
         }

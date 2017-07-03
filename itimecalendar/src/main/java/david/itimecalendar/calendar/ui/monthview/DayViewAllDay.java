@@ -282,6 +282,11 @@ public class DayViewAllDay extends FrameLayout {
             new_dgEvent.setLayoutParams(params);
             this.eventLayout.addView(new_dgEvent);
             this.allDayEvents.add(wrapper.getEvent());
+
+            //if bg mode
+            if (isTimeslotEnable){
+                new_dgEvent.setToBg();
+            }
         }
 
         private void addAllDayTimeslot(WrapperTimeSlot wrapperTimeSlot) {

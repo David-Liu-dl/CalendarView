@@ -40,7 +40,7 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
     private String hostUserUid; // add by paul
     private String summary;
     private String url;
-    private String location = "";
+    private String location = "this is location";
     private String locationNote;
     private double locationLatitude;
     private double locationLongitude;
@@ -213,7 +213,7 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
         this.eventUid = eventUid;
     }
 
-    public String getLocation() {
+    public String getLocationName() {
         return location;
     }
 
@@ -506,6 +506,10 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
 
     public void setEventType(String eventType) {
         this.eventType = eventType;
+    }
+
+    public String getLocation() {
+        return this.location;
     }
 
 }

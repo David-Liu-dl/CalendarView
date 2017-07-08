@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
@@ -258,6 +259,10 @@ public class DayViewHeader extends LinearLayout {
             TextView dateView = new TextView(parent.getContext());
             cell.setTag(0);
             TextView titleView = new TextView(parent.getContext());
+            titleView.setTypeface(null, Typeface.BOLD);
+            titleView.setTextSize(11.5f);
+            titleView.setIncludeFontPadding(false);
+            titleView.setTextColor(Color.parseColor("#FF8C00"));
             ImageView dotView = new ImageView(parent.getContext());
             cell.setDateView(dateView,titleView,dotView);
             textViews.add(cell);
@@ -273,7 +278,7 @@ public class DayViewHeader extends LinearLayout {
             DayViewHeaderCell cell = textViews.get(day);
             TextView dateView = cell.getDateView(); //new TextView(context);
             dateView.setTextSize(textSize);
-            cell.getTitleView().setTextSize((int)(textSize * 0.65));
+//            cell.getTitleView().setTextSize((int)(textSize * 0.65));
             cell.setOnClickListener(new cellOnClickListener());
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(cellWidth, cellWidth,1.0f);//viewWidth
             params.topMargin = 0;

@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/calendarDayViewHeader"
     app:headerTodayTextColor="@color/brand_main"
-    app:headerNormalTextColorOdd="@color/text_normal_color_odd"
+    app:headerNormalTextColorOdd="@color/text_normal_color_even"
     app:headerNormalTextColorEven="@color/text_normal_color_even"
     app:headerSelectedTextColor="@color/text_in_circle_color"
     app:todaySelectedCircleBgColor="@color/brand_main"

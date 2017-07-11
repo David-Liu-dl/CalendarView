@@ -262,7 +262,8 @@ public class DayViewHeader extends LinearLayout {
             titleView.setTypeface(null, Typeface.BOLD);
             titleView.setTextSize(11.5f);
             titleView.setIncludeFontPadding(false);
-            titleView.setTextColor(Color.parseColor("#FF8C00"));
+            titleView.setTextColor(titleView.getResources().getColor(R.color.brand_highlight));
+            titleView.setAllCaps(true);
             ImageView dotView = new ImageView(parent.getContext());
             cell.setDateView(dateView,titleView,dotView);
             textViews.add(cell);

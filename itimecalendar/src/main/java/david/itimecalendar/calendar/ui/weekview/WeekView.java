@@ -123,6 +123,7 @@ public class WeekView extends RelativeLayout{
         headerContainer.addView(gradientView);
 
         headerRG = new ITimeRecycleViewGroup(context, NUM_CELL);
+        headerRG.setAllowScroll(false);
         headerRG.setOnSetting(new ITimeRecycleViewGroup.OnSetting() {
             @Override
             public int getItemHeight(int i) {

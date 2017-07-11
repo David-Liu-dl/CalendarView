@@ -89,6 +89,7 @@ public class DayViewAllDay extends FrameLayout {
         this.addView(label);
 
         recycleViewGroup = new ITimeRecycleViewGroup(context, NUM_CELL);
+        recycleViewGroup.setAllowScroll(false);
         recycleViewGroup.setOnSetting(new ITimeRecycleViewGroup.OnSetting() {
             @Override
             public int getItemHeight(int heightSpec) {

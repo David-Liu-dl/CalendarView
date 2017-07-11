@@ -70,6 +70,8 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
 
     private float lastMoveY = 0.0f;
 
+    private boolean isAllowScroll = true;
+
     public ITimeRecycleViewGroup(Context context, int NUM_SHOW) {
         super(context);
         this.NUM_SHOW = NUM_SHOW;
@@ -354,6 +356,9 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if(!isAllowScroll){
+            return false;
+        }
         int action = MotionEventCompat.getActionMasked(ev);
         if (isTouchOutOfParent(ev)) {
             return true;
@@ -457,6 +462,10 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if(!isAllowScroll){
+            return false;
+        }
+
         int action = MotionEventCompat.getActionMasked(event);
         switch (action) {
             case MotionEvent.ACTION_DOWN:
@@ -883,5 +892,13 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
 
     public View getFirstShowItem() {
         return getFirstShownAwesomeViewGroup(awesomeViewGroupList).getItem();
+    }
+
+    public boolean isAllowScroll() {
+        return isAllowScroll;
+    }
+
+    public void setAllowScroll(boolean allowScroll) {
+        isAllowScroll = allowScroll;
     }
 }

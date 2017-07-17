@@ -114,7 +114,6 @@ public class TimeSlotInnerCalendarView extends LinearLayout {
         indicatorParams.gravity = Gravity.CENTER;
         btnBlock.addView(indicator,indicatorParams);
         this.addView(btnBlock, leftBtnParams);
-//        addDivider();
     }
 
     private void initITimeInnerCalendar(){

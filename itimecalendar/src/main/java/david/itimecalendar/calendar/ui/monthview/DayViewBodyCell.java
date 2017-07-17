@@ -1,6 +1,9 @@
 package david.itimecalendar.calendar.ui.monthview;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Handler;
@@ -15,15 +18,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
 import david.itimecalendar.R;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
+import david.itimecalendar.calendar.ui.unitviews.TimelineView;
+import david.itimecalendar.calendar.util.BaseUtil;
 import david.itimecalendar.calendar.util.DensityUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
 import david.itimecalendar.calendar.util.OverlapHelper;
@@ -41,6 +48,7 @@ public class DayViewBodyCell extends FrameLayout{
     public static final int DAY_CROSS_BEGIN = 1;
     public static final int DAY_CROSS_ALL_DAY = 2;
     public static final int DAY_CROSS_END = 3;
+    
     /**
      * Color category
      */
@@ -79,8 +87,7 @@ public class DayViewBodyCell extends FrameLayout{
 
     protected SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 
-    private TextView nowTime;
-    private ImageView nowTimeLine;
+    private TimelineView timeline;
 
     //tag: false-> moving, true, done
     protected View tempDragView = null;
@@ -94,6 +101,7 @@ public class DayViewBodyCell extends FrameLayout{
     protected int unitViewRightMargin = 0;
 
     private int timeTextSize = 20;
+    private int timelineHeight = 10;
     protected int topAllDayHeight;
 
     protected int layoutWidthPerDay;
@@ -104,9 +112,6 @@ public class DayViewBodyCell extends FrameLayout{
     protected float nowTapY = 0;
 
     protected float heightPerMillisd = 0;
-
-    final Handler uiHandler= new Handler();
-    private Thread uiUpdateThread;
 
     private TimeSlotController timeSlotController = new TimeSlotController(this);
     private EventController eventController = new EventController(this);
@@ -151,11 +156,17 @@ public class DayViewBodyCell extends FrameLayout{
         this.heightPerMillisd = (float) hourHeight /(3600*1000);
         this.unitViewLeftMargin = DensityUtil.dip2px(context,this.unitViewLeftMargin);
         this.unitViewRightMargin = DensityUtil.dip2px(context,this.unitViewRightMargin);
+        this.timelineHeight = DensityUtil.dip2px(context,this.timelineHeight);
     }
 
     private void initView(){
         initBgView();
         initContentView();
+        timeline = new TimelineView(getContext());
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,timelineHeight);
+        timeline.setLayoutParams(params);
+        timeline.setVisibility(GONE);
+        this.addView(timeline);
     }
 
     private void initContentView(){
@@ -280,7 +291,35 @@ public class DayViewBodyCell extends FrameLayout{
 
     public void setCalendar(MyCalendar myCalendar) {
         this.myCalendar = myCalendar;
+        updateTimeline();
     }
+
+    private void updateTimeline(){
+        if (BaseUtil.isToday(myCalendar.getCalendar())){
+            int timelinePstY = getNowTimeLinePst() - timelineHeight/2;
+            FrameLayout.LayoutParams params = (LayoutParams) timeline.getLayoutParams();
+            params.topMargin = timelinePstY;
+            timeline.setLayoutParams(params);
+
+            timeline.setVisibility(VISIBLE);
+        }else {
+            timeline.setVisibility(GONE);
+        }
+    }
+
+    private int getNowTimeLinePst() {
+        Calendar cal = Calendar.getInstance(Locale.getDefault());
+        Date currentLocalTime = cal.getTime();
+        DateFormat date = new SimpleDateFormat("HH:mm");
+        String localTime = date.format(currentLocalTime);
+        String[] converted = localTime.split(":");
+        int hour = Integer.valueOf(converted[0]);
+        int minutes = Integer.valueOf(converted[1]);
+        int nearestPst = nearestTimeSlotValue(hour + (float) minutes / 100);
+//        int correctPst = (minutes % 15) * ((lineHeight / 4) / 15);
+        return nearestPst;
+    }
+
 
     protected int[] reComputePositionToSet(int actualX, int actualY, View draggableObj, View container) {
         int containerWidth = container.getWidth();
@@ -377,7 +416,7 @@ public class DayViewBodyCell extends FrameLayout{
     }
 
     /**
-     *
+     * get y position bases on time
      * @param time
      * @return nearest position
      */

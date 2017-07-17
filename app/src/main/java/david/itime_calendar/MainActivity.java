@@ -181,6 +181,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        dayBtn.performClick();
+        timeslotBtn.performClick();
     }
 }

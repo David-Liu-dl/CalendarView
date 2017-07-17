@@ -12,6 +12,10 @@
     app:compactCalendarShouldSelectFirstDayOfMonthOnScroll="false"
     app:compactCalendarBackgroundColor="#FFFFFF"
     app:compactCalendarTextColor="#000000"
-    app:compactCalendarCurrentSelectedDayBackgroundColor="@color/calendar_today"
-    app:compactCalendarCurrentDayBackgroundColor="#E57373"
-    app:compactCalendarMultiEventIndicatorColor="#fff" />
+    app:compactCalendarCurrentSelectedDayBackgroundColor="#9e9e9e"
+    app:compactCalendarCurrentSelectedTodayBackgroundColor="@color/calendar_today"
+    app:compactCalendarCurrentDayUnselectedTextColor="@color/calendar_today"
+    app:compactCalendarCurrentDayBackgroundColor="@android:color/transparent"
+    app:compactCalendarMultiEventIndicatorColor="#fff"
+    app:compactCalenderTitleColor="#757575"
+    />

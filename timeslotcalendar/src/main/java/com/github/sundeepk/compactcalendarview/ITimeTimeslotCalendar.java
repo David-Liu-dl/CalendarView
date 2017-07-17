@@ -29,9 +29,7 @@ import java.util.Locale;
 
 public class ITimeTimeslotCalendar extends RelativeLayout {
 
-    private RelativeLayout calTitleBar;
     private CompactCalendarView calendarView;
-    private TextView titleTv;
     private Context context;
     private int targetHeight;
     private CompactCalendarView.CompactCalendarViewListener outListener;
@@ -73,7 +71,6 @@ public class ITimeTimeslotCalendar extends RelativeLayout {
 
     private void init(){
         initSelf();
-        initCalendarTitleBar();
         initCalendar();
         initDivider();
     }
@@ -91,7 +88,6 @@ public class ITimeTimeslotCalendar extends RelativeLayout {
     }
 
     public void setCurrentDate(Date date){
-        this.updateTitle(date);
         this.calendarView.setCurrentDate(date);
     }
 
@@ -99,66 +95,9 @@ public class ITimeTimeslotCalendar extends RelativeLayout {
         this.calendarView.showMonth(date);
     }
 
-    private void initCalendarTitleBar(){
-        this.calTitleBar = new RelativeLayout(getContext()){
-            @Override
-            public boolean onInterceptTouchEvent(MotionEvent ev) {
-                return false;
-            }
-
-            @Override
-            public boolean onTouchEvent(MotionEvent event) {
-                return true;
-            }
-        };
-        this.calTitleBar.setBackgroundColor(Color.WHITE);
-        int barPad = DensityUtil.dip2px(context,20);
-        this.calTitleBar.setPadding(0,barPad,0,barPad);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        this.calTitleBar.setId(View.generateViewId());
-        this.addView(calTitleBar, params);
-
-        titleTv = new TextView(getContext());
-        titleTv.setId(View.generateViewId());
-        titleTv.setGravity(Gravity.CENTER);
-        RelativeLayout.LayoutParams titleTvParams = new RelativeLayout.LayoutParams(DensityUtil.dip2px(context,150), ViewGroup.LayoutParams.WRAP_CONTENT);
-        titleTvParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-        calTitleBar.addView(titleTv,titleTvParams);
-        updateTitle(new Date());
-
-        int indicatorSize = DensityUtil.dip2px(context,20);
-
-        ImageView leftIcon = new ImageView(getContext());
-        leftIcon.setImageDrawable(getResources().getDrawable(R.drawable.indicator_more_left));
-        RelativeLayout.LayoutParams leftIconParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, indicatorSize);
-        leftIconParams.addRule(RelativeLayout.CENTER_VERTICAL);
-        leftIconParams.addRule(RelativeLayout.LEFT_OF,titleTv.getId());
-        calTitleBar.addView(leftIcon,leftIconParams);
-        leftIcon.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                calendarView.showPreviousMonth();
-            }
-        });
-
-        ImageView rightIcon = new ImageView(getContext());
-        rightIcon.setImageDrawable(getResources().getDrawable(R.drawable.indicator_more_right));
-        RelativeLayout.LayoutParams rightIconParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, indicatorSize);
-        rightIconParams.addRule(RelativeLayout.CENTER_VERTICAL);
-        rightIconParams.addRule(RelativeLayout.RIGHT_OF,titleTv.getId());
-        rightIcon.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                calendarView.showNextMonth();
-            }
-        });
-        calTitleBar.addView(rightIcon,rightIconParams);
-    }
-
     private void initCalendar(){
         RelativeLayout.LayoutParams calParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, targetHeight);
         calendarView.setId(generateViewId());
-        calParams.addRule(BELOW, calTitleBar.getId());
         calendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
             @Override
             public void onDayClick(Date dateClicked) {
@@ -169,7 +108,6 @@ public class ITimeTimeslotCalendar extends RelativeLayout {
 
             @Override
             public void onMonthScroll(Date firstDayOfNewMonth) {
-                updateTitle(firstDayOfNewMonth);
                 if (outListener != null){
                     outListener.onMonthScroll(firstDayOfNewMonth);
                 }
@@ -187,15 +125,6 @@ public class ITimeTimeslotCalendar extends RelativeLayout {
         dividerView.setLayoutParams(params);
         dividerView.setBackgroundColor(getResources().getColor(R.color.divider_nav));
         this.addView(dividerView);
-    }
-
-    private void updateTitle(Date date){
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        String monthName = cal.getDisplayName(Calendar.MONTH,Calendar.LONG, Locale.getDefault()).toUpperCase();
-        String yearName = String.valueOf(cal.get(Calendar.YEAR));
-        String dateStr = monthName + " " + yearName;
-        titleTv.setText(dateStr);
     }
 
     public void setBodyListener(CompactCalendarView.CompactCalendarViewListener listener){
@@ -244,5 +173,9 @@ public class ITimeTimeslotCalendar extends RelativeLayout {
         interface OnUpdate{
             void onUpdate();
         }
+    }
+
+    public CompactCalendarView getCalendarView() {
+        return calendarView;
     }
 }

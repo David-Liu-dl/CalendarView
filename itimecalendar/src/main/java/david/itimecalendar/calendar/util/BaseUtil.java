@@ -3,6 +3,7 @@ package david.itimecalendar.calendar.util;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -69,5 +70,9 @@ public class BaseUtil {
         dividerImgV.setLayoutParams(params);
         dividerImgV.setImageDrawable(context.getResources().getDrawable(resourceId));
         return dividerImgV;
+    }
+
+    public static boolean isToday(Calendar calendar){
+        return DateUtils.isToday(calendar.getTimeInMillis());
     }
 }

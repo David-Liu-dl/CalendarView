@@ -13,4 +13,7 @@
     <string name="_5th_of_week">TUR</string>
     <string name="_6th_of_week">FRI</string>
     <string name="_7th_of_week">SAT</string>
+    <string name="saveStr">Save</string>
+    <string name="cancelStr">Cancel</string>
+    <string name="edit_timeslot_title">Edit TimeSlot</string>
 </resources>

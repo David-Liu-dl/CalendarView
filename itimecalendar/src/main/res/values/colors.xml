@@ -361,4 +361,5 @@
     <!-- timeslot -->
     <color name="allday_timeslot_text">#757575</color>
     <color name="allday_timeslot_bg">#fafafa</color>
+    <color name="timeslot_edit_menu_grey">#bdbdbd</color>
 </resources>

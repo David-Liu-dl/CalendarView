@@ -3,6 +3,7 @@ package david.itimecalendar.calendar.ui.unitviews;
 import android.animation.Animator;
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.text.InputType;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
@@ -87,7 +88,7 @@ public class TimeSlotInnerCalendarView extends LinearLayout {
         calendar.setTime(date);
         calendarView.setCurrentDate(calendar.getTime());
         String monthName = calendar.getDisplayName(Calendar.MONTH,Calendar.SHORT, Locale.getDefault());
-        monthTitle.setText(monthName + ".");
+        monthTitle.setText(monthName);
     }
 
     private void intViews(){
@@ -113,7 +114,9 @@ public class TimeSlotInnerCalendarView extends LinearLayout {
         int leftBarWidgetPadding = DensityUtil.dip2px(getContext(),10);
         int monthTitleWidth = DensityUtil.dip2px(getContext(),35);
         monthTitle = new TextView(getContext());
-        monthTitle.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+        monthTitle.setAllCaps(true);
+        monthTitle.setTextColor(ContextCompat.getColor(context, R.color.brand_main));
+//        monthTitle.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
         LayoutParams monthTitleParams = new LayoutParams(monthTitleWidth, ViewGroup.LayoutParams.MATCH_PARENT);
         monthTitle.setGravity(Gravity.CENTER);
         monthTitleParams.leftMargin = leftBarWidgetPadding;
@@ -123,7 +126,7 @@ public class TimeSlotInnerCalendarView extends LinearLayout {
         indicator = new ImageView(getContext());
         int triangleSize = DensityUtil.dip2px(getContext(),10);
 
-        indicator.setImageDrawable(getResources().getDrawable(R.drawable.triangle));
+        indicator.setImageDrawable(getResources().getDrawable(R.drawable.icon_calendar_triangle_blue));
         LayoutParams indicatorParams = new LayoutParams(triangleSize, triangleSize);
         indicatorParams.gravity = Gravity.CENTER;
         btnBlock.addView(indicator,indicatorParams);
@@ -271,7 +274,7 @@ public class TimeSlotInnerCalendarView extends LinearLayout {
         String dateStr = currentYearName.equals(targetYearName) ? "" : targetYearName;
 
         String monthName = cal.getDisplayName(Calendar.MONTH,Calendar.SHORT,Locale.getDefault());
-        monthTitle.setText(monthName + ".");
+        monthTitle.setText(monthName);
         titleTv.setText(dateStr);
     }
 

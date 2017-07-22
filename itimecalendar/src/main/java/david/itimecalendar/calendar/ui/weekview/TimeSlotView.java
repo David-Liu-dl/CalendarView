@@ -2,10 +2,14 @@ package david.itimecalendar.calendar.ui.weekview;
 
 import android.animation.LayoutTransition;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -15,6 +19,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.developer.paul.itimerecycleviewgroup.ITimeRecycleViewGroup;
 import com.github.sundeepk.compactcalendarview.ITimeTimeslotCalendar.InnerCalendarTimeslotPackage;
@@ -46,7 +51,7 @@ public class TimeSlotView extends WeekView {
     private ITimeCalendarTimeslotViewListener iTimeCalendarListener;
 
     private TimeSlotInnerCalendarView innerCalView;
-    private TimeslotDurationWidget<String> popUpMenuBar;
+    private TimeslotDurationWidget<String> durationBar;
 
     private FrameLayout staticLayer;
     private InnerCalendarTimeslotPackage innerSlotPackage = new InnerCalendarTimeslotPackage();
@@ -163,13 +168,13 @@ public class TimeSlotView extends WeekView {
     }
 
     private void setUpTimeslotDurationWidget(){
-        int popUpMenuHeight = DensityUtil.dip2px(context,40);
-        popUpMenuBar = new TimeslotDurationWidget<>(context);
-        popUpMenuBar.setOptHeight(popUpMenuHeight);
-        RelativeLayout.LayoutParams popUpMenuBarParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        popUpMenuBarParams.addRule(ALIGN_PARENT_BOTTOM);
-        popUpMenuBar.setLayoutParams(popUpMenuBarParams);
-        popUpMenuBar.setOnItemSelectedListener(new TimeslotDurationWidget.OnItemSelectedListener() {
+        int durationBarHeight = DensityUtil.dip2px(context,40);
+        durationBar = new TimeslotDurationWidget<>(context);
+        durationBar.setOptHeight(durationBarHeight);
+        RelativeLayout.LayoutParams durationBarParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        durationBarParams.addRule(ALIGN_PARENT_BOTTOM);
+        durationBar.setLayoutParams(durationBarParams);
+        durationBar.setOnItemSelectedListener(new TimeslotDurationWidget.OnItemSelectedListener() {
             @Override
             public void onItemSelected(int position) {
                 DurationItem selectedItem = durationData.get(position);
@@ -180,11 +185,11 @@ public class TimeSlotView extends WeekView {
                 }
             }
         });
-        this.addView(popUpMenuBar);
+        this.addView(durationBar);
 
-        //fake occupation view for header part of popUpMenuBar
+        //fake occupation view for header part of durationBar
         View blankView = new View(context);
-        RelativeLayout.LayoutParams blankVieWParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, popUpMenuHeight);
+        RelativeLayout.LayoutParams blankVieWParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, durationBarHeight);
         blankVieWParams.addRule(ALIGN_PARENT_BOTTOM);
         blankView.setLayoutParams(blankVieWParams);
         blankView.setId(View.generateViewId());
@@ -357,34 +362,43 @@ public class TimeSlotView extends WeekView {
 
     private void showTimeslotChangeDialog(final DraggableTimeSlotView dgTimeslot){
         final TimeslotChangeView timeslotChangeView = new TimeslotChangeView(context,dgTimeslot.getTimeslot());
+        int padding = DensityUtil.dip2px(context,15);
+        timeslotChangeView.setPadding(0,padding,0,0);
         timeslotChangeView.setBackground(getResources().getDrawable(R.drawable.itime_round_corner_bg));
-        final PopupWindow pw = new PopupWindow(timeslotChangeView, 700, LinearLayout.LayoutParams.WRAP_CONTENT, true);
-        pw.setElevation(50);
-        pw.setAnimationStyle(R.style.Widget_AppCompat_PopupWindow);
-        pw.showAtLocation(timeslotChangeView, Gravity.CENTER,0,0);
-        timeslotChangeView.setOnPopupWindowListener(new TimeslotChangeView.OnPopupWindowListener() {
-            @Override
-            public void onCancel() {
-                pw.dismiss();
-            }
 
+        TextView titleTv = new TextView(getContext());
+        titleTv.setPadding(0,padding,0,padding);
+        titleTv.setGravity(Gravity.CENTER_HORIZONTAL);
+        titleTv.setTypeface(Typeface.DEFAULT_BOLD);
+        titleTv.setText(context.getString(R.string.edit_timeslot_title));
+        titleTv.setTextColor(ContextCompat.getColor(context,R.color.black));
+        titleTv.setTextSize(16);
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
+        builder.setView(timeslotChangeView);
+        builder.setCustomTitle(titleTv);
+        builder.setCancelable(true);
+        builder.setPositiveButton(R.string.saveStr, new DialogInterface.OnClickListener() {
             @Override
-            public void onSave(long startTime) {
-                dgTimeslot.setNewStartTime( startTime);
-                if (iTimeCalendarListener != null){
-                    iTimeCalendarListener.onTimeSlotEdit(dgTimeslot);
-                    dayViewBody.refresh();
-                }
-                pw.dismiss();
+            public void onClick(DialogInterface dialog, int which) {
+                timeslotChangeView.onSave();
             }
         });
+        builder.setNegativeButton(R.string.cancelStr, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     private List<DurationItem> durationData;
 
     public void setTimeslotDurationItems(List<DurationItem> data){
         this.durationData = data;
-        popUpMenuBar.setDate(getDurationItemNames());
+        durationBar.setDate(getDurationItemNames());
     }
 
     private OnTimeslotDurationChangedListener onTimeslotDurationChangedListener;

@@ -2,6 +2,7 @@ package david.itimecalendar.calendar.ui.unitviews;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.widget.TimePicker;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 import david.itimecalendar.R;
 import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
@@ -26,8 +28,6 @@ import david.itimecalendar.calendar.util.DensityUtil;
 
 public class TimeslotChangeView extends LinearLayout {
     private ITimeTimeSlotInterface timeslot;
-
-    private TextView label;
 
     private RelativeLayout infoContainer;
     private TextView startInfoTv;
@@ -41,10 +41,6 @@ public class TimeslotChangeView extends LinearLayout {
     private FrameLayout timePickerBlk;
     private TimePicker timePicker;
 
-    private LinearLayout optBlock;
-    private TextView cancelBtn;
-    private TextView saveBtn;
-
     public TimeslotChangeView(@NonNull Context context, ITimeTimeSlotInterface timeslotInterface) {
         super(context);
         this.timeslot = timeslotInterface;
@@ -52,30 +48,19 @@ public class TimeslotChangeView extends LinearLayout {
         this.initViews();
     }
 
-    int labelTextSize;
-    int labelContainerHeight;
-
     int timeInfoTextSize;
     int timeTextSize;
-    int timeBlockMarginLR;
-    int timeBlockMarginTB;
-    int timeContainerHeight;
 
     int btnTextSize;
     int btnContainerHeight;
 
     private void initParams(){
         Context context = getContext();
-        labelTextSize = 17;
-        labelContainerHeight = DensityUtil.dip2px(context,50);
 
-        timeInfoTextSize = 12;
+        timeInfoTextSize = 14;
         timeTextSize = 20;
-        timeContainerHeight = DensityUtil.dip2px(context,80);
-        timeBlockMarginLR = DensityUtil.dip2px(context,35);
-        timeBlockMarginTB = DensityUtil.dip2px(context,20);
 
-        btnTextSize = 15;
+        btnTextSize = 16;
         btnContainerHeight = DensityUtil.dip2px(context,50);
     }
 
@@ -83,55 +68,69 @@ public class TimeslotChangeView extends LinearLayout {
         this.setOrientation(VERTICAL);
         Context context = getContext();
 
-        label = new TextView(context);
-        FrameLayout.LayoutParams labelParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, labelContainerHeight);
-        label.setLayoutParams(labelParams);
-        label.setGravity(Gravity.CENTER);
-        label.setText("Edit Timeslot");
-        label.setTextSize(labelTextSize);
-        this.addView(label);
-
         infoContainer = new RelativeLayout(context);
-        infoContainer.setPadding(timeBlockMarginLR,timeBlockMarginTB,timeBlockMarginLR,timeBlockMarginTB);
-        FrameLayout.LayoutParams infoContainerParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, timeContainerHeight);
+        FrameLayout.LayoutParams infoContainerParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         infoContainer.setLayoutParams(infoContainerParams);
         this.addView(infoContainer);
 
+        arrowImageV = new ImageView(getContext());
+        arrowImageV.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_time_arrow));
+        int arrowImageVSize = DensityUtil.dip2px(context,20);
+        RelativeLayout.LayoutParams arrowImageVParams = new RelativeLayout.LayoutParams(arrowImageVSize,arrowImageVSize);
+        arrowImageVParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+        arrowImageV.setLayoutParams(arrowImageVParams);
+        infoContainer.addView(arrowImageV);
+
+        LinearLayout timeInfoContainer = new LinearLayout(getContext());
+        timeInfoContainer.setOrientation(LinearLayout.HORIZONTAL);
+        timeInfoContainer.setWeightSum(2.0f);
+        RelativeLayout.LayoutParams timeInfoContainerParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        infoContainer.addView(timeInfoContainer,timeInfoContainerParams);
+
+        LinearLayout leftTimeInfoFrame = new LinearLayout(context);
+        leftTimeInfoFrame.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams leftTimeInfoFrameParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,1f);
+        timeInfoContainer.addView(leftTimeInfoFrame,leftTimeInfoFrameParams);
+
         startInfoTv = new TextView(context);
-        RelativeLayout.LayoutParams startInfoTvParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        startInfoTvParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-        startInfoTvParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        LinearLayout.LayoutParams startInfoTvParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         startInfoTv.setLayoutParams(startInfoTvParams);
-        startInfoTv.setText("Start At");
+        startInfoTv.setGravity(Gravity.CENTER);
+        startInfoTv.setText(getDateText(timeslot.getStartTime()));
         startInfoTv.setTextSize(timeInfoTextSize);
-        this.infoContainer.addView(startInfoTv);
+        leftTimeInfoFrame.addView(startInfoTv);
 
         startTimeTv = new TextView(context);
-        RelativeLayout.LayoutParams startTimeTvParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        startTimeTvParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        startTimeTvParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        LinearLayout.LayoutParams startTimeTvParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         startTimeTv.setLayoutParams(startTimeTvParams);
+        startTimeTv.setGravity(Gravity.CENTER);
         startTimeTv.setText("12:00");
+        startTimeTv.setTextColor(ContextCompat.getColor(context,R.color.brand_main));
         startTimeTv.setTextSize(timeTextSize);
-        this.infoContainer.addView(startTimeTv);
+        leftTimeInfoFrame.addView(startTimeTv);
+
+        LinearLayout rightTimeInfoFrame = new LinearLayout(context);
+        rightTimeInfoFrame.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams rightTimeInfoFrameParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,1f);
+        timeInfoContainer.addView(rightTimeInfoFrame,rightTimeInfoFrameParams);
 
         endInfoTv = new TextView(context);
-        RelativeLayout.LayoutParams endInfoTvParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        endInfoTvParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-        endInfoTvParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        LinearLayout.LayoutParams endInfoTvParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         endInfoTv.setLayoutParams(endInfoTvParams);
-        endInfoTv.setText("End At");
+        endInfoTv.setGravity(Gravity.CENTER);
+        endInfoTv.setTextColor(ContextCompat.getColor(context,R.color.timeslot_edit_menu_grey));
+        endInfoTv.setText(getDateText(timeslot.getEndTime()));
         endInfoTv.setTextSize(timeInfoTextSize);
-        this.infoContainer.addView(endInfoTv);
+        rightTimeInfoFrame.addView(endInfoTv);
 
         endTimeTv = new TextView(context);
-        RelativeLayout.LayoutParams endTimeTvParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        endTimeTvParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        endTimeTvParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        LinearLayout.LayoutParams endTimeTvParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         endTimeTv.setLayoutParams(endTimeTvParams);
+        endTimeTv.setGravity(Gravity.CENTER);
         endTimeTv.setText("14:00");
+        endTimeTv.setTextColor(ContextCompat.getColor(context,R.color.timeslot_edit_menu_grey));
         endTimeTv.setTextSize(timeTextSize);
-        this.infoContainer.addView(endTimeTv);
+        rightTimeInfoFrame.addView(endTimeTv);
 
         timePickerBlk = (FrameLayout) LayoutInflater.from(context).inflate(R.layout.widget_timepicker_spinner, this, false);
         FrameLayout.LayoutParams timePickerParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -151,62 +150,18 @@ public class TimeslotChangeView extends LinearLayout {
             }
         });
 
-        optBlock = new LinearLayout(context);
-        optBlock.setOrientation(HORIZONTAL);
-        FrameLayout.LayoutParams optBlockParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, btnContainerHeight);
-        optBlock.setLayoutParams(optBlockParams);
-        this.addView(optBlock);
-
-        cancelBtn = new TextView(context);
-        LinearLayout.LayoutParams cancelBtnParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,1f);
-        cancelBtn.setLayoutParams(cancelBtnParams);
-        cancelBtn.setText("Cancel");
-        cancelBtn.setTextSize(btnTextSize);
-        cancelBtn.setGravity(Gravity.CENTER);
-        cancelBtn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (onPopupWindowListener != null){
-                    onPopupWindowListener.onCancel();
-                }
-            }
-        });
-        optBlock.addView(cancelBtn);
-
-        saveBtn = new TextView(context);
-        LinearLayout.LayoutParams saveBtnParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,1f);
-        saveBtn.setLayoutParams(saveBtnParams);
-        saveBtn.setText("Save");
-        saveBtn.setTextSize(btnTextSize);
-        saveBtn.setGravity(Gravity.CENTER);
-        saveBtn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (timeslot != null && onPopupWindowListener != null){
-                    int hour = timePicker.getCurrentHour();
-                    int minute = timePicker.getCurrentMinute();
-                    Calendar cal = Calendar.getInstance();
-                    cal.setTimeInMillis(timeslot.getStartTime());
-                    cal.set(Calendar.HOUR_OF_DAY, hour);
-                    cal.set(Calendar.MINUTE, minute);
-                    onPopupWindowListener.onSave(cal.getTimeInMillis());
-                }
-            }
-        });
-        optBlock.addView(saveBtn);
-
         updateTimeInfo();
     }
 
-    OnPopupWindowListener onPopupWindowListener;
-
-    public void setOnPopupWindowListener(OnPopupWindowListener onPopupWindowListener) {
-        this.onPopupWindowListener = onPopupWindowListener;
-    }
-
-    public interface OnPopupWindowListener{
-        void onCancel();
-        void onSave(long startTime);
+    public void onSave(){
+        if (timeslot != null){
+            int hour = timePicker.getCurrentHour();
+            int minute = timePicker.getCurrentMinute();
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(timeslot.getStartTime());
+            cal.set(Calendar.HOUR_OF_DAY, hour);
+            cal.set(Calendar.MINUTE, minute);
+        }
     }
 
     private void updateTimeInfo(){
@@ -223,5 +178,15 @@ public class TimeslotChangeView extends LinearLayout {
 
         startTimeTv.setText(startTime);
         endTimeTv.setText(endTime);
+    }
+
+    private String getDateText(long time){
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(time);
+        String monthTh =  cal.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault());
+        String dayOfMonth = cal.get(Calendar.DAY_OF_MONTH) + "";
+        String dayOfWeek = cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault());
+
+        return dayOfWeek + ", " + dayOfMonth + " " + monthTh;
     }
 }

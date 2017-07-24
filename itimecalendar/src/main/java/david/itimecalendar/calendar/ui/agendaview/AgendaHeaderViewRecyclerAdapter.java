@@ -26,8 +26,6 @@ public class AgendaHeaderViewRecyclerAdapter extends RecyclerView.Adapter<Agenda
 
     private DayViewHeader.OnCheckIfHasEvent onCheckIfHasEvent;
 
-    private OnSynBodyListener onSynBodyListener;
-
     private int todayOffSet = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1;
 
     public int rowPst;
@@ -54,10 +52,6 @@ public class AgendaHeaderViewRecyclerAdapter extends RecyclerView.Adapter<Agenda
         this.bodyLinearLayoutManager = bodyLinearLayoutManager;
     }
 
-    public void setOnSynBodyListener(OnSynBodyListener onSynBodyListener) {
-        this.onSynBodyListener = onSynBodyListener;
-    }
-
     public int getCurrentSelectPst(){
         return this.rowPst;
     }
@@ -66,6 +60,13 @@ public class AgendaHeaderViewRecyclerAdapter extends RecyclerView.Adapter<Agenda
         this.onCheckIfHasEvent = onCheckIfHasEvent;
     }
 
+    public int getCurrentDayOffset(){
+        int offsetRow = rowPst - startPosition;
+        int indexOffset = indexInRow;
+        int totalOffset = offsetRow*7 + indexOffset;
+        final int dayOffset = startPosition + totalOffset - todayOffSet;
+        return dayOffset;
+    }
     @Override
     public AgendaHeaderViewRecyclerAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.itime_day_view_header, parent, false);
@@ -126,15 +127,13 @@ public class AgendaHeaderViewRecyclerAdapter extends RecyclerView.Adapter<Agenda
 
                 @Override
                 public void onDateSelected(Date date) {
-
+                    if (onHeaderListener!=null){
+                        onHeaderListener.onDateSelected(date);
+                    }
                 }
             });
             headerRow.setOnCheckIfHasEvent(onCheckIfHasEvent);
         }
-    }
-
-    public interface OnSynBodyListener{
-        void synBody(int scrollTo);
     }
 
     private OnHeaderListener onHeaderListener;
@@ -144,5 +143,6 @@ public class AgendaHeaderViewRecyclerAdapter extends RecyclerView.Adapter<Agenda
     }
     public interface OnHeaderListener{
         void onClick(MyCalendar myCalendar);
+        void onDateSelected(Date date);
     }
 }

@@ -69,12 +69,14 @@ public class MainActivity extends AppCompatActivity {
         long interval = (3600 * 1000);
         long startTime = calendar.getTimeInMillis();
         long endTime;
-        for (int i = 1; i < 2; i++) {
+        for (int i = 1; i < 4; i++) {
             endTime = startTime + interval;
             Event event = new Event();
             event.setIsAllDay(false);
 //            event.setIsAllDay(0);
             event.setEventUid("" + i);
+            event.setEventStatus(i == 1 ? "Confirmed" : "Unconfirmed");
+            event.setEventType(i == 1 ? ITimeEventInterface.EVENT_TYPE_GROUP:ITimeEventInterface.EVENT_TYPE_SOLO);
             event.setSummary("adawdwadwadaw" + i);
             event.setLocation("here");
             event.setStartTime(startTime);
@@ -87,11 +89,15 @@ public class MainActivity extends AppCompatActivity {
             invitee1.setInviteeUid(contacts.get(0).getContactUid());
             inviteeList.add(invitee1);
 
-            Invitee invitee2 = new Invitee();
-            invitee2.setEventUid("" + i);
-            invitee2.setContact(contacts.get(1));
-            invitee2.setInviteeUid(contacts.get(1).getContactUid());
-            inviteeList.add(invitee2);
+
+            for (int j = 10; j < 20; j++) {
+                Invitee invitee2 = new Invitee();
+                invitee2.setEventUid("" + i);
+                invitee2.setContact(contacts.get(1));
+                invitee2.setInviteeUid(contacts.get(1).getContactUid());
+                inviteeList.add(invitee2);
+            }
+
 
             dbManager.insertInviteeList(inviteeList);
             event.setInvitee(inviteeList);
@@ -181,6 +187,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        timeslotBtn.performClick();
+        agendaBtn.performClick();
     }
 }

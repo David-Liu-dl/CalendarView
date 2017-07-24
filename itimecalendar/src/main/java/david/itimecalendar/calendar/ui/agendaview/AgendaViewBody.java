@@ -113,8 +113,12 @@ public class AgendaViewBody extends LinearLayout{
                     }
                 });
                 LayoutParams rowBodyParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-                int padding = DensityUtil.dip2px(context,14);
-                rowBody.setPadding(padding,padding,padding,padding);
+                int paddingLeft  = DensityUtil.dip2px(context,0);
+                int paddingRight  = DensityUtil.dip2px(context,7.6f);
+                int paddingTop  = DensityUtil.dip2px(context,18);
+                int paddingBottom  = DensityUtil.dip2px(context,18);
+
+                rowBody.setPadding(paddingLeft,paddingTop,paddingRight,paddingBottom);
                 this.rowBody.addView(rowBody, rowBodyParams);
                 if (i != events.size() -1){
                     this.rowBody.addView(getDivider());
@@ -123,7 +127,7 @@ public class AgendaViewBody extends LinearLayout{
             }
         }else{
             noEvent = new TextView(context);
-            LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DensityUtil.dip2px(context,50));
+            LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DensityUtil.dip2px(context,25));
             noEvent.setText("(No Event)");
             noEvent.setPadding(DensityUtil.dip2px(context,10),0,0,0);
             noEvent.setGravity(Gravity.CENTER_VERTICAL);

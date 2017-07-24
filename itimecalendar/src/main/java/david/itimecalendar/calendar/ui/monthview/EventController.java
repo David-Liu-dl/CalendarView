@@ -501,92 +501,95 @@ public class EventController {
 
     private ITimeEventInterface initializeEvent() {
         try {
-            ITimeEventInterface t = new EventModule();
+            ITimeEventInterface t = new ITimeEventInterface() {
+                @Override
+                public String getEventUid() {
+                    return null;
+                }
+
+                @Override
+                public void setSummary(String summary) {
+
+                }
+
+                @Override
+                public String getSummary() {
+                    return null;
+                }
+
+                @Override
+                public void setStartTime(long startTime) {
+
+                }
+
+                @Override
+                public long getStartTime() {
+                    return 0;
+                }
+
+                @Override
+                public void setEndTime(long endTime) {
+
+                }
+
+                @Override
+                public long getEndTime() {
+                    return 0;
+                }
+
+                @Override
+                public List<? extends ITimeInviteeInterface> getDisplayInvitee() {
+                    return null;
+                }
+
+                @Override
+                public void setHighLighted(boolean highlighted) {
+
+                }
+
+                @Override
+                public boolean isHighlighted() {
+                    return false;
+                }
+
+                @Override
+                public void setIsAllDay(boolean isAllDay) {
+
+                }
+
+                @Override
+                public boolean getIsAllDay() {
+                    return false;
+                }
+
+                @Override
+                public int isShownInCalendar() {
+                    return 0;
+                }
+
+                @Override
+                public String getLocationName() {
+                    return null;
+                }
+
+                @Override
+                public String getEventType() {
+                    return null;
+                }
+
+                @Override
+                public boolean isConfirmed() {
+                    return false;
+                }
+
+                @Override
+                public int compareTo(@NonNull Object o) {
+                    return 0;
+                }
+            };
             return t;
         } catch (Exception e) {
             return null;
-        }
-    }
-
-    private class EventModule implements ITimeEventInterface{
-
-        @Override
-        public String getEventUid() {
-            return null;
-        }
-
-        @Override
-        public void setSummary(String title) {
-
-        }
-
-        @Override
-        public String getSummary() {
-            return null;
-        }
-
-        @Override
-        public void setStartTime(long startTime) {
-
-        }
-
-        @Override
-        public long getStartTime() {
-            return 0;
-        }
-
-        @Override
-        public void setEndTime(long endTime) {
-        }
-
-        @Override
-        public long getEndTime() {
-            return 0;
-        }
-
-        @Override
-        public List<? extends ITimeInviteeInterface> getDisplayInvitee() {
-            return null;
-        }
-
-        @Override
-        public void setHighLighted(boolean highlighted) {
-        }
-
-        @Override
-        public boolean isHighlighted() {
-            return false;
-        }
-
-        @Override
-        public void setIsAllDay(boolean isAllDay) {
-
-        }
-
-        @Override
-        public boolean getIsAllDay() {
-            return false;
-        }
-
-
-        @Override
-        public int isShownInCalendar() {
-            return 0;
-        }
-
-        @Override
-        public String getLocationName() {
-            return "";
-        }
-
-        @Override
-        public String getEventType() {
-            return "";
-        }
-
-        @Override
-        public int compareTo(@NonNull Object o) {
-            return 0;
         }
     }
 

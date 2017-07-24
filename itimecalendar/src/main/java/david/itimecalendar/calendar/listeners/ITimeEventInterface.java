@@ -6,8 +6,8 @@ import java.util.List;
  * Created by yinchuandong on 22/08/2016.
  */
 public interface ITimeEventInterface<T> extends Comparable<T> {
-    String TYPE_GROUP = "group";
-    String TYPE_SOLO = "solo";
+    String EVENT_TYPE_SOLO = "solo";
+    String EVENT_TYPE_GROUP = "group";
 
     String getEventUid();
 
@@ -39,4 +39,5 @@ public interface ITimeEventInterface<T> extends Comparable<T> {
 
     String getLocationName();
     String getEventType();
+    boolean isConfirmed();
 }

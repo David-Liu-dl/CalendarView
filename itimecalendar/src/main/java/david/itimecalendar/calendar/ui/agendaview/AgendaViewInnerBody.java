@@ -1,13 +1,10 @@
 package david.itimecalendar.calendar.ui.agendaview;
 
 import android.content.Context;
-import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
-import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,32 +41,41 @@ public class AgendaViewInnerBody extends RelativeLayout {
     public final static int TP_GROUP_NEED_ACTION = 1;
     public final static int TP_GROUP_CONFIRM = 2;
 
-    public final static int icon_wh = 25;
+    public final static int icon_wh = 18;
+    public final static int NUMBER_PHOTO = 5;
 
+    private static class AgendaColor{
+        public static int START_TIME = R.color.title_text_enable;
+        public static int END_TIME = R.color.title_text_disable;
+        public static int NOW_START_TIME = R.color.brand_main;
+        public static int NOW_END_TIME = R.color.now_end_time;
+        public static int TITLE = R.color.title_text_enable;
+        public static int NUMBER = R.color.title_text_disable;
+        public static int LOCATION = R.color.title_text_disable;;
+    }
     /*************************** Start of Color Setting **********************************/
-    private int color_enable = R.color.title_text_enable;
-    private int color_disable = R.color.title_text_disable;
-    private int color_title = R.color.title_text_color;
-    private int color_subtitle = R.color.sub_title_text_color;
-    private int color_now = R.color.time_red;
-    private int color_normal = R.color.sub_title_text_color;
+//    private int color_enable = R.color.title_text_enable;
+//    private int color_disable = R.color.title_text_disable;
+//    private int color_title = R.color.title_text_color;
+//    private int color_subtitle = R.color.sub_title_text_color;
+//    private int color_now = R.color.brand_main;
+//    private int color_normal = R.color.sub_title_text_color;
     /*************************** End of Color Setting **********************************/
 
     /*************************** Start of Resources Setting ****************************/
     private int rs_icon_private = R.drawable.icon_calendar_solo_event;
-    private int rs_icon_group_comfirmed = R.drawable.icon_calendar_group_event;
-    private int rs_icon_group_needAction = R.drawable.icon_calendar_not_confirmed;
+    private int rs_icon_group_confirmed = R.drawable.icon_calendar_group_confirmed;
+    private int rs_icon_group_needAction = R.drawable.icon_calendar_group_unconfirmed;
     private int rs_icon_location = R.drawable.icon_calendar_grey_location;
     /*************************** End of Resources Setting ****************************/
 
-    private Paint p = new Paint();
     private RelativeLayout self = this;
 
     private LinearLayout leftInfo;
     private LinearLayout rightInfo;
     private LinearLayout inviteeLayout;
     private ImageView eventTypeView;
-//    private ImageView eventStatusView;
+    private ImageView eventStatusView;
 
 //    private TextView leftTimeTv;
     private TextView leftTime1;
@@ -108,13 +114,13 @@ public class AgendaViewInnerBody extends RelativeLayout {
     private DateFormat date = new SimpleDateFormat("HH:mm a");
 
     private boolean isEnded = false;
-    private boolean isHappennig = false;
+    private boolean isHappening = false;
     public AgendaViewInnerBody(Context context, ITimeEventInterface event, int currentDayType) {
         super(context);
         this.context = context;
         this.currentDayType = currentDayType;
         this.event = event;
-        this.pic_height_width = DensityUtil.dip2px(context, 50);
+        this.pic_height_width = DensityUtil.dip2px(context, 30);
         this.paddingUpDown = DensityUtil.dip2px(context, 2);
         setWillNotDraw(false);
         initAttrs();
@@ -133,40 +139,38 @@ public class AgendaViewInnerBody extends RelativeLayout {
         this.addView(leftInfo, leftInfoParams);
 
         leftTime1 = new TextView(context);
-//        if (duration.equals("All Day")) {
-//
-//        } else {
-        if (isHappennig){
-            leftTime1.setText("NOW");
-            leftTime1.setTextColor(getResources().getColor(color_now));
-        }else {
-            leftTime1.setText(duration.equals("All Day") ? "All Day" : timeStr1);
-            leftTime1.setTextColor(getResources().getColor(isEnded ?color_disable:color_enable));
-        }
+        leftTime1.setText(duration.equals("All Day") ? "All Day" : timeStr1);
         leftTime1.setGravity(Gravity.RIGHT);
         leftTime1.setTextSize(textSmallSize);
         leftTime1.setId(View.generateViewId());
         leftInfo.addView(leftTime1);
-//        }
 
         leftTime2 = new TextView(context);
         leftTime2.setText(duration.equals("All Day") ? "" : timeStr2);
         leftTime2.setGravity(Gravity.RIGHT);
         leftTime2.setTextSize(textSmallSize);
-        leftTime2.setTextColor(getResources().getColor(color_disable));
         LayoutParams params2 = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params2.addRule(BELOW,leftTime1.getId());
         params2.topMargin = DensityUtil.dip2px(context,8);
         leftTime2.setLayoutParams(params2);
         leftInfo.addView(leftTime2);
-//        }
+
+        if (isHappening){
+            leftTime1.setTextColor(getResources().getColor(AgendaColor.NOW_START_TIME));
+            leftTime2.setTextColor(getResources().getColor(AgendaColor.NOW_END_TIME));
+        }else {
+            leftTime1.setTextColor(getResources().getColor(AgendaColor.START_TIME));
+            leftTime2.setTextColor(getResources().getColor(AgendaColor.END_TIME));
+        }
+
         //type bar && right info, relation bet 2
         eventTypeView = new ImageView(context);
         eventTypeView.setId(generateViewId());
         LayoutParams eventTypeViewParams = new LayoutParams(DensityUtil.dip2px(context,icon_wh), DensityUtil.dip2px(context,icon_wh));
+        eventTypeView.setVisibility(event.getEventType().equals(ITimeEventInterface.EVENT_TYPE_GROUP) ? VISIBLE : INVISIBLE);
+        eventTypeView.setImageDrawable(event.isConfirmed() ? context.getResources().getDrawable(rs_icon_group_confirmed) : context.getResources().getDrawable(rs_icon_group_needAction));
         eventTypeViewParams.leftMargin = DensityUtil.dip2px(context,11);
         eventTypeViewParams.topMargin = DensityUtil.dip2px(context,4);
-//        updateIcon(getEventIcon(type));
 
         rightInfo = new LinearLayout(context);
         rightInfo.setOrientation(LinearLayout.VERTICAL);
@@ -188,7 +192,7 @@ public class AgendaViewInnerBody extends RelativeLayout {
         eventNameTv.setTextSize(textRegularSize);
 //        eventNameTv.setSingleLine(true);
 //        eventNameTv.setEllipsize(TextUtils.TruncateAt.END);
-        eventNameTv.setTextColor(getResources().getColor(isEnded ?color_disable:color_enable));
+        eventNameTv.setTextColor(getResources().getColor(AgendaColor.TITLE));
         rightInfo.addView(eventNameTv);
 
         inviteeLayout = new LinearLayout(context);
@@ -204,77 +208,20 @@ public class AgendaViewInnerBody extends RelativeLayout {
         locationTv.setPadding(0, paddingUpDown, 0, 0);
         locationTv.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
         locationTv.setTextSize(textSmallSize);
-        locationTv.setTextColor(getResources().getColor(color_subtitle));
+        locationTv.setTextColor(getResources().getColor(AgendaColor.LOCATION));
         Drawable orgDb = getResources().getDrawable(rs_icon_location);
-//        orgDb.setBounds(0,0,DensityUtil.dip2px(context,9),DensityUtil.dip2px(context,13));
-        Drawable scaleDb = BaseUtil.scaleDrawable(orgDb,DensityUtil.dip2px(context,16),DensityUtil.dip2px(context,16));
+        Drawable scaleDb = BaseUtil.scaleDrawable(orgDb,DensityUtil.dip2px(context,15),DensityUtil.dip2px(context,15));
         locationTv.setCompoundDrawables(scaleDb, null, null, null);
         locationTv.setSingleLine(true);
         locationTv.setEllipsize(TextUtils.TruncateAt.END);
         locationTv.setVisibility(View.VISIBLE);
-//        locationTv.setVisibility(event.getLocationName().equals("")? View.GONE: View.VISIBLE);
+        locationTv.setVisibility(event.getLocationName().equals("")? View.GONE: View.VISIBLE);
         rightInfo.addView(locationTv);
-
-        //status icon
-//        eventStatusView = new ImageView(context);
-//        eventStatusView.setId(generateViewId());
-//        eventStatusView.setPadding(0, DensityUtil.dip2px(context, 10), DensityUtil.dip2px(context, 10), 0);
-//        eventStatusView.setImageDrawable(getResources().getDrawable(R.drawable.itime_question_mark));
-//        eventStatusView.setVisibility(iconName.equals("icon_question") ? VISIBLE : GONE);
-
-//        LayoutParams eventStatusViewParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//        eventStatusViewParams.addRule(ALIGN_TOP, rightInfo.getId());
-//        eventStatusViewParams.addRule(ALIGN_PARENT_RIGHT);
-//        this.addView(eventStatusView, eventStatusViewParams);
-
-//        //right bottom time remains
-//        timeLeftTv = new TextView(context);
-//        setTimeLeftTv(timeLeftTv);
-//        timeLeftTv.setGravity(Gravity.CENTER);
-//        timeLeftTv.setTextSize(textRegularSize);
-//        timeLeftTv.setPadding(0, 0, DensityUtil.dip2px(context, 10), DensityUtil.dip2px(context, 5));
-//        LayoutParams timeLeftTvParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//        timeLeftTvParams.addRule(ALIGN_BOTTOM, rightInfo.getId());
-//        timeLeftTvParams.addRule(ALIGN_PARENT_RIGHT);
-//        this.addView(timeLeftTv, timeLeftTvParams);
-    }
-
-//    private void setTimeLeftTv(TextView timeLeftTv) {
-//        if (this.currentDayType == 0) {
-//            String str = getEventMentionStr(this.item);
-//            timeLeftTv.setText(str);
-//            timeLeftTv.setTextColor(getResources().getColor(str.equals("Now") ? color_now : color_normal));
-//        }
-//    }
-
-    private String getEventMentionStr(ITimeEventInterface event) {
-        Calendar cal = Calendar.getInstance();
-        long nowM = cal.getTimeInMillis();
-        long eventStartM = event.getStartTime();
-        long eventEndM = event.getEndTime();
-
-        if ((nowM + 60 * 1000) >= eventEndM) {
-            return "Ended";
-        } else if ((nowM + 60 * 1000) >= eventStartM) {
-            return "Now";
-        } else {
-            long timeLeftM = eventStartM - nowM;
-            int hoursLeft = (int) timeLeftM / (3600 * 1000);
-            int minutesLeft = (int) ((timeLeftM / (60 * 1000)) % 60);
-            if (hoursLeft >= 3) {
-                return "In " + hoursLeft + "hrs";
-            } else {
-                return
-                        hoursLeft == 0 ? "In " + minutesLeft + "min" :
-                                minutesLeft == 0 ? "In " + hoursLeft + "hrs " :
-                                        "In " + hoursLeft + "hrs " + minutesLeft + "min";
-            }
-        }
     }
 
     private void initAttrs(){
         isEnded = event.getEndTime() < System.currentTimeMillis();
-        isHappennig = System.currentTimeMillis() > event.getStartTime() && !isEnded;
+        isHappening = System.currentTimeMillis() > event.getStartTime() && !isEnded;
     }
 
     private void initInviteeLayout(List<String> urls, LinearLayout container){
@@ -282,10 +229,10 @@ public class AgendaViewInnerBody extends RelativeLayout {
             return;
         }
         for (int i = 0; i < urls.size(); i++) {
-            if (urls.size() <= 4 || (urls.size() > 4 && i < 3)){
+            if (urls.size() <= NUMBER_PHOTO || (urls.size() > NUMBER_PHOTO && i < (NUMBER_PHOTO - 1))){
                 container.addView(addImage(urls.get(i)));
             }else{
-                container.addView(addNumberPhoto(urls.size() - 3));
+                container.addView(addNumberPhoto(urls.size() - (NUMBER_PHOTO - 1)));
                 break;
             }
         }
@@ -293,11 +240,13 @@ public class AgendaViewInnerBody extends RelativeLayout {
 
     private ImageView addImage(String url) {
         ImageView img = new ImageView(context);
+        int margin = DensityUtil.dip2px(getContext(),4);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(pic_height_width, pic_height_width);
-        int padding = DensityUtil.dip2px(getContext(),5);
-        img.setPadding(padding, padding, padding, padding);
+        params.leftMargin = margin;
+        params.rightMargin = margin;
+
         img.setLayoutParams(params);
-        int size = DensityUtil.dip2px(getContext(),50);
+        int size = DensityUtil.dip2px(getContext(),30);
         Transformation transformation = new CropCircleTransformation();
         LoadImgHelper.getInstance().bindUrlWithImageView(context,transformation, url, img, size);
 
@@ -306,16 +255,14 @@ public class AgendaViewInnerBody extends RelativeLayout {
 
     private ImageView addNumberPhoto(int number){
         RoundedImageView img = new RoundedImageView(context);
-        img.setBorderColor(getResources().getColor(color_disable));
+        img.setBorderColor(getResources().getColor(AgendaColor.NUMBER));
         img.setBgColor(getResources().getColor(R.color.image_number_white));
         img.setNumber(number);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(pic_height_width, pic_height_width);
-        int padding = DensityUtil.dip2px(getContext(),5);
-
-        img.setPadding(padding, padding, padding, padding);
+        int margin = DensityUtil.dip2px(getContext(),4);
+        params.leftMargin = margin;
+        params.rightMargin = margin;
         img.setLayoutParams(params);
-//        img.setImageDrawable(getResources().getDrawable(R.drawable.invitee_selected_default_picture));
-//        img.setBackgroundColor(getResources().getColor(R.color.red));
         return img;
     }
 
@@ -338,10 +285,14 @@ public class AgendaViewInnerBody extends RelativeLayout {
                                 minutes == 0 ? hours + "hrs " :
                                         hours + "hrs " + minutes + "min";
         eventName = event.getSummary();
-//        location = event.getLocationName();
-        location = "N/A";
+        location = event.getLocationName();
 
         List<? extends ITimeInviteeInterface> inviteeList = event.getDisplayInvitee();
+
+        if (inviteeList == null){
+            return;
+        }
+
         List<String> allUrls = new ArrayList<>();
 
         for (ITimeInviteeInterface invitee : inviteeList
@@ -350,64 +301,5 @@ public class AgendaViewInnerBody extends RelativeLayout {
         }
 
         this.urls.addAll(allUrls);
-    }
-
-    private void updateIcon(Drawable db) {
-        eventTypeView.setImageDrawable(db);
-//        ((GradientDrawable) eventTypeView.getDrawable()).setColor(color);
-    }
-
-    private Drawable getEventIcon(int type) {
-        Drawable rs;
-
-        switch (type) {
-            case TP_PRIVATE:
-                rs = getContext().getResources().getDrawable(rs_icon_private);
-                break;
-            case TP_GROUP_NEED_ACTION:
-                rs = getContext().getResources().getDrawable(rs_icon_group_needAction);
-                break;
-            case TP_GROUP_CONFIRM:
-                rs = getContext().getResources().getDrawable(rs_icon_group_comfirmed);
-                break;
-            default:
-                rs = getContext().getResources().getDrawable(rs_icon_private);
-        }
-
-        return rs;
-    }
-
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        if(event != null
-                && status != null
-                && !status.equals("")
-                && status.equals("slash")){
-            drawSlash(canvas);
-        }
-    }
-
-    private void drawSlash(Canvas canvas){
-        int height = getHeight();
-        int width = getWidth();
-
-        int slashColor = getContext().getResources().getColor(R.color.image_number_white);
-//        int bgColor = getContext().getResources().getColor(R.color.gray_color);
-        p.setAntiAlias(true);
-        p.setColor(slashColor);
-//        p.setAlpha((int)(255 * slashOpacity));
-        p.setStrokeWidth(DensityUtil.dip2px(getContext(),1));
-
-        int nowAtPxX = 0 - height;
-        int nowAtPxY = 0;
-
-        int xGap = DensityUtil.dip2px(getContext(),10);
-
-        while (nowAtPxX <= width){
-            canvas.drawLine(nowAtPxX, nowAtPxY, nowAtPxX + height, height, p);
-            nowAtPxX += xGap;
-        }
     }
 }

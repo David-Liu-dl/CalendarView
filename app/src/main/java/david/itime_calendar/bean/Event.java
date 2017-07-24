@@ -46,6 +46,8 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
     private double locationLongitude;
     private String note;
     private boolean isAllDay;
+    private String eventStatus;
+
 
     private transient List<PhotoUrl> photoList = null;
     private transient String[] recurrence = {};
@@ -104,12 +106,12 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
     public Event() {
     }
 
-    @Generated(hash = 1329278022)
+    @Generated(hash = 1624900520)
     public Event(String eventUid, String eventId, String recurringEventUid, String recurringEventId,
             String calendarUid, String iCalUID, String hostUserUid, String summary, String url,
             String location, String locationNote, double locationLatitude, double locationLongitude,
-            String note, boolean isAllDay, String photo, long startTime, long endTime,
-            @NotNull String eventType) {
+            String note, boolean isAllDay, String eventStatus, String photo, long startTime,
+            long endTime, @NotNull String eventType) {
         this.eventUid = eventUid;
         this.eventId = eventId;
         this.recurringEventUid = recurringEventUid;
@@ -125,12 +127,12 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
         this.locationLongitude = locationLongitude;
         this.note = note;
         this.isAllDay = isAllDay;
+        this.eventStatus = eventStatus;
         this.photo = photo;
         this.startTime = startTime;
         this.endTime = endTime;
         this.eventType = eventType;
     }
-
 
     @Override
     public void setSummary(String summary) {
@@ -220,6 +222,19 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
     @Override
     public String getEventType() {
         return this.eventType;
+    }
+
+    @Override
+    public boolean isConfirmed() {
+        return eventStatus.equals("Confirmed");
+    }
+
+    public String getEventStatus() {
+        return eventStatus;
+    }
+
+    public void setEventStatus(String eventStatus) {
+        this.eventStatus = eventStatus;
     }
 
     public void setLocation(String location) {

@@ -108,7 +108,7 @@ public class MonthView extends LinearLayout{
         headerRecyclerView.setAdapter(headerRecyclerAdapter);
         headerLinearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
         headerRecyclerView.setLayoutManager(headerLinearLayoutManager);
-        headerRecyclerView.addItemDecoration(new DayViewHeaderRecyclerDivider(context));
+//        headerRecyclerView.addItemDecoration(new DayViewHeaderRecyclerDivider(context));
         headerCollapsedHeight = (dm.widthPixels / 7 - 20) * 2;
         headerExpandedHeight = (dm.widthPixels / 7 - 20) * 4;
 

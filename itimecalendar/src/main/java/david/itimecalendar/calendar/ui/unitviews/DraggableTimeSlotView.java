@@ -124,6 +124,11 @@ public class DraggableTimeSlotView extends FrameLayout {
         return newStartTime;
     }
 
+    /**
+     * NewEndTime without setter because end time is computed by getNewStartTime() + getShownDuration()
+     * Note: the duration of timeslot is depended.
+     * @return
+     */
     public long getNewEndTime(){
         return this.getNewStartTime() + getShownDuration();
     }

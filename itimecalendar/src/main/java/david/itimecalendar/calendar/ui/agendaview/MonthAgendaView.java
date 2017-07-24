@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import java.util.Calendar;
+import java.util.Date;
 
 import david.itimecalendar.R;
 import david.itimecalendar.calendar.listeners.ITimeCalendarMonthAgendaViewListener;
@@ -187,11 +188,12 @@ public class MonthAgendaView extends RelativeLayout{
                     iTimeCalendarInterface.onDateChanged(myCalendar.getCalendar().getTime());
                 }
             }
-        });
-        headerRecyclerAdapter.setOnSynBodyListener(new AgendaHeaderViewRecyclerAdapter.OnSynBodyListener() {
+
             @Override
-            public void synBody(int scrollTo) {
-                bodyLinearLayoutManager.scrollToPositionWithOffset(scrollTo, -5);
+            public void onDateSelected(Date date) {
+                if (agendaViewBody.getScrollState() == 0){
+                    bodyLinearLayoutManager.scrollToPositionWithOffset(headerRecyclerAdapter.getCurrentDayOffset(), 0);
+                }
             }
         });
         headerRecyclerAdapter.setOnCheckIfHasEvent(new DayViewHeader.OnCheckIfHasEvent() {
@@ -207,7 +209,7 @@ public class MonthAgendaView extends RelativeLayout{
         agendaViewHeader.setAdapter(headerRecyclerAdapter);
         headerLinearLayoutManager = new LinearLayoutManager(context);
         agendaViewHeader.setLayoutManager(headerLinearLayoutManager);
-        agendaViewHeader.addItemDecoration(new DayViewHeaderRecyclerDivider(context));
+//        agendaViewHeader.addItemDecoration(new DayViewHeaderRecyclerDivider(context));
         final DisplayMetrics dm = getResources().getDisplayMetrics();
         init_height = (dm.widthPixels / 7 - 20) * 2;
         scroll_height = (dm.widthPixels / 7 - 20) * 4;
@@ -231,7 +233,6 @@ public class MonthAgendaView extends RelativeLayout{
         headerRecyclerAdapter.setBodyRecyclerView(agendaViewBody);
         headerRecyclerAdapter.setBodyLayoutManager(bodyLinearLayoutManager);
         agendaViewBody.setLayoutManager(bodyLinearLayoutManager);
-//        agendaViewBody.addItemDecoration(new AgendaBodyViewRecyclerDivider(context));
         agendaViewBody.addOnScrollListener(new BodyOnScrollListener());
 
         ViewGroup.LayoutParams recycler_layoutParams = agendaViewBody.getLayoutParams();

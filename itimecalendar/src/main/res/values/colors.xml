@@ -323,16 +323,17 @@
     <color name="page_bg_color">#efeef5</color>
 
     <!-- for agenda-->e0e0e0
-    <color name="image_number_white">#e0e0e0</color>
-    <color name="image_number_grey">#b2b2b2</color>
+    <color name="image_number_white">#f8f8fb</color>
+    <color name="image_number_grey">#757575</color>
     <color name="title_text_enable">#000000</color>
     <color name="title_text_disable">#8e8e93</color>
-    <color name="title_text_color">#8e8e93</color>
-    <color name="title_bg_color">#DFDFE1</color>
-    <color name="title_today_bg_color">#FABDC2</color>
+    <color name="title_text_color">#000000</color>
+    <color name="title_bg_color">#f5f5f5</color>
+    <color name="title_today_bg_color">#f2f9ff</color>
     <color name="sub_title_text_color">#9b9b9b</color>
     <color name="time_red">#f56572</color>
-
+    <color name="now_end_time">#67b9ff</color>
+    67b9ff
     <!--for new iTime-->
     <color name="event_as_bg_bg">#CFD6DC</color>
     <color name="event_as_bg_title">#FFFFFF</color>

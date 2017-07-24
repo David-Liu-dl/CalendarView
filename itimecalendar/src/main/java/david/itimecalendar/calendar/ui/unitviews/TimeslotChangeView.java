@@ -153,15 +153,15 @@ public class TimeslotChangeView extends LinearLayout {
         updateTimeInfo();
     }
 
-    public void onSave(){
-        if (timeslot != null){
-            int hour = timePicker.getCurrentHour();
-            int minute = timePicker.getCurrentMinute();
-            Calendar cal = Calendar.getInstance();
-            cal.setTimeInMillis(timeslot.getStartTime());
-            cal.set(Calendar.HOUR_OF_DAY, hour);
-            cal.set(Calendar.MINUTE, minute);
-        }
+    public long getCurrentSelectedStartTime(){
+        int hour = timePicker.getCurrentHour();
+        int minute = timePicker.getCurrentMinute();
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(timeslot.getStartTime());
+        cal.set(Calendar.HOUR_OF_DAY, hour);
+        cal.set(Calendar.MINUTE, minute);
+
+        return cal.getTimeInMillis();
     }
 
     private void updateTimeInfo(){

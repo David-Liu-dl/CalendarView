@@ -29,7 +29,7 @@ public class AgendaBodyHeader extends LinearLayout {
     /*************************** Start of Color Setting **********************************/
     private int color_title = R.color.title_text_color;
     private int color_title_bg = R.color.title_bg_color;
-    private int color_title_today = R.color.time_red;
+    private int color_title_today = R.color.brand_main;
     private int color_title_bg_today = R.color.title_today_bg_color;
     /*************************** End of Color Setting **********************************/
 
@@ -68,14 +68,13 @@ public class AgendaBodyHeader extends LinearLayout {
 
         this.contentLayout = new LinearLayout(context);
         contentLayout.setOrientation(LinearLayout.HORIZONTAL);
-        RelativeLayout.LayoutParams contentLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, DensityUtil.dip2px(context,30));
+        LinearLayout.LayoutParams contentLayoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, DensityUtil.dip2px(context,25));
         contentLayout.setPadding(DensityUtil.dip2px(context, 10),0,DensityUtil.dip2px(context, 10),0);
         contentLayout.setLayoutParams(contentLayoutParams);
         contentLayout.setGravity(Gravity.CENTER_VERTICAL);
         this.initHeaderTvs();
 
         this.addView(contentLayout,contentLayoutParams);
-//        this.addView(getDivider());
     }
 
     public void setMyCalendar(MyCalendar myCalendar){
@@ -106,36 +105,36 @@ public class AgendaBodyHeader extends LinearLayout {
         this.invalidate();
     }
 
-//    public RelativeLayout.LayoutParams getRLayoutParams(){
-//        return (RelativeLayout.LayoutParams) this.getLayoutParams();
-//    }
-
     private void initHeaderTvs(){
         textPadding = DensityUtil.dip2px(context, 5);
 
         mentionTv = new TextView(context);
+        mentionTv.setTextSize(14);
         mentionTv.setTypeface(null, Typeface.BOLD);
+        mentionTv.setAllCaps(true);
         mentionTv.setPadding(0,0,textPadding,0);
         contentLayout.addView(mentionTv);
 
         dayOfWeekTv = new TextView(context);
+        dayOfWeekTv.setAllCaps(true);
+        dayOfWeekTv.setTextSize(14);
         dayOfWeekTv.setPadding(0,0,textPadding,0);
         contentLayout.addView(dayOfWeekTv);
 
         nthTv = new TextView(context);
         nthTv.setPadding(0,0,textPadding,0);
+        nthTv.setTextSize(14);
         contentLayout.addView(nthTv);
 
         monthTv = new TextView(context);
+        monthTv.setTextSize(14);
+        monthTv.setAllCaps(true);
         monthTv.setPadding(0,0,textPadding,0);
         contentLayout.addView(monthTv);
-
-
     }
 
     private void initHeaderShowAttrs(){
         Calendar calendar = this.myCalendar.getCalendar();
-//        Log.i(TAG, "initHeaderShowAttrs: " + this.myCalendar.toString());
         int day_of_month = calendar.get(Calendar.DAY_OF_MONTH);
         nth =  day_of_month + "";
         month = calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
@@ -184,17 +183,5 @@ public class AgendaBodyHeader extends LinearLayout {
         }
 
         return type;
-    }
-
-    private ImageView getDivider(){
-        ImageView dividerImgV;
-        //divider
-        dividerImgV = new ImageView(context);
-        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        dividerImgV.setLayoutParams(params);
-        dividerImgV.setImageDrawable(getResources().getDrawable(rs_header_divider));
-        dividerImgV.setPadding(0,0,0,0);
-
-        return  dividerImgV;
     }
 }

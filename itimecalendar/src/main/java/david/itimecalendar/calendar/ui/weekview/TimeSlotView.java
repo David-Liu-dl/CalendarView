@@ -381,7 +381,9 @@ public class TimeSlotView extends WeekView {
         builder.setPositiveButton(R.string.saveStr, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                timeslotChangeView.onSave();
+                long newStartTime = timeslotChangeView.getCurrentSelectedStartTime();
+                dgTimeslot.setNewStartTime(newStartTime);
+                iTimeCalendarListener.onTimeSlotEdit(dgTimeslot);
             }
         });
         builder.setNegativeButton(R.string.cancelStr, new DialogInterface.OnClickListener() {

@@ -72,7 +72,7 @@ public class DayViewActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onEventDragging(DraggableEventView eventView, MyCalendar curAreaCal, int x, int y) {
+            public void onEventDragging(DraggableEventView eventView, MyCalendar curAreaCal, int x, int y, String locationTime) {
 
             }
 
@@ -85,6 +85,11 @@ public class DayViewActivity extends AppCompatActivity {
 
                 BaseUtil.printEventTime("end",event);
                 monthView.refresh();
+            }
+
+            @Override
+            public void onEventDragEnd(DraggableEventView eventView) {
+
             }
 
             @Override

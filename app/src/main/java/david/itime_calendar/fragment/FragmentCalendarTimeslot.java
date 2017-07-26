@@ -79,12 +79,18 @@ public class FragmentCalendarTimeslot extends Fragment {
         }
 
         @Override
-        public void onTimeSlotDragging(DraggableTimeSlotView draggableTimeSlotView, MyCalendar myCalendar, int i, int i1) {
+        public void onTimeSlotDragging(DraggableTimeSlotView draggableTimeSlotView, MyCalendar curAreaCal, int x, int y, String locationTime) {
+
+        }
+
+
+        @Override
+        public void onTimeSlotDragDrop(DraggableTimeSlotView draggableTimeSlotView, long l, long l1) {
 
         }
 
         @Override
-        public void onTimeSlotDragDrop(DraggableTimeSlotView draggableTimeSlotView, long l, long l1) {
+        public void onTimeSlotDragEnd(DraggableTimeSlotView draggableTimeSlotView) {
 
         }
 

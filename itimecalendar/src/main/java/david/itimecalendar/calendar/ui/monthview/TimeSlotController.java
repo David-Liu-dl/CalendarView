@@ -65,7 +65,7 @@ public class TimeSlotController {
          * @param x : current X position of View
          * @param y : current Y position of View
          */
-        void onTimeSlotDragging(DraggableTimeSlotView draggableTimeSlotView, MyCalendar curAreaCal, int x, int y);
+        void onTimeSlotDragging(DraggableTimeSlotView draggableTimeSlotView, MyCalendar curAreaCal, int x, int y, String locationTime);
 
         /**
          * When dragging ended
@@ -74,6 +74,8 @@ public class TimeSlotController {
          * @param endTime : dropped Y position of View
          */
         void onTimeSlotDragDrop(DraggableTimeSlotView draggableTimeSlotView, long startTime, long endTime);
+
+        void onTimeSlotDragEnd(DraggableTimeSlotView draggableTimeSlotView);
 
         void onTimeSlotEdit(DraggableTimeSlotView draggableTimeSlotView);
         void onTimeSlotDelete(DraggableTimeSlotView draggableTimeSlotView);
@@ -142,11 +144,12 @@ public class TimeSlotController {
                     break;
                 case DragEvent.ACTION_DRAG_LOCATION:
                     int rawX = (int) (container.layoutWidthPerDay + event.getX());
-
-//                    container.scrollViewAutoScroll(item);
+                    int rawY = (int) event.getY();
 
                     if (onTimeSlotListener != null) {
-                        onTimeSlotListener.onTimeSlotDragging(tsView, container.getCalendar(),rawX, (int) event.getY());
+                        int nearestProperPosition = container.nearestQuarterTimeSlotKey(rawY);
+                        String locationTime = (container.positionToTimeQuarterTreeMap.get(nearestProperPosition));
+                        onTimeSlotListener.onTimeSlotDragging(tsView, container.getCalendar(),rawX, (int) event.getY(), locationTime);
                     } else {
                         Log.i(TAG, "onDrag: null onEventDragListener");
                     }
@@ -213,6 +216,9 @@ public class TimeSlotController {
 
                     break;
                 case DragEvent.ACTION_DRAG_ENDED:
+                    if (onTimeSlotListener != null) {
+                        onTimeSlotListener.onTimeSlotDragEnd(tsView);
+                    }
                     break;
                 default:
                     break;

@@ -97,25 +97,7 @@ public class EventController {
 
         calculateEventLayout(this.container.eventLayout);
 
-//        this.container.eventLayout.invalidate();
         this.container.eventLayout.requestLayout(); // paul try
-    }
-
-    private void addAllDayEvent(WrapperEvent wrapper, int index) {
-//        if (container.topAllDayLayout.getVisibility() != View.VISIBLE){
-//            container.topAllDayLayout.setVisibility(View.VISIBLE);
-//            ((FrameLayout.LayoutParams)container.getScrollView().getLayoutParams()).setMargins(0,container.topAllDayHeight,0,0);
-//        }
-//        int offset = index;
-//        if (offset > -1 && offset < container.displayLen) {
-//            DraggableEventView new_dgEvent = this.createDayDraggableEventView(wrapper, true);
-//            DayInnerHeaderEventLayout allDayEventLayout = container.allDayEventLayouts.get(offset);
-//            allDayEventLayout.addView(new_dgEvent);
-//            allDayEventLayout.getDgEvents().add(new_dgEvent);
-//            allDayEventLayout.getEvents().add(wrapper.getEvent());
-//        }else {
-//            Log.i(TAG, "item in header offset error: " + offset);
-//        }
     }
 
     private void addRegularEvent(WrapperEvent wrapper) {
@@ -329,7 +311,6 @@ public class EventController {
                         view){
                     @Override
                     public void onProvideShadowMetrics(Point outShadowSize, Point outShadowTouchPoint) {
-//                        super.onProvideShadowMetrics(outShadowSize, outShadowTouchPoint);
                         final View view = getView();
                         if (view != null) {
                             outShadowSize.set(view.getWidth(), view.getHeight());
@@ -361,19 +342,18 @@ public class EventController {
             DraggableEventView dgView = (DraggableEventView) event.getLocalState();
             switch (event.getAction()) {
                 case DragEvent.ACTION_DRAG_STARTED:
-//                    Log.i(TAG, "ACTION_DRAG_STARTED: " + container.getCalendar().getCalendar().getTime());
                     break;
                 case DragEvent.ACTION_DRAG_LOCATION:
                     int rawX = (int) event.getX();
                     int rawY = (int) event.getY();
-//                    container.scrollViewAutoScroll(item);
 
                     if (onEventListener != null) {
-                        onEventListener.onEventDragging(dgView, container.getCalendar(), rawX, (int) event.getY());
+                        int nearestProperPosition = container.nearestQuarterTimeSlotKey(rawY);
+                        String locationTime = (container.positionToTimeQuarterTreeMap.get(nearestProperPosition));
+                        onEventListener.onEventDragging(dgView, container.getCalendar(), rawX, (int) event.getY(), locationTime);
                     } else {
                         Log.i(TAG, "onDrag: null onEventDragListener");
                     }
-//                    container.msgWindowFollow(rawX, (int) item.getY(), index, (View) item.getLocalState());
                     break;
                 case DragEvent.ACTION_DRAG_ENTERED:
 //                    container.msgWindow.setVisibility(View.VISIBLE);
@@ -384,11 +364,9 @@ public class EventController {
                     }
                     break;
                 case DragEvent.ACTION_DRAG_EXITED:
-//                    container.msgWindow.setVisibility(View.INVISIBLE);
                     container.tempDragView = null;
                     break;
                 case DragEvent.ACTION_DROP:
-//                    Log.i(TAG, "ACTION_DROP:" + container.getCalendar().getCalendar().getTime());
                     //handler ended things in here, because ended some time is not triggered
                     View finalView = (View) event.getLocalState();
                     finalView.setVisibility(View.VISIBLE);
@@ -431,10 +409,11 @@ public class EventController {
                         //finally reset tempDragView to NULL.
                         container.tempDragView = null;
                     }
-                    Log.i(TAG, "onDrag: drop ");
                     break;
                 case DragEvent.ACTION_DRAG_ENDED:
-
+                    if (onEventListener != null) {
+                        onEventListener.onEventDragEnd(dgView);
+                    }
                     break;
             }
 
@@ -606,9 +585,11 @@ public class EventController {
         //When start dragging
         void onEventDragStart(DraggableEventView eventView);
         //On dragging
-        void onEventDragging(DraggableEventView eventView, MyCalendar curAreaCal, int x, int y);
-        //When dragging ended
+        void onEventDragging(DraggableEventView eventView, MyCalendar curAreaCal, int x, int y, String locationTime);
+        //When dragging finished
         void onEventDragDrop(DraggableEventView eventView);
+        //When dragging discard
+        void onEventDragEnd(DraggableEventView eventView);
     }
 
     void setOnEventListener(OnEventListener onEventListener) {

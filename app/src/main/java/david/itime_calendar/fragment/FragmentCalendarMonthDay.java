@@ -68,12 +68,17 @@ public class FragmentCalendarMonthDay extends Fragment {
         }
 
         @Override
-        public void onEventDragging(DraggableEventView draggableEventView, MyCalendar myCalendar, int i, int i1) {
+        public void onEventDragging(DraggableEventView eventView, MyCalendar curAreaCal, int x, int y, String locationTime) {
 
         }
 
         @Override
         public void onEventDragDrop(DraggableEventView draggableEventView) {
+
+        }
+
+        @Override
+        public void onEventDragEnd(DraggableEventView eventView) {
 
         }
 

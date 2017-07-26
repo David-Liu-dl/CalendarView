@@ -111,7 +111,7 @@ public class TimeSlotActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onTimeSlotDragging(DraggableTimeSlotView draggableTimeSlotView, MyCalendar curRealCal, int x, int y) {
+            public void onTimeSlotDragging(DraggableTimeSlotView draggableTimeSlotView, MyCalendar curAreaCal, int x, int y, String locationTime) {
 
             }
 
@@ -119,6 +119,11 @@ public class TimeSlotActivity extends AppCompatActivity {
             public void onTimeSlotDragDrop(DraggableTimeSlotView draggableTimeSlotView, long startTime, long endTime) {
                 draggableTimeSlotView.getTimeslot().setStartTime(startTime);
                 draggableTimeSlotView.getTimeslot().setEndTime(endTime);
+            }
+
+            @Override
+            public void onTimeSlotDragEnd(DraggableTimeSlotView draggableTimeSlotView) {
+
             }
 
             @Override

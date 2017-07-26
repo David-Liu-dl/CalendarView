@@ -60,9 +60,10 @@ public class WeekViewActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onEventDragging(DraggableEventView eventView, MyCalendar curAreaCal, int x, int y) {
+            public void onEventDragging(DraggableEventView eventView, MyCalendar curAreaCal, int x, int y, String locationTime) {
 
             }
+
 
             @Override
             public void onEventDragDrop(DraggableEventView eventView) {
@@ -70,6 +71,11 @@ public class WeekViewActivity extends AppCompatActivity {
 
                 eventManager.updateEvent((Event) event, eventView.getStartTimeM(), eventView.getEndTimeM());
                 weekview.refresh();
+            }
+
+            @Override
+            public void onEventDragEnd(DraggableEventView eventView) {
+
             }
 
             @Override

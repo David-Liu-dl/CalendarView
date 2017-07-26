@@ -18,6 +18,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -74,6 +76,7 @@ public class DayViewBodyCell extends FrameLayout{
     protected boolean isTimeSlotEnable = false;
     protected boolean isRemoveOptListener = false;
     protected OverlapHelper xHelper = new OverlapHelper();
+
 
     FrameLayout dividerBgRLayout;
     DayInnerBodyLayout eventLayout;
@@ -162,6 +165,8 @@ public class DayViewBodyCell extends FrameLayout{
     private void initView(){
         initBgView();
         initContentView();
+        initMsgWindow();
+
         timeline = new TimelineView(getContext());
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,timelineHeight);
         timeline.setLayoutParams(params);
@@ -196,6 +201,24 @@ public class DayViewBodyCell extends FrameLayout{
     private void initBgView(){
         initDividerLine(getHours());
     }
+
+    private void initMsgWindow() {
+//        msgWindow = new TextView(context);
+//
+//        msgWindow.setTextColor(context.getResources().getColor(color_msg_window_text));
+//        msgWindow.setText("SUN 00:00");
+//        msgWindow.setTextSize(17);
+//        msgWindow.setGravity(Gravity.LEFT);
+//        msgWindow.setVisibility(View.INVISIBLE);
+//        msgWindow.measure(0, 0);
+//        int height = msgWindow.getMeasuredHeight(); //get height
+//        int width = msgWindow.getMeasuredWidth();
+//        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(width+10, height);
+//        params.setMargins(0, 0, 0, 0);
+//        msgWindow.setLayoutParams(params);
+//        dividerBgRLayout.addView(msgWindow);
+    }
+
 
 
     private void initTimeSlot() {
@@ -400,7 +423,7 @@ public class DayViewBodyCell extends FrameLayout{
      * @param positionY
      * @return
      */
-    private int nearestQuarterTimeSlotKey(int positionY) {
+    int nearestQuarterTimeSlotKey(int positionY) {
         int key = positionY;
         Map.Entry<Integer, String> low = positionToTimeQuarterTreeMap.floorEntry(key);
         Map.Entry<Integer, String> high = positionToTimeQuarterTreeMap.ceilingEntry(key);
@@ -420,7 +443,7 @@ public class DayViewBodyCell extends FrameLayout{
      * @param time
      * @return nearest position
      */
-    protected int nearestTimeSlotValue(float time) {
+    int nearestTimeSlotValue(float time) {
         float key = time;
         Map.Entry<Float, Integer> low = timeToPositionTreeMap.floorEntry(key);
         Map.Entry<Float, Integer> high = timeToPositionTreeMap.ceilingEntry(key);

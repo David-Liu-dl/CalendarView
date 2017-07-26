@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.LayoutTransition;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Rect;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -46,7 +47,10 @@ public class DayViewBody extends RelativeLayout {
     private DayViewAllDay allDayView;
     private FrameLayout leftTimeBarLayout;
     private ScrollView leftTimeBarLayoutContainer;
+
+    private FrameLayout bodyContainer;
     private ITimeRecycleViewGroup bodyRecyclerView;
+    private TextView msgWindow;
 
     private BodyAdapter dayViewBodyAdapter;
     private Context context;
@@ -124,6 +128,23 @@ public class DayViewBody extends RelativeLayout {
         setUpLeftTimeBar();
         setUpCalendarBody();
         allDayView.bringToFront();
+        initMsgWindow();
+    }
+
+    private void initMsgWindow() {
+        msgWindow = new TextView(context);
+        msgWindow.setTextColor(context.getResources().getColor(R.color.now_end_time));
+        msgWindow.setText("SUN 00:00");
+        msgWindow.setTextSize(14);
+        msgWindow.setGravity(Gravity.LEFT);
+        msgWindow.setVisibility(View.INVISIBLE);
+        msgWindow.measure(0, 0);
+        int height = msgWindow.getMeasuredHeight(); //get height
+        int width = msgWindow.getMeasuredWidth();
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(width+10, height);
+        params.setMargins(0, 0, 0, 0);
+        msgWindow.setLayoutParams(params);
+        bodyContainer.addView(msgWindow);
     }
 
 //    public void setScrollInterface(ITimeRecycleViewGroup.ScrollInterface scrollInterface){
@@ -131,6 +152,14 @@ public class DayViewBody extends RelativeLayout {
 //    }
 
     private void setUpCalendarBody(){
+        bodyContainer = new FrameLayout(getContext());
+
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams.leftMargin = leftBarWidth;
+        layoutParams.addRule(BELOW, allDayView.getId());
+        bodyContainer.setLayoutParams(layoutParams);
+        this.addView(bodyContainer);
+
         dayViewBodyAdapter = new BodyAdapter(getContext(), this.attrs);
         dayViewBodyAdapter.setSlotsInfo(this.timeSlotPackage);
         bodyRecyclerView = new ITimeRecycleViewGroup(context, NUM_LAYOUTS);
@@ -163,16 +192,16 @@ public class DayViewBody extends RelativeLayout {
             public void onVerticalScroll(int dy, int preOffsetY) {
 //                synViewsVerticalPosition(dy, leftTimeBarLayout);
                 leftTimeBarLayoutContainer.scrollBy(0,-dy);
+
                 if (onScroll != null){
                     onScroll.onVerticalScroll(dy, preOffsetY);
                 }
             }
         });
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.leftMargin = leftBarWidth;
-        params.addRule(BELOW, allDayView.getId());
+
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         bodyRecyclerView.setLayoutParams(params);
-        this.addView(bodyRecyclerView);
+        bodyContainer.addView(bodyRecyclerView);
 
         //set up inner body listener
         setUpBodyCellInnerListener();
@@ -198,6 +227,10 @@ public class DayViewBody extends RelativeLayout {
 
                     @Override
                     public void onEventCreate(DraggableEventView eventView) {
+                        if (msgWindow.getVisibility() == View.VISIBLE){
+                            msgWindow.setVisibility(View.GONE);
+                        }
+
                         if (onEventListener != null){
                             onEventListener.onEventCreate(eventView);
                         }
@@ -219,7 +252,15 @@ public class DayViewBody extends RelativeLayout {
                     }
 
                     @Override
-                    public void onEventDragging(DraggableEventView eventView, MyCalendar curAreaCal, int x, int y) {
+                    public void onEventDragging(DraggableEventView eventView, MyCalendar curAreaCal, int x, int y, String locationTime) {
+                        if (msgWindow.getVisibility() != View.VISIBLE){
+                            msgWindow.setVisibility(View.VISIBLE);
+                        }
+
+                        msgWindowFollow(x,y,locationTime);
+
+                        scrollViewAutoScrollY(y);
+
                         if (!isSwiping){
                             int rawX = swipeHelper.getRawX(x, curAreaCal);
                             swipeHelper.bodyAutoSwipe(rawX);
@@ -228,16 +269,27 @@ public class DayViewBody extends RelativeLayout {
                         }
 
                         if (onEventListener != null){
-                            onEventListener.onEventDragging(eventView,curAreaCal, x, y);
+                            onEventListener.onEventDragging(eventView,curAreaCal, x, y, locationTime);
                         }
                     }
 
                     @Override
                     public void onEventDragDrop(DraggableEventView eventView) {
+                        if (msgWindow.getVisibility() == View.VISIBLE){
+                            msgWindow.setVisibility(View.GONE);
+                        }
+
                         if (onEventListener != null){
                             onEventListener.onEventDragDrop(eventView);
                         }
                         dayViewBodyAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onEventDragEnd(DraggableEventView eventView) {
+                        if (msgWindow.getVisibility() == View.VISIBLE){
+                            msgWindow.setVisibility(View.GONE);
+                        }
                     }
                 });
             }
@@ -278,21 +330,8 @@ public class DayViewBody extends RelativeLayout {
         dctView.setLayoutParams(dctParams);
         dctView.setPadding(0, 0, 0, 0);
         this.leftTimeBarLayout.addView(dctView);
-
-//        RelativeLayout.LayoutParams leftTimeBarParams = new RelativeLayout.LayoutParams(leftBarWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
-//        leftTimeBarParams.addRule(BELOW, allDayView.getId());
-//        leftTimeBarLayout.setLayoutParams(leftTimeBarParams);
-//        this.addView(leftTimeBarLayout);
         this.leftTimeBarLayoutContainer.addView(leftTimeBarLayout);
     }
-
-//    private void synViewsVerticalPosition(float dy, View targetView){
-//        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) targetView.getLayoutParams();
-//        if (params!=null){
-//            params.topMargin += dy;
-//            targetView.setLayoutParams(params);
-//        }
-//    }
 
     private int initTimeText(String[] HOURS) {
         int height = DensityUtil.dip2px(context,20);
@@ -332,6 +371,45 @@ public class DayViewBody extends RelativeLayout {
         return HOURS;
     }
 
+    private void msgWindowFollow(int tapX, int tapY, String locationTime) {
+        float toX;
+        float toY;
+
+        toY = tapY - leftTimeBarLayoutContainer.getScrollY() - msgWindow.getHeight();
+        if (toY <= 0){
+            toY = 0;
+        }
+
+        toX = 0;
+        if (tapX < msgWindow.getWidth() * 1.5){
+            toX = bodyContainer.getWidth() - msgWindow.getWidth();
+        }
+
+        msgWindow.setText(locationTime);
+        msgWindow.setTranslationX(toX);
+        msgWindow.setTranslationY(toY);
+    }
+
+    private int autoScrollFlag;
+    private int autoScrollRange;
+
+    private void scrollViewAutoScrollY(int y) {
+        autoScrollFlag = DensityUtil.dip2px(context,20);
+        autoScrollRange = DensityUtil.dip2px(context,10);
+
+        float needPositionY_top = y - autoScrollFlag;
+        float needPositionY_bottom = y + autoScrollFlag;
+
+        int top = (leftTimeBarLayoutContainer.getScrollY());
+        int bottom = (leftTimeBarLayoutContainer.getScrollY() + bodyContainer.getHeight());
+
+        // TODO: 26/7/17 Paul: need to fix wrong parameter sign
+        if (top > needPositionY_top) {
+            bodyRecyclerView.scrollByYSmoothly(autoScrollRange);
+        } else if (bottom < needPositionY_bottom) {
+            bodyRecyclerView.scrollByYSmoothly(-autoScrollRange);
+        }
+    }
     /************************************************************************************/
     public void setEventPackage(ITimeEventPackageInterface eventPackage){
         this.dayViewBodyAdapter.setEventPackage(eventPackage);
@@ -480,6 +558,9 @@ public class DayViewBody extends RelativeLayout {
     private class OnTimeSlotInnerListener implements TimeSlotController.OnTimeSlotListener{
         @Override
         public void onTimeSlotCreate(DraggableTimeSlotView draggableTimeSlotView) {
+            if (msgWindow.getVisibility() == View.VISIBLE){
+                msgWindow.setVisibility(View.GONE);
+            }
 
             if (onTimeSlotOuterListener != null){
                 onTimeSlotOuterListener.onTimeSlotCreate(draggableTimeSlotView);
@@ -514,7 +595,15 @@ public class DayViewBody extends RelativeLayout {
         }
 
         @Override
-        public void onTimeSlotDragging(DraggableTimeSlotView draggableTimeSlotView, MyCalendar curAreaCal,int x, int y) {
+        public void onTimeSlotDragging(DraggableTimeSlotView draggableTimeSlotView, MyCalendar curAreaCal,int x, int y, String locationTime) {
+            if (msgWindow.getVisibility() != View.VISIBLE){
+                msgWindow.setVisibility(View.VISIBLE);
+            }
+
+            msgWindowFollow(x,y,locationTime);
+
+            scrollViewAutoScrollY(y);
+
             if (!isSwiping){
                 int rawX = swipeHelper.getRawX(x, curAreaCal);
                 swipeHelper.bodyAutoSwipe(rawX);
@@ -523,12 +612,16 @@ public class DayViewBody extends RelativeLayout {
             }
 
             if (onTimeSlotOuterListener != null){
-                onTimeSlotOuterListener.onTimeSlotDragging(draggableTimeSlotView, curAreaCal, x, y);
+                onTimeSlotOuterListener.onTimeSlotDragging(draggableTimeSlotView, curAreaCal, x, y, locationTime);
             }
         }
 
         @Override
         public void onTimeSlotDragDrop(DraggableTimeSlotView draggableTimeSlotView, long start, long end) {
+            if (msgWindow.getVisibility() == View.VISIBLE){
+                msgWindow.setVisibility(View.GONE);
+            }
+
             // calendar pass the start - 0, end - 0, calling outer listener with real start&end time
             if (onTimeSlotOuterListener != null){
                 onTimeSlotOuterListener.onTimeSlotDragDrop(draggableTimeSlotView, draggableTimeSlotView.getNewStartTime(), draggableTimeSlotView.getNewEndTime());
@@ -537,21 +630,18 @@ public class DayViewBody extends RelativeLayout {
         }
 
         @Override
+        public void onTimeSlotDragEnd(DraggableTimeSlotView draggableTimeSlotView) {
+            if (msgWindow.getVisibility() == View.VISIBLE){
+                msgWindow.setVisibility(View.GONE);
+            }
+        }
+
+        @Override
         public void onTimeSlotEdit(DraggableTimeSlotView draggableTimeSlotView) {
-//            if (onTimeSlotOuterListener != null){
-//                onTimeSlotOuterListener.onTimeSlotEdit(draggableTimeSlotView);
-//            }
-//
-//            dayViewBodyAdapter.notifyDataSetChanged();
         }
 
         @Override
         public void onTimeSlotDelete(DraggableTimeSlotView draggableTimeSlotView) {
-//            if (onTimeSlotOuterListener != null){
-//                onTimeSlotOuterListener.onTimeSlotDelete(draggableTimeSlotView);
-//            }
-//
-//            dayViewBodyAdapter.notifyDataSetChanged();
         }
     }
 

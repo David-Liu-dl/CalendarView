@@ -331,9 +331,9 @@ public class TimeSlotView extends WeekView {
         }
 
         @Override
-        public void onTimeSlotDragging(DraggableTimeSlotView draggableTimeSlotView, MyCalendar curAreaCal, int x, int y) {
+        public void onTimeSlotDragging(DraggableTimeSlotView draggableTimeSlotView, MyCalendar curAreaCal, int x, int y, String locationTime) {
             if (iTimeCalendarListener != null){
-                iTimeCalendarListener.onTimeSlotDragging(draggableTimeSlotView, curAreaCal, x, y);
+                iTimeCalendarListener.onTimeSlotDragging(draggableTimeSlotView, curAreaCal, x, y, locationTime);
             }
         }
 
@@ -343,6 +343,13 @@ public class TimeSlotView extends WeekView {
                 iTimeCalendarListener.onTimeSlotDragDrop(draggableTimeSlotView, startTime, endTime);
             }
             updateInnerCalendarPackage();
+        }
+
+        @Override
+        public void onTimeSlotDragEnd(DraggableTimeSlotView draggableTimeSlotView) {
+            if (iTimeCalendarListener != null){
+                iTimeCalendarListener.onTimeSlotDragEnd(draggableTimeSlotView);
+            }
         }
 
         @Override

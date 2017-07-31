@@ -7,6 +7,7 @@ import android.util.Log;
 import java.util.Calendar;
 import java.util.Date;
 
+import david.itime_calendar.EventManager;
 import david.itime_calendar.R;
 import david.itime_calendar.bean.Event;
 import david.itimecalendar.calendar.listeners.ITimeCalendarMonthDayViewListener;
@@ -98,5 +99,26 @@ public class DayViewActivity extends AppCompatActivity {
             }
         });
         monthView.setEventPackage(eventManager.getEventsMap());
+
+        monthView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Event event = new Event();
+                long startTime = Calendar.getInstance().getTimeInMillis();
+                event.setIsAllDay(false);
+//            event.setIsAllDay(0);
+                event.setEventUid("" + 20);
+                event.setEventStatus(20 == 1 ? "Confirmed" : "Unconfirmed");
+                event.setEventType(20 == 1 ? ITimeEventInterface.EVENT_TYPE_GROUP:ITimeEventInterface.EVENT_TYPE_SOLO);
+                event.setSummary("new added" + 20);
+                event.setLocation("here");
+                event.setStartTime(startTime);
+                long interval = (3600 * 1000);
+                long endTime = startTime + interval;
+                event.setEndTime(endTime);
+                EventManager.getInstance().addEvent(event);
+                monthView.setEventPackage(EventManager.getInstance().getEventsMap());
+            }
+        },3000);
     }
 }

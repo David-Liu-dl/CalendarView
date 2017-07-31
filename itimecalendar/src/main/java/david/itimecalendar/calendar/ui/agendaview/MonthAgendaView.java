@@ -20,7 +20,6 @@ import java.util.Date;
 import david.itimecalendar.R;
 import david.itimecalendar.calendar.listeners.ITimeCalendarMonthAgendaViewListener;
 import david.itimecalendar.calendar.ui.monthview.DayViewHeader;
-import david.itimecalendar.calendar.ui.monthview.DayViewHeaderRecyclerDivider;
 import david.itimecalendar.calendar.listeners.ITimeEventInterface;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
 import david.itimecalendar.calendar.util.MyCalendar;

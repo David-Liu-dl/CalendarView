@@ -2,6 +2,7 @@ package david.itimecalendar.calendar.ui.weekview;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import david.itimecalendar.R;
+import david.itimecalendar.calendar.util.BaseUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
 
 import static android.widget.LinearLayout.VERTICAL;
@@ -96,10 +98,15 @@ public class WeekViewHeaderCell extends FrameLayout {
     }
 
     private void updateDate(Calendar cal){
+        boolean isToday = BaseUtil.isToday(cal);
+
         String dayOfWeekStr = cal.getDisplayName(
                 Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()).toUpperCase();
         dayOfWeekTv.setText(dayOfWeekStr);
         dayOfMonthTv.setText("" + cal.get(Calendar.DAY_OF_MONTH));
+
+        dayOfWeekTv.setTextColor(ContextCompat.getColor(getContext(), isToday ? R.color.brand_main : R.color.text_calendar_weekdate));
+        dayOfMonthTv.setTextColor(ContextCompat.getColor(getContext(), isToday ? R.color.brand_main : R.color.text_calendar_weekdate));
     }
 
     @Override

@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +38,7 @@ import static david.itimecalendar.calendar.ui.monthview.DayViewBodyCell.DAY_CROS
 import static david.itimecalendar.calendar.ui.monthview.DayViewBodyCell.DAY_CROSS_END;
 import static david.itimecalendar.calendar.ui.monthview.DayViewBodyCell.REGULAR;
 import static david.itimecalendar.calendar.ui.monthview.DayViewBodyCell.UNDEFINED;
+import static david.itimecalendar.calendar.util.BaseUtil.getDate;
 
 /**
  * Created by yuhaoliu on 9/01/2017.
@@ -608,6 +610,7 @@ public class EventController {
     }
 
     private int getRegularEventType(WrapperEvent wrapper){
+
         long startTime = wrapper.getEvent().getStartTime();
         long endTime = wrapper.getEvent().getEndTime();
         long fromDayBegin = wrapper.getFromDayBegin();

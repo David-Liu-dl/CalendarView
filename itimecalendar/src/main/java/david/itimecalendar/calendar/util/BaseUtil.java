@@ -11,6 +11,7 @@ import android.widget.ImageView;
 
 
 import java.util.Calendar;
+import java.util.Date;
 
 import david.itimecalendar.calendar.listeners.ITimeEventInterface;
 
@@ -74,5 +75,11 @@ public class BaseUtil {
 
     public static boolean isToday(Calendar calendar){
         return DateUtils.isToday(calendar.getTimeInMillis());
+    }
+
+    public static Date getDate(long time){
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(time);
+        return cal.getTime();
     }
 }

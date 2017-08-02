@@ -1,6 +1,7 @@
 package david.itimecalendar.calendar.ui.unitviews;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -30,7 +31,9 @@ public class DraggableEventView extends RelativeLayout {
     public static int TYPE_TEMP = 1;
     //0: default_normal, -1: temp view;
     private int viewType = 0;
-    private int eventType = 0;
+    // 0,un-confirm, 1, confirm
+    private int eventStatus = 0;
+    private String eventType = "";
     private int bgColor;
     private int barColor;
 
@@ -76,16 +79,21 @@ public class DraggableEventView extends RelativeLayout {
         title.setTextColor(getResources().getColor(R.color.event_as_bg_title));
     }
 
-    private void updateView(){
+    private void initDisplayData(){
+        this.eventStatus = event.isConfirmed() ? 1 : 0;
+        this.eventType = event.getEventType() == null ? ITimeEventInterface.EVENT_TYPE_SOLO : event.getEventType();
+    }
+
+    private void updateViewStatus(){
         //if bgColor is not determined
-        switch (this.eventType){
+        switch (this.eventStatus){
             case 0:
-                bgColor = getContext().getResources().getColor(R.color.confirmed_event_bg);
-                barColor = getContext().getResources().getColor(R.color.confirmed_event_bar);
-                break;
-            case 1:
                 bgColor = getContext().getResources().getColor(R.color.unconfirmed_event_bg);
                 barColor = getContext().getResources().getColor(R.color.unconfirmed_event_bar);
+                break;
+            case 1:
+                bgColor = getContext().getResources().getColor(R.color.confirmed_event_bg);
+                barColor = getContext().getResources().getColor(R.color.confirmed_event_bar);
                 break;
         }
 
@@ -94,12 +102,29 @@ public class DraggableEventView extends RelativeLayout {
         bg.setColor(bgColor);
 
         leftBar.setBackgroundColor(barColor);
+
+        // refresh icon
+
+        switch (this.eventType){
+            case ITimeEventInterface.EVENT_TYPE_SOLO:
+                icon.setVisibility(View.GONE);
+                break;
+            case ITimeEventInterface.EVENT_TYPE_GROUP:
+                icon.setVisibility(View.VISIBLE);
+                Drawable iconSrc = getContext().getResources().getDrawable(
+                        eventStatus == 0 ?
+                                R.drawable.icon_calendar_group_unconfirmed
+                                : R.drawable.icon_calendar_group_confirmed );
+                icon.setImageDrawable(iconSrc);
+                break;
+        }
     }
 
     private void initDataInViews(){
         if (this.event != null){
+            this.initDisplayData();
             this.setText();
-            this.updateView();
+            this.updateViewStatus();
         }
     }
 
@@ -127,8 +152,8 @@ public class DraggableEventView extends RelativeLayout {
 
     private void initIcon(){
         icon = new ImageView(getContext());
+        icon.setVisibility(GONE);
         icon.setId(generateViewId());
-        icon.setImageResource(R.drawable.itime_question_mark_small);
         LayoutParams params = new LayoutParams(DensityUtil.dip2px(getContext(), 12),DensityUtil.dip2px(getContext(), 12));
         params.topMargin = DensityUtil.dip2px(getContext(),6);
         params.addRule(RIGHT_OF,leftBar.getId());

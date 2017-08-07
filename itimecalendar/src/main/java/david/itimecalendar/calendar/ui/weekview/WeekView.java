@@ -175,13 +175,10 @@ public class WeekView extends RelativeLayout{
         this.dayViewBodyContainer.addView(dayViewBody, bodyParams);
     }
 
-//    public void setScrollInterface(ITimeRecycleViewGroup.ScrollInterface scrollInterface){
-//        dayViewBody.setScrollInterface(scrollInterface);
-//    }
-
     public void scrollToDate(Date date){
+
         this.headerScrollToDate(date);
-        dayViewBody.scrollToDate(date);
+        this.dayViewBody.scrollToDate(date);
     }
 
     private void headerScrollToDate(Date date){

@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -77,7 +78,7 @@ public class MonthView extends LinearLayout{
 
     private void setUpHeader(){
         LayoutInflater inflater = LayoutInflater.from(context);
-        View dayOfWeek = inflater.inflate(R.layout.day_of_week, null, false);
+        final View dayOfWeek = inflater.inflate(R.layout.day_of_week, null, false);
         this.addView(dayOfWeek);
 
         headerRecyclerView = new RecyclerView(context);
@@ -88,6 +89,7 @@ public class MonthView extends LinearLayout{
             public boolean todayHasEvent(long startOfDay) {
                 boolean hasRegular = eventPackage.getRegularEventDayMap().containsKey(startOfDay) && (eventPackage.getRegularEventDayMap().get(startOfDay).size() != 0);
                 boolean hasRepeated = eventPackage.getRepeatedEventDayMap().containsKey(startOfDay) && (eventPackage.getRepeatedEventDayMap().get(startOfDay).size() != 0);
+
                 return hasRegular || hasRepeated;
             }
         });
@@ -101,6 +103,13 @@ public class MonthView extends LinearLayout{
             public void onDateSelected(Date date) {
                 if (dayViewBody != null){
                     dayViewBody.scrollToDate(date);
+                }
+            }
+
+            @Override
+            public void onHeaderFlingDateChanged(Date newestDate) {
+                if (iTimeCalendarInterface != null){
+                    iTimeCalendarInterface.onHeaderFlingDateChanged(newestDate);
                 }
             }
         });
@@ -209,18 +218,18 @@ public class MonthView extends LinearLayout{
                 if (day_diff != 0){
                     int new_index = day_diff - 1;
                     headerRecyclerAdapter.indexInRow = new_index;
-                    headerRecyclerAdapter.notifyDataSetChanged();
                 }
             }
+            headerRecyclerAdapter.notifyDataSetChanged();
         }else {
             headerRecyclerView.stopScroll();
             headerLinearLayoutManager.scrollToPosition(headerRecyclerAdapter.rowPst);
-            headerRecyclerView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    headerScrollToDate(body_fst_cal,toTime);
-                }
-            },10);
+//            headerRecyclerView.postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    headerScrollToDate(body_fst_cal,toTime);
+//                }
+//            },10);
         }
     }
 
@@ -231,8 +240,31 @@ public class MonthView extends LinearLayout{
     }
     private HeaderStatus headerStatus = HeaderStatus.COLLAPSED;
 
-    public void scrollToDate(Date date){
-        dayViewBody.scrollToDate(date);
+    public void scrollToDate(final Date date){
+        collapseHeader(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(date);
+                headerScrollToDate(calendar,false);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+
     }
 
     private void collapseHeader(Animator.AnimatorListener callback){
@@ -240,44 +272,42 @@ public class MonthView extends LinearLayout{
         headerLinearLayoutManager.scrollToPositionWithOffset(headerRecyclerAdapter.getCurrentSelectPst(), 0);
 
         final View view = headerRecyclerView;
-        if (vaCollapse == null){
-            vaCollapse = ValueAnimator.ofInt(headerExpandedHeight, headerCollapsedHeight);
-            vaCollapse.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    Integer value = (Integer) animation.getAnimatedValue();
-                    view.getLayoutParams().height = value.intValue();
-                    view.requestLayout();
-                }
-            });
-
-            if(callback != null){
-                vaCollapse.addListener(callback);
+        vaCollapse = ValueAnimator.ofInt(view.getHeight(), headerCollapsedHeight);
+        vaCollapse.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            public void onAnimationUpdate(ValueAnimator animation) {
+                Integer value = (Integer) animation.getAnimatedValue();
+                view.getLayoutParams().height = value.intValue();
+                view.requestLayout();
             }
+        });
 
-            vaCollapse.setDuration(200);
+        if(callback != null){
+            vaCollapse.addListener(callback);
         }
 
-        if(headerStatus != HeaderStatus.COLLAPSED && !vaCollapse.isRunning()){
+        vaCollapse.setDuration(200);
+
+        if(headerStatus != HeaderStatus.COLLAPSED){
             headerStatus = HeaderStatus.COLLAPSED;
             vaCollapse.start();
+        }else {
+            vaCollapse.end();
         }
     }
 
     private void expandHeader(){
         final View view = headerRecyclerView;
-        if (vaExpand == null){
-            vaExpand = ValueAnimator.ofInt(headerCollapsedHeight, headerExpandedHeight);
-            vaExpand.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    Integer value = (Integer) animation.getAnimatedValue();
-                    view.getLayoutParams().height = value.intValue();
-                    view.requestLayout();
-                }
-            });
-            vaExpand.setDuration(200);
-        }
+        vaExpand = ValueAnimator.ofInt(view.getHeight(), headerExpandedHeight);
+        vaExpand.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            public void onAnimationUpdate(ValueAnimator animation) {
+                Integer value = (Integer) animation.getAnimatedValue();
+                view.getLayoutParams().height = value.intValue();
+                view.requestLayout();
+            }
+        });
+        vaExpand.setDuration(200);
 
-        if (headerStatus != HeaderStatus.EXPANDED && !vaExpand.isRunning()){
+        if (headerStatus != HeaderStatus.EXPANDED){
             headerStatus = HeaderStatus.EXPANDED;
             vaExpand.start();
         }
@@ -299,5 +329,6 @@ public class MonthView extends LinearLayout{
 
     public void refresh(){
         dayViewBody.refresh();
+        headerRecyclerAdapter.notifyDataSetChanged();
     }
 }

@@ -30,10 +30,8 @@ public class AgendaHeaderViewRecyclerAdapter extends RecyclerView.Adapter<Agenda
 
     public int rowPst;
     public int todayOfWeek;
-    public int indexInRow = 0;
+    public int indexInRow;
 
-    private AgendaBodyRecyclerView bodyRecyclerView;
-    private LinearLayoutManager bodyLinearLayoutManager;
 
     public AgendaHeaderViewRecyclerAdapter(Context context, int upperBoundsOffset) {
         inflater = LayoutInflater.from(context);
@@ -42,14 +40,6 @@ public class AgendaHeaderViewRecyclerAdapter extends RecyclerView.Adapter<Agenda
         rowPst = startPosition;
         todayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1;
         indexInRow = todayOfWeek;
-    }
-
-    public void setBodyRecyclerView(AgendaBodyRecyclerView bodyRecyclerView){
-        this.bodyRecyclerView = bodyRecyclerView;
-    }
-
-    public void setBodyLayoutManager(LinearLayoutManager bodyLinearLayoutManager){
-        this.bodyLinearLayoutManager = bodyLinearLayoutManager;
     }
 
     public int getCurrentSelectPst(){
@@ -97,7 +87,7 @@ public class AgendaHeaderViewRecyclerAdapter extends RecyclerView.Adapter<Agenda
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            headerRow = (DayViewHeader) itemView.findViewById(R.id.calendarDayViewHeader);
+            headerRow = (DayViewHeader) itemView;
             headerRow.setCalendar(new MyCalendar(Calendar.getInstance()));
             headerRow.resizeCurrentWeekHeaders();
             headerRow.setOnCalendarHeaderDayClickListener(new DayViewHeader.OnCalendarHeaderDayClickListener() {

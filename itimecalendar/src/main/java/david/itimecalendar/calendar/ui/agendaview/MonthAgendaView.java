@@ -93,6 +93,11 @@ public class MonthAgendaView extends RelativeLayout{
         this.bodyRecyclerAdapter.notifyDataSetChanged();
     }
 
+    public void refresh(){
+        headerRecyclerAdapter.notifyDataSetChanged();
+        bodyRecyclerAdapter.notifyDataSetChanged();
+    }
+
     /**
      * scroll to date of today.
      */
@@ -127,26 +132,45 @@ public class MonthAgendaView extends RelativeLayout{
         this.bodyLinearLayoutManager.scrollToPosition(0);
     }
 
-    /**
-     * scroll to certain date.
-     * @param calendar
-     */
-    public void scrollTo(final Calendar calendar){
-        if (agendaViewHeader.getHeight() == 0){
-            ViewTreeObserver vto = agendaViewHeader.getViewTreeObserver();
-            vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    agendaViewHeader.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                    agendaViewHeader.stopScroll();
+    public void scrollToDate(final Date date){
+        collapseHeader(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                final Calendar calendar = Calendar.getInstance();
+                calendar.setTime(date);
+
+                if (agendaViewHeader.getHeight() == 0){
+                    ViewTreeObserver vto = agendaViewHeader.getViewTreeObserver();
+                    vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                        @Override
+                        public void onGlobalLayout() {
+                            agendaViewHeader.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                            agendaViewHeader.stopScroll();
+                            agendaViewBody.stopScroll();
+                            headerScrollToDate(calendar);
+                        }
+                    });
+                }else{
                     agendaViewBody.stopScroll();
                     headerScrollToDate(calendar);
                 }
-            });
-        }else{
-            agendaViewHeader.stopScroll();
-            headerScrollToDate(calendar);
-        }
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
     }
 
     /**
@@ -229,8 +253,6 @@ public class MonthAgendaView extends RelativeLayout{
         agendaViewBody.setHasFixedSize(false);
         agendaViewBody.setAdapter(bodyRecyclerAdapter);
         bodyLinearLayoutManager = new LinearLayoutManager(context);
-        headerRecyclerAdapter.setBodyRecyclerView(agendaViewBody);
-        headerRecyclerAdapter.setBodyLayoutManager(bodyLinearLayoutManager);
         agendaViewBody.setLayoutManager(bodyLinearLayoutManager);
         agendaViewBody.addOnScrollListener(new BodyOnScrollListener());
 
@@ -250,10 +272,9 @@ public class MonthAgendaView extends RelativeLayout{
 
     private void collapseHeader(Animator.AnimatorListener callback){
         agendaViewHeader.stopScroll();
-        headerLinearLayoutManager.scrollToPositionWithOffset(headerRecyclerAdapter.getCurrentSelectPst(), 0);
-
+        headerLinearLayoutManager.scrollToPositionWithOffset(headerRecyclerAdapter.rowPst,0);
         final View view = agendaViewHeader;
-        ValueAnimator va = ValueAnimator.ofInt(scroll_height, init_height);
+        ValueAnimator va = ValueAnimator.ofInt(view.getHeight(), init_height);
         va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             public void onAnimationUpdate(ValueAnimator animation) {
                 Integer value = (Integer) animation.getAnimatedValue();
@@ -272,7 +293,7 @@ public class MonthAgendaView extends RelativeLayout{
 
     private void expandHeader(){
         final View view = agendaViewHeader;
-        ValueAnimator va = ValueAnimator.ofInt(init_height, scroll_height);
+        ValueAnimator va = ValueAnimator.ofInt(view.getHeight(), scroll_height);
         va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             public void onAnimationUpdate(ValueAnimator animation) {
                 Integer value = (Integer) animation.getAnimatedValue();
@@ -307,7 +328,6 @@ public class MonthAgendaView extends RelativeLayout{
     }
 
     private void headerScrollToDate(Calendar body_fst_cal){
-
         DayViewHeader headerView =
                 (DayViewHeader) headerLinearLayoutManager.findViewByPosition(headerRecyclerAdapter.rowPst);
 
@@ -333,24 +353,17 @@ public class MonthAgendaView extends RelativeLayout{
             if ((row_diff != 0 || day_diff != 0)){
                 if (row_diff != 0){
                     int newRowPst = row_diff + headerRecyclerAdapter.rowPst;
-                    agendaViewHeader.stopScroll();
-                    agendaViewHeader.scrollToPosition(newRowPst);
+                    headerLinearLayoutManager.scrollToPosition(newRowPst);
                     headerRecyclerAdapter.rowPst = newRowPst;
                 }
                 if (day_diff != 0){
+                    // update selected index when onBindViewHolder is called
                     final int new_index = day_diff - 1;
-                    postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            DayViewHeader need_set_index_header =((DayViewHeader) headerLinearLayoutManager.findViewByPosition(headerRecyclerAdapter.rowPst));
-                            if (need_set_index_header != null){
-                                need_set_index_header.performNthDayClick(new_index);
-                            }
-                        }
-                    },100);
                     headerRecyclerAdapter.indexInRow = new_index;
                 }
             }
+
+            headerRecyclerAdapter.notifyDataSetChanged();
         }else {
             agendaViewHeader.stopScroll();
             agendaViewHeader.scrollToPosition(headerRecyclerAdapter.rowPst);

@@ -421,6 +421,7 @@ public class DayViewBody extends RelativeLayout {
 
     public void setOnBodyEventListener(OnViewBodyEventListener onEventListener) {
         this.onEventListener = onEventListener;
+        this.allDayView.setAllDayEventListener(onEventListener);
     }
 
     public void setOnBodyTimeslotListener(OnViewBodyTimeSlotListener onTimeslotListener) {

@@ -10,4 +10,5 @@ import david.itimecalendar.calendar.ui.monthview.DayViewBody;
 
 public interface ITimeCalendarMonthDayViewListener extends DayViewBody.OnViewBodyEventListener {
     void onDateChanged(Date date);
+    void onHeaderFlingDateChanged(Date newestDate);
 }

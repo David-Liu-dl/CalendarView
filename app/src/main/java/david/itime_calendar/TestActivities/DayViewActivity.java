@@ -3,6 +3,8 @@ package david.itime_calendar.TestActivities;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -36,6 +38,15 @@ public class DayViewActivity extends AppCompatActivity {
 
     private void doTest(){
         final MonthView monthView = (MonthView) findViewById(R.id.day_view);
+
+        TextView todayBtn = (TextView) findViewById(R.id.today);
+        todayBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                monthView.scrollToDate(new Date());
+            }
+        });
+
         monthView.setITimeCalendarMonthDayViewListener(new ITimeCalendarMonthDayViewListener(){
             @Override
             public void onAllDayEventClick(ITimeEventInterface event) {

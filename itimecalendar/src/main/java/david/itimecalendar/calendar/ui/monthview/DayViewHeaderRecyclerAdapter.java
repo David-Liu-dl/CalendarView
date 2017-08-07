@@ -2,7 +2,6 @@ package david.itimecalendar.calendar.ui.monthview;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,12 +53,19 @@ public class DayViewHeaderRecyclerAdapter extends RecyclerView.Adapter<DayViewHe
 
     @Override
     public void onBindViewHolder(DayViewHeaderRecyclerAdapter.MyViewHolder holder, int position) {
+        // set up body
+        MyCalendar calendar = holder.headerRow.getCalendar();
+        calendar.setOffset((position-startPosition)*7 - todayOfWeek);
         holder.headerRow.rowPst = position;
-        holder.headerRow.getCalendar().setOffset((position-startPosition)*7 - todayOfWeek);
         holder.headerRow.updateDate();
 
         if (position == rowPst){
             holder.headerRow.performNthDayClick(indexInRow);
+        }
+
+        // update scrolling max & min date
+        if (onHeaderListener != null){
+            onHeaderListener.onHeaderFlingDateChanged(calendar.getCalendar().getTime());
         }
     }
 
@@ -122,5 +128,6 @@ public class DayViewHeaderRecyclerAdapter extends RecyclerView.Adapter<DayViewHe
     interface OnHeaderListener{
         void onClick(MyCalendar myCalendar);
         void onDateSelected(Date date);
+        void onHeaderFlingDateChanged(Date newestDate);
     }
 }

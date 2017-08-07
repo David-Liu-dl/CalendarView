@@ -108,6 +108,11 @@ public class DayViewActivity extends AppCompatActivity {
             public void onDateChanged(Date date) {
                 Log.i(TAG, "onDateChanged: " + date);
             }
+
+            @Override
+            public void onHeaderFlingDateChanged(Date newestDate) {
+
+            }
         });
         monthView.setEventPackage(eventManager.getEventsMap());
 

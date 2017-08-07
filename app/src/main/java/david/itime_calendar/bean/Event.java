@@ -14,6 +14,7 @@ import org.greenrobot.greendao.annotation.ToMany;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -29,27 +30,27 @@ import david.itimecalendar.calendar.listeners.ITimeInviteeInterface;
 @Entity
 public class Event implements ITimeEventInterface<Event>, Serializable, Cloneable,RuleInterface {
     @Id
-    private String eventUid;
+    private String eventUid = "";
     // for other calendars
-    private String eventId;
-    private String recurringEventUid;
+    private String eventId = "";
+    private String recurringEventUid = "";
     // for other calendars
-    private String recurringEventId;
-    private String calendarUid;
-    private String iCalUID;
-    private String hostUserUid; // add by paul
-    private String summary;
-    private String url;
+    private String recurringEventId = "";
+    private String calendarUid = "";
+    private String iCalUID = "";
+    private String hostUserUid = ""; // add by paul
+    private String summary = "";
+    private String url = "";
     private String location = "this is location";
-    private String locationNote;
+    private String locationNote = "";
     private double locationLatitude;
     private double locationLongitude;
-    private String note;
+    private String note = "";
     private boolean isAllDay;
-    private String eventStatus;
+    private String eventStatus = "";
 
 
-    private transient List<PhotoUrl> photoList = null;
+    private transient List<PhotoUrl> photoList = new ArrayList<>();
     private transient String[] recurrence = {};
 
     private String photo = "[]";

@@ -68,13 +68,19 @@ public class AgendaHeaderViewRecyclerAdapter extends RecyclerView.Adapter<Agenda
 
     @Override
     public void onBindViewHolder(AgendaHeaderViewRecyclerAdapter.MyViewHolder holder, int position) {
+        MyCalendar calendar = holder.headerRow.getCalendar();
+        calendar.setOffset((position-startPosition)*7 - todayOfWeek);
         holder.headerRow.rowPst = position;
-        holder.headerRow.getCalendar().setOffset((position-startPosition)*7 - todayOfWeek);
         holder.headerRow.updateDate();
         if (position == rowPst){
             holder.headerRow.performNthDayClick(indexInRow);
         }
         holder.headerRow.invalidate();
+
+        // update scrolling max & min date
+        if (onHeaderListener != null){
+            onHeaderListener.onHeaderFlingDateChanged(calendar.getCalendar().getTime());
+        }
     }
 
     @Override
@@ -134,5 +140,6 @@ public class AgendaHeaderViewRecyclerAdapter extends RecyclerView.Adapter<Agenda
     public interface OnHeaderListener{
         void onClick(MyCalendar myCalendar);
         void onDateSelected(Date date);
+        void onHeaderFlingDateChanged(Date newestDate);
     }
 }

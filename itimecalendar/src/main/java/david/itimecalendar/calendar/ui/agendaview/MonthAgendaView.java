@@ -218,6 +218,13 @@ public class MonthAgendaView extends RelativeLayout{
                     bodyLinearLayoutManager.scrollToPositionWithOffset(headerRecyclerAdapter.getCurrentDayOffset(), 0);
                 }
             }
+
+            @Override
+            public void onHeaderFlingDateChanged(Date newestDate) {
+                if (iTimeCalendarInterface != null){
+                    iTimeCalendarInterface.onHeaderFlingDateChanged(newestDate);
+                }
+            }
         });
         headerRecyclerAdapter.setOnCheckIfHasEvent(new DayViewHeader.OnCheckIfHasEvent() {
 

@@ -10,4 +10,5 @@ import david.itimecalendar.calendar.ui.agendaview.AgendaViewBody;
 
 public interface ITimeCalendarMonthAgendaViewListener extends AgendaViewBody.OnEventClickListener{
     void onDateChanged(Date date);
+    void onHeaderFlingDateChanged(Date newestDate);
 }

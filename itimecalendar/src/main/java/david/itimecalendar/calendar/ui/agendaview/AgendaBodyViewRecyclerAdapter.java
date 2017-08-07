@@ -68,14 +68,6 @@ public class AgendaBodyViewRecyclerAdapter extends RecyclerView.Adapter<AgendaBo
 
         List<ITimeEventInterface> allEvents = new ArrayList<>();
 
-        //all day
-//        for (ITimeEventInterface allDayEvent:this.eventPackage.getAllDayEvents()
-//             ) {
-//            if (isWithin(allDayEvent, holder.bodyRow.getCalendar().getCalendar())){
-//                allEvents.add(allDayEvent);
-//            }
-//        }
-
         //regular
         if (this.eventPackage.getRegularEventDayMap().containsKey(startTime)){
             allEvents.addAll(this.eventPackage.getRegularEventDayMap().get(startTime));

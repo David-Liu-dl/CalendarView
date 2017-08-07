@@ -368,6 +368,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
                 if (status == HORIZONTAL_FLING) {
                     scrollOverTouchSlop = true;
                     scrollModel = SCROLL_HORIZONTAL;
+                    return true;
                 }
 
                 if (status == VERTICAL_FLING) {

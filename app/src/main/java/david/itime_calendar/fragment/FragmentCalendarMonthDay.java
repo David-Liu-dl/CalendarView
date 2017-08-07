@@ -91,5 +91,10 @@ public class FragmentCalendarMonthDay extends Fragment {
         public void onDateChanged(Date date) {
 
         }
+
+        @Override
+        public void onHeaderFlingDateChanged(Date newestDate) {
+
+        }
     }
 }

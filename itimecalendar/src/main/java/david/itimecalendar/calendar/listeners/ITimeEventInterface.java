@@ -29,8 +29,8 @@ public interface ITimeEventInterface<T> extends Comparable<T> {
      *
      * @param isAllDay
      */
-    void setIsAllDay(boolean isAllDay);
-    boolean getIsAllDay();
+    void setAllDay(boolean allday);
+    boolean isAllDay();
     /**
      *
      * @return View.VISIBILITY

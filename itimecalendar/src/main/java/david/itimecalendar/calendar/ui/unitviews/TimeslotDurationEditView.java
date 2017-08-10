@@ -39,7 +39,7 @@ import static android.widget.RelativeLayout.CENTER_VERTICAL;
  * Created by yuhaoliu on 31/05/2017.
  */
 
-public class TimeslotDurationWidget<T> extends FrameLayout{
+public class TimeslotDurationEditView<T> extends FrameLayout{
     View bgView;
     LinearLayout container;
 
@@ -62,21 +62,21 @@ public class TimeslotDurationWidget<T> extends FrameLayout{
     //dp
     private int btnBlockWidth = 50;
 
-    public TimeslotDurationWidget(@NonNull Context context) {
+    public TimeslotDurationEditView(@NonNull Context context) {
         super(context);
         initViews();
         initViewState();
         initListeners();
     }
 
-    public TimeslotDurationWidget(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public TimeslotDurationEditView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         initViews();
         initViewState();
         initListeners();
     }
 
-    public TimeslotDurationWidget(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
+    public TimeslotDurationEditView(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initViews();
         initViewState();

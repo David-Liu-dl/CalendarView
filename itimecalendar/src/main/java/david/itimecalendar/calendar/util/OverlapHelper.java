@@ -10,11 +10,11 @@ import java.util.List;
 public class OverlapHelper <I extends OverlapHelper.OverlapInput<I>> {
     private final long overlapTolerance = (15/2) * 60 * 1000;
 
-    private ArrayList<I> eventModules = new ArrayList<>();
+    private List<I> eventModules = new ArrayList<>();
     private List<ArrayList<OverlappedEvent>> groupedOlpEventList = new ArrayList<>();
 
-    public List<ArrayList<OverlappedEvent>> computeOverlapXForEvents(ArrayList<I> eventModules){
-        this.eventModules = eventModules;
+    public List<ArrayList<OverlappedEvent>> computeOverlapXObject(List<I> objs){
+        this.eventModules = objs;
         groupedOlpEventList.clear();
         // sort item by start time first
         this.sortEvent();
@@ -39,6 +39,20 @@ public class OverlapHelper <I extends OverlapHelper.OverlapInput<I>> {
         return groupedOlpEventList;
     }
 
+    public boolean  isConflicted(List<I> objs, I compare){
+        long compareStartTime = compare.getStartTime();
+        for (I obj:objs
+             ) {
+            long comparedStartTime = obj.getStartTime();
+            long comparedEndTime = obj.getEndTime();
+            if (comparedStartTime <= compareStartTime && comparedEndTime > comparedStartTime){
+                return true;
+            }
+        }
+
+        return false;
+    }
+    
     private void sortEvent(){
         Collections.sort(eventModules);
     }

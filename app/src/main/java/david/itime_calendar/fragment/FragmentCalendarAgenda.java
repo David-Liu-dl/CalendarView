@@ -43,6 +43,11 @@ public class FragmentCalendarAgenda extends Fragment {
             }
 
             @Override
+            public void onHeaderFlingDateChanged(Date newestDate) {
+
+            }
+
+            @Override
             public void onEventClick(ITimeEventInterface event) {
 
             }

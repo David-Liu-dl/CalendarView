@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.LayoutTransition;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Rect;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 
 import david.itimecalendar.R;
+import david.itimecalendar.calendar.listeners.ITimeEventInterface;
 import david.itimecalendar.calendar.ui.weekview.TimeSlotView;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
 import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
@@ -44,7 +44,7 @@ import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
 public class DayViewBody extends RelativeLayout {
     private static final String TAG = "DayViewBody";
 
-    private DayViewAllDay allDayView;
+    public DayViewAllDay allDayView;
     private FrameLayout leftTimeBarLayout;
     private ScrollView leftTimeBarLayoutContainer;
 
@@ -117,7 +117,6 @@ public class DayViewBody extends RelativeLayout {
         allDayView.setBackgroundColor(getResources().getColor(R.color.divider_calbg));
         allDayView.setElevation(20);
         allDayView.setSlotsInfo(this.timeSlotPackage);
-        allDayView.setTimeslotEnable(false);
         allDayView.setId(generateViewId());
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         allDayView.setLayoutParams(params);
@@ -419,6 +418,24 @@ public class DayViewBody extends RelativeLayout {
     private OnViewBodyEventListener onEventListener;
     private OnViewBodyTimeSlotListener onTimeslotListener;
 
+    public void hideBodyTimeslot(){
+        List<View> holders = dayViewBodyAdapter.getViewItems();
+        for (View view:holders
+             ) {
+            DayViewBodyCell cell = (DayViewBodyCell) view;
+            cell.hideTimeslot();
+        }
+    }
+
+    public void showBodyTimeslot(){
+        List<View> holders = dayViewBodyAdapter.getViewItems();
+        for (View view:holders
+                ) {
+            DayViewBodyCell cell = (DayViewBodyCell) view;
+            cell.showTimeslot();
+        }
+    }
+
     public void setOnBodyEventListener(OnViewBodyEventListener onEventListener) {
         this.onEventListener = onEventListener;
         this.allDayView.setAllDayEventListener(onEventListener);
@@ -463,15 +480,45 @@ public class DayViewBody extends RelativeLayout {
         return timeSlotPackage;
     }
 
-    public void enableTimeSlot(){
-        allDayView.setTimeslotEnable(true);
+    public void enableTimeSlot(boolean draggable){
+        enableHeaderSlot();
+        enableBodyTimeSlot(draggable);
+    }
+
+    public void disableTimeSlot(){
+        disableHeaderSlot();
+        disableBodyTimeSlot();
+    }
+
+    public void disableHeaderSlot(){
+        allDayView.setTimeslotEnable(false);
+    }
+
+    public void disableBodyTimeSlot(){
         if (dayViewBodyAdapter != null){
             List<View> items = dayViewBodyAdapter.getViewItems();
             for (View view:items
                     ) {
                 DayViewBodyCell cell = (DayViewBodyCell) view;
-                cell.enableTimeSlot();
+                cell.disableTimeslot();
             }
+        }
+    }
+
+    public void enableHeaderSlot(){
+        allDayView.setTimeslotEnable(true);
+        allDayView.notifyDataSetChanged();
+    }
+
+    public void enableBodyTimeSlot(boolean draggable){
+        if (dayViewBodyAdapter != null){
+            List<View> items = dayViewBodyAdapter.getViewItems();
+            for (View view:items
+                    ) {
+                DayViewBodyCell cell = (DayViewBodyCell) view;
+                cell.enableTimeSlot(draggable);
+            }
+            dayViewBodyAdapter.notifyDataSetChanged();
         }
     }
 
@@ -479,30 +526,21 @@ public class DayViewBody extends RelativeLayout {
         WrapperTimeSlot wrapper = new WrapperTimeSlot(slotInfo);
         addSlotToPackage(wrapper);
 
-        if (dayViewBodyAdapter != null){
+        if (slotInfo.isAllDay()){
+            allDayView.notifyDataSetChanged();
+        }else if (dayViewBodyAdapter != null){
             dayViewBodyAdapter.notifyDataSetChanged();
         }
-
-        allDayView.notifyDataSetChanged();
     }
 
     public void addTimeSlot(WrapperTimeSlot wrapperTimeSlot){
         addSlotToPackage(wrapperTimeSlot);
-        if (dayViewBodyAdapter != null){
+        if (wrapperTimeSlot.getTimeSlot().isAllDay()){
+            allDayView.notifyDataSetChanged();
+        }else if (dayViewBodyAdapter != null){
             dayViewBodyAdapter.notifyDataSetChanged();
         }
-        allDayView.notifyDataSetChanged();
     }
-
-//    public void addTimeSlot(ITimeTimeSlotInterface slotInfo, boolean isSelected){
-//        WrapperTimeSlot wrapper = new WrapperTimeSlot(slotInfo);
-//        wrapper.setSelected(isSelected);
-//        addSlotToPackage(wrapper);
-//        if (dayViewBodyAdapter != null){
-//            dayViewBodyAdapter.notifyDataSetChanged();
-//        }
-//        allDayView.notifyDataSetChanged();
-//    }
 
     private void addSlotToPackage(WrapperTimeSlot wrapperSlot){
         if (wrapperSlot.isRecommended() && !wrapperSlot.isSelected()){
@@ -514,10 +552,6 @@ public class DayViewBody extends RelativeLayout {
 
     public void removeTimeslot(ITimeTimeSlotInterface timeslot){
         getTimeSlotPackage().realSlots.remove(timeslot);
-    }
-
-    public void removeTimeslot(TimeSlotView timeslotView){
-
     }
 
     public void resetTimeSlots(){
@@ -740,25 +774,6 @@ public class DayViewBody extends RelativeLayout {
     public void notifyDataSetChanged(){
         dayViewBodyAdapter.notifyDataSetChanged();
         allDayView.notifyDataSetChanged();
-    }
-
-    private Mode mode = Mode.REGULAR;
-
-    public enum Mode{
-        ALL_DAY, REGULAR
-    }
-
-    public void setViewMode(Mode mode){
-        this.mode = mode;
-
-        switch (this.mode){
-            case ALL_DAY:
-                allDayView.setAlldayTimeslotEnable(true);
-                break;
-            case REGULAR:
-                allDayView.setAlldayTimeslotEnable(false);
-                break;
-        }
     }
 
     public interface OnViewBodyTimeSlotListener extends TimeSlotController.OnTimeSlotListener,DayViewAllDay.AllDayTimeslotListener {

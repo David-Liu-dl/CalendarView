@@ -363,4 +363,8 @@
     <color name="allday_timeslot_text">#757575</color>
     <color name="allday_timeslot_bg">#fafafa</color>
     <color name="timeslot_edit_menu_grey">#bdbdbd</color>
+    <color name="timeslot_select_mode_bg">#EDF5FF</color>
+    <color name="timeslot_select_mode_text">#0089ff</color>
+    <color name="timeslot_select_mode_border_selected">#0089ff</color>
+    <color name="timeslot_select_mode_border_non_selected">#400089ff</color>
 </resources>

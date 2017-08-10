@@ -72,14 +72,14 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 1; i < 4; i++) {
             endTime = startTime + interval;
             Event event = new Event();
-            event.setIsAllDay(false);
-//            event.setIsAllDay(0);
             event.setEventUid("" + i);
             event.setEventStatus(i == 1 ? "Confirmed" : "Unconfirmed");
             event.setEventType(i == 1 ? ITimeEventInterface.EVENT_TYPE_GROUP:ITimeEventInterface.EVENT_TYPE_SOLO);
             event.setSummary("adawdwadwadaw" + i);
             event.setLocation("here");
             event.setStartTime(startTime);
+            event.setIsAllDay(true);
+
 
             List<Invitee> inviteeList = new ArrayList<>();
 
@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
             event.setEndTime(endTime);
             events.add(event);
 
-            startTime = startTime + allDayInterval;
+            startTime = startTime;
         }
 
         dbManager.insertEventList(events);

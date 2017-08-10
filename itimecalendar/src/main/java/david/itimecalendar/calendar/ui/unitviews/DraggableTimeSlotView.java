@@ -11,24 +11,25 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.Calendar;
 
 import david.itimecalendar.R;
 import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
+import david.itimecalendar.calendar.ui.weekview.TimeSlotView;
 import david.itimecalendar.calendar.util.DensityUtil;
 import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
 
 /**
  * Created by yuhaoliu on 26/08/2016.
  */
-public class DraggableTimeSlotView extends FrameLayout {
+public class DraggableTimeSlotView extends RelativeLayout {
     public static int TYPE_NORMAL = 0;
     public static int TYPE_TEMP = 1;
 
-    public boolean onScreen = false;
     public boolean isAllday = false;
     private int type = 0;
     private long newStartTime = 0;
@@ -41,8 +42,11 @@ public class DraggableTimeSlotView extends FrameLayout {
     private ValueAnimator bgAlphaAnimation;
     private ValueAnimator frameAlphaAnimation;
     private TextView title;
+    private ImageView icon;
 
     private PosParam posParam;
+    private TimeSlotView.ViewMode mode = TimeSlotView.mode;
+
 
     public DraggableTimeSlotView(Context context, WrapperTimeSlot wrapper, boolean isAllday) {
         super(context);
@@ -50,21 +54,31 @@ public class DraggableTimeSlotView extends FrameLayout {
         this.isAllday = isAllday;
         this.timeslot = wrapper.getTimeSlot();
         if (timeslot != null){
+            if(!isAllday){
+                this.newEndTime = timeslot.getEndTime();
+            }
+
             this.newStartTime = timeslot.getStartTime();
-            this.newEndTime = timeslot.getEndTime();
             this.shownDuration = this.newEndTime - this.newStartTime;
         }
         init();
     }
 
     public void init(){
-        initViews();
-        initBackground();
-//        initIcon();
-//        initAnimation();
+        switch (mode){
+            case ALL_DAY_CREATE: case NON_ALL_DAY_CREATE:
+                initViewAsCreateMode();
+                initBackgroundAsCreateMode();
+                break;
+            case ALL_DAY_SELECT: case NON_ALL_DAY_SELECT:
+                initViewAsSelectMode();
+                initBackgroundAsSelectMode();
+                updateViewStatus();
+                break;
+        }
     }
 
-    public void initViews(){
+    private void initViewAsCreateMode(){
         this.addOnLayoutChangeListener(new OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
@@ -72,27 +86,68 @@ public class DraggableTimeSlotView extends FrameLayout {
                 title.measure(0,0);
                 if (width < title.getMeasuredWidth()){
                     title.setText(getTimeText(false));
+                    title.setGravity(Gravity.START);
+                }else {
+                    title.setGravity(Gravity.CENTER);
                 }
             }
         });
         title = new TextView(getContext());
-        title.setText(isAllday?"All Day":getTimeText(true));
+        title.setText(isAllday?getResources().getString(R.string.label_allday):getTimeText(true));
         title.setGravity(Gravity.CENTER);
         title.setTextColor(getResources().getColor(R.color.event_as_bg_title));
         title.setTextSize(12);
         LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.topMargin = DensityUtil.dip2px(getContext(),5);
-        layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
+        layoutParams.addRule(CENTER_HORIZONTAL);
         this.addView(title,layoutParams);
     }
 
-    public void initBackground(){
+    private void initBackgroundAsCreateMode(){
         this.setBackground(getResources().getDrawable(R.drawable.itime_round_corner_bg));
         GradientDrawable gd = (GradientDrawable) this.getBackground();
         gd.mutate();
         gd.setColor(Color.parseColor("#0073FF")); //set color
         gd.setCornerRadius(DensityUtil.dip2px(getContext(),7));
         gd.setStroke(1, Color.parseColor("#0073FF"), 0, 0);
+    }
+
+
+    private void initViewAsSelectMode(){
+        int iconSize = DensityUtil.dip2px(getContext(),25);
+        icon = new ImageView(getContext());
+        icon.setId(View.generateViewId());
+        LayoutParams iconLayoutParams = new LayoutParams(iconSize, iconSize);
+        iconLayoutParams.topMargin = DensityUtil.dip2px(getContext(),5);
+        iconLayoutParams.leftMargin = DensityUtil.dip2px(getContext(),5);
+        iconLayoutParams.rightMargin = DensityUtil.dip2px(getContext(),5);
+        this.addView(icon,iconLayoutParams);
+
+        title = new TextView(getContext());
+        title.setText(isAllday?getResources().getString(R.string.label_allday):getTimeText(false));
+        title.setGravity(Gravity.LEFT);
+        title.setTextColor(getResources().getColor(R.color.timeslot_select_mode_text));
+        title.setTextSize(12);
+        LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams.topMargin = DensityUtil.dip2px(getContext(),5);
+        layoutParams.addRule(END_OF,icon.getId());
+        this.addView(title,layoutParams);
+    }
+
+    private void initBackgroundAsSelectMode(){
+        this.setBackground(getResources().getDrawable(R.drawable.itime_round_corner_bg));
+        GradientDrawable gd = (GradientDrawable) this.getBackground();
+        gd.mutate();
+        gd.setColor(getResources().getColor(R.color.timeslot_select_mode_bg)); //set color
+        gd.setCornerRadius(DensityUtil.dip2px(getContext(),7));
+        gd.setStroke(1, Color.BLACK, 0, 0);
+        this.getBackground().setAlpha(217);
+    }
+
+    private void updateViewBorder(int color){
+        GradientDrawable gd = (GradientDrawable) this.getBackground();
+        gd.mutate();
+        gd.setStroke(1, color, 0, 0);
     }
 
     public void setTimes(long startTime, long endTime){
@@ -112,8 +167,26 @@ public class DraggableTimeSlotView extends FrameLayout {
     }
 
     public long getShownDuration() {
-//        return newEndTime - newStartTime == 0 ? shownDuration : (newEndTime - newStartTime);
         return shownDuration;
+    }
+
+    public void updateViewStatus(){
+        if (wrapper == null){
+            return;
+        }
+
+        if (wrapper.isSelected()){
+            icon.setImageDrawable(getResources().getDrawable(R.drawable.icon_details_check_selected));
+            updateViewBorder(getResources().getColor(R.color.timeslot_select_mode_border_selected));
+        }else if (wrapper.isConflict()){
+            icon.setImageDrawable(getResources().getDrawable(R.drawable.icon_details_check_conflicted));
+            updateViewBorder(getResources().getColor(R.color.timeslot_select_mode_border_non_selected));
+        }else {
+            icon.setImageDrawable(getResources().getDrawable(R.drawable.icon_details_check_unselected));
+            updateViewBorder(getResources().getColor(R.color.timeslot_select_mode_border_non_selected));
+        }
+
+        invalidate();
     }
 
     public void setShownDuration(long shownDuration) {
@@ -164,7 +237,7 @@ public class DraggableTimeSlotView extends FrameLayout {
         String starTime = String.format("%02d:%02d", cal.get(Calendar.HOUR_OF_DAY),cal.get(Calendar.MINUTE));
         cal.setTimeInMillis(wrapper.getTimeSlot().getEndTime());
         String endTime = String.format("%02d:%02d", cal.get(Calendar.HOUR_OF_DAY),cal.get(Calendar.MINUTE));
-        return starTime + (oneLine?"-":"\n-\n") + endTime;
+        return starTime + (oneLine?" → ":" →\n") + endTime;
     }
 
     private void initAnimation(){

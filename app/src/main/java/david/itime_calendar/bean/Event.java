@@ -163,16 +163,13 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
         return this.highlighted;
     }
 
-    @Override
-    public void setIsAllDay(boolean isAllDay) {
-        this.isAllDay = isAllDay;
+    public boolean isAllDay() {
+        return isAllDay;
     }
 
-    @Override
-    public boolean getIsAllDay() {
-        return false;
+    public void setAllDay(boolean allDay) {
+        isAllDay = allDay;
     }
-
 
     @Override
     public int isShownInCalendar() {
@@ -526,6 +523,14 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
 
     public String getLocation() {
         return this.location;
+    }
+
+    public boolean getIsAllDay() {
+        return this.isAllDay;
+    }
+
+    public void setIsAllDay(boolean isAllDay) {
+        this.isAllDay = isAllDay;
     }
 
 }

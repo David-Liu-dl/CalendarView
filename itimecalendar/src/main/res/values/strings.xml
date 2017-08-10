@@ -16,4 +16,8 @@
     <string name="saveStr">Save</string>
     <string name="cancelStr">Cancel</string>
     <string name="edit_timeslot_title">Edit TimeSlot</string>
+
+    <string name="label_allday">All Day</string>
+
+
 </resources>

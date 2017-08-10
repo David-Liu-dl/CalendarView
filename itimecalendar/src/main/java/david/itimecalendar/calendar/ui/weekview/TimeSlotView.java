@@ -3,21 +3,19 @@ package david.itimecalendar.calendar.ui.weekview;
 import android.animation.LayoutTransition;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.PopupMenu;
 import android.util.AttributeSet;
 import android.view.Gravity;
-import android.view.MotionEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -34,11 +32,10 @@ import david.itimecalendar.calendar.ui.monthview.DayViewBody;
 import david.itimecalendar.calendar.ui.monthview.DayViewBodyCell;
 import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
 import david.itimecalendar.calendar.ui.unitviews.DraggableTimeSlotView;
-import david.itimecalendar.calendar.ui.unitviews.TimeslotDurationWidget;
+import david.itimecalendar.calendar.ui.unitviews.TimeslotDurationEditView;
 import david.itimecalendar.calendar.ui.unitviews.RecommendedSlotView;
 import david.itimecalendar.calendar.ui.unitviews.TimeSlotInnerCalendarView;
-import david.itimecalendar.calendar.ui.unitviews.TimeslotChangeView;
-import david.itimecalendar.calendar.ui.unitviews.TimeslotToolBar;
+import david.itimecalendar.calendar.ui.unitviews.TimeslotEditView;
 import david.itimecalendar.calendar.util.DensityUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
 import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
@@ -48,15 +45,21 @@ import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
  */
 
 public class TimeSlotView extends WeekView {
+
+    public static ViewMode mode = ViewMode.NON_ALL_DAY_CREATE;
+
+    public enum ViewMode {
+        ALL_DAY_CREATE, NON_ALL_DAY_CREATE, ALL_DAY_SELECT, NON_ALL_DAY_SELECT,
+    }
+
+    public boolean isTimeslotEnable = false;
     private ITimeCalendarTimeslotViewListener iTimeCalendarListener;
 
     private TimeSlotInnerCalendarView innerCalView;
-    private TimeslotDurationWidget<String> durationBar;
+    private TimeslotDurationEditView<String> durationBar;
 
     private FrameLayout staticLayer;
     private InnerCalendarTimeslotPackage innerSlotPackage = new InnerCalendarTimeslotPackage();
-    private TimeslotToolBar timeslotToolBar;
-
 
     public TimeSlotView(@NonNull Context context) {
         super(context);
@@ -73,26 +76,26 @@ public class TimeSlotView extends WeekView {
         setUpViews();
     }
 
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (timeslotToolBar.getVisibility() == VISIBLE){
-            if (ev.getAction() == MotionEvent.ACTION_DOWN){
-                Rect viewRect = new Rect();
-                timeslotToolBar.getGlobalVisibleRect(viewRect);
-                if (viewRect.contains((int) ev.getRawX(), (int) ev.getRawY())) {
-                    //when click on tooltips and it's visible
-                    // pass it to tooltips
-                }else {
-                    //when click outside of tooltips and it's visible
-                    timeslotToolBar.setVisibility(GONE);
-                }
-            }else {
-                timeslotToolBar.setVisibility(GONE);
-            }
-        }
-
-        return super.onInterceptTouchEvent(ev);
-    }
+//    @Override
+//    public boolean onInterceptTouchEvent(MotionEvent ev) {
+//        if (timeslotToolBar.getVisibility() == VISIBLE){
+//            if (ev.getAction() == MotionEvent.ACTION_DOWN){
+//                Rect viewRect = new Rect();
+//                timeslotToolBar.getGlobalVisibleRect(viewRect);
+//                if (viewRect.contains((int) ev.getRawX(), (int) ev.getRawY())) {
+//                    //when click on tooltips and it's visible
+//                    // pass it to tooltips
+//                }else {
+//                    //when click outside of tooltips and it's visible
+//                    timeslotToolBar.setVisibility(GONE);
+//                }
+//            }else {
+//                timeslotToolBar.setVisibility(GONE);
+//            }
+//        }
+//
+//        return super.onInterceptTouchEvent(ev);
+//    }
 
     private void setUpViews(){
         this.setLayoutTransition(new LayoutTransition());
@@ -114,67 +117,18 @@ public class TimeSlotView extends WeekView {
         });
         setUpStaticLayer();
         setUpTimeslotDurationWidget();
-        setUpBubbleView();
-    }
 
-    private void setUpBubbleView(){
-        timeslotToolBar = new TimeslotToolBar(getContext());
-        int bubbleWidth = DensityUtil.dip2px(getContext(),110);
-        int bubbleHeight = DensityUtil.dip2px(getContext(),35);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(bubbleWidth, bubbleHeight);
-        this.addView(timeslotToolBar,params);
-
-        timeslotToolBar.setOnButtonClickListener(new TimeslotToolBar.OnButtonClickListener() {
-            @Override
-            public void onEditClick() {
-                Object tag = timeslotToolBar.getTag();
-                if (tag != null){
-                    DraggableTimeSlotView slotView = (DraggableTimeSlotView) tag;
-                    timeslotToolBar.setVisibility(GONE);
-                    timeslotToolBar.setTag(null);
-                    onTimeSlotViewBodyInnerListener.onTimeSlotEdit(slotView);
-                }
-            }
-
-            @Override
-            public void onDeleteClick() {
-                Object tag = timeslotToolBar.getTag();
-                if (tag != null){
-                    DraggableTimeSlotView slotView = (DraggableTimeSlotView) tag;
-                    timeslotToolBar.setVisibility(GONE);
-                    timeslotToolBar.setTag(null);
-                    onTimeSlotViewBodyInnerListener.onTimeSlotDelete(slotView);
-                }
-            }
-        });
-    }
-
-    private void showTimeSlotTools(DraggableTimeSlotView slotView, boolean editable){
-        timeslotToolBar.setBubbleEditable(editable);
-
-        int slotRect[] = {0, 0};
-        int bodyRect[] = {0, 0};
-        slotView.getLocationOnScreen(slotRect);
-        this.getLocationOnScreen(bodyRect);
-        float posX = slotRect[0] - bodyRect[0];
-        float posY = slotRect[1] - bodyRect[1];
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) timeslotToolBar.getLayoutParams();
-        int topMargin = (int)(posY - params.height);
-
-        params.topMargin = topMargin>0?topMargin:0;
-        params.leftMargin = (int)posX;
-        timeslotToolBar.setVisibility(View.VISIBLE);
-        timeslotToolBar.requestLayout();
+        enableTimeSlot(false);
     }
 
     private void setUpTimeslotDurationWidget(){
         int durationBarHeight = DensityUtil.dip2px(context,40);
-        durationBar = new TimeslotDurationWidget<>(context);
+        durationBar = new TimeslotDurationEditView<>(context);
         durationBar.setOptHeight(durationBarHeight);
         RelativeLayout.LayoutParams durationBarParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         durationBarParams.addRule(ALIGN_PARENT_BOTTOM);
         durationBar.setLayoutParams(durationBarParams);
-        durationBar.setOnItemSelectedListener(new TimeslotDurationWidget.OnItemSelectedListener() {
+        durationBar.setOnItemSelectedListener(new TimeslotDurationEditView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(int position) {
                 DurationItem selectedItem = durationData.get(position);
@@ -240,11 +194,17 @@ public class TimeSlotView extends WeekView {
         innerCalView.refreshSlotNum();
     }
 
-    /*** for timeslot ***/
-
-    public void enableTimeSlot(){
-        super.dayViewBody.enableTimeSlot();
+    public void enableTimeSlot(boolean draggable){
+        isTimeslotEnable = true;
+        super.dayViewBody.enableTimeSlot(draggable);
         //staticLayer become visible
+        staticLayer.setVisibility(VISIBLE);
+    }
+
+    public void disableTimeSlot(){
+        isTimeslotEnable = false;
+        super.dayViewBody.disableTimeSlot();
+        //static Layer become visible
         staticLayer.setVisibility(VISIBLE);
     }
 
@@ -253,10 +213,10 @@ public class TimeSlotView extends WeekView {
         updateInnerCalendarPackage();
     }
 
-    public void addTimeSlot(WrapperTimeSlot wrapperTimeSlot){
-        super.dayViewBody.addTimeSlot(wrapperTimeSlot);
-        updateInnerCalendarPackage();
-    }
+//    public void addTimeSlot(WrapperTimeSlot wrapperTimeSlot){
+//        super.dayViewBody.addTimeSlot(wrapperTimeSlot);
+//        updateInnerCalendarPackage();
+//    }
 
     public void removeTimeslot(ITimeTimeSlotInterface timeslot){
         super.dayViewBody.getTimeSlotPackage().removeTimeSlot(timeslot);
@@ -289,14 +249,14 @@ public class TimeSlotView extends WeekView {
         }
 
         @Override
-        public void onAllDayTimeslotClick(DraggableTimeSlotView timeSlotView) {
-            timeslotToolBar.setTag(timeSlotView);
-            showTimeSlotTools(timeSlotView, false);
-
-            if (iTimeCalendarListener != null){
-                iTimeCalendarListener.onAllDayTimeslotClick(timeSlotView);
+        public void onAllDayTimeslotClick(DraggableTimeSlotView draggableTimeSlotView) {
+            if (mode == ViewMode.ALL_DAY_CREATE){
+                showTimeslotOptionMenu(draggableTimeSlotView, true);
             }
 
+            if (iTimeCalendarListener != null){
+                iTimeCalendarListener.onAllDayTimeslotClick(draggableTimeSlotView);
+            }
         }
 
         @Override
@@ -308,8 +268,15 @@ public class TimeSlotView extends WeekView {
 
         @Override
         public void onTimeSlotClick(DraggableTimeSlotView draggableTimeSlotView) {
-            timeslotToolBar.setTag(draggableTimeSlotView);
-            showTimeSlotTools(draggableTimeSlotView, true);
+            if (mode == ViewMode.NON_ALL_DAY_CREATE){
+                showTimeslotOptionMenu(draggableTimeSlotView, false);
+            }
+
+//            if (mode == ViewMode.NON_ALL_DAY_SELECT){
+//                WrapperTimeSlot wrapperTimeSlot = draggableTimeSlotView.getWrapper();
+//                wrapperTimeSlot.setSelected(!wrapperTimeSlot.isSelected());
+//                draggableTimeSlotView.updateViewStatus();
+//            }
 
             if (iTimeCalendarListener != null){
                 iTimeCalendarListener.onTimeSlotClick(draggableTimeSlotView);
@@ -354,7 +321,7 @@ public class TimeSlotView extends WeekView {
 
         @Override
         public void onTimeSlotEdit(DraggableTimeSlotView draggableTimeSlotView) {
-            showTimeslotChangeDialog(draggableTimeSlotView);
+            showTimeslotEditDialog(draggableTimeSlotView);
         }
 
         @Override
@@ -367,8 +334,8 @@ public class TimeSlotView extends WeekView {
         }
     };
 
-    private void showTimeslotChangeDialog(final DraggableTimeSlotView dgTimeslot){
-        final TimeslotChangeView timeslotChangeView = new TimeslotChangeView(context,dgTimeslot.getTimeslot());
+    private void showTimeslotEditDialog(final DraggableTimeSlotView dgTimeslot){
+        final TimeslotEditView timeslotChangeView = new TimeslotEditView(context,dgTimeslot.getTimeslot());
         int padding = DensityUtil.dip2px(context,15);
         timeslotChangeView.setPadding(0,padding,0,0);
         timeslotChangeView.setBackground(getResources().getDrawable(R.drawable.itime_round_corner_bg));
@@ -401,6 +368,28 @@ public class TimeSlotView extends WeekView {
         });
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    private void showTimeslotOptionMenu(final DraggableTimeSlotView dgTimeslot, boolean allday){
+        PopupMenu popupMenu = new PopupMenu(getContext(),dgTimeslot);
+        popupMenu.getMenuInflater().inflate(
+                allday ? R.menu.timelost_allday_popup_menu : R.menu.timelost_popup_menu
+                , popupMenu.getMenu());
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                int id = item.getItemId();
+                if (id == R.id.edit_timeslot){
+                    onTimeSlotViewBodyInnerListener.onTimeSlotEdit(dgTimeslot);
+                    return true;
+                }else if(id == R.id.delete_timeslot){
+                    onTimeSlotViewBodyInnerListener.onTimeSlotDelete(dgTimeslot);
+                    return true;
+                }
+                return false;
+            }
+        });
+        popupMenu.show();
     }
 
     private List<DurationItem> durationData;
@@ -477,7 +466,47 @@ public class TimeSlotView extends WeekView {
         return list;
     }
 
-    public void setViewMode(DayViewBody.Mode mode){
-        dayViewBody.setViewMode(mode);
+    public void refresh(){
+        dayViewBody.refresh();
+    }
+
+    public void showTimeslot(){
+        dayViewBody.showBodyTimeslot();
+    }
+
+    public void hideTimeslot(){
+        dayViewBody.hideBodyTimeslot();
+    }
+
+
+    public void setViewMode(ViewMode mode){
+        TimeSlotView.mode = mode;
+
+        switch (TimeSlotView.mode){
+            case ALL_DAY_CREATE:
+                dayViewBody.allDayView.setAlldayRcdTimeslotEnable(true);
+                dayViewBody.enableHeaderSlot();
+                dayViewBody.disableBodyTimeSlot();
+                durationBar.setVisibility(VISIBLE);
+                break;
+            case NON_ALL_DAY_CREATE:
+                dayViewBody.allDayView.setAlldayRcdTimeslotEnable(false);
+                dayViewBody.disableHeaderSlot();
+                dayViewBody.enableBodyTimeSlot(true);
+                durationBar.setVisibility(VISIBLE);
+                break;
+            case ALL_DAY_SELECT:
+                dayViewBody.allDayView.setAlldayRcdTimeslotEnable(false);
+                dayViewBody.enableHeaderSlot();
+                dayViewBody.disableBodyTimeSlot();
+                durationBar.setVisibility(GONE);
+                break;
+            case NON_ALL_DAY_SELECT:
+                dayViewBody.allDayView.setAlldayRcdTimeslotEnable(false);
+                dayViewBody.disableHeaderSlot();
+                dayViewBody.enableBodyTimeSlot(false);
+                durationBar.setVisibility(GONE);
+                break;
+        }
     }
 }

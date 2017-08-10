@@ -24,7 +24,7 @@ android {
 }
 
 greendao {
-    schemaVersion 9
+    schemaVersion 10
     daoPackage "david.itime_calendar.bean"
 }
 

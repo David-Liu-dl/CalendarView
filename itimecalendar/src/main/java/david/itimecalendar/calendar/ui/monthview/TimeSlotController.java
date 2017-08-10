@@ -7,6 +7,9 @@ import android.view.DragEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -35,6 +38,7 @@ public class TimeSlotController {
     private DayViewBodyCell container;
     private OnTimeSlotListener onTimeSlotListener;
     private long defaultTsDuration = 3600 * 1000;
+    private boolean draggable = true;
 
     private ArrayList<DraggableTimeSlotView> slotViews = new ArrayList<>();
     private ArrayList<RecommendedSlotView> rcdSlotViews = new ArrayList<>();
@@ -282,7 +286,10 @@ public class TimeSlotController {
             draggableTimeSlotView.showAlphaAnim();
         }
 
-        draggableTimeSlotView.setOnLongClickListener(new TimeSlotLongClickListener());
+        if (draggable){
+            draggableTimeSlotView.setOnLongClickListener(new TimeSlotLongClickListener());
+        }
+
         draggableTimeSlotView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -314,11 +321,40 @@ public class TimeSlotController {
     }
 
 
-    void enableTimeSlot(){
+    void enableTimeSlot(boolean draggable){
         container.isTimeSlotEnable = true;
+        this.draggable = draggable;
+        if (draggable){
+            //add timeslot listeners
+            container.eventLayout.setOnDragListener(new TimeSlotDragListener());
+            container.eventLayout.setOnLongClickListener(new CreateTimeSlotListener());
+
+            for (int j = 0; j < container.eventLayout.getChildCount(); j++) {
+                if (container.eventLayout.getChildAt(j) instanceof DraggableEventView){
+                    container.eventLayout.getChildAt(j).setOnLongClickListener(null);
+                }
+            }
+        }else {
+            container.eventLayout.setOnDragListener(null);
+            container.eventLayout.setOnLongClickListener(null);
+
+            for (int j = 0; j < container.eventLayout.getChildCount(); j++) {
+                if (container.eventLayout.getChildAt(j) instanceof DraggableEventView
+                        || container.eventLayout.getChildAt(j) instanceof DraggableTimeSlotView){
+                    container.eventLayout.getChildAt(j).setOnLongClickListener(null);
+                }
+
+            }
+        }
+
+        showTimeslot();
+    }
+
+    void disableTimeSlot(){
+        container.isTimeSlotEnable = false;
         //remove previous listeners
-        container.eventLayout.setOnDragListener(new TimeSlotDragListener());
-        container.eventLayout.setOnLongClickListener(new CreateTimeSlotListener());
+        container.eventLayout.setOnDragListener(null);
+        container.eventLayout.setOnLongClickListener(null);
 
         for (int j = 0; j < container.eventLayout.getChildCount(); j++) {
             if (container.eventLayout.getChildAt(j) instanceof DraggableEventView){
@@ -326,11 +362,13 @@ public class TimeSlotController {
 
             }
         }
+
+        hideTimeslot();
     }
 
     private void calculateTimeSlotLayout(DayInnerBodyLayout eventLayout) {
         List<ArrayList<OverlapHelper.OverlappedEvent>> overlapGroups
-                = container.xHelper.computeOverlapXForEvents(eventLayout.getSlots());
+                = container.xHelper.computeOverlapXObject(eventLayout.getSlots());
         for (ArrayList<OverlapHelper.OverlappedEvent> overlapGroup : overlapGroups
                 ) {
             for (int i = 0; i < overlapGroup.size(); i++) {
@@ -493,5 +531,35 @@ public class TimeSlotController {
         cal.setTimeInMillis(container.getCalendar().getBeginOfDayMilliseconds());
         cal.set(Calendar.HOUR_OF_DAY, currentEventNewHour);
         cal.set(Calendar.MINUTE, currentEventNewMinutes);
+    }
+
+    public void hideTimeslot(){
+        YoYo.AnimationComposer composer = YoYo.with(Techniques.FadeOut)
+                .duration(150);
+
+        for (RecommendedSlotView rcdslotView: rcdSlotViews
+                ){
+            composer.playOn(rcdslotView);
+        }
+
+        for (DraggableTimeSlotView timeslotView : slotViews
+             ) {
+            composer.playOn(timeslotView);
+        }
+    }
+
+    public void showTimeslot(){
+        YoYo.AnimationComposer composer = YoYo.with(Techniques.FadeIn)
+                .duration(150);
+
+        for (RecommendedSlotView rcdslotView: rcdSlotViews
+                ){
+            composer.playOn(rcdslotView);
+        }
+
+        for (DraggableTimeSlotView timeslotView : slotViews
+                ) {
+            composer.playOn(timeslotView);
+        }
     }
 }

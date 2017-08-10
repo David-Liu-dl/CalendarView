@@ -18,6 +18,7 @@ public class WrapperTimeSlot implements OverlapHelper.OverlapInput<WrapperTimeSl
     private boolean isAnimated = false;
     private boolean isRead = false;
     private boolean isRecommended = false;
+    private boolean isConflict = false;
 
     public WrapperTimeSlot(ITimeTimeSlotInterface timeSlot) {
         this.timeSlot = timeSlot;
@@ -80,6 +81,14 @@ public class WrapperTimeSlot implements OverlapHelper.OverlapInput<WrapperTimeSl
 
     public void setDraggableTimeSlotView(DraggableTimeSlotView draggableTimeSlotView) {
         this.draggableTimeSlotView = draggableTimeSlotView;
+    }
+
+    public boolean isConflict() {
+        return isConflict;
+    }
+
+    public void setConflict(boolean conflict) {
+        isConflict = conflict;
     }
 
     @Override

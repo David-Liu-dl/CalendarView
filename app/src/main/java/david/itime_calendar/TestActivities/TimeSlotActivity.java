@@ -2,6 +2,8 @@ package david.itime_calendar.TestActivities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -13,7 +15,6 @@ import david.itime_calendar.MainActivity;
 import david.itime_calendar.R;
 import david.itime_calendar.bean.TimeSlot;
 import david.itimecalendar.calendar.listeners.ITimeCalendarTimeslotViewListener;
-import david.itimecalendar.calendar.ui.monthview.DayViewBody;
 import david.itimecalendar.calendar.ui.weekview.TimeSlotView;
 import david.itimecalendar.calendar.ui.unitviews.DraggableTimeSlotView;
 import david.itimecalendar.calendar.ui.unitviews.RecommendedSlotView;
@@ -26,21 +27,24 @@ import david.itimecalendar.calendar.util.MyCalendar;
 public class TimeSlotActivity extends AppCompatActivity {
     private EventManager eventManager = MainActivity.eventManager;
 
+    private Button switcher;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeslotview);
-
+        switcher = (Button) findViewById(R.id.timeslot_switcher);
         doTest();
     }
 
     private void doTest(){
         ArrayList<TimeSlot> slots = new ArrayList<>();
-        initSlots(slots);
+//        initSlots(slots);
 
         final TimeSlotView timeslotView = (TimeSlotView) findViewById(R.id.timeslot_view);
+        timeslotView.setViewMode(TimeSlotView.ViewMode.NON_ALL_DAY_CREATE);
+
         //ensure 'enableTimeSlot()' is called immediately after creating TimeSlotView.
-        timeslotView.enableTimeSlot();
         timeslotView.setEventPackage(eventManager.getEventsMap());
 //        timeslotView.setOnTimeSlotInnerCalendar(new TimeSlotInnerCalendarView.OnTimeSlotInnerCalendar() {
 //            @Override
@@ -63,9 +67,9 @@ public class TimeSlotActivity extends AppCompatActivity {
             public void onTimeslotDurationChanged(long duration) {
                 if (duration == -1){
                     //means all day
-                    timeslotView.setViewMode(DayViewBody.Mode.ALL_DAY);
+                    timeslotView.setViewMode(TimeSlotView.ViewMode.ALL_DAY_CREATE);
                 }else{
-                    timeslotView.setViewMode(DayViewBody.Mode.REGULAR);
+                    timeslotView.setViewMode(TimeSlotView.ViewMode.NON_ALL_DAY_CREATE);
                     timeslotView.setTimeslotDuration(duration,false);
                 }
             }
@@ -82,7 +86,11 @@ public class TimeSlotActivity extends AppCompatActivity {
 
             @Override
             public void onAllDayTimeslotClick(DraggableTimeSlotView timeSlotView) {
-
+//                TimeSlot newSlot = new TimeSlot();
+//                newSlot.setIsAllDay(true);
+//                //ensure set the start time correctly, otherwise it cannot be shown
+//                newSlot.setStartTime(dayBeginMilliseconds);
+//                timeSlotView.addTimeSlot(newSlot);
             }
 
             @Override
@@ -130,6 +138,7 @@ public class TimeSlotActivity extends AppCompatActivity {
             public void onTimeSlotEdit(DraggableTimeSlotView draggableTimeSlotView) {
                 draggableTimeSlotView.getTimeslot().setStartTime(draggableTimeSlotView.getNewStartTime());
                 draggableTimeSlotView.getTimeslot().setEndTime(draggableTimeSlotView.getNewEndTime());
+                timeslotView.refresh();
             }
 
             @Override
@@ -149,6 +158,19 @@ public class TimeSlotActivity extends AppCompatActivity {
                 ) {
             timeslotView.addTimeSlot(slot);
         }
+
+        switcher.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (timeslotView.isTimeslotEnable){
+                    timeslotView.disableTimeSlot();
+                }else {
+                    timeslotView.enableTimeSlot(false);
+                }
+
+
+            }
+        });
     }
 
     private void initSlots(ArrayList<TimeSlot> slots){
@@ -160,7 +182,7 @@ public class TimeSlotActivity extends AppCompatActivity {
             TimeSlot slot = new TimeSlot();
             slot.setStartTime(startTime);
             slot.setEndTime(startTime+duration);
-            slot.setRecommended(true);
+            slot.setRecommended(false);
             slot.setIsAllDay(i == 2);
             slots.add(slot);
 

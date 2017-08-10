@@ -23,19 +23,23 @@ import android.widget.TextView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
 import david.itimecalendar.R;
+import david.itimecalendar.calendar.listeners.ITimeEventInterface;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
 import david.itimecalendar.calendar.ui.unitviews.TimelineView;
 import david.itimecalendar.calendar.util.BaseUtil;
 import david.itimecalendar.calendar.util.DensityUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
 import david.itimecalendar.calendar.util.OverlapHelper;
+import david.itimecalendar.calendar.wrapper.WrapperEvent;
 import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
 
 /**
@@ -479,13 +483,29 @@ public class DayViewBodyCell extends FrameLayout{
         timeSlotController.updateTimeSlotsDuration(duration, animate);
     }
 
-    public void enableTimeSlot(){
+    public void enableTimeSlot(boolean draggable){
         eventController.enableBgMode();
-        timeSlotController.enableTimeSlot();
+        timeSlotController.enableTimeSlot(draggable);
+    }
+
+    public void disableTimeslot(){
+        eventController.enableBgMode();
+        timeSlotController.disableTimeSlot();
     }
 
     public void setOnTimeSlotListener(TimeSlotController.OnTimeSlotListener onTimeSlotListener) {
         timeSlotController.setOnTimeSlotListener(onTimeSlotListener);
     }
 
+    public void hideTimeslot(){
+        timeSlotController.hideTimeslot();
+    }
+
+    public void showTimeslot(){
+        timeSlotController.showTimeslot();
+    }
+
+    public List<WrapperEvent> getTodayEvents(){
+        return eventController.getTodayEvents();
+    }
 }

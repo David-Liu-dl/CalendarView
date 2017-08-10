@@ -18,6 +18,8 @@ import david.itimecalendar.R;
 import david.itimecalendar.calendar.ui.weekview.TimeSlotView;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
 import david.itimecalendar.calendar.util.MyCalendar;
+import david.itimecalendar.calendar.util.OverlapHelper;
+import david.itimecalendar.calendar.wrapper.WrapperEvent;
 import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
 
 /**
@@ -31,6 +33,7 @@ public class BodyAdapter extends ITimeAdapter<DayViewBodyCell> {
     private AttributeSet attrs;
     private List<View> viewItems = new ArrayList<>();
     private int NUM_CELL = 1;
+    private OverlapHelper overlapHelper = new OverlapHelper();
 
     public BodyAdapter(Context context, AttributeSet attrs) {
         this.context = context;
@@ -71,11 +74,10 @@ public class BodyAdapter extends ITimeAdapter<DayViewBodyCell> {
     }
 
     @Override
-    public void onBindViewHolder(DayViewBodyCell item, int offset) {
+    public void onBindViewHolder(DayViewBodyCell body, int offset) {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, offset);
 
-        DayViewBodyCell body = item;
         body.resetView();
         //setBorderColor
         if (offset % NUM_CELL == 0){
@@ -110,6 +112,12 @@ public class BodyAdapter extends ITimeAdapter<DayViewBodyCell> {
                     continue;
                 }
                 if (calendar.contains(struct.getTimeSlot().getStartTime())){
+                    //need to check out if conflict with event
+                    if (TimeSlotView.mode == TimeSlotView.ViewMode.NON_ALL_DAY_SELECT){
+                        List<WrapperEvent> todayEvents = body.getTodayEvents();
+                        struct.setConflict(overlapHelper.isConflicted(todayEvents,struct));
+                    }
+
                     body.addSlot(struct,false);
                 }
             }

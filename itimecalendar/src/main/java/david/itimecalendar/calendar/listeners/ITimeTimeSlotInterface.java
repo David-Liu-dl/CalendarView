@@ -4,6 +4,10 @@ package david.itimecalendar.calendar.listeners;
  * Created by yuhaoliu on 10/09/2016.
  */
 public interface ITimeTimeSlotInterface<T> extends Comparable<T>  {
+    enum Status{
+        CONFLICT, UNSELECTED, SELECTED
+    }
+
     void setStartTime(long startTime);
     long getStartTime();
     void setEndTime(long endTime);

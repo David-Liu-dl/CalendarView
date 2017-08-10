@@ -6,7 +6,6 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.ClipData;
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Point;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -17,7 +16,6 @@ import android.widget.LinearLayout;
 
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -38,7 +36,6 @@ import static david.itimecalendar.calendar.ui.monthview.DayViewBodyCell.DAY_CROS
 import static david.itimecalendar.calendar.ui.monthview.DayViewBodyCell.DAY_CROSS_END;
 import static david.itimecalendar.calendar.ui.monthview.DayViewBodyCell.REGULAR;
 import static david.itimecalendar.calendar.ui.monthview.DayViewBodyCell.UNDEFINED;
-import static david.itimecalendar.calendar.util.BaseUtil.getDate;
 
 /**
  * Created by yuhaoliu on 9/01/2017.
@@ -77,7 +74,7 @@ public class EventController {
                     if (event.isShownInCalendar() == View.VISIBLE){
                         WrapperEvent wrapperEvent = new WrapperEvent(event);
                         wrapperEvent.setFromDayBegin(startTime);
-                        if (!event.getIsAllDay()){
+                        if (!event.isAllDay()){
                             this.addRegularEvent(wrapperEvent);
                         }
                     }
@@ -90,7 +87,7 @@ public class EventController {
                     if (event.isShownInCalendar() == View.VISIBLE){
                         WrapperEvent wrapperEvent = new WrapperEvent(event);
                         wrapperEvent.setFromDayBegin(startTime);
-                        if (!event.getIsAllDay()){
+                        if (!event.isAllDay()){
                             this.addRegularEvent(wrapperEvent);
                         }
                     }
@@ -254,7 +251,7 @@ public class EventController {
      */
     private void calculateEventLayout(DayInnerBodyLayout eventLayout) {
         List<ArrayList<OverlapHelper.OverlappedEvent>> overlapGroups
-                = container.xHelper.computeOverlapXForEvents(eventLayout.getEvents());
+                = container.xHelper.computeOverlapXObject(eventLayout.getEvents());
         for (ArrayList<OverlapHelper.OverlappedEvent> overlapGroup : overlapGroups
                 ) {
             for (int i = 0; i < overlapGroup.size(); i++) {
@@ -534,12 +531,12 @@ public class EventController {
                 }
 
                 @Override
-                public void setIsAllDay(boolean isAllDay) {
+                public void setAllDay(boolean allday) {
 
                 }
 
                 @Override
-                public boolean getIsAllDay() {
+                public boolean isAllDay() {
                     return false;
                 }
 
@@ -638,5 +635,9 @@ public class EventController {
         }
 
         return UNDEFINED;
+    }
+
+    public List<WrapperEvent> getTodayEvents(){
+        return new ArrayList<>(regularEventViewMap.keySet());
     }
 }

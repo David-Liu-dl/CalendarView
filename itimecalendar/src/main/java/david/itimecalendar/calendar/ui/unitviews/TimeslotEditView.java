@@ -26,7 +26,7 @@ import david.itimecalendar.calendar.util.DensityUtil;
  * Created by yuhaoliu on 1/06/2017.
  */
 
-public class TimeslotChangeView extends LinearLayout {
+public class TimeslotEditView extends LinearLayout {
     private ITimeTimeSlotInterface timeslot;
 
     private RelativeLayout infoContainer;
@@ -41,7 +41,7 @@ public class TimeslotChangeView extends LinearLayout {
     private FrameLayout timePickerBlk;
     private TimePicker timePicker;
 
-    public TimeslotChangeView(@NonNull Context context, ITimeTimeSlotInterface timeslotInterface) {
+    public TimeslotEditView(@NonNull Context context, ITimeTimeSlotInterface timeslotInterface) {
         super(context);
         this.timeslot = timeslotInterface;
         this.initParams();

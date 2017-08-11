@@ -213,10 +213,10 @@ public class TimeSlotView extends WeekView {
         updateInnerCalendarPackage();
     }
 
-//    public void addTimeSlot(WrapperTimeSlot wrapperTimeSlot){
-//        super.dayViewBody.addTimeSlot(wrapperTimeSlot);
-//        updateInnerCalendarPackage();
-//    }
+    public void addTimeSlot(WrapperTimeSlot wrapperTimeSlot){
+        super.dayViewBody.addTimeSlot(wrapperTimeSlot);
+        updateInnerCalendarPackage();
+    }
 
     public void removeTimeslot(ITimeTimeSlotInterface timeslot){
         super.dayViewBody.getTimeSlotPackage().removeTimeSlot(timeslot);

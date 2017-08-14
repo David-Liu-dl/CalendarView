@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -14,6 +13,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import david.itimecalendar.calendar.listeners.ITimeEventInterface;
+import david.itimecalendar.calendar.listeners.ITimeComparable;
 
 /**
  * Created by yuhaoliu on 14/03/2017.
@@ -81,5 +81,11 @@ public class BaseUtil {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(time);
         return cal.getTime();
+    }
+
+    public static <O extends ITimeComparable> boolean isExpired(O o){
+        long nowTime = Calendar.getInstance().getTimeInMillis();
+        //check if timeslot expired
+        return  o != null && nowTime >= o.getStartTime();
     }
 }

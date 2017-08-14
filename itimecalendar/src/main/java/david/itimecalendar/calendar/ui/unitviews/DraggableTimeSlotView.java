@@ -20,6 +20,7 @@ import java.util.Calendar;
 import david.itimecalendar.R;
 import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
 import david.itimecalendar.calendar.ui.weekview.TimeSlotView;
+import david.itimecalendar.calendar.util.BaseUtil;
 import david.itimecalendar.calendar.util.DensityUtil;
 import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
 
@@ -65,6 +66,13 @@ public class DraggableTimeSlotView extends RelativeLayout {
     }
 
     public void init(){
+        //check if timeslot expired
+        if (BaseUtil.isExpired(timeslot)){
+            initViewAsExpiredMode();
+            initBackgroundAsExpiredMode();
+            return;
+        }
+
         switch (mode){
             case ALL_DAY_CREATE: case NON_ALL_DAY_CREATE:
                 initViewAsCreateMode();
@@ -112,6 +120,37 @@ public class DraggableTimeSlotView extends RelativeLayout {
         gd.setStroke(1, Color.parseColor("#0073FF"), 0, 0);
     }
 
+    private void initViewAsExpiredMode(){
+        int iconSize = DensityUtil.dip2px(getContext(),25);
+        icon = new ImageView(getContext());
+        icon.setId(View.generateViewId());
+        LayoutParams iconLayoutParams = new LayoutParams(iconSize, iconSize);
+        iconLayoutParams.topMargin = DensityUtil.dip2px(getContext(),5);
+        iconLayoutParams.leftMargin = DensityUtil.dip2px(getContext(),5);
+        iconLayoutParams.rightMargin = DensityUtil.dip2px(getContext(),5);
+        this.addView(icon,iconLayoutParams);
+
+        title = new TextView(getContext());
+        title.setText(isAllday?getResources().getString(R.string.label_allday):getTimeText(false));
+        title.setGravity(Gravity.LEFT);
+        title.setTextColor(getResources().getColor(R.color.timeslot_expired_mode_text));
+        title.setTextSize(12);
+        LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams.topMargin = DensityUtil.dip2px(getContext(),5);
+        layoutParams.addRule(END_OF,icon.getId());
+        this.addView(title,layoutParams);
+    }
+
+    private void initBackgroundAsExpiredMode(){
+        this.setBackground(getResources().getDrawable(R.drawable.itime_round_corner_bg));
+        GradientDrawable gd = (GradientDrawable) this.getBackground();
+        gd.mutate();
+        gd.setColor(getResources().getColor(R.color.timeslot_select_mode_bg)); //set color
+        gd.setCornerRadius(DensityUtil.dip2px(getContext(),7));
+        gd.setStroke(1, Color.BLACK, 0, 0);
+        // 20% opacity
+        this.getBackground().setAlpha(51);
+    }
 
     private void initViewAsSelectMode(){
         int iconSize = DensityUtil.dip2px(getContext(),25);
@@ -175,7 +214,10 @@ public class DraggableTimeSlotView extends RelativeLayout {
             return;
         }
 
-        if (wrapper.isSelected()){
+        if (BaseUtil.isExpired(timeslot)){
+            icon.setImageDrawable(getResources().getDrawable(R.drawable.icon_details_check_outdated));
+            updateViewBorder(getResources().getColor(R.color.timeslot_expired_mode_border));
+        }else if (wrapper.isSelected()){
             icon.setImageDrawable(getResources().getDrawable(R.drawable.icon_details_check_selected));
             updateViewBorder(getResources().getColor(R.color.timeslot_select_mode_border_selected));
         }else if (wrapper.isConflict()){

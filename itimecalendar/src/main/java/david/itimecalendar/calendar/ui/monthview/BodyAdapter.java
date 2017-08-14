@@ -106,19 +106,19 @@ public class BodyAdapter extends ITimeAdapter<DayViewBodyCell> {
                 }
             }
             //add timeslot on top index
-            for (WrapperTimeSlot struct : slotsInfo.realSlots
+            for (WrapperTimeSlot wrapper : slotsInfo.realSlots
                     ) {
-                if (struct.getTimeSlot().isAllDay()){
+                if (wrapper.getTimeSlot().isAllDay()){
                     continue;
                 }
-                if (calendar.contains(struct.getTimeSlot().getStartTime())){
+                if (calendar.contains(wrapper.getTimeSlot().getStartTime())){
                     //need to check out if conflict with event
                     if (TimeSlotView.mode == TimeSlotView.ViewMode.NON_ALL_DAY_SELECT){
                         List<WrapperEvent> todayEvents = body.getTodayEvents();
-                        struct.setConflict(overlapHelper.isConflicted(todayEvents,struct));
+                        wrapper.setConflict(overlapHelper.isConflicted(todayEvents,wrapper));
                     }
 
-                    body.addSlot(struct,false);
+                    body.addSlot(wrapper,false);
                 }
             }
         }

@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Created by yinchuandong on 22/08/2016.
  */
-public interface ITimeEventInterface<T> extends Comparable<T> {
+public interface ITimeEventInterface<T> extends ITimeComparable<T> {
     String EVENT_TYPE_SOLO = "solo";
     String EVENT_TYPE_GROUP = "group";
 
@@ -27,7 +27,7 @@ public interface ITimeEventInterface<T> extends Comparable<T> {
 
     /**
      *
-     * @param isAllDay
+     * @param allday
      */
     void setAllDay(boolean allday);
     boolean isAllDay();

@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import david.itimecalendar.calendar.listeners.ITimeComparable;
+
 /**
  * Created by yuhaoliu on 18/08/16.
  */
-public class OverlapHelper <I extends OverlapHelper.OverlapInput<I>> {
+public class OverlapHelper <I extends ITimeComparable<I>> {
     private final long overlapTolerance = (15/2) * 60 * 1000;
 
     private List<I> eventModules = new ArrayList<>();
@@ -45,11 +47,10 @@ public class OverlapHelper <I extends OverlapHelper.OverlapInput<I>> {
              ) {
             long comparedStartTime = obj.getStartTime();
             long comparedEndTime = obj.getEndTime();
-            if (comparedStartTime <= compareStartTime && comparedEndTime > comparedStartTime){
+            if ((comparedStartTime <= compareStartTime) && (comparedEndTime > compareStartTime)){
                 return true;
             }
         }
-
         return false;
     }
     
@@ -195,10 +196,5 @@ public class OverlapHelper <I extends OverlapHelper.OverlapInput<I>> {
             this.params = params;
             this.item = item;
         }
-    }
-
-    public interface OverlapInput<T> extends Comparable<T>{
-        long getStartTime();
-        long getEndTime();
     }
 }

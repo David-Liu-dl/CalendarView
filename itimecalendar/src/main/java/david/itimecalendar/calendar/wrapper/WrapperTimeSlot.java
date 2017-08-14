@@ -3,15 +3,15 @@ package david.itimecalendar.calendar.wrapper;
 
 import android.support.annotation.NonNull;
 
+import david.itimecalendar.calendar.listeners.ITimeComparable;
 import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
 import david.itimecalendar.calendar.ui.unitviews.DraggableTimeSlotView;
-import david.itimecalendar.calendar.util.OverlapHelper;
 
 /**
  * Created by yuhaoliu on 4/01/2017.
  */
 
-public class WrapperTimeSlot implements OverlapHelper.OverlapInput<WrapperTimeSlot>{
+public class WrapperTimeSlot implements ITimeComparable<WrapperTimeSlot> {
     private DraggableTimeSlotView draggableTimeSlotView;
     private ITimeTimeSlotInterface timeSlot = null;
     private boolean isSelected = false;

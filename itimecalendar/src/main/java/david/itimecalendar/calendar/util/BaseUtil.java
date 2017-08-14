@@ -88,4 +88,10 @@ public class BaseUtil {
         //check if timeslot expired
         return  o != null && nowTime >= o.getStartTime();
     }
+
+    public static boolean isExpired(long time){
+        long nowTime = Calendar.getInstance().getTimeInMillis();
+        //check if time expired
+        return nowTime >= time;
+    }
 }

@@ -26,26 +26,26 @@ import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
  * Created by yuhaoliu on 1/05/2017.
  */
 
-public class RecommendedSlotView extends RelativeLayout {
+public class RcdRegularTimeSlotView extends RelativeLayout {
     private TextView label;
     private TextView title;
     private ImageView icon;
     private WrapperTimeSlot wrapper;
     private boolean isAllday;
 
-    public RecommendedSlotView(@NonNull Context context, WrapperTimeSlot wrapper, boolean isAllday) {
+    public RcdRegularTimeSlotView(@NonNull Context context, WrapperTimeSlot wrapper, boolean isAllday) {
         super(context);
         this.isAllday = isAllday;
         this.wrapper = wrapper;
         init();
     }
 
-    public RecommendedSlotView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public RcdRegularTimeSlotView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public RecommendedSlotView(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
+    public RcdRegularTimeSlotView(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }

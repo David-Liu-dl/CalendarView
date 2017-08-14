@@ -20,7 +20,7 @@ import java.util.List;
 import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
 import david.itimecalendar.calendar.ui.unitviews.DraggableEventView;
 import david.itimecalendar.calendar.ui.unitviews.DraggableTimeSlotView;
-import david.itimecalendar.calendar.ui.unitviews.RecommendedSlotView;
+import david.itimecalendar.calendar.ui.unitviews.RcdRegularTimeSlotView;
 import david.itimecalendar.calendar.util.MyCalendar;
 import david.itimecalendar.calendar.util.OverlapHelper;
 import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
@@ -41,7 +41,7 @@ public class TimeSlotController {
     private boolean draggable = true;
 
     private ArrayList<DraggableTimeSlotView> slotViews = new ArrayList<>();
-    private ArrayList<RecommendedSlotView> rcdSlotViews = new ArrayList<>();
+    private ArrayList<RcdRegularTimeSlotView> rcdSlotViews = new ArrayList<>();
 //    private WeekView.OnRcdTimeSlot onRcdTimeSlot;
 
 
@@ -59,7 +59,7 @@ public class TimeSlotController {
         //While clicking existed time block
         void onTimeSlotClick(DraggableTimeSlotView draggableTimeSlotView);
         //while clicking recommended time slot
-        void onRcdTimeSlotClick(RecommendedSlotView v);
+        void onRcdTimeSlotClick(RcdRegularTimeSlotView v);
         //When start dragging
         void onTimeSlotDragStart(DraggableTimeSlotView draggableTimeSlotView);
 
@@ -109,7 +109,7 @@ public class TimeSlotController {
         @Override
         public void onClick(View v) {
             if (onTimeSlotListener != null){
-                onTimeSlotListener.onRcdTimeSlotClick((RecommendedSlotView) v);
+                onTimeSlotListener.onRcdTimeSlotClick((RcdRegularTimeSlotView) v);
             }
         }
     }
@@ -305,8 +305,8 @@ public class TimeSlotController {
 
 
 
-    private RecommendedSlotView createRcdTimeSlotView(WrapperTimeSlot wrapper){
-        RecommendedSlotView recommendedSlotView = new RecommendedSlotView(container.context, wrapper, false);
+    private RcdRegularTimeSlotView createRcdTimeSlotView(WrapperTimeSlot wrapper){
+        RcdRegularTimeSlotView recommendedSlotView = new RcdRegularTimeSlotView(container.context, wrapper, false);
         recommendedSlotView.setOnClickListener(new OnRcdClickListener());
         if (wrapper.getTimeSlot() != null){
             DayInnerBodyLayout.LayoutParams params = new DayInnerBodyLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, container.layoutWidthPerDay);
@@ -399,7 +399,7 @@ public class TimeSlotController {
 
 
     void addRecommended(WrapperTimeSlot wrapper){
-        RecommendedSlotView rcdSlotView = createRcdTimeSlotView(wrapper);
+        RcdRegularTimeSlotView rcdSlotView = createRcdTimeSlotView(wrapper);
         container.eventLayout.addView(rcdSlotView, rcdSlotView.getLayoutParams());
         rcdSlotView.bringToFront();
         rcdSlotView.setVisibility(VISIBLE);
@@ -431,7 +431,7 @@ public class TimeSlotController {
 
         this.slotViews.clear();
 
-        for (RecommendedSlotView rcdView : rcdSlotViews
+        for (RcdRegularTimeSlotView rcdView : rcdSlotViews
                 ) {
             ViewGroup parent = (ViewGroup) rcdView.getParent();
             if (parent != null){
@@ -476,7 +476,7 @@ public class TimeSlotController {
         draggableTimeSlotView.setLayoutParams(draggableTimeSlotView.getLayoutParams());
     }
 
-    private void resizeRcdTimeSlot(RecommendedSlotView rcd){
+    private void resizeRcdTimeSlot(RcdRegularTimeSlotView rcd){
         long duration = rcd.getWrapper().getTimeSlot().getEndTime() - rcd.getWrapper().getTimeSlot().getStartTime();
         final int slotHeight = getSlotHeight(duration);
         final int topMargin = getSlotTopMargin(rcd.getWrapper().getTimeSlot().getStartTime());
@@ -537,7 +537,7 @@ public class TimeSlotController {
         YoYo.AnimationComposer composer = YoYo.with(Techniques.FadeOut)
                 .duration(150);
 
-        for (RecommendedSlotView rcdslotView: rcdSlotViews
+        for (RcdRegularTimeSlotView rcdslotView: rcdSlotViews
                 ){
             composer.playOn(rcdslotView);
         }
@@ -552,7 +552,7 @@ public class TimeSlotController {
         YoYo.AnimationComposer composer = YoYo.with(Techniques.FadeIn)
                 .duration(150);
 
-        for (RecommendedSlotView rcdslotView: rcdSlotViews
+        for (RcdRegularTimeSlotView rcdslotView: rcdSlotViews
                 ){
             composer.playOn(rcdslotView);
         }

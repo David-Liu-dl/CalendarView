@@ -66,13 +66,23 @@ public class DraggableTimeSlotView extends RelativeLayout {
     }
 
     public void init(){
-        //check if timeslot expired
-        if (BaseUtil.isExpired(timeslot)){
-            initViewAsExpiredMode();
-            initBackgroundAsExpiredMode();
-            return;
+        if (isAllday){
+            //check if allday timeslot expired
+            if (BaseUtil.isExpired(timeslot.getStartTime() + BaseUtil.getAllDayLong(timeslot.getStartTime()))){
+                initViewAsExpiredMode();
+                initBackgroundAsExpiredMode();
+                return;
+            }
+        }else {
+            //check if regular timeslot expired
+            if (BaseUtil.isExpired(timeslot)){
+                initViewAsExpiredMode();
+                initBackgroundAsExpiredMode();
+                return;
+            }
         }
 
+        //normal mode
         switch (mode){
             case ALL_DAY_CREATE: case NON_ALL_DAY_CREATE:
                 initViewAsCreateMode();

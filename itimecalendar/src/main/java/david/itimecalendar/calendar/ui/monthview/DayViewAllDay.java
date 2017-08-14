@@ -4,7 +4,6 @@ import android.animation.LayoutTransition;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -24,13 +23,14 @@ import java.util.List;
 import java.util.Map;
 
 import david.itimecalendar.R;
-import david.itimecalendar.calendar.ui.unitviews.AllDaySlotView;
+import david.itimecalendar.calendar.ui.unitviews.RcdAllDayTimeslotView;
 import david.itimecalendar.calendar.ui.weekview.TimeSlotView;
 import david.itimecalendar.calendar.listeners.ITimeEventInterface;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
 import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
 import david.itimecalendar.calendar.ui.unitviews.DraggableEventView;
 import david.itimecalendar.calendar.ui.unitviews.DraggableTimeSlotView;
+import david.itimecalendar.calendar.util.BaseUtil;
 import david.itimecalendar.calendar.util.DensityUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
 import david.itimecalendar.calendar.wrapper.WrapperEvent;
@@ -134,12 +134,12 @@ public class DayViewAllDay extends FrameLayout {
             //for timeslots
             //set timeslots
             if (isTimeslotEnable && DayViewAllDay.this.slotsInfo != null){
-                if (isAlldayRcdTimeslotEnable){
+                if (isAlldayRcdTimeslotEnable && !BaseUtil.isExpired(
+                        cal.getTimeInMillis() + BaseUtil.getAllDayLong(cal.getTimeInMillis()))){
                     //add rcd button
                     WrapperTimeSlot wrapperTimeSlot = new WrapperTimeSlot(null);
                     item.addAllDayTimeslotButton(wrapperTimeSlot, calendar);
                 }
-
 
                 /**
                  * should not add all day Rcd, it is embedded in every single day.
@@ -308,7 +308,7 @@ public class DayViewAllDay extends FrameLayout {
         }
 
         private void addAllDayTimeslotButton(WrapperTimeSlot wrapperTimeSlot, MyCalendar calendar) {
-            AllDaySlotView allDaySlotView = new AllDaySlotView(getContext(),wrapperTimeSlot);
+            RcdAllDayTimeslotView allDaySlotView = new RcdAllDayTimeslotView(getContext(),wrapperTimeSlot);
             allDaySlotView.setMyCalendar(calendar);
             allDaySlotView.setOnClickListener(new OnAllDayRcdTimeslotClick());
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -502,7 +502,7 @@ public class DayViewAllDay extends FrameLayout {
 
         @Override
         public void onClick(View v) {
-            AllDaySlotView allDaySlotView = (AllDaySlotView) v;
+            RcdAllDayTimeslotView allDaySlotView = (RcdAllDayTimeslotView) v;
             if (allDayTimeslotListener != null){
                 allDayTimeslotListener.onAllDayRcdTimeslotClick(allDaySlotView.getAllDayBeginTime());
             }

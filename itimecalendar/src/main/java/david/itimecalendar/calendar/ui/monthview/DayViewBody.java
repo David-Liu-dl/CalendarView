@@ -25,13 +25,12 @@ import java.util.Date;
 import java.util.List;
 
 import david.itimecalendar.R;
-import david.itimecalendar.calendar.listeners.ITimeEventInterface;
 import david.itimecalendar.calendar.ui.weekview.TimeSlotView;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
 import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
 import david.itimecalendar.calendar.ui.unitviews.DraggableEventView;
 import david.itimecalendar.calendar.ui.unitviews.DraggableTimeSlotView;
-import david.itimecalendar.calendar.ui.unitviews.RecommendedSlotView;
+import david.itimecalendar.calendar.ui.unitviews.RcdRegularTimeSlotView;
 import david.itimecalendar.calendar.util.BaseUtil;
 import david.itimecalendar.calendar.util.DensityUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
@@ -613,7 +612,7 @@ public class DayViewBody extends RelativeLayout {
         }
 
         @Override
-        public void onRcdTimeSlotClick(RecommendedSlotView v) {
+        public void onRcdTimeSlotClick(RcdRegularTimeSlotView v) {
             if (onTimeSlotOuterListener != null){
                 onTimeSlotOuterListener.onRcdTimeSlotClick(v);
             }

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 import david.itimecalendar.calendar.ui.unitviews.DraggableEventView;
 import david.itimecalendar.calendar.ui.unitviews.DraggableTimeSlotView;
-import david.itimecalendar.calendar.ui.unitviews.RecommendedSlotView;
+import david.itimecalendar.calendar.ui.unitviews.RcdRegularTimeSlotView;
 import david.itimecalendar.calendar.wrapper.WrapperEvent;
 import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
 
@@ -111,7 +111,7 @@ public class DayInnerBodyLayout extends ViewGroup {
                 }
             }
 
-            if (getChildAt(i) instanceof RecommendedSlotView){
+            if (getChildAt(i) instanceof RcdRegularTimeSlotView){
                 getChildAt(i).getLayoutParams().width = width;
                 if (getChildAt(i).getVisibility() != View.GONE) {
                     //Make or work out measurements for children here (MeasureSpec.make...)
@@ -155,7 +155,7 @@ public class DayInnerBodyLayout extends ViewGroup {
 
         for (int i = 0; i < cCount; i++) {
             View child = getChildAt(i);
-            if (child instanceof DraggableEventView || child instanceof DraggableTimeSlotView || child instanceof RecommendedSlotView){
+            if (child instanceof DraggableEventView || child instanceof DraggableTimeSlotView || child instanceof RcdRegularTimeSlotView){
                 DayInnerBodyLayout.LayoutParams params = (DayInnerBodyLayout.LayoutParams) child.getLayoutParams();
                 child.layout(
                         paddingLeft + params.left + params.relativeMarginLeft,

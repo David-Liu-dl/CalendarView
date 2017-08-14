@@ -33,7 +33,7 @@ import david.itimecalendar.calendar.ui.monthview.DayViewBodyCell;
 import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
 import david.itimecalendar.calendar.ui.unitviews.DraggableTimeSlotView;
 import david.itimecalendar.calendar.ui.unitviews.TimeslotDurationEditView;
-import david.itimecalendar.calendar.ui.unitviews.RecommendedSlotView;
+import david.itimecalendar.calendar.ui.unitviews.RcdRegularTimeSlotView;
 import david.itimecalendar.calendar.ui.unitviews.TimeSlotInnerCalendarView;
 import david.itimecalendar.calendar.ui.unitviews.TimeslotEditView;
 import david.itimecalendar.calendar.util.DensityUtil;
@@ -284,7 +284,7 @@ public class TimeSlotView extends WeekView {
         }
 
         @Override
-        public void onRcdTimeSlotClick(RecommendedSlotView v) {
+        public void onRcdTimeSlotClick(RcdRegularTimeSlotView v) {
             if (iTimeCalendarListener != null){
                 iTimeCalendarListener.onRcdTimeSlotClick(v);
             }

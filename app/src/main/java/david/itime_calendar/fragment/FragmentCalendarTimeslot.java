@@ -13,10 +13,9 @@ import java.util.Date;
 import david.itime_calendar.EventManager;
 import david.itime_calendar.R;
 import david.itimecalendar.calendar.listeners.ITimeCalendarTimeslotViewListener;
-import david.itimecalendar.calendar.ui.monthview.DayViewBody;
 import david.itimecalendar.calendar.ui.weekview.TimeSlotView;
 import david.itimecalendar.calendar.ui.unitviews.DraggableTimeSlotView;
-import david.itimecalendar.calendar.ui.unitviews.RecommendedSlotView;
+import david.itimecalendar.calendar.ui.unitviews.RcdRegularTimeSlotView;
 import david.itimecalendar.calendar.util.MyCalendar;
 
 /**
@@ -69,7 +68,7 @@ public class FragmentCalendarTimeslot extends Fragment {
         }
 
         @Override
-        public void onRcdTimeSlotClick(RecommendedSlotView recommendedSlotView) {
+        public void onRcdTimeSlotClick(RcdRegularTimeSlotView recommendedSlotView) {
 
         }
 

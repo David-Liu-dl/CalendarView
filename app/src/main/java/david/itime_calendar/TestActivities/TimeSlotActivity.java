@@ -17,7 +17,7 @@ import david.itime_calendar.bean.TimeSlot;
 import david.itimecalendar.calendar.listeners.ITimeCalendarTimeslotViewListener;
 import david.itimecalendar.calendar.ui.weekview.TimeSlotView;
 import david.itimecalendar.calendar.ui.unitviews.DraggableTimeSlotView;
-import david.itimecalendar.calendar.ui.unitviews.RecommendedSlotView;
+import david.itimecalendar.calendar.ui.unitviews.RcdRegularTimeSlotView;
 import david.itimecalendar.calendar.util.MyCalendar;
 
 /**
@@ -105,7 +105,7 @@ public class TimeSlotActivity extends AppCompatActivity {
 
 
             @Override
-            public void onRcdTimeSlotClick(RecommendedSlotView v) {
+            public void onRcdTimeSlotClick(RcdRegularTimeSlotView v) {
                 v.getWrapper().setSelected(true);
                 TimeSlot newSlot = new TimeSlot();
                 newSlot.setStartTime(v.getWrapper().getTimeSlot().getStartTime());

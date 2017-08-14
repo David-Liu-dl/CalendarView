@@ -23,6 +23,7 @@ import java.util.Date;
 import david.itimecalendar.R;
 import david.itimecalendar.calendar.listeners.ITimeCalendarMonthDayViewListener;
 import david.itimecalendar.calendar.listeners.ITimeCalendarWeekDayViewListener;
+import david.itimecalendar.calendar.ui.CalendarConfig;
 import david.itimecalendar.calendar.ui.monthview.DayViewBody;
 import david.itimecalendar.calendar.ui.monthview.DayViewBodyCell;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
@@ -36,7 +37,7 @@ import static android.widget.LinearLayout.VERTICAL;
  */
 
 public class WeekView extends RelativeLayout{
-    private static final String TAG = "WeekView";
+
     protected LinearLayout container;
     private ITimeCalendarWeekDayViewListener iTimeCalendarInterface;
 
@@ -204,6 +205,10 @@ public class WeekView extends RelativeLayout{
 
     public void refresh(){
         dayViewBody.refresh();
+    }
+
+    public void setCalendarConfig(CalendarConfig calendarConfig) {
+        this.dayViewBody.setCalendarConfig(calendarConfig);
     }
 
     @Override

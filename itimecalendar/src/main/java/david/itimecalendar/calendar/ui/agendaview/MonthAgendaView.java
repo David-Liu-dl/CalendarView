@@ -19,6 +19,7 @@ import java.util.Date;
 
 import david.itimecalendar.R;
 import david.itimecalendar.calendar.listeners.ITimeCalendarMonthAgendaViewListener;
+import david.itimecalendar.calendar.ui.CalendarConfig;
 import david.itimecalendar.calendar.ui.monthview.DayViewHeader;
 import david.itimecalendar.calendar.listeners.ITimeEventInterface;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
@@ -28,16 +29,7 @@ import david.itimecalendar.calendar.util.MyCalendar;
  * Created by yuhaoliu on 31/08/16.
  */
 
-//@BindingMethods(
-//        {
-//                @BindingMethod(type = MonthAgendaView.class, attribute = "agendaView:BackToday", method = "backToToday"),
-//                @BindingMethod(type = MonthAgendaView.class, attribute = "agendaView:onHeaderListener", method = "setOnHeaderListener"),
-//                @BindingMethod(type = MonthAgendaView.class, attribute = "agendaView:onEventClickListener", method = "setITimeCalendarMonthAgendaViewListener"),
-//        }
-//)
-
 public class MonthAgendaView extends RelativeLayout{
-    private final String TAG = "AgendaHeader";
     private ITimeCalendarMonthAgendaViewListener iTimeCalendarInterface;
     private int upperBoundsOffset = 1;
     private int init_height;
@@ -86,7 +78,7 @@ public class MonthAgendaView extends RelativeLayout{
      * Set the item data package
      * @param eventPackage
      */
-    public void setDayEventMap(ITimeEventPackageInterface eventPackage){
+    public void setEventPackage(ITimeEventPackageInterface eventPackage){
         this.eventPackage = eventPackage;
         this.bodyRecyclerAdapter.setDayEventMap(eventPackage);
         this.headerRecyclerAdapter.notifyDataSetChanged();
@@ -239,7 +231,6 @@ public class MonthAgendaView extends RelativeLayout{
         agendaViewHeader.setAdapter(headerRecyclerAdapter);
         headerLinearLayoutManager = new LinearLayoutManager(context);
         agendaViewHeader.setLayoutManager(headerLinearLayoutManager);
-//        agendaViewHeader.addItemDecoration(new DayViewHeaderRecyclerDivider(context));
         final DisplayMetrics dm = getResources().getDisplayMetrics();
         init_height = (dm.widthPixels / 7 - 20) * 2;
         scroll_height = (dm.widthPixels / 7 - 20) * 4;
@@ -493,5 +484,10 @@ public class MonthAgendaView extends RelativeLayout{
         if (bodyRecyclerAdapter != null){
             bodyRecyclerAdapter.setOnEventClickListener(this.iTimeCalendarInterface);
         }
+    }
+
+    public void setCalendarConfig(CalendarConfig calendarConfig) {
+        this.bodyRecyclerAdapter.setCalendarConfig(calendarConfig);
+        this.bodyRecyclerAdapter.notifyDataSetChanged();
     }
 }

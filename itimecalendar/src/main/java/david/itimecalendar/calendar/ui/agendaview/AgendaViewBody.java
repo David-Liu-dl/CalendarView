@@ -16,6 +16,7 @@ import java.util.List;
 
 import david.itimecalendar.R;
 import david.itimecalendar.calendar.listeners.ITimeEventInterface;
+import david.itimecalendar.calendar.ui.CalendarConfig;
 import david.itimecalendar.calendar.util.DensityUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
 
@@ -23,6 +24,7 @@ import david.itimecalendar.calendar.util.MyCalendar;
  * Created by yuhaoliu on 31/08/16.
  */
 public class AgendaViewBody extends LinearLayout{
+    private CalendarConfig calendarConfig;
     private final String TAG = "MyAPP2";
 
     /*************************** Start of Color Setting **********************************/
@@ -70,7 +72,7 @@ public class AgendaViewBody extends LinearLayout{
 
     public void setEventList(List<ITimeEventInterface> eventList){
         this.setCurrentDayType();
-        this.events = eventList;
+        this.events = filterInputEvents(eventList);
         displayEvents(this.events);
     }
 
@@ -101,8 +103,10 @@ public class AgendaViewBody extends LinearLayout{
         this.rowBody.removeAllViews();
         Collections.sort(events);
         if (events.size() != 0){
+
             for (int i = 0; i < events.size(); i++) {
                 final ITimeEventInterface currentEvent = events.get(i);
+
                 AgendaViewInnerBody rowBody = new AgendaViewInnerBody(context, currentEvent, this.currentDayType);
                 rowBody.setOnClickListener(new OnClickListener() {
                     @Override
@@ -135,6 +139,24 @@ public class AgendaViewBody extends LinearLayout{
             noEvent.setTextColor(getResources().getColor(color_no_event));
             this.rowBody.addView(noEvent, params);
         }
+    }
+
+    private List<ITimeEventInterface> filterInputEvents(List<ITimeEventInterface> events){
+        boolean unconfirmedIncluded = calendarConfig.unconfirmedIncluded;
+        if (unconfirmedIncluded){
+            return events;
+        }
+
+        List<ITimeEventInterface> results = new ArrayList<>();
+        for (ITimeEventInterface event:events
+             ) {
+            if (!event.isConfirmed()){
+                continue;
+            }
+            results.add(event);
+        }
+
+        return results;
     }
 
     private ImageView getDivider(){
@@ -172,4 +194,7 @@ public class AgendaViewBody extends LinearLayout{
         return type;
     }
 
+    public void setCalendarConfig(CalendarConfig calendarConfig) {
+        this.calendarConfig = calendarConfig;
+    }
 }

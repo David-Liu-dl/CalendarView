@@ -34,6 +34,7 @@ import java.util.TreeMap;
 import david.itimecalendar.R;
 import david.itimecalendar.calendar.listeners.ITimeEventInterface;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
+import david.itimecalendar.calendar.ui.CalendarConfig;
 import david.itimecalendar.calendar.ui.unitviews.TimelineView;
 import david.itimecalendar.calendar.util.BaseUtil;
 import david.itimecalendar.calendar.util.DensityUtil;
@@ -77,6 +78,8 @@ public class DayViewBodyCell extends FrameLayout{
     private int rs_nowtime_line = R.drawable.itime_now_time_full_line;
     /*************************** End of Resources Setting ****************************/
 
+
+    protected CalendarConfig calendarConfig;
     protected boolean isTimeSlotEnable = false;
     protected boolean isRemoveOptListener = false;
     protected OverlapHelper xHelper = new OverlapHelper();
@@ -319,6 +322,10 @@ public class DayViewBodyCell extends FrameLayout{
     public void setCalendar(MyCalendar myCalendar) {
         this.myCalendar = myCalendar;
         updateTimeline();
+    }
+
+    public void setCalendarConfig(CalendarConfig calendarConfig) {
+        this.calendarConfig = calendarConfig;
     }
 
     private void updateTimeline(){

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import david.itimecalendar.R;
+import david.itimecalendar.calendar.ui.CalendarConfig;
 import david.itimecalendar.calendar.ui.unitviews.RcdAllDayTimeslotView;
 import david.itimecalendar.calendar.ui.weekview.TimeSlotView;
 import david.itimecalendar.calendar.listeners.ITimeEventInterface;
@@ -42,7 +43,8 @@ import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
 
 public class DayViewAllDay extends FrameLayout {
 
-    private static final String TAG = "DayViewAllDay";
+    private CalendarConfig calendarConfig = new CalendarConfig();
+
     private ITimeRecycleViewGroup recycleViewGroup;
     private AllDayAdapter adapter;
     private TextView label;
@@ -249,8 +251,6 @@ public class DayViewAllDay extends FrameLayout {
     }
 
     private class AllDayCell extends LinearLayout{
-
-
         private LinearLayout eventLayout;
         private FrameLayout timeslotLayout;
 
@@ -322,6 +322,8 @@ public class DayViewAllDay extends FrameLayout {
                 return;
             }
 
+            boolean unconfirmedIncluded = calendarConfig.unconfirmedIncluded;
+
             Map<Long, List<ITimeEventInterface>> regularDayEventMap = eventPackage.getRegularEventDayMap();
             Map<Long, List<ITimeEventInterface>> repeatedDayEventMap = eventPackage.getRepeatedEventDayMap();
 
@@ -334,6 +336,12 @@ public class DayViewAllDay extends FrameLayout {
                     if (event.isShownInCalendar() == View.VISIBLE){
                         WrapperEvent wrapperEvent = new WrapperEvent(event);
                         wrapperEvent.setFromDayBegin(startTime);
+
+                        //check unconfirmed
+                        if (!unconfirmedIncluded && !event.isConfirmed()){
+                            continue;
+                        }
+
                         if (event.isAllDay()){
                             this.addAllDayEvent(wrapperEvent);
                         }
@@ -347,6 +355,12 @@ public class DayViewAllDay extends FrameLayout {
                     if (event.isShownInCalendar() == View.VISIBLE){
                         WrapperEvent wrapperEvent = new WrapperEvent(event);
                         wrapperEvent.setFromDayBegin(startTime);
+
+                        //check unconfirmed
+                        if (!unconfirmedIncluded && !event.isConfirmed()){
+                            continue;
+                        }
+
                         if (event.isAllDay()){
                             this.addAllDayEvent(wrapperEvent);
                         }
@@ -442,6 +456,11 @@ public class DayViewAllDay extends FrameLayout {
 
     public void setSlotsInfo(TimeSlotView.TimeSlotPackage slotsInfo) {
         this.slotsInfo = slotsInfo;
+    }
+
+    public void setCalendarConfig(CalendarConfig calendarConfig) {
+        this.calendarConfig = calendarConfig;
+        this.adapter.notifyDataSetChanged();
     }
 
     public void notifyDataSetChanged(){

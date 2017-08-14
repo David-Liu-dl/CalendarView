@@ -11,10 +11,10 @@ import java.util.Calendar;
 import java.util.Date;
 
 import david.itimecalendar.R;
+import david.itimecalendar.calendar.ui.CalendarConfig;
 import david.itimecalendar.calendar.util.MyCalendar;
 
 public class DayViewHeaderRecyclerAdapter extends RecyclerView.Adapter<DayViewHeaderRecyclerAdapter.MyViewHolder> {
-    public String TAG = "MyAPP";
     private LayoutInflater inflater;
     private int upperBoundsOffset;
     private int startPosition;
@@ -44,7 +44,7 @@ public class DayViewHeaderRecyclerAdapter extends RecyclerView.Adapter<DayViewHe
 
     @Override
     public DayViewHeaderRecyclerAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.itime_day_view_header, parent, false);
+        DayViewHeader view = (DayViewHeader) inflater.inflate(R.layout.itime_day_view_header, parent, false);
         MyViewHolder holder = new MyViewHolder(view);
         holds.add(holder);
 
@@ -123,7 +123,6 @@ public class DayViewHeaderRecyclerAdapter extends RecyclerView.Adapter<DayViewHe
     void setOnHeaderListener(OnHeaderListener onHeaderListener){
         this.onHeaderListener = onHeaderListener;
     }
-
 
     interface OnHeaderListener{
         void onClick(MyCalendar myCalendar);

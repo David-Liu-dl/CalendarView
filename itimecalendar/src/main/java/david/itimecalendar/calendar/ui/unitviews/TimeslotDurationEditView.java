@@ -112,7 +112,6 @@ public class TimeslotDurationEditView<T> extends FrameLayout{
 
         label = new TextView(context);
         label.setText("Duration");
-//        label.setTextSize(DensityUtil.px2sp(context, labelTextSizeSp));
         label.setTextSize(labelTextSizeSp);
         RelativeLayout.LayoutParams labelParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         labelParams.leftMargin = DensityUtil.dip2px(context,15);

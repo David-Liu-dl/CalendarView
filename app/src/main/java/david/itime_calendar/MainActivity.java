@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
             endTime = startTime + interval;
             Event event = new Event();
             event.setEventUid("" + i);
-            event.setEventStatus(i == 1 ? "Confirmed" : "Unconfirmed");
+            event.setEventStatus("Unconfirmed");
             event.setEventType(i == 1 ? ITimeEventInterface.EVENT_TYPE_GROUP:ITimeEventInterface.EVENT_TYPE_SOLO);
             event.setSummary("adawdwadwadaw" + i);
             event.setLocation("here");

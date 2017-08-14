@@ -25,6 +25,7 @@ import java.util.Date;
 import david.itimecalendar.R;
 import david.itimecalendar.calendar.listeners.ITimeCalendarMonthDayViewListener;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
+import david.itimecalendar.calendar.ui.CalendarConfig;
 import david.itimecalendar.calendar.util.BaseUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
 
@@ -34,8 +35,6 @@ import david.itimecalendar.calendar.util.MyCalendar;
 
 public class MonthView extends LinearLayout{
     private ITimeCalendarMonthDayViewListener iTimeCalendarInterface;
-
-    private static final String TAG = "lifecycle";
     private Context context;
 
     private ITimeEventPackageInterface eventPackage;
@@ -224,12 +223,6 @@ public class MonthView extends LinearLayout{
         }else {
             headerRecyclerView.stopScroll();
             headerLinearLayoutManager.scrollToPosition(headerRecyclerAdapter.rowPst);
-//            headerRecyclerView.postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    headerScrollToDate(body_fst_cal,toTime);
-//                }
-//            },10);
         }
     }
 
@@ -325,6 +318,10 @@ public class MonthView extends LinearLayout{
 
     public void smoothMoveWithOffset(int moveOffset){
         dayViewBody.smoothMoveWithOffset(moveOffset);
+    }
+
+    public void setCalendarConfig(CalendarConfig calendarConfig) {
+        this.dayViewBody.setCalendarConfig(calendarConfig);
     }
 
     public void refresh(){

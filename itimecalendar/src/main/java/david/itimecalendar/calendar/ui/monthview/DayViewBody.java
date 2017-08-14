@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 
 import david.itimecalendar.R;
+import david.itimecalendar.calendar.ui.CalendarConfig;
 import david.itimecalendar.calendar.ui.weekview.TimeSlotView;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
 import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
@@ -42,6 +43,8 @@ import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
 
 public class DayViewBody extends RelativeLayout {
     private static final String TAG = "DayViewBody";
+
+    private CalendarConfig calendarConfig;
 
     public DayViewAllDay allDayView;
     private FrameLayout leftTimeBarLayout;
@@ -773,6 +776,13 @@ public class DayViewBody extends RelativeLayout {
     public void notifyDataSetChanged(){
         dayViewBodyAdapter.notifyDataSetChanged();
         allDayView.notifyDataSetChanged();
+    }
+
+    public void setCalendarConfig(CalendarConfig calendarConfig) {
+        this.calendarConfig = calendarConfig;
+        this.allDayView.setCalendarConfig(calendarConfig);
+        this.dayViewBodyAdapter.setCalendarConfig(calendarConfig);
+        this.dayViewBodyAdapter.notifyDataSetChanged();
     }
 
     public interface OnViewBodyTimeSlotListener extends TimeSlotController.OnTimeSlotListener,DayViewAllDay.AllDayTimeslotListener {

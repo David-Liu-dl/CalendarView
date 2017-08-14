@@ -61,6 +61,8 @@ public class EventController {
     }
 
     void setEventList(ITimeEventPackageInterface eventPackage) {
+        boolean unconfirmedIncluded = container.calendarConfig.unconfirmedIncluded;
+
         this.clearEvents();
         Map<Long, List<ITimeEventInterface>> regularDayEventMap = eventPackage.getRegularEventDayMap();
         Map<Long, List<ITimeEventInterface>> repeatedDayEventMap = eventPackage.getRepeatedEventDayMap();
@@ -70,6 +72,10 @@ public class EventController {
             if (regularDayEventMap != null && regularDayEventMap.containsKey(startTime)){
                 List<ITimeEventInterface> currentDayEvents = regularDayEventMap.get(startTime);
                 for (ITimeEventInterface event : currentDayEvents) {
+                    //check unconfirmed
+                    if (!unconfirmedIncluded && !event.isConfirmed()){
+                        continue;
+                    }
                     // is shown in calendar
                     if (event.isShownInCalendar() == View.VISIBLE){
                         WrapperEvent wrapperEvent = new WrapperEvent(event);
@@ -84,6 +90,11 @@ public class EventController {
             if (repeatedDayEventMap != null && repeatedDayEventMap.containsKey(startTime)){
                 List<ITimeEventInterface> currentDayEvents = repeatedDayEventMap.get(startTime);
                 for (ITimeEventInterface event : currentDayEvents) {
+                    //check unconfirmed
+                    if (!unconfirmedIncluded && !event.isConfirmed()){
+                        continue;
+                    }
+
                     if (event.isShownInCalendar() == View.VISIBLE){
                         WrapperEvent wrapperEvent = new WrapperEvent(event);
                         wrapperEvent.setFromDayBegin(startTime);

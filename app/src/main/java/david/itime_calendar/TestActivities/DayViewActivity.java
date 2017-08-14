@@ -13,6 +13,7 @@ import david.itime_calendar.EventManager;
 import david.itime_calendar.R;
 import david.itime_calendar.bean.Event;
 import david.itimecalendar.calendar.listeners.ITimeCalendarMonthDayViewListener;
+import david.itimecalendar.calendar.ui.CalendarConfig;
 import david.itimecalendar.calendar.ui.monthview.DayViewBody;
 import david.itimecalendar.calendar.ui.monthview.MonthView;
 import david.itimecalendar.calendar.listeners.ITimeEventInterface;
@@ -37,8 +38,11 @@ public class DayViewActivity extends AppCompatActivity {
     }
 
     private void doTest(){
-        final MonthView monthView = (MonthView) findViewById(R.id.day_view);
+        CalendarConfig config = new CalendarConfig();
+        config.unconfirmedIncluded = false;
 
+        final MonthView monthView = (MonthView) findViewById(R.id.day_view);
+        monthView.setCalendarConfig(config);
         TextView todayBtn = (TextView) findViewById(R.id.today);
         todayBtn.setOnClickListener(new View.OnClickListener() {
             @Override

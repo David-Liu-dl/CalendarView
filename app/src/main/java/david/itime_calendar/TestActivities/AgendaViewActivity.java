@@ -26,7 +26,7 @@ public class AgendaViewActivity extends AppCompatActivity {
 
     private void doTest(){
         final MonthAgendaView agendaView = (MonthAgendaView) findViewById(R.id.agenda_view);
-        agendaView.setDayEventMap(eventManager.getEventsMap());
+        agendaView.setEventPackage(eventManager.getEventsMap());
 
         TextView todayBtn = (TextView) findViewById(R.id.today);
         todayBtn.setOnClickListener(new View.OnClickListener() {

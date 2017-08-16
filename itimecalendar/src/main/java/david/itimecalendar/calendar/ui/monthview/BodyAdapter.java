@@ -15,8 +15,10 @@ import java.util.Calendar;
 import java.util.List;
 
 import david.itimecalendar.R;
+import david.itimecalendar.calendar.ui.CalendarConfig;
 import david.itimecalendar.calendar.ui.weekview.TimeSlotView;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
+import david.itimecalendar.calendar.util.CalendarPositionHelper;
 import david.itimecalendar.calendar.util.MyCalendar;
 import david.itimecalendar.calendar.util.OverlapHelper;
 import david.itimecalendar.calendar.wrapper.WrapperEvent;
@@ -27,6 +29,9 @@ import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
  */
 
 public class BodyAdapter extends ITimeAdapter<DayViewBodyCell> {
+    private CalendarConfig calendarConfig = new CalendarConfig();
+    private CalendarPositionHelper calendarPositionHelper;
+
     private ITimeEventPackageInterface eventPackage;
     private TimeSlotView.TimeSlotPackage slotsInfo;
     private Context context;
@@ -35,9 +40,10 @@ public class BodyAdapter extends ITimeAdapter<DayViewBodyCell> {
     private int NUM_CELL = 1;
     private OverlapHelper overlapHelper = new OverlapHelper();
 
-    public BodyAdapter(Context context, AttributeSet attrs) {
+    public BodyAdapter(Context context, AttributeSet attrs, CalendarPositionHelper helper) {
         this.context = context;
         this.attrs = attrs;
+        this.calendarPositionHelper = helper;
         this.loadAttributes(attrs, context);
     }
 
@@ -46,7 +52,6 @@ public class BodyAdapter extends ITimeAdapter<DayViewBodyCell> {
             TypedArray typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.viewBody, 0, 0);
             try {
                 NUM_CELL = typedArray.getInteger(R.styleable.viewBody_cellNum, NUM_CELL);
-                Log.i("", "loadAttributes: ");
             } finally {
                 typedArray.recycle();
             }
@@ -68,9 +73,10 @@ public class BodyAdapter extends ITimeAdapter<DayViewBodyCell> {
 
     @Override
     public DayViewBodyCell onCreateViewHolder() {
-        DayViewBodyCell view = new DayViewBodyCell(context, attrs);
-        viewItems.add(view);
-        return view;
+        DayViewBodyCell cell = new DayViewBodyCell(context, attrs);
+        cell.setPstHelper(calendarPositionHelper);
+        viewItems.add(cell);
+        return cell;
     }
 
     @Override
@@ -79,6 +85,9 @@ public class BodyAdapter extends ITimeAdapter<DayViewBodyCell> {
         cal.add(Calendar.DATE, offset);
 
         body.resetView();
+        body.setCalendarConfig(calendarConfig);
+        body.refreshLayoutListener();
+
         //setBorderColor
         if (offset % NUM_CELL == 0){
             body.highlightCellBorder();
@@ -93,7 +102,7 @@ public class BodyAdapter extends ITimeAdapter<DayViewBodyCell> {
         }
 
         //set timeslots
-        if (body.isTimeSlotEnable && this.slotsInfo != null){
+        if (calendarConfig.mode != CalendarConfig.Mode.EVENT && this.slotsInfo != null){
             MyCalendar calendar = body.getCalendar();
             //add rcd first
             for (WrapperTimeSlot struct : slotsInfo.rcdSlots
@@ -124,6 +133,10 @@ public class BodyAdapter extends ITimeAdapter<DayViewBodyCell> {
         }
 
         body.requestLayout();
+    }
+
+    public void setCalendarConfig(CalendarConfig calendarConfig) {
+        this.calendarConfig = calendarConfig;
     }
 
     public List<View> getViewItems(){

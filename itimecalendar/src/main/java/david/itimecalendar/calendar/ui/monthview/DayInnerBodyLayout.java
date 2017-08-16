@@ -17,7 +17,6 @@ import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
  * Created by yuhaoliu on 21/09/16.
  */
 public class DayInnerBodyLayout extends ViewGroup {
-    private static final String TAG = "DayInnerBodyEventLayout";
     ArrayList<WrapperEvent> events = new ArrayList<>();
     ArrayList<DraggableEventView> dgEvents = new ArrayList<>();
     ArrayList<WrapperTimeSlot> slots = new ArrayList<>();
@@ -97,6 +96,10 @@ public class DayInnerBodyLayout extends ViewGroup {
                         // for creating a new item
                         // the pos parameter is null, because we just mock it
                         params.width = width;
+                        // measure child with correct spec
+                        int childWidthSpec = MeasureSpec.makeMeasureSpec(width,MeasureSpec.EXACTLY);
+                        int childHeightSpec = heightMeasureSpec;
+                        measureChild(getChildAt(i), childWidthSpec, childHeightSpec);
                         continue;
                     }
                     int timeslotConsumedWidth = width/pos.widthFactor;

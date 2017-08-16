@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.LayoutTransition;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.os.Build;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -25,6 +26,7 @@ import java.util.Date;
 import java.util.List;
 
 import david.itimecalendar.R;
+import david.itimecalendar.calendar.ui.CalendarConfig;
 import david.itimecalendar.calendar.ui.weekview.TimeSlotView;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
 import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
@@ -32,6 +34,7 @@ import david.itimecalendar.calendar.ui.unitviews.DraggableEventView;
 import david.itimecalendar.calendar.ui.unitviews.DraggableTimeSlotView;
 import david.itimecalendar.calendar.ui.unitviews.RcdRegularTimeSlotView;
 import david.itimecalendar.calendar.util.BaseUtil;
+import david.itimecalendar.calendar.util.CalendarPositionHelper;
 import david.itimecalendar.calendar.util.DensityUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
 import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
@@ -42,6 +45,10 @@ import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
 
 public class DayViewBody extends RelativeLayout {
     private static final String TAG = "DayViewBody";
+
+    private CalendarConfig calendarConfig;
+    private CalendarPositionHelper calendarPositionHelper = new CalendarPositionHelper();
+
 
     public DayViewAllDay allDayView;
     private FrameLayout leftTimeBarLayout;
@@ -114,10 +121,12 @@ public class DayViewBody extends RelativeLayout {
     private void setUpAllDay(){
         allDayView = new DayViewAllDay(context, attrs);
         allDayView.setBackgroundColor(getResources().getColor(R.color.divider_calbg));
-        allDayView.setElevation(20);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            allDayView.setElevation(20);
+        }
         allDayView.setSlotsInfo(this.timeSlotPackage);
         allDayView.setId(generateViewId());
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         allDayView.setLayoutParams(params);
         this.addView(allDayView);
     }
@@ -158,7 +167,7 @@ public class DayViewBody extends RelativeLayout {
         bodyContainer.setLayoutParams(layoutParams);
         this.addView(bodyContainer);
 
-        dayViewBodyAdapter = new BodyAdapter(getContext(), this.attrs);
+        dayViewBodyAdapter = new BodyAdapter(getContext(), this.attrs, this.calendarPositionHelper);
         dayViewBodyAdapter.setSlotsInfo(this.timeSlotPackage);
         bodyRecyclerView = new ITimeRecycleViewGroup(context, NUM_LAYOUTS);
         bodyRecyclerView.setAdapter(dayViewBodyAdapter);
@@ -205,12 +214,9 @@ public class DayViewBody extends RelativeLayout {
         setUpBodyCellInnerListener();
     }
 
-//    public void setDisableCellScroll(boolean isDisabled){
-//        bodyRecyclerView.setDisableCellScroll(isDisabled);
-//    }
-
     private boolean isSwiping = false;
     private AutoSwipeHelper swipeHelper = new AutoSwipeHelper();
+
     private void setUpBodyCellInnerListener(){
         if (this.dayViewBodyAdapter != null){
             List<View> items = dayViewBodyAdapter.getViewItems();
@@ -454,7 +460,7 @@ public class DayViewBody extends RelativeLayout {
         bodyRecyclerView.smoothMoveWithOffsetX(moveOffset, null);
     }
 
-    public void scrollToDate(Date date){
+    public void scrollToDate(Date date, boolean toTime){
         if (bodyRecyclerView.getFirstShowItem() == null){
             return;
         }
@@ -462,11 +468,22 @@ public class DayViewBody extends RelativeLayout {
         MyCalendar currentFstShowDay = ((DayViewBodyCell) bodyRecyclerView.getFirstShowItem()).getCalendar();
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        int offset = BaseUtil.getDatesDifference(currentFstShowDay.getCalendar().getTimeInMillis(), cal.getTimeInMillis());
+        int dateDiff = BaseUtil.getDatesDifference(currentFstShowDay.getCalendar().getTimeInMillis(), cal.getTimeInMillis());
         //move body layout
-        bodyRecyclerView.moveWithOffsetX(offset);
+        bodyRecyclerView.moveWithOffsetX(dateDiff);
         //move allday layout
-        allDayView.getRecycleViewGroup().moveWithOffsetX(offset);
+        allDayView.getRecycleViewGroup().moveWithOffsetX(dateDiff);
+        //scroll body to time
+        if (toTime){
+            String time = DayViewBodyCell.sdf.format(date);
+            String[] components = time.split(":");
+            float trickTime = Integer.valueOf(components[0]) + Integer.valueOf(components[1]) / (float) 100;
+            int targetY = calendarPositionHelper.nearestTimeSlotValue(trickTime);
+            // TODO: 15/8/17 Paul fix: the position of scroll y can't get
+            int diffY = targetY - bodyRecyclerView.getScrollY();
+            bodyRecyclerView.scrollByY(-diffY);
+        }
+
     }
 
     public void refresh(){
@@ -479,47 +496,49 @@ public class DayViewBody extends RelativeLayout {
         return timeSlotPackage;
     }
 
-    public void enableTimeSlot(boolean draggable){
-        enableHeaderSlot();
-        enableBodyTimeSlot(draggable);
-    }
+//    public void enableTimeSlot(boolean draggable){
+//        enableHeaderSlot();
+//        enableBodyTimeSlot(draggable);
+//    }
+//
+//    public void disableTimeSlot(){
+//        disableHeaderSlot();
+//        disableBodyTimeSlot();
+//    }
 
-    public void disableTimeSlot(){
-        disableHeaderSlot();
-        disableBodyTimeSlot();
-    }
+//    public void disableHeaderSlot(){
+//        allDayView.setTimeslotEnable(false);
+//    }
+//
+//    public void disableBodyTimeSlot(){
+////        if (dayViewBodyAdapter != null){
+////            List<View> items = dayViewBodyAdapter.getViewItems();
+////            for (View view:items
+////                    ) {
+////                DayViewBodyCell cell = (DayViewBodyCell) view;
+////                cell.disableTimeslot();
+////            }
+////        }
+//
+//
+//    }
 
-    public void disableHeaderSlot(){
-        allDayView.setTimeslotEnable(false);
-    }
+//    public void enableHeaderSlot(){
+//        allDayView.setTimeslotEnable(true);
+//        allDayView.notifyDataSetChanged();
+//    }
 
-    public void disableBodyTimeSlot(){
-        if (dayViewBodyAdapter != null){
-            List<View> items = dayViewBodyAdapter.getViewItems();
-            for (View view:items
-                    ) {
-                DayViewBodyCell cell = (DayViewBodyCell) view;
-                cell.disableTimeslot();
-            }
-        }
-    }
-
-    public void enableHeaderSlot(){
-        allDayView.setTimeslotEnable(true);
-        allDayView.notifyDataSetChanged();
-    }
-
-    public void enableBodyTimeSlot(boolean draggable){
-        if (dayViewBodyAdapter != null){
-            List<View> items = dayViewBodyAdapter.getViewItems();
-            for (View view:items
-                    ) {
-                DayViewBodyCell cell = (DayViewBodyCell) view;
-                cell.enableTimeSlot(draggable);
-            }
-            dayViewBodyAdapter.notifyDataSetChanged();
-        }
-    }
+//    public void enableBodyTimeSlot(boolean draggable){
+//        if (dayViewBodyAdapter != null){
+//            List<View> items = dayViewBodyAdapter.getViewItems();
+//            for (View view:items
+//                    ) {
+//                DayViewBodyCell cell = (DayViewBodyCell) view;
+//                cell.enableTimeSlot(draggable);
+//            }
+//            dayViewBodyAdapter.notifyDataSetChanged();
+//        }
+//    }
 
     public void addTimeSlot(ITimeTimeSlotInterface slotInfo){
         WrapperTimeSlot wrapper = new WrapperTimeSlot(slotInfo);
@@ -773,6 +792,13 @@ public class DayViewBody extends RelativeLayout {
     public void notifyDataSetChanged(){
         dayViewBodyAdapter.notifyDataSetChanged();
         allDayView.notifyDataSetChanged();
+    }
+
+    public void setCalendarConfig(CalendarConfig calendarConfig) {
+        this.calendarConfig = calendarConfig;
+        this.allDayView.setCalendarConfig(calendarConfig);
+        this.dayViewBodyAdapter.setCalendarConfig(calendarConfig);
+        this.dayViewBodyAdapter.notifyDataSetChanged();
     }
 
     public interface OnViewBodyTimeSlotListener extends TimeSlotController.OnTimeSlotListener,DayViewAllDay.AllDayTimeslotListener {

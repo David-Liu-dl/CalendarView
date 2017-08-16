@@ -368,5 +368,5 @@
     <color name="timeslot_expired_mode_text">#330089ff</color>
     <color name="timeslot_select_mode_border_selected">#0089ff</color>
     <color name="timeslot_select_mode_border_non_selected">#400089ff</color>
-    <color name="timeslot_expired_mode_border">#0D0089ff</color>
+    <color name="timeslot_expired_mode_border">#0089ff</color>
 </resources>

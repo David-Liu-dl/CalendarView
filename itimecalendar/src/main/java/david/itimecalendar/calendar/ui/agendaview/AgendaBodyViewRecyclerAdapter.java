@@ -14,10 +14,12 @@ import java.util.List;
 import david.itimecalendar.R;
 import david.itimecalendar.calendar.listeners.ITimeEventInterface;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
+import david.itimecalendar.calendar.ui.CalendarConfig;
 import david.itimecalendar.calendar.util.MyCalendar;
 
 public class AgendaBodyViewRecyclerAdapter extends RecyclerView.Adapter<AgendaBodyViewRecyclerAdapter.MyViewHolder> {
-    public String TAG = "AgendaBodyViewRecyclerAdapter";
+    protected CalendarConfig calendarConfig = new CalendarConfig();
+
     private LayoutInflater inflater;
     private int upperBoundsOffset;
     private int startPosition;
@@ -53,7 +55,7 @@ public class AgendaBodyViewRecyclerAdapter extends RecyclerView.Adapter<AgendaBo
 
     @Override
     public AgendaBodyViewRecyclerAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.itime_agenda_view_body_view, parent, false);
+        AgendaViewBody view = (AgendaViewBody) inflater.inflate(R.layout.itime_agenda_view_body_view, parent, false);
         MyViewHolder holder = new MyViewHolder(view);
         holds.add(holder);
 
@@ -62,6 +64,7 @@ public class AgendaBodyViewRecyclerAdapter extends RecyclerView.Adapter<AgendaBo
 
     @Override
     public void onBindViewHolder(AgendaBodyViewRecyclerAdapter.MyViewHolder holder, int position) {
+        holder.bodyRow.setCalendarConfig(calendarConfig);
         holder.bodyRow.getCalendar().setOffset(position-startPosition);
         holder.bodyRow.updateHeaderView();
         long startTime = holder.bodyRow.getCalendar().getBeginOfDayMilliseconds();
@@ -102,6 +105,10 @@ public class AgendaBodyViewRecyclerAdapter extends RecyclerView.Adapter<AgendaBo
         long todayEndTime =  calE.getCalendar().getTimeInMillis();
 
         return todayEndTime >= startTime && todayStartTime <= endTime;
+    }
+
+    public void setCalendarConfig(CalendarConfig calendarConfig) {
+        this.calendarConfig = calendarConfig;
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder{

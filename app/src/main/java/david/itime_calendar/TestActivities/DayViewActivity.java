@@ -13,6 +13,7 @@ import david.itime_calendar.EventManager;
 import david.itime_calendar.R;
 import david.itime_calendar.bean.Event;
 import david.itimecalendar.calendar.listeners.ITimeCalendarMonthDayViewListener;
+import david.itimecalendar.calendar.ui.CalendarConfig;
 import david.itimecalendar.calendar.ui.monthview.DayViewBody;
 import david.itimecalendar.calendar.ui.monthview.MonthView;
 import david.itimecalendar.calendar.listeners.ITimeEventInterface;
@@ -37,13 +38,14 @@ public class DayViewActivity extends AppCompatActivity {
     }
 
     private void doTest(){
-        final MonthView monthView = (MonthView) findViewById(R.id.day_view);
 
+        final MonthView monthView = (MonthView) findViewById(R.id.day_view);
+        monthView.getCalendarConfig().enableEvent();
         TextView todayBtn = (TextView) findViewById(R.id.today);
         todayBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                monthView.scrollToDate(new Date());
+                monthView.scrollToDate(new Date(), true);
             }
         });
 
@@ -66,8 +68,6 @@ public class DayViewActivity extends AppCompatActivity {
                 String sStr = cal.getTime().toString();
                 cal.setTimeInMillis(eventView.getEndTimeM());
                 String eStr = cal.getTime().toString();
-                Log.i("timetest", "start: " + sStr);
-                Log.i("timetest", "end: " + eStr);
                 event.setStartTime(eventView.getStartTimeM());
                 event.setEndTime(eventView.getEndTimeM());
                 eventManager.addEvent(event);

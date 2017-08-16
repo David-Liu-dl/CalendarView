@@ -1,11 +1,16 @@
 package david.itimecalendar.calendar.ui.monthview;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.ClipData;
 import android.graphics.Point;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
@@ -21,6 +26,7 @@ import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
 import david.itimecalendar.calendar.ui.unitviews.DraggableEventView;
 import david.itimecalendar.calendar.ui.unitviews.DraggableTimeSlotView;
 import david.itimecalendar.calendar.ui.unitviews.RcdRegularTimeSlotView;
+import david.itimecalendar.calendar.util.DensityUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
 import david.itimecalendar.calendar.util.OverlapHelper;
 import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
@@ -38,12 +44,9 @@ public class TimeSlotController {
     private DayViewBodyCell container;
     private OnTimeSlotListener onTimeSlotListener;
     private long defaultTsDuration = 3600 * 1000;
-    private boolean draggable = true;
 
     private ArrayList<DraggableTimeSlotView> slotViews = new ArrayList<>();
     private ArrayList<RcdRegularTimeSlotView> rcdSlotViews = new ArrayList<>();
-//    private WeekView.OnRcdTimeSlot onRcdTimeSlot;
-
 
     TimeSlotController(DayViewBodyCell container) {
         this.container = container;
@@ -89,22 +92,6 @@ public class TimeSlotController {
         this.onTimeSlotListener = onTimeSlotListener;
     }
 
-//    public void setOnRcdTimeSlot(final WeekView.OnRcdTimeSlot onRcdTimeSlot){
-//        this.onRcdTimeSlot = onRcdTimeSlot;
-//    }
-
-    void onTimeSlotEdit(DraggableTimeSlotView slotView){
-        if (this.onTimeSlotListener != null){
-            this.onTimeSlotListener.onTimeSlotEdit(slotView);
-        }
-    }
-
-    void onTimeSlotDelete(DraggableTimeSlotView slotView){
-        if (this.onTimeSlotListener != null){
-            this.onTimeSlotListener.onTimeSlotDelete(slotView);
-        }
-    }
-
     private class OnRcdClickListener implements View.OnClickListener{
         @Override
         public void onClick(View v) {
@@ -114,16 +101,15 @@ public class TimeSlotController {
         }
     }
 
-    class CreateTimeSlotListener implements View.OnLongClickListener {
-
+    class CreateTimeSlotLongClickListener implements View.OnLongClickListener {
         @Override
         public boolean onLongClick(View v) {
             DayInnerBodyLayout container = (DayInnerBodyLayout) v;
             TimeSlotController.this.container.tempDragView = createTimeSlotView(new WrapperTimeSlot(null));
             DayInnerBodyLayout.LayoutParams params = (DayInnerBodyLayout.LayoutParams)TimeSlotController.this.container.tempDragView.getLayoutParams();
             params.top = (int) TimeSlotController.this.container.nowTapY;
+            TimeSlotController.this.container.tempDragView.setLayoutParams(params);
             container.addView(TimeSlotController.this.container.tempDragView);
-//            BaseUtil.relayoutChildren(container);
             TimeSlotController.this.container.tempDragView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -135,10 +121,28 @@ public class TimeSlotController {
         }
     }
 
-    class TimeSlotDragListener implements View.OnDragListener {
-        int currentEventNewHour = -1;
-        int currentEventNewMinutes = -1;
+    class CreateTimeSlotClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            final DayInnerBodyLayout container = (DayInnerBodyLayout) v;
+            TimeSlotController.this.container.tempDragView = createTimeSlotView(new WrapperTimeSlot(null));
+            DayInnerBodyLayout.LayoutParams params = (DayInnerBodyLayout.LayoutParams)TimeSlotController.this.container.tempDragView.getLayoutParams();
+            params.top = (int) TimeSlotController.this.container.nowTapY;
+            container.addView(TimeSlotController.this.container.tempDragView);
 
+            TimeSlotController.this.container.tempDragView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    DraggableTimeSlotView draggableTimeSlotView = (DraggableTimeSlotView) TimeSlotController.this.container.tempDragView;
+                    onDropHandler(draggableTimeSlotView.getX(), draggableTimeSlotView.getY(), draggableTimeSlotView, container);
+                }
+            }, 100);
+        }
+    }
+
+
+
+    class TimeSlotDragListener implements View.OnDragListener {
         @Override
         public boolean onDrag(View v, DragEvent event) {
             DraggableTimeSlotView tsView = (DraggableTimeSlotView) event.getLocalState();
@@ -151,16 +155,14 @@ public class TimeSlotController {
                     int rawY = (int) event.getY();
 
                     if (onTimeSlotListener != null) {
-                        int nearestProperPosition = container.nearestQuarterTimeSlotKey(rawY);
-                        String locationTime = (container.positionToTimeQuarterTreeMap.get(nearestProperPosition));
+                        int nearestProperPosition = container.pstHelper.nearestQuarterTimeSlotKey(rawY);
+                        String locationTime = (container.pstHelper.positionToTimeQuarterTreeMap.get(nearestProperPosition));
                         onTimeSlotListener.onTimeSlotDragging(tsView, container.getCalendar(),rawX, (int) event.getY(), locationTime);
                     } else {
                         Log.i(TAG, "onDrag: null onEventDragListener");
                     }
-//                    container.msgWindowFollow(rawX, (int) item.getY(), index, (View) item.getLocalState());
                     break;
                 case DragEvent.ACTION_DRAG_ENTERED:
-//                    container.msgWindow.setVisibility(VISIBLE);
                     if (tsView.getType() == DraggableEventView.TYPE_TEMP){
                         container.tempDragView = tsView;
                     }else{
@@ -169,7 +171,6 @@ public class TimeSlotController {
 
                     break;
                 case DragEvent.ACTION_DRAG_EXITED:
-//                    container.msgWindow.setVisibility(INVISIBLE);
                     container.tempDragView = null;
                     break;
                 case DragEvent.ACTION_DROP:
@@ -177,47 +178,11 @@ public class TimeSlotController {
                     View finalView = (View) event.getLocalState();
                     finalView.setVisibility(VISIBLE);
                     finalView.getBackground().setAlpha(255);
-//                    container.msgWindow.setVisibility(INVISIBLE);
 
                     float actionStopX = event.getX();
                     float actionStopY = event.getY();
-                    // Dropped, reassign View to ViewGroup
-                    int newX = (int) actionStopX - tsView.getWidth() / 2;
-                    int newY = (int) actionStopY - tsView.getHeight() / 2;
-                    int[] reComputeResult = container.reComputePositionToSet(newX, newY, tsView, v);
 
-                    //update the item time
-                    String new_time = container.positionToTimeTreeMap.get(reComputeResult[1]);
-                    //important! update item time after drag
-                    String[] time_parts = new_time.split(":");
-                    currentEventNewHour = Integer.valueOf(time_parts[0]);
-                    currentEventNewMinutes = Integer.valueOf(time_parts[1]);
-
-                    Calendar cal = Calendar.getInstance();
-                    cal.setTimeInMillis(container.getCalendar().getBeginOfDayMilliseconds());
-                    cal.set(Calendar.HOUR_OF_DAY, currentEventNewHour);
-                    cal.set(Calendar.MINUTE, currentEventNewMinutes);
-                    tsView.setNewStartTime(cal.getTimeInMillis());
-
-                    if (container.tempDragView == null && onTimeSlotListener != null) {
-                        onTimeSlotListener.onTimeSlotDragDrop(tsView, 0, 0);
-                    } else {
-                        Log.i(TAG, "onDrop Not Called");
-                    }
-
-                    if (tsView.getType() == DraggableEventView.TYPE_TEMP) {
-                        ViewGroup parent = (ViewGroup) tsView.getParent();
-                        if(parent != null){
-                            parent.removeView(tsView);
-                        }
-                        //important! update item time after drag via listener
-                        if (onTimeSlotListener != null) {
-                            onTimeSlotListener.onTimeSlotCreate(tsView);
-                        }
-                        //finally reset tempDragView to NULL.
-                        container.tempDragView = null;
-                    }
-
+                    onDropHandler(actionStopX - tsView.getWidth()/2, actionStopY - tsView.getHeight()/2, tsView, v);
                     break;
                 case DragEvent.ACTION_DRAG_ENDED:
                     if (onTimeSlotListener != null) {
@@ -240,7 +205,6 @@ public class TimeSlotController {
                     view){
                 @Override
                 public void onProvideShadowMetrics(Point outShadowSize, Point outShadowTouchPoint) {
-//                        super.onProvideShadowMetrics(outShadowSize, outShadowTouchPoint);
                     final View view = getView();
                     if (view != null) {
                         outShadowSize.set(view.getWidth(), view.getHeight());
@@ -258,12 +222,54 @@ public class TimeSlotController {
                 view.setVisibility(VISIBLE);
             }
             view.getBackground().setAlpha(128);
+
             return false;
+        }
+    }
+
+    private void onDropHandler(float dropValueX, float dropValueY, DraggableTimeSlotView dgTimeSlotView, View dropperContainer){
+        // Dropped, reassign View to ViewGroup
+        int newX = (int) dropValueX;
+        int newY = (int) dropValueY;
+        int[] reComputeResult = container.reComputePositionToSet(newX, newY, dgTimeSlotView, dropperContainer);
+
+        //update the item time
+        String new_time = container.pstHelper.positionToTimeTreeMap.get(reComputeResult[1]);
+        //important! update item time after drag
+        String[] time_parts = new_time.split(":");
+        int currentEventNewHour = Integer.valueOf(time_parts[0]);
+        int currentEventNewMinutes = Integer.valueOf(time_parts[1]);
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(container.getCalendar().getBeginOfDayMilliseconds());
+        cal.set(Calendar.HOUR_OF_DAY, currentEventNewHour);
+        cal.set(Calendar.MINUTE, currentEventNewMinutes);
+        dgTimeSlotView.setNewStartTime(cal.getTimeInMillis());
+
+        if (container.tempDragView == null && onTimeSlotListener != null) {
+            onTimeSlotListener.onTimeSlotDragDrop(dgTimeSlotView, 0, 0);
+        } else {
+            Log.i(TAG, "onDrop Not Called");
+        }
+
+        if (dgTimeSlotView.getType() == DraggableEventView.TYPE_TEMP) {
+            ViewGroup parent = (ViewGroup) dgTimeSlotView.getParent();
+            if(parent != null){
+                parent.removeView(dgTimeSlotView);
+            }
+            //important! update item time after drag via listener
+            if (onTimeSlotListener != null) {
+                onTimeSlotListener.onTimeSlotCreate(dgTimeSlotView);
+            }
+            //finally reset tempDragView to NULL.
+            container.tempDragView = null;
         }
     }
 
     private DraggableTimeSlotView createTimeSlotView(WrapperTimeSlot wrapper){
         DraggableTimeSlotView draggableTimeSlotView = new DraggableTimeSlotView(container.context, wrapper, false);
+        draggableTimeSlotView.setPadding(0,container.unitViewPaddingTop,0,0);
+
         if (wrapper.getTimeSlot() != null){
             ITimeTimeSlotInterface timeslot = wrapper.getTimeSlot();
             draggableTimeSlotView.setType(DraggableTimeSlotView.TYPE_NORMAL);
@@ -286,11 +292,13 @@ public class TimeSlotController {
             draggableTimeSlotView.showAlphaAnim();
         }
 
-        if (draggable){
-            draggableTimeSlotView.setOnLongClickListener(new TimeSlotLongClickListener());
-        }
+        draggableTimeSlotView.setOnLongClickListener(
+                container.calendarConfig.isTimeSlotDraggable ?
+                new TimeSlotLongClickListener() : null);
 
-        draggableTimeSlotView.setOnClickListener(new View.OnClickListener() {
+        draggableTimeSlotView.setOnClickListener(
+                container.calendarConfig.isTimeSlotClickable ?
+                new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DraggableTimeSlotView draggableTimeSlotView = (DraggableTimeSlotView) v;
@@ -298,12 +306,10 @@ public class TimeSlotController {
                     onTimeSlotListener.onTimeSlotClick(draggableTimeSlotView);
                 }
             }
-        });
+        } : null);
 
         return draggableTimeSlotView;
     }
-
-
 
     private RcdRegularTimeSlotView createRcdTimeSlotView(WrapperTimeSlot wrapper){
         RcdRegularTimeSlotView recommendedSlotView = new RcdRegularTimeSlotView(container.context, wrapper, false);
@@ -312,58 +318,10 @@ public class TimeSlotController {
             DayInnerBodyLayout.LayoutParams params = new DayInnerBodyLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, container.layoutWidthPerDay);
             params.relativeMarginLeft = container.unitViewLeftMargin;
             params.relativeMarginRight = container.unitViewLeftMargin;
-//            int marginL = DensityUtil.dip2px(container.context, 2);
-//            params.left = marginL;
             recommendedSlotView.setLayoutParams(params);
         }
 
         return recommendedSlotView;
-    }
-
-
-    void enableTimeSlot(boolean draggable){
-        container.isTimeSlotEnable = true;
-        this.draggable = draggable;
-        if (draggable){
-            //add timeslot listeners
-            container.eventLayout.setOnDragListener(new TimeSlotDragListener());
-            container.eventLayout.setOnLongClickListener(new CreateTimeSlotListener());
-
-            for (int j = 0; j < container.eventLayout.getChildCount(); j++) {
-                if (container.eventLayout.getChildAt(j) instanceof DraggableEventView){
-                    container.eventLayout.getChildAt(j).setOnLongClickListener(null);
-                }
-            }
-        }else {
-            container.eventLayout.setOnDragListener(null);
-            container.eventLayout.setOnLongClickListener(null);
-
-            for (int j = 0; j < container.eventLayout.getChildCount(); j++) {
-                if (container.eventLayout.getChildAt(j) instanceof DraggableEventView
-                        || container.eventLayout.getChildAt(j) instanceof DraggableTimeSlotView){
-                    container.eventLayout.getChildAt(j).setOnLongClickListener(null);
-                }
-
-            }
-        }
-
-        showTimeslot();
-    }
-
-    void disableTimeSlot(){
-        container.isTimeSlotEnable = false;
-        //remove previous listeners
-        container.eventLayout.setOnDragListener(null);
-        container.eventLayout.setOnLongClickListener(null);
-
-        for (int j = 0; j < container.eventLayout.getChildCount(); j++) {
-            if (container.eventLayout.getChildAt(j) instanceof DraggableEventView){
-                container.eventLayout.getChildAt(j).setOnLongClickListener(null);
-
-            }
-        }
-
-        hideTimeslot();
     }
 
     private void calculateTimeSlotLayout(DayInnerBodyLayout eventLayout) {
@@ -396,7 +354,6 @@ public class TimeSlotController {
         //re-calculate overlapped timeslots
         calculateTimeSlotLayout(container.eventLayout);
     }
-
 
     void addRecommended(WrapperTimeSlot wrapper){
         RcdRegularTimeSlotView rcdSlotView = createRcdTimeSlotView(wrapper);
@@ -495,7 +452,7 @@ public class TimeSlotController {
         String hourWithMinutes = sdf.format(new Date(startTime));
         String[] components = hourWithMinutes.split(":");
         float trickTime = Integer.valueOf(components[0]) + (float) Integer.valueOf(components[1]) / 100;
-        final int topMargin = container.nearestTimeSlotValue(trickTime);
+        final int topMargin = container.pstHelper.nearestTimeSlotValue(trickTime);
 
         return topMargin;
     }
@@ -509,28 +466,6 @@ public class TimeSlotController {
             }
         }
         return null;
-    }
-
-    private void relocateDraggableTimeslotView(View parent, View orgView, View fakeView, float currentX, float currentY){
-        //handler ended things in here, because ended some time is not triggered
-        fakeView.setVisibility(VISIBLE);
-        // Dropped, reassign View to ViewGroup
-        int newX = (int) currentX - fakeView.getWidth() / 2;
-        int newY = (int) currentY - fakeView.getHeight() / 2;
-
-        int[] reComputeResult = container.reComputePositionToSet(newX, newY, fakeView, parent);
-
-        //update the item time
-        String new_time = container.positionToTimeTreeMap.get(reComputeResult[1]);
-        //important! update item time after drag
-        String[] time_parts = new_time.split(":");
-        int currentEventNewHour = Integer.valueOf(time_parts[0]);
-        int currentEventNewMinutes = Integer.valueOf(time_parts[1]);
-
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(container.getCalendar().getBeginOfDayMilliseconds());
-        cal.set(Calendar.HOUR_OF_DAY, currentEventNewHour);
-        cal.set(Calendar.MINUTE, currentEventNewMinutes);
     }
 
     public void hideTimeslot(){

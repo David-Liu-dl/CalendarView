@@ -23,6 +23,7 @@ import java.util.Date;
 import david.itimecalendar.R;
 import david.itimecalendar.calendar.listeners.ITimeCalendarMonthDayViewListener;
 import david.itimecalendar.calendar.listeners.ITimeCalendarWeekDayViewListener;
+import david.itimecalendar.calendar.ui.CalendarConfig;
 import david.itimecalendar.calendar.ui.monthview.DayViewBody;
 import david.itimecalendar.calendar.ui.monthview.DayViewBodyCell;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
@@ -36,9 +37,10 @@ import static android.widget.LinearLayout.VERTICAL;
  */
 
 public class WeekView extends RelativeLayout{
-    private static final String TAG = "WeekView";
+
     protected LinearLayout container;
     private ITimeCalendarWeekDayViewListener iTimeCalendarInterface;
+    CalendarConfig calendarConfig = new CalendarConfig();
 
     public WeekView(@NonNull Context context) {
         super(context);
@@ -52,6 +54,7 @@ public class WeekView extends RelativeLayout{
         this.viewAttrs = attrs;
         this.loadAttributes(attrs, context);
         initView();
+        setCalendarConfig(calendarConfig);
     }
 
     public WeekView(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
@@ -60,6 +63,7 @@ public class WeekView extends RelativeLayout{
         this.viewAttrs = attrs;
         this.loadAttributes(attrs, context);
         initView();
+        setCalendarConfig(calendarConfig);
     }
 
     private void loadAttributes(AttributeSet attrs, Context context) {
@@ -175,10 +179,9 @@ public class WeekView extends RelativeLayout{
         this.dayViewBodyContainer.addView(dayViewBody, bodyParams);
     }
 
-    public void scrollToDate(Date date){
-
+    public void scrollToDate(Date date, boolean toTime){
         this.headerScrollToDate(date);
-        this.dayViewBody.scrollToDate(date);
+        this.dayViewBody.scrollToDate(date,toTime);
     }
 
     private void headerScrollToDate(Date date){
@@ -204,6 +207,15 @@ public class WeekView extends RelativeLayout{
 
     public void refresh(){
         dayViewBody.refresh();
+    }
+
+    private void setCalendarConfig(CalendarConfig calendarConfig) {
+        this.calendarConfig = calendarConfig;
+        this.dayViewBody.setCalendarConfig(calendarConfig);
+    }
+
+    public CalendarConfig getCalendarConfig() {
+        return calendarConfig;
     }
 
     @Override

@@ -1,12 +1,8 @@
 package david.itimecalendar.calendar.ui.monthview;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.os.Handler;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,24 +14,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.TreeMap;
 
 import david.itimecalendar.R;
-import david.itimecalendar.calendar.listeners.ITimeEventInterface;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
+import david.itimecalendar.calendar.ui.CalendarConfig;
 import david.itimecalendar.calendar.ui.unitviews.TimelineView;
 import david.itimecalendar.calendar.util.BaseUtil;
+import david.itimecalendar.calendar.util.CalendarPositionHelper;
 import david.itimecalendar.calendar.util.DensityUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
 import david.itimecalendar.calendar.util.OverlapHelper;
@@ -77,10 +69,11 @@ public class DayViewBodyCell extends FrameLayout{
     private int rs_nowtime_line = R.drawable.itime_now_time_full_line;
     /*************************** End of Resources Setting ****************************/
 
-    protected boolean isTimeSlotEnable = false;
-    protected boolean isRemoveOptListener = false;
-    protected OverlapHelper xHelper = new OverlapHelper();
+    public static SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 
+    protected CalendarConfig calendarConfig;
+    protected OverlapHelper xHelper = new OverlapHelper();
+    protected CalendarPositionHelper pstHelper;
 
     FrameLayout dividerBgRLayout;
     DayInnerBodyLayout eventLayout;
@@ -88,11 +81,9 @@ public class DayViewBodyCell extends FrameLayout{
     public MyCalendar myCalendar = new MyCalendar(Calendar.getInstance());
     protected Context context;
 
-    protected TreeMap<Integer, String> positionToTimeTreeMap = new TreeMap<>();
-    protected TreeMap<Integer, String> positionToTimeQuarterTreeMap = new TreeMap<>();
-    protected TreeMap<Float, Integer> timeToPositionTreeMap = new TreeMap<>();
-
-    protected SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+//    protected TreeMap<Integer, String> positionToTimeTreeMap = new TreeMap<>();
+//    protected TreeMap<Integer, String> positionToTimeQuarterTreeMap = new TreeMap<>();
+//    protected TreeMap<Float, Integer> timeToPositionTreeMap = new TreeMap<>();
 
     private TimelineView timeline;
 
@@ -106,10 +97,10 @@ public class DayViewBodyCell extends FrameLayout{
     //dp
     protected int unitViewLeftMargin = 1;
     protected int unitViewRightMargin = 0;
+    protected int unitViewPaddingTop = 1;
 
     private int timeTextSize = 20;
     private int timelineHeight = 10;
-    protected int topAllDayHeight;
 
     protected int layoutWidthPerDay;
     protected int layoutHeightPerDay;
@@ -125,19 +116,17 @@ public class DayViewBodyCell extends FrameLayout{
 
     public DayViewBodyCell(@NonNull Context context) {
         super(context);
-        init();
+//        init();
     }
 
     public DayViewBodyCell(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         this.loadAttributes(attrs,context);
-        init();
     }
 
     public DayViewBodyCell(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.loadAttributes(attrs,context);
-        init();
     }
 
     private void loadAttributes(AttributeSet attrs, Context context) {
@@ -163,13 +152,13 @@ public class DayViewBodyCell extends FrameLayout{
         this.heightPerMillisd = (float) hourHeight /(3600*1000);
         this.unitViewLeftMargin = DensityUtil.dip2px(context,this.unitViewLeftMargin);
         this.unitViewRightMargin = DensityUtil.dip2px(context,this.unitViewRightMargin);
+        this.unitViewPaddingTop = DensityUtil.dip2px(context,this.unitViewPaddingTop);
         this.timelineHeight = DensityUtil.dip2px(context,this.timelineHeight);
     }
 
     private void initView(){
         initBgView();
         initContentView();
-        initMsgWindow();
 
         timeline = new TimelineView(getContext());
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,timelineHeight);
@@ -193,37 +182,12 @@ public class DayViewBodyCell extends FrameLayout{
             }
         });
 
-        if (!isTimeSlotEnable){
-            eventLayout.setOnDragListener(eventController.new EventDragListener());
-            eventLayout.setOnLongClickListener(eventController.new CreateEventListener());
-        }else {
-            eventLayout.setOnDragListener(this.timeSlotController.new TimeSlotDragListener());
-            eventLayout.setOnLongClickListener(this.timeSlotController.new CreateTimeSlotListener());
-        }
+        refreshLayoutListener();
     }
 
     private void initBgView(){
         initDividerLine(getHours());
     }
-
-    private void initMsgWindow() {
-//        msgWindow = new TextView(context);
-//
-//        msgWindow.setTextColor(context.getResources().getColor(color_msg_window_text));
-//        msgWindow.setText("SUN 00:00");
-//        msgWindow.setTextSize(17);
-//        msgWindow.setGravity(Gravity.LEFT);
-//        msgWindow.setVisibility(View.INVISIBLE);
-//        msgWindow.measure(0, 0);
-//        int height = msgWindow.getMeasuredHeight(); //get height
-//        int width = msgWindow.getMeasuredWidth();
-//        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(width+10, height);
-//        params.setMargins(0, 0, 0, 0);
-//        msgWindow.setLayoutParams(params);
-//        dividerBgRLayout.addView(msgWindow);
-    }
-
-
 
     private void initTimeSlot() {
         double startPoint = spaceTop;
@@ -232,22 +196,22 @@ public class DayViewBodyCell extends FrameLayout{
         for (int slot = 0; slot < hours.length; slot++) {
             //add full clock
             //for single minute map
-            positionToTimeTreeMap.put((int) startPoint + hourHeight * slot, hours[slot] + ":00");
+            pstHelper.positionToTimeTreeMap.put((int) startPoint + hourHeight * slot, hours[slot] + ":00");
             //for quarter map
-            positionToTimeQuarterTreeMap.put((int) startPoint + hourHeight * slot, hours[slot] + ":00");
+            pstHelper.positionToTimeQuarterTreeMap.put((int) startPoint + hourHeight * slot, hours[slot] + ":00");
             String hourPart = hours[slot].substring(0, 2); // XX
-            timeToPositionTreeMap.put((float) Integer.valueOf(hourPart), (int) startPoint + hourHeight * slot);
+            pstHelper.timeToPositionTreeMap.put((float) Integer.valueOf(hourPart), (int) startPoint + hourHeight * slot);
             //if not 24, add minutes
             if (slot != hours.length - 1){
                 for (int miniSlot = 0; miniSlot < 59; miniSlot++) {
                     String minutes = String.format("%02d", miniSlot + 1);
                     String time = hourPart + ":" + minutes;
                     int positionY = (int) (startPoint + hourHeight * slot + minuteHeight * (miniSlot + 1));
-                    positionToTimeTreeMap.put(positionY, time);
-                    timeToPositionTreeMap.put(Integer.valueOf(hourPart) + (float) Integer.valueOf(minutes) / 100, positionY);
+                    pstHelper.positionToTimeTreeMap.put(positionY, time);
+                    pstHelper.timeToPositionTreeMap.put(Integer.valueOf(hourPart) + (float) Integer.valueOf(minutes) / 100, positionY);
                     //for quarter map
                     if ((miniSlot + 1) % 15 == 0){
-                        positionToTimeQuarterTreeMap.put(positionY, time);
+                        pstHelper.positionToTimeQuarterTreeMap.put(positionY, time);
                     }
                 }
             }
@@ -266,7 +230,7 @@ public class DayViewBodyCell extends FrameLayout{
 
             ImageView dividerImageView = new ImageView(context);
             dividerImageView.setImageResource(rs_divider_line);
-            params.topMargin = this.nearestTimeSlotValue(numOfLine);
+            params.topMargin = pstHelper.nearestTimeSlotValue(numOfLine);
             dividerImageView.setLayoutParams(params);
             dividerImageView.setPadding(0, 0, 0, 0);
             dividerBgRLayout.addView(dividerImageView);
@@ -321,6 +285,10 @@ public class DayViewBodyCell extends FrameLayout{
         updateTimeline();
     }
 
+    public void setCalendarConfig(CalendarConfig calendarConfig) {
+        this.calendarConfig = calendarConfig;
+    }
+
     private void updateTimeline(){
         if (BaseUtil.isToday(myCalendar.getCalendar())){
             int timelinePstY = getNowTimeLinePst() - timelineHeight/2;
@@ -342,7 +310,7 @@ public class DayViewBodyCell extends FrameLayout{
         String[] converted = localTime.split(":");
         int hour = Integer.valueOf(converted[0]);
         int minutes = Integer.valueOf(converted[1]);
-        int nearestPst = nearestTimeSlotValue(hour + (float) minutes / 100);
+        int nearestPst = pstHelper.nearestTimeSlotValue(hour + (float) minutes / 100);
 //        int correctPst = (minutes % 15) * ((lineHeight / 4) / 15);
         return nearestPst;
     }
@@ -362,7 +330,7 @@ public class DayViewBodyCell extends FrameLayout{
         } else if (actualY > containerHeight) {
             finalY = containerHeight;
         }
-        int findNearestPosition = nearestQuarterTimeSlotKey(finalY);
+        int findNearestPosition = pstHelper.nearestQuarterTimeSlotKey(finalY);
         if (findNearestPosition != -1) {
             finalY = findNearestPosition;
         } else {
@@ -422,46 +390,6 @@ public class DayViewBodyCell extends FrameLayout{
         timeSlotController.clearTimeslots();
     }
 
-    /**
-     *
-     * @param positionY
-     * @return
-     */
-    int nearestQuarterTimeSlotKey(int positionY) {
-        int key = positionY;
-        Map.Entry<Integer, String> low = positionToTimeQuarterTreeMap.floorEntry(key);
-        Map.Entry<Integer, String> high = positionToTimeQuarterTreeMap.ceilingEntry(key);
-        if (low != null && high != null) {
-            return Math.abs(key - low.getKey()) < Math.abs(key - high.getKey())
-                    ? low.getKey()
-                    : high.getKey();
-        } else if (low != null || high != null) {
-            return low != null ? low.getKey() : high.getKey();
-        }
-
-        return -1;
-    }
-
-    /**
-     * get y position bases on time
-     * @param time
-     * @return nearest position
-     */
-    int nearestTimeSlotValue(float time) {
-        float key = time;
-        Map.Entry<Float, Integer> low = timeToPositionTreeMap.floorEntry(key);
-        Map.Entry<Float, Integer> high = timeToPositionTreeMap.ceilingEntry(key);
-        if (low != null && high != null) {
-            return Math.abs(key - low.getKey()) < Math.abs(key - high.getKey())
-                    ? low.getValue()
-                    : high.getValue();
-        } else if (low != null || high != null) {
-            return low != null ? low.getValue() : high.getValue();
-        }
-
-        return -1;
-    }
-
     /*** for time slot ***/
     public void clearTimeSlots(){
         timeSlotController.clearTimeslots();
@@ -483,16 +411,6 @@ public class DayViewBodyCell extends FrameLayout{
         timeSlotController.updateTimeSlotsDuration(duration, animate);
     }
 
-    public void enableTimeSlot(boolean draggable){
-        eventController.enableBgMode();
-        timeSlotController.enableTimeSlot(draggable);
-    }
-
-    public void disableTimeslot(){
-        eventController.enableBgMode();
-        timeSlotController.disableTimeSlot();
-    }
-
     public void setOnTimeSlotListener(TimeSlotController.OnTimeSlotListener onTimeSlotListener) {
         timeSlotController.setOnTimeSlotListener(onTimeSlotListener);
     }
@@ -503,6 +421,36 @@ public class DayViewBodyCell extends FrameLayout{
 
     public void showTimeslot(){
         timeSlotController.showTimeslot();
+    }
+
+    public void setPstHelper(CalendarPositionHelper pstHelper) {
+        this.pstHelper = pstHelper;
+        this.init();
+    }
+
+    public void refreshLayoutListener(){
+        if (calendarConfig == null){
+            return;
+        }
+
+        eventLayout.setOnClickListener(
+                calendarConfig.isTimeSlotCreatable ?
+                        (calendarConfig.isTimeSlotClickable ? timeSlotController.new CreateTimeSlotClickListener() : null)
+                        :
+                        (calendarConfig.isEventClickCreatable ? eventController.new CreateEventClickListener() : null)
+        );
+
+        eventLayout.setOnDragListener(
+                calendarConfig.isTimeSlotDraggable ?
+                        timeSlotController.new TimeSlotDragListener()
+                        :
+                        (calendarConfig.isEventClickable ? eventController.new EventDragListener() : null));
+
+        eventLayout.setOnLongClickListener(
+                calendarConfig.isTimeSlotCreatable ?
+                        timeSlotController.new CreateTimeSlotLongClickListener()
+                        :
+                        (calendarConfig.isEventCreatable ? eventController.new CreateEventLongClickListener() : null));
     }
 
     public List<WrapperEvent> getTodayEvents(){

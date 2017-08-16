@@ -25,8 +25,6 @@ import david.itimecalendar.calendar.util.VendorAnimation;
  * Created by yuhaoliu on 3/08/16.
  */
 public class DraggableEventView extends RelativeLayout {
-    private final String TAG = "MyAPP";
-
     public static int TYPE_NORMAL = 0;
     public static int TYPE_TEMP = 1;
     //0: default_normal, -1: temp view;
@@ -37,7 +35,6 @@ public class DraggableEventView extends RelativeLayout {
     private int bgColor;
     private int barColor;
 
-    private boolean isAllDayEvent = false;
     private long duration = 0;
 
     private TextView title;
@@ -50,13 +47,17 @@ public class DraggableEventView extends RelativeLayout {
     private ITimeEventInterface event;
     private PosParam posParam;
 
-    public DraggableEventView(Context context, @Nullable ITimeEventInterface event, boolean isAllDayEvent) {
+    public DraggableEventView(Context context, @Nullable ITimeEventInterface event) {
         super(context);
         this.setEvent(event);
-        this.isAllDayEvent = isAllDayEvent;
 
         initBackground();
         initDataInViews();
+    }
+
+    @Override
+    public Drawable getBackground() {
+        return background.getBackground();
     }
 
     public MyCalendar getCalendar() {

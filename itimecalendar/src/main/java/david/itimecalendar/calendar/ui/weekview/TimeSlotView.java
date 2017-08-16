@@ -45,7 +45,6 @@ import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
  */
 
 public class TimeSlotView extends WeekView {
-
     public static ViewMode mode = ViewMode.NON_ALL_DAY_CREATE;
 
     public enum ViewMode {
@@ -57,7 +56,7 @@ public class TimeSlotView extends WeekView {
 
     private TimeSlotInnerCalendarView innerCalView;
     private TimeslotDurationEditView<String> durationBar;
-
+    private View durationBarPlaceholder;
     private FrameLayout staticLayer;
     private InnerCalendarTimeslotPackage innerSlotPackage = new InnerCalendarTimeslotPackage();
 
@@ -75,27 +74,6 @@ public class TimeSlotView extends WeekView {
         super(context, attrs, defStyleAttr);
         setUpViews();
     }
-
-//    @Override
-//    public boolean onInterceptTouchEvent(MotionEvent ev) {
-//        if (timeslotToolBar.getVisibility() == VISIBLE){
-//            if (ev.getAction() == MotionEvent.ACTION_DOWN){
-//                Rect viewRect = new Rect();
-//                timeslotToolBar.getGlobalVisibleRect(viewRect);
-//                if (viewRect.contains((int) ev.getRawX(), (int) ev.getRawY())) {
-//                    //when click on tooltips and it's visible
-//                    // pass it to tooltips
-//                }else {
-//                    //when click outside of tooltips and it's visible
-//                    timeslotToolBar.setVisibility(GONE);
-//                }
-//            }else {
-//                timeslotToolBar.setVisibility(GONE);
-//            }
-//        }
-//
-//        return super.onInterceptTouchEvent(ev);
-//    }
 
     private void setUpViews(){
         this.setLayoutTransition(new LayoutTransition());
@@ -118,12 +96,13 @@ public class TimeSlotView extends WeekView {
         setUpStaticLayer();
         setUpTimeslotDurationWidget();
 
-        enableTimeSlot(false);
+//        enableTimeSlot(false);
     }
 
     private void setUpTimeslotDurationWidget(){
         int durationBarHeight = DensityUtil.dip2px(context,40);
         durationBar = new TimeslotDurationEditView<>(context);
+        durationBar.setId(generateViewId());
         durationBar.setOptHeight(durationBarHeight);
         RelativeLayout.LayoutParams durationBarParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         durationBarParams.addRule(ALIGN_PARENT_BOTTOM);
@@ -142,14 +121,12 @@ public class TimeSlotView extends WeekView {
         this.addView(durationBar);
 
         //fake occupation view for header part of durationBar
-        View blankView = new View(context);
+        durationBarPlaceholder = new View(context);
         RelativeLayout.LayoutParams blankVieWParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, durationBarHeight);
         blankVieWParams.addRule(ALIGN_PARENT_BOTTOM);
-        blankView.setLayoutParams(blankVieWParams);
-        blankView.setId(View.generateViewId());
-        RelativeLayout.LayoutParams containerParams = (RelativeLayout.LayoutParams)container.getLayoutParams();
-        containerParams.addRule(ABOVE, blankView.getId());
-        this.addView(blankView);
+        durationBarPlaceholder.setLayoutParams(blankVieWParams);
+        durationBarPlaceholder.setId(View.generateViewId());
+        this.addView(durationBarPlaceholder);
     }
 
     private void setUpStaticLayer(){
@@ -165,7 +142,7 @@ public class TimeSlotView extends WeekView {
 
             @Override
             public void onDayClick(Date dateClicked) {
-                TimeSlotView.this.scrollToDate(dateClicked);
+                TimeSlotView.this.scrollToDate(dateClicked,true);
             }
 
             @Override
@@ -178,7 +155,7 @@ public class TimeSlotView extends WeekView {
         FrameLayout.LayoutParams innerCalViewParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         this.staticLayer.addView(innerCalView,innerCalViewParams);
 
-        staticLayer.setVisibility(GONE);
+        staticLayer.setVisibility(VISIBLE);
         this.addView(staticLayer, stcPageParams);
     }
 
@@ -194,19 +171,19 @@ public class TimeSlotView extends WeekView {
         innerCalView.refreshSlotNum();
     }
 
-    public void enableTimeSlot(boolean draggable){
-        isTimeslotEnable = true;
-        super.dayViewBody.enableTimeSlot(draggable);
-        //staticLayer become visible
-        staticLayer.setVisibility(VISIBLE);
-    }
-
-    public void disableTimeSlot(){
-        isTimeslotEnable = false;
-        super.dayViewBody.disableTimeSlot();
-        //static Layer become visible
-        staticLayer.setVisibility(VISIBLE);
-    }
+//    public void enableTimeSlot(boolean draggable){
+//        isTimeslotEnable = true;
+//        super.dayViewBody.enableTimeSlot(draggable);
+//        //staticLayer become visible
+//        staticLayer.setVisibility(VISIBLE);
+//    }
+//
+//    public void disableTimeSlot(){
+//        isTimeslotEnable = false;
+//        super.dayViewBody.disableTimeSlot();
+//        //static Layer become visible
+//        staticLayer.setVisibility(VISIBLE);
+//    }
 
     public void addTimeSlot(ITimeTimeSlotInterface slotInfo){
         super.dayViewBody.addTimeSlot(slotInfo);
@@ -478,35 +455,40 @@ public class TimeSlotView extends WeekView {
         dayViewBody.hideBodyTimeslot();
     }
 
+    private void showDurationBar(){
+        durationBarPlaceholder.setVisibility(VISIBLE);
+        durationBar.setVisibility(VISIBLE);
+    }
+
+    private void hideDurationBar(){
+        durationBarPlaceholder.setVisibility(GONE);
+        durationBar.setVisibility(GONE);
+    }
 
     public void setViewMode(ViewMode mode){
         TimeSlotView.mode = mode;
 
         switch (TimeSlotView.mode){
             case ALL_DAY_CREATE:
-                dayViewBody.allDayView.setAlldayRcdTimeslotEnable(true);
-                dayViewBody.enableHeaderSlot();
-                dayViewBody.disableBodyTimeSlot();
-                durationBar.setVisibility(VISIBLE);
+                calendarConfig.enableCreateTimeslotAllday();
+                showDurationBar();
                 break;
             case NON_ALL_DAY_CREATE:
-                dayViewBody.allDayView.setAlldayRcdTimeslotEnable(false);
-                dayViewBody.disableHeaderSlot();
-                dayViewBody.enableBodyTimeSlot(true);
-                durationBar.setVisibility(VISIBLE);
+                calendarConfig.enableCreateTimeslotRegular();
+                showDurationBar();
                 break;
             case ALL_DAY_SELECT:
-                dayViewBody.allDayView.setAlldayRcdTimeslotEnable(false);
-                dayViewBody.enableHeaderSlot();
-                dayViewBody.disableBodyTimeSlot();
-                durationBar.setVisibility(GONE);
+                calendarConfig.enableViewTimeslotAllday();
+                hideDurationBar();
                 break;
             case NON_ALL_DAY_SELECT:
-                dayViewBody.allDayView.setAlldayRcdTimeslotEnable(false);
-                dayViewBody.disableHeaderSlot();
-                dayViewBody.enableBodyTimeSlot(false);
-                durationBar.setVisibility(GONE);
+                calendarConfig.enableViewTimeslotRegular();
+                hideDurationBar();
                 break;
         }
+
+        dayViewBody.notifyDataSetChanged();
     }
+
+
 }

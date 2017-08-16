@@ -46,7 +46,8 @@ public class WeekViewActivity extends AppCompatActivity {
 
             @Override
             public void onEventCreate(DraggableEventView eventView) {
-
+                Date a = new Date(eventView.getStartTimeM());
+                weekview.scrollToDate(a,true);
             }
 
             @Override

@@ -79,13 +79,6 @@ public class DraggableTimeSlotView extends RelativeLayout {
     }
 
     public void init(){
-//        GradientDrawable gd = (GradientDrawable) getResources().getDrawable(R.drawable.itime_round_corner_bg);
-//        gd.mutate();
-//        gd.setColor(Color.parseColor("#0073FF")); //set color
-//        gd.setCornerRadius(DensityUtil.dip2px(getContext(),7));
-//        gd.setStroke(1, Color.parseColor("#0073FF"), 0, 0);
-//        this.setBackground(gd);
-
         initBackgroundView();
 
         if (isAllday){

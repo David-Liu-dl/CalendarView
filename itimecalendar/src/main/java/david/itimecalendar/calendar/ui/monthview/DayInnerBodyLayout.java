@@ -96,6 +96,10 @@ public class DayInnerBodyLayout extends ViewGroup {
                         // for creating a new item
                         // the pos parameter is null, because we just mock it
                         params.width = width;
+                        // measure child with correct spec
+                        int childWidthSpec = MeasureSpec.makeMeasureSpec(width,MeasureSpec.EXACTLY);
+                        int childHeightSpec = heightMeasureSpec;
+                        measureChild(getChildAt(i), childWidthSpec, childHeightSpec);
                         continue;
                     }
                     int timeslotConsumedWidth = width/pos.widthFactor;

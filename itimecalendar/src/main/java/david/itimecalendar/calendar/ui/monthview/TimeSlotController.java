@@ -1,5 +1,9 @@
 package david.itimecalendar.calendar.ui.monthview;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.ClipData;
 import android.graphics.Point;
 import android.util.Log;
@@ -104,6 +108,7 @@ public class TimeSlotController {
             TimeSlotController.this.container.tempDragView = createTimeSlotView(new WrapperTimeSlot(null));
             DayInnerBodyLayout.LayoutParams params = (DayInnerBodyLayout.LayoutParams)TimeSlotController.this.container.tempDragView.getLayoutParams();
             params.top = (int) TimeSlotController.this.container.nowTapY;
+            TimeSlotController.this.container.tempDragView.setLayoutParams(params);
             container.addView(TimeSlotController.this.container.tempDragView);
             TimeSlotController.this.container.tempDragView.postDelayed(new Runnable() {
                 @Override
@@ -217,6 +222,7 @@ public class TimeSlotController {
                 view.setVisibility(VISIBLE);
             }
             view.getBackground().setAlpha(128);
+
             return false;
         }
     }

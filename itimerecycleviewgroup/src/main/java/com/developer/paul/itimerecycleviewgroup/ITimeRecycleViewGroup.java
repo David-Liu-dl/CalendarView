@@ -754,6 +754,15 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
         animator.start();
     }
 
+    public float getAwesomeScrollY() {
+        return totalMoveY;
+    }
+
+
+    public int getAwesomeScrollX() {
+        return totalMoveX;
+    }
+
     @Override
     public void scrollByXSmoothly(int x, long duration) {
         scrollByXSmoothly(x, duration, null);

@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
             event.setSummary("adawdwadwadaw" + i);
             event.setLocation("here");
             event.setStartTime(startTime);
-            event.setIsAllDay(true);
+            event.setIsAllDay(false);
 
 
             List<Invitee> inviteeList = new ArrayList<>();

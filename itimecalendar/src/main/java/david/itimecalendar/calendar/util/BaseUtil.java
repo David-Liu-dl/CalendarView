@@ -58,9 +58,9 @@ public class BaseUtil {
         MyCalendar myCal2 = new MyCalendar(cal);
         long beginTo = myCal2.getBeginOfDayMilliseconds();
 
-        int offset = (int)((beginTo - beginFrom) / (1000*60*60*24));
+        int dateDiff = (int)((beginTo - beginFrom) / (1000*60*60*24));
 
-        return offset;
+        return dateDiff;
     }
 
     public static ImageView getDivider(Context context, int resourceId) {

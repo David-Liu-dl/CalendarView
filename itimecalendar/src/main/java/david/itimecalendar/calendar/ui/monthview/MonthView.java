@@ -8,7 +8,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -40,6 +39,7 @@ public class MonthView extends LinearLayout{
     private ITimeEventPackageInterface eventPackage;
 
     private RecyclerView headerRecyclerView;
+    private View headerLabel;
     private DayViewHeaderRecyclerAdapter headerRecyclerAdapter;
 
     private FrameLayout dayViewBodyContainer;
@@ -53,16 +53,19 @@ public class MonthView extends LinearLayout{
     private int headerExpandedHeight;
 
     private AttributeSet viewAttrs;
+    private CalendarConfig calendarConfig = new CalendarConfig();
 
     public MonthView(Context context) {
         super(context);
         initView();
+        setCalendarConfig(calendarConfig);
     }
 
     public MonthView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         this.viewAttrs = attrs;
         initView();
+        setCalendarConfig(calendarConfig);
     }
 
     private void initView(){
@@ -77,8 +80,8 @@ public class MonthView extends LinearLayout{
 
     private void setUpHeader(){
         LayoutInflater inflater = LayoutInflater.from(context);
-        final View dayOfWeek = inflater.inflate(R.layout.day_of_week, null, false);
-        this.addView(dayOfWeek);
+        headerLabel = inflater.inflate(R.layout.day_of_week, null, false);
+        this.addView(headerLabel);
 
         headerRecyclerView = new RecyclerView(context);
         headerRecyclerAdapter = new DayViewHeaderRecyclerAdapter(context, upperBoundsOffset);
@@ -101,7 +104,7 @@ public class MonthView extends LinearLayout{
             @Override
             public void onDateSelected(Date date) {
                 if (dayViewBody != null){
-                    dayViewBody.scrollToDate(date);
+                    dayViewBody.scrollToDate(date,false);
                 }
             }
 
@@ -160,7 +163,7 @@ public class MonthView extends LinearLayout{
             @Override
             public void onPageSelected(DayViewBodyCell v) {
                 MyCalendar fstItemDate = v.getCalendar();
-                headerScrollToDate(fstItemDate.getCalendar(), false);
+                headerScrollToDate(fstItemDate.getCalendar());
                 //calling date changed
                 if (iTimeCalendarInterface != null){
                     iTimeCalendarInterface.onDateChanged(fstItemDate.getCalendar().getTime());
@@ -183,7 +186,7 @@ public class MonthView extends LinearLayout{
         this.dayViewBodyContainer.addView(dayViewBody, bodyParams);
     }
 
-    private void headerScrollToDate(final Calendar body_fst_cal, final boolean toTime){
+    private void headerScrollToDate(final Calendar body_fst_cal){
         DayViewHeader headerView =
                 (DayViewHeader) headerLinearLayoutManager.findViewByPosition(headerRecyclerAdapter.rowPst);
 
@@ -233,7 +236,7 @@ public class MonthView extends LinearLayout{
     }
     private HeaderStatus headerStatus = HeaderStatus.COLLAPSED;
 
-    public void scrollToDate(final Date date){
+    public void scrollToDate(final Date date, final boolean toTime){
         collapseHeader(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
@@ -244,7 +247,10 @@ public class MonthView extends LinearLayout{
             public void onAnimationEnd(Animator animation) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(date);
-                headerScrollToDate(calendar,false);
+                headerScrollToDate(calendar);
+                if (toTime){
+                    dayViewBody.scrollToDate(date,true);
+                }
             }
 
             @Override
@@ -320,11 +326,28 @@ public class MonthView extends LinearLayout{
         dayViewBody.smoothMoveWithOffset(moveOffset);
     }
 
-    public void setCalendarConfig(CalendarConfig calendarConfig) {
+    private void setCalendarConfig(CalendarConfig calendarConfig) {
+        this.calendarConfig = calendarConfig;
+        this.updateHeader(calendarConfig);
         this.dayViewBody.setCalendarConfig(calendarConfig);
     }
 
+    public CalendarConfig getCalendarConfig() {
+        return calendarConfig;
+    }
+
+    private void updateHeader(CalendarConfig calendarConfig){
+        if (calendarConfig.isHeaderVisible){
+            headerLabel.setVisibility(VISIBLE);
+            headerRecyclerView.setVisibility(VISIBLE);
+        }else {
+            headerLabel.setVisibility(GONE);
+            headerRecyclerView.setVisibility(GONE);
+        }
+    }
+
     public void refresh(){
+        updateHeader(calendarConfig);
         dayViewBody.refresh();
         headerRecyclerAdapter.notifyDataSetChanged();
     }

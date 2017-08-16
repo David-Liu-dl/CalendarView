@@ -52,9 +52,9 @@ public class DayViewAllDay extends FrameLayout {
     private int allDayTimeslotHeight = 0;
     private float leftBarWidth;
     private int NUM_CELL;
-    private boolean eventAsBg = false;
-    private boolean isTimeslotEnable = true;
-    private boolean isAlldayRcdTimeslotEnable = false;
+//    private boolean eventAsBg = false;
+//    private boolean isTimeslotEnable = true;
+//    private boolean isAlldayRcdTimeslotEnable = false;
     private TimeSlotView.TimeSlotPackage slotsInfo;
 
     int paddingLR = DensityUtil.dip2px(getContext(), 2);
@@ -123,6 +123,7 @@ public class DayViewAllDay extends FrameLayout {
         public void onBindViewHolder(AllDayCell item, int index) {
             item.reset();
             //should update visibility first, because currently setting item should not be considered.
+            updateVisibility();
             updateLayout();
 
             Calendar cal = Calendar.getInstance();
@@ -135,25 +136,14 @@ public class DayViewAllDay extends FrameLayout {
 
             //for timeslots
             //set timeslots
-            if (isTimeslotEnable && DayViewAllDay.this.slotsInfo != null){
-                if (isAlldayRcdTimeslotEnable && !BaseUtil.isExpired(
+            if (calendarConfig.mode != CalendarConfig.Mode.EVENT && DayViewAllDay.this.slotsInfo != null){
+                if (calendarConfig.isAllDayRcdEnable && !BaseUtil.isExpired(
                         cal.getTimeInMillis() + BaseUtil.getAllDayLong(cal.getTimeInMillis()))){
                     //add rcd button
                     WrapperTimeSlot wrapperTimeSlot = new WrapperTimeSlot(null);
                     item.addAllDayTimeslotButton(wrapperTimeSlot, calendar);
                 }
 
-                /**
-                 * should not add all day Rcd, it is embedded in every single day.
-                 * DO NOT DELETE, in case of using later on.
-                 */
-                //add rcd first
-//                for (WrapperTimeSlot struct : slotsInfo.rcdSlots
-//                        ) {
-//                    if (struct.getTimeSlot().isAllDay() && calendar.contains(struct.getTimeSlot().getStartTime())){
-//                        item.addAllDayTimeslotButton(struct);
-//                    }
-//                }
                 //add timeslot on top index
                 for (WrapperTimeSlot struct : slotsInfo.realSlots
                         ) {
@@ -177,7 +167,7 @@ public class DayViewAllDay extends FrameLayout {
         List<AllDayCell> cells = adapter.getAllCells();
         for (AllDayCell cell:cells
                 ) {
-            if (isTimeslotEnable && (isAlldayRcdTimeslotEnable || hasAllDayTimeslot())) {
+            if (calendarConfig.mode != CalendarConfig.Mode.EVENT && (calendarConfig.isAllDayRcdEnable || hasAllDayTimeslot())) {
                 cell.getTimeslotLayout().setVisibility(VISIBLE);
             }else {
                 cell.getTimeslotLayout().setVisibility(GONE);
@@ -195,7 +185,7 @@ public class DayViewAllDay extends FrameLayout {
         int targetHeight = 0;
 
         //add timeslot height
-        if (isTimeslotEnable && isAlldayRcdTimeslotEnable){
+        if (calendarConfig.mode != CalendarConfig.Mode.EVENT && calendarConfig.isAllDayRcdEnable){
             targetHeight += allDayTimeslotHeight;
         }
 
@@ -205,7 +195,7 @@ public class DayViewAllDay extends FrameLayout {
         }
 
         //if has element to show, add height of container padding
-        if (hasAllDayEvent || (isTimeslotEnable && isAlldayRcdTimeslotEnable)){
+        if (hasAllDayEvent || (calendarConfig.mode != CalendarConfig.Mode.EVENT && calendarConfig.isAllDayRcdEnable)){
             targetHeight += (paddingBT * 2);
         }
 
@@ -293,7 +283,7 @@ public class DayViewAllDay extends FrameLayout {
             this.allDayEvents.add(wrapper.getEvent());
 
             //if bg mode
-            if (eventAsBg){
+            if (calendarConfig.isAllDayEventAsBg){
                 new_dgEvent.setToBg();
             }
         }
@@ -431,24 +421,12 @@ public class DayViewAllDay extends FrameLayout {
         layoutAnimator.start();
     }
 
-    public boolean isTimeslotEnable() {
-        return isTimeslotEnable;
-    }
-
-    public void setTimeslotEnable(boolean timeslotEnable) {
-        eventAsBg = true;
-        isTimeslotEnable = timeslotEnable;
-        updateVisibility();
-        updateLayout();
-        adapter.notifyDataSetChanged();
-    }
-
-    public void setAlldayRcdTimeslotEnable(boolean alldayTimeslotEnable) {
-        isAlldayRcdTimeslotEnable = alldayTimeslotEnable;
-        updateVisibility();
-        updateLayout();
-        adapter.notifyDataSetChanged();
-    }
+//    public void setAlldayRcdTimeslotEnable(boolean alldayTimeslotEnable) {
+//        isAlldayRcdTimeslotEnable = alldayTimeslotEnable;
+//        updateVisibility();
+//        updateLayout();
+//        adapter.notifyDataSetChanged();
+//    }
 
     public TimeSlotView.TimeSlotPackage getSlotsInfo() {
         return slotsInfo;

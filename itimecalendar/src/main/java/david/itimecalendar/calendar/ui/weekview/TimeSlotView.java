@@ -96,7 +96,7 @@ public class TimeSlotView extends WeekView {
         setUpStaticLayer();
         setUpTimeslotDurationWidget();
 
-        enableTimeSlot(false);
+//        enableTimeSlot(false);
     }
 
     private void setUpTimeslotDurationWidget(){
@@ -142,7 +142,7 @@ public class TimeSlotView extends WeekView {
 
             @Override
             public void onDayClick(Date dateClicked) {
-                TimeSlotView.this.scrollToDate(dateClicked);
+                TimeSlotView.this.scrollToDate(dateClicked,true);
             }
 
             @Override
@@ -155,7 +155,7 @@ public class TimeSlotView extends WeekView {
         FrameLayout.LayoutParams innerCalViewParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         this.staticLayer.addView(innerCalView,innerCalViewParams);
 
-        staticLayer.setVisibility(GONE);
+        staticLayer.setVisibility(VISIBLE);
         this.addView(staticLayer, stcPageParams);
     }
 
@@ -171,19 +171,19 @@ public class TimeSlotView extends WeekView {
         innerCalView.refreshSlotNum();
     }
 
-    public void enableTimeSlot(boolean draggable){
-        isTimeslotEnable = true;
-        super.dayViewBody.enableTimeSlot(draggable);
-        //staticLayer become visible
-        staticLayer.setVisibility(VISIBLE);
-    }
-
-    public void disableTimeSlot(){
-        isTimeslotEnable = false;
-        super.dayViewBody.disableTimeSlot();
-        //static Layer become visible
-        staticLayer.setVisibility(VISIBLE);
-    }
+//    public void enableTimeSlot(boolean draggable){
+//        isTimeslotEnable = true;
+//        super.dayViewBody.enableTimeSlot(draggable);
+//        //staticLayer become visible
+//        staticLayer.setVisibility(VISIBLE);
+//    }
+//
+//    public void disableTimeSlot(){
+//        isTimeslotEnable = false;
+//        super.dayViewBody.disableTimeSlot();
+//        //static Layer become visible
+//        staticLayer.setVisibility(VISIBLE);
+//    }
 
     public void addTimeSlot(ITimeTimeSlotInterface slotInfo){
         super.dayViewBody.addTimeSlot(slotInfo);
@@ -470,31 +470,25 @@ public class TimeSlotView extends WeekView {
 
         switch (TimeSlotView.mode){
             case ALL_DAY_CREATE:
-                dayViewBody.allDayView.setAlldayRcdTimeslotEnable(true);
-                dayViewBody.enableHeaderSlot();
-                dayViewBody.disableBodyTimeSlot();
+                calendarConfig.enableCreateTimeslotAllday();
                 showDurationBar();
                 break;
             case NON_ALL_DAY_CREATE:
-                dayViewBody.allDayView.setAlldayRcdTimeslotEnable(false);
-                dayViewBody.disableHeaderSlot();
-                dayViewBody.enableBodyTimeSlot(true);
+                calendarConfig.enableCreateTimeslotRegular();
                 showDurationBar();
                 break;
             case ALL_DAY_SELECT:
-                dayViewBody.allDayView.setAlldayRcdTimeslotEnable(false);
-                dayViewBody.enableHeaderSlot();
-                dayViewBody.disableBodyTimeSlot();
+                calendarConfig.enableViewTimeslotAllday();
                 hideDurationBar();
                 break;
             case NON_ALL_DAY_SELECT:
-                dayViewBody.allDayView.setAlldayRcdTimeslotEnable(false);
-                dayViewBody.disableHeaderSlot();
-                dayViewBody.enableBodyTimeSlot(false);
+                calendarConfig.enableViewTimeslotRegular();
                 hideDurationBar();
                 break;
         }
+
+        dayViewBody.notifyDataSetChanged();
     }
-    
+
 
 }

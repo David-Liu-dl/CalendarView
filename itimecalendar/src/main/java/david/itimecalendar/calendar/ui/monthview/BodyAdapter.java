@@ -18,6 +18,7 @@ import david.itimecalendar.R;
 import david.itimecalendar.calendar.ui.CalendarConfig;
 import david.itimecalendar.calendar.ui.weekview.TimeSlotView;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
+import david.itimecalendar.calendar.util.CalendarPositionHelper;
 import david.itimecalendar.calendar.util.MyCalendar;
 import david.itimecalendar.calendar.util.OverlapHelper;
 import david.itimecalendar.calendar.wrapper.WrapperEvent;
@@ -29,6 +30,7 @@ import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
 
 public class BodyAdapter extends ITimeAdapter<DayViewBodyCell> {
     private CalendarConfig calendarConfig = new CalendarConfig();
+    private CalendarPositionHelper calendarPositionHelper;
 
     private ITimeEventPackageInterface eventPackage;
     private TimeSlotView.TimeSlotPackage slotsInfo;
@@ -38,9 +40,10 @@ public class BodyAdapter extends ITimeAdapter<DayViewBodyCell> {
     private int NUM_CELL = 1;
     private OverlapHelper overlapHelper = new OverlapHelper();
 
-    public BodyAdapter(Context context, AttributeSet attrs) {
+    public BodyAdapter(Context context, AttributeSet attrs, CalendarPositionHelper helper) {
         this.context = context;
         this.attrs = attrs;
+        this.calendarPositionHelper = helper;
         this.loadAttributes(attrs, context);
     }
 
@@ -71,6 +74,7 @@ public class BodyAdapter extends ITimeAdapter<DayViewBodyCell> {
     @Override
     public DayViewBodyCell onCreateViewHolder() {
         DayViewBodyCell cell = new DayViewBodyCell(context, attrs);
+        cell.setPstHelper(calendarPositionHelper);
         viewItems.add(cell);
         return cell;
     }
@@ -82,6 +86,7 @@ public class BodyAdapter extends ITimeAdapter<DayViewBodyCell> {
 
         body.resetView();
         body.setCalendarConfig(calendarConfig);
+        body.refreshLayoutListener();
 
         //setBorderColor
         if (offset % NUM_CELL == 0){
@@ -97,7 +102,7 @@ public class BodyAdapter extends ITimeAdapter<DayViewBodyCell> {
         }
 
         //set timeslots
-        if (body.isTimeSlotEnable && this.slotsInfo != null){
+        if (calendarConfig.mode != CalendarConfig.Mode.EVENT && this.slotsInfo != null){
             MyCalendar calendar = body.getCalendar();
             //add rcd first
             for (WrapperTimeSlot struct : slotsInfo.rcdSlots

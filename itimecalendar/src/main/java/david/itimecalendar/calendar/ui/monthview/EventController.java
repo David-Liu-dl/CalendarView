@@ -53,7 +53,6 @@ public class EventController {
     private ArrayList<DraggableEventView> allDayDgEventViews = new ArrayList<>();
 
     private long defaultEventDuration = 3600 * 1000;
-    private boolean isTimeSlot = false;
 
     EventController(DayViewBodyCell container) {
         this.container = container;
@@ -122,28 +121,9 @@ public class EventController {
         eventLayout.getDgEvents().add(newDragEventView);
 
         //if bg mode
-        if (isTimeSlot){
+        if (container.calendarConfig.isEventAsBgMode){
             newDragEventView.setToBg();
         }
-    }
-
-    private boolean isWithin(ITimeEventInterface event, int index){
-        long startTime = event.getStartTime();
-        long endTime = event.getEndTime();
-
-        MyCalendar calS = new MyCalendar(container.getCalendar());
-        calS.setOffsetByDate(index);
-
-        MyCalendar calE = new MyCalendar(container.getCalendar());
-        calE.setOffsetByDate(index);
-        calE.setHour(23);
-        calE.setMinute(59);
-
-        long todayStartTime =  calS.getBeginOfDayMilliseconds();
-        long todayEndTime =  calE.getCalendar().getTimeInMillis();
-
-        return
-                todayEndTime >= startTime && todayStartTime <= endTime;
     }
 
     void clearEvents() {
@@ -158,46 +138,47 @@ public class EventController {
 
     private DraggableEventView createDayDraggableEventView(WrapperEvent wrapper, boolean isAllDayEvent) {
         ITimeEventInterface event = wrapper.getEvent();
-        DraggableEventView event_view = new DraggableEventView(context, event, isAllDayEvent);
-        event_view.setCalendar(container.getCalendar());
-        event_view.setViewType(DraggableEventView.TYPE_NORMAL);
+        DraggableEventView draggableEventView = new DraggableEventView(context, event, isAllDayEvent);
+        draggableEventView.setCalendar(container.getCalendar());
+        draggableEventView.setViewType(DraggableEventView.TYPE_NORMAL);
         int padding = DensityUtil.dip2px(context,1);
-        event_view.setPadding(0,padding,0,padding);
-        if (!container.isTimeSlotEnable){
-            event_view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (onEventListener != null) {
-                        onEventListener.onEventClick((DraggableEventView) view);
-                    }
+        draggableEventView.setPadding(0,padding,0,padding);
+
+        draggableEventView.setOnClickListener(
+                container.calendarConfig.isEventCreatable ?
+                new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (onEventListener != null) {
+                    onEventListener.onEventClick((DraggableEventView) view);
                 }
-            });
-        }
+            }
+        } : null);
 
         if (isAllDayEvent) {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,1f);
-            event_view.setTag(event);
-            event_view.setLayoutParams(params);
+            draggableEventView.setTag(event);
+            draggableEventView.setLayoutParams(params);
         } else {
             long duration = event.getEndTime() - event.getStartTime();
             int eventHeight =(int) (duration * container.heightPerMillisd);
             int height = getDayCrossHeight(wrapper);
-//            DraggableEventView.LayoutParams params = new DraggableEventView.LayoutParams(eventHeight, height);
             DayInnerBodyLayout.LayoutParams params = new DayInnerBodyLayout.LayoutParams(eventHeight, height);
             params.relativeMarginLeft = container.unitViewLeftMargin;
             params.relativeMarginRight = container.unitViewRightMargin;
 
-            if (!container.isTimeSlotEnable && getRegularEventType(wrapper) != DAY_CROSS_ALL_DAY){
-                event_view.setOnLongClickListener(new EventLongClickListener());
-            }
-            event_view.setTag(event);
-            event_view.setLayoutParams(params);
+            draggableEventView.setOnLongClickListener(
+                    container.calendarConfig.isEventDraggable && getRegularEventType(wrapper) != DAY_CROSS_ALL_DAY ?
+                    new EventLongClickListener() : null);
+
+            draggableEventView.setTag(event);
+            draggableEventView.setLayoutParams(params);
         }
 
         //add it to map
-        uidDragViewMap.put(event, event_view);
+        uidDragViewMap.put(event, draggableEventView);
 
-        return event_view;
+        return draggableEventView;
     }
 
     private int getDayCrossHeight(WrapperEvent wrapper){
@@ -304,7 +285,7 @@ public class EventController {
         String hourWithMinutes = container.sdf.format(date);
         String[] components = hourWithMinutes.split(":");
         float trickTime = Integer.valueOf(components[0]) + Integer.valueOf(components[1]) / (float) 100;
-        int getStartY = container.nearestTimeSlotValue(trickTime) + offset;
+        int getStartY = container.pstHelper.nearestTimeSlotValue(trickTime) + offset;
 
         return getStartY;
     }
@@ -358,8 +339,8 @@ public class EventController {
                     int rawY = (int) event.getY();
 
                     if (onEventListener != null) {
-                        int nearestProperPosition = container.nearestQuarterTimeSlotKey(rawY);
-                        String locationTime = (container.positionToTimeQuarterTreeMap.get(nearestProperPosition));
+                        int nearestProperPosition = container.pstHelper.nearestQuarterTimeSlotKey(rawY);
+                        String locationTime = (container.pstHelper.positionToTimeQuarterTreeMap.get(nearestProperPosition));
                         onEventListener.onEventDragging(dgView, container.getCalendar(), rawX, (int) event.getY(), locationTime);
                     } else {
                         Log.i(TAG, "onDrag: null onEventDragListener");
@@ -390,7 +371,7 @@ public class EventController {
                     int[] reComputeResult = container.reComputePositionToSet(newX, newY, dgView, v);
 
                     //update the item time
-                    String new_time = container.positionToTimeQuarterTreeMap.get(reComputeResult[1]);
+                    String new_time = container.pstHelper.positionToTimeQuarterTreeMap.get(reComputeResult[1]);
                     //important! update item time after drag
                     String[] time_parts = new_time.split(":");
                     currentEventNewHour = Integer.valueOf(time_parts[0]);
@@ -614,7 +595,7 @@ public class EventController {
     }
 
     void enableBgMode(){
-        isTimeSlot = true;
+        container.calendarConfig.isEventAsBgMode = true;
     }
 
     private int getRegularEventType(WrapperEvent wrapper){

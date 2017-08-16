@@ -51,17 +51,20 @@ public class MonthAgendaView extends RelativeLayout{
     private MyCalendar monthAgendaViewCalendar;
     private ITimeEventPackageInterface eventPackage;
     private Context context;
+    private CalendarConfig config = new CalendarConfig();
 
     public MonthAgendaView(Context context) {
         super(context);
         this.context = context;
         initView();
+        setCalendarConfig(config);
     }
 
     public MonthAgendaView(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
         initView();
+        setCalendarConfig(config);
     }
 
     public MonthAgendaView(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -486,8 +489,12 @@ public class MonthAgendaView extends RelativeLayout{
         }
     }
 
-    public void setCalendarConfig(CalendarConfig calendarConfig) {
+    private void setCalendarConfig(CalendarConfig calendarConfig) {
         this.bodyRecyclerAdapter.setCalendarConfig(calendarConfig);
         this.bodyRecyclerAdapter.notifyDataSetChanged();
+    }
+
+    public CalendarConfig getConfig() {
+        return config;
     }
 }

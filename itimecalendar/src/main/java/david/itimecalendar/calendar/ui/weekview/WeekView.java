@@ -40,6 +40,7 @@ public class WeekView extends RelativeLayout{
 
     protected LinearLayout container;
     private ITimeCalendarWeekDayViewListener iTimeCalendarInterface;
+    CalendarConfig calendarConfig = new CalendarConfig();
 
     public WeekView(@NonNull Context context) {
         super(context);
@@ -53,6 +54,7 @@ public class WeekView extends RelativeLayout{
         this.viewAttrs = attrs;
         this.loadAttributes(attrs, context);
         initView();
+        setCalendarConfig(calendarConfig);
     }
 
     public WeekView(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
@@ -61,6 +63,7 @@ public class WeekView extends RelativeLayout{
         this.viewAttrs = attrs;
         this.loadAttributes(attrs, context);
         initView();
+        setCalendarConfig(calendarConfig);
     }
 
     private void loadAttributes(AttributeSet attrs, Context context) {
@@ -176,10 +179,9 @@ public class WeekView extends RelativeLayout{
         this.dayViewBodyContainer.addView(dayViewBody, bodyParams);
     }
 
-    public void scrollToDate(Date date){
-
+    public void scrollToDate(Date date, boolean toTime){
         this.headerScrollToDate(date);
-        this.dayViewBody.scrollToDate(date);
+        this.dayViewBody.scrollToDate(date,toTime);
     }
 
     private void headerScrollToDate(Date date){
@@ -207,8 +209,13 @@ public class WeekView extends RelativeLayout{
         dayViewBody.refresh();
     }
 
-    public void setCalendarConfig(CalendarConfig calendarConfig) {
+    private void setCalendarConfig(CalendarConfig calendarConfig) {
+        this.calendarConfig = calendarConfig;
         this.dayViewBody.setCalendarConfig(calendarConfig);
+    }
+
+    public CalendarConfig getCalendarConfig() {
+        return calendarConfig;
     }
 
     @Override

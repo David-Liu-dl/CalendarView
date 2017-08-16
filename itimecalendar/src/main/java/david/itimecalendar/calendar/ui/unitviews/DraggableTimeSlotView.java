@@ -7,6 +7,7 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -71,6 +72,7 @@ public class DraggableTimeSlotView extends RelativeLayout {
             if (BaseUtil.isExpired(timeslot.getStartTime() + BaseUtil.getAllDayLong(timeslot.getStartTime()))){
                 initViewAsExpiredMode();
                 initBackgroundAsExpiredMode();
+                updateViewStatus();
                 return;
             }
         }else {
@@ -78,6 +80,7 @@ public class DraggableTimeSlotView extends RelativeLayout {
             if (BaseUtil.isExpired(timeslot)){
                 initViewAsExpiredMode();
                 initBackgroundAsExpiredMode();
+                updateViewStatus();
                 return;
             }
         }
@@ -138,7 +141,7 @@ public class DraggableTimeSlotView extends RelativeLayout {
         iconLayoutParams.topMargin = DensityUtil.dip2px(getContext(),5);
         iconLayoutParams.leftMargin = DensityUtil.dip2px(getContext(),5);
         iconLayoutParams.rightMargin = DensityUtil.dip2px(getContext(),5);
-        this.addView(icon,iconLayoutParams);
+        this.addView(icon, iconLayoutParams);
 
         title = new TextView(getContext());
         title.setText(isAllday?getResources().getString(R.string.label_allday):getTimeText(false));

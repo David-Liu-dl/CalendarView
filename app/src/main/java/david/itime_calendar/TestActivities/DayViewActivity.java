@@ -39,15 +39,13 @@ public class DayViewActivity extends AppCompatActivity {
 
     private void doTest(){
         CalendarConfig config = new CalendarConfig();
-        config.unconfirmedIncluded = false;
-
+        config.enableEvent();
         final MonthView monthView = (MonthView) findViewById(R.id.day_view);
-        monthView.setCalendarConfig(config);
         TextView todayBtn = (TextView) findViewById(R.id.today);
         todayBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                monthView.scrollToDate(new Date());
+                monthView.scrollToDate(new Date(), true);
             }
         });
 

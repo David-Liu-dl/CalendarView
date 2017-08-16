@@ -6,6 +6,7 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.util.Log;
 import android.view.Gravity;
@@ -48,7 +49,7 @@ public class DraggableTimeSlotView extends RelativeLayout {
 
     private PosParam posParam;
     private TimeSlotView.ViewMode mode = TimeSlotView.mode;
-
+    private View background;
 
     public DraggableTimeSlotView(Context context, WrapperTimeSlot wrapper, boolean isAllday) {
         super(context);
@@ -66,7 +67,27 @@ public class DraggableTimeSlotView extends RelativeLayout {
         init();
     }
 
+
+    @Override
+    public Drawable getBackground() {
+        return this.background.getBackground();
+    }
+
+    @Override
+    public void setBackground(Drawable background) {
+        this.background.setBackground(background);
+    }
+
     public void init(){
+//        GradientDrawable gd = (GradientDrawable) getResources().getDrawable(R.drawable.itime_round_corner_bg);
+//        gd.mutate();
+//        gd.setColor(Color.parseColor("#0073FF")); //set color
+//        gd.setCornerRadius(DensityUtil.dip2px(getContext(),7));
+//        gd.setStroke(1, Color.parseColor("#0073FF"), 0, 0);
+//        this.setBackground(gd);
+
+        initBackgroundView();
+
         if (isAllday){
             //check if allday timeslot expired
             if (BaseUtil.isExpired(timeslot.getStartTime() + BaseUtil.getAllDayLong(timeslot.getStartTime()))){
@@ -99,6 +120,14 @@ public class DraggableTimeSlotView extends RelativeLayout {
         }
     }
 
+    private void initBackgroundView(){
+        background = new View(getContext());
+        ViewGroup.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        background.setLayoutParams(params);
+        background.setBackground(getResources().getDrawable(R.drawable.itime_round_corner_bg));
+        this.addView(background);
+    }
+
     private void initViewAsCreateMode(){
         this.addOnLayoutChangeListener(new OnLayoutChangeListener() {
             @Override
@@ -125,8 +154,7 @@ public class DraggableTimeSlotView extends RelativeLayout {
     }
 
     private void initBackgroundAsCreateMode(){
-        this.setBackground(getResources().getDrawable(R.drawable.itime_round_corner_bg));
-        GradientDrawable gd = (GradientDrawable) this.getBackground();
+        GradientDrawable gd = (GradientDrawable) this.background.getBackground();
         gd.mutate();
         gd.setColor(Color.parseColor("#0073FF")); //set color
         gd.setCornerRadius(DensityUtil.dip2px(getContext(),7));
@@ -156,13 +184,13 @@ public class DraggableTimeSlotView extends RelativeLayout {
 
     private void initBackgroundAsExpiredMode(){
         this.setBackground(getResources().getDrawable(R.drawable.itime_round_corner_bg));
-        GradientDrawable gd = (GradientDrawable) this.getBackground();
+        GradientDrawable gd = (GradientDrawable) this.background.getBackground();
         gd.mutate();
         gd.setColor(getResources().getColor(R.color.timeslot_select_mode_bg)); //set color
         gd.setCornerRadius(DensityUtil.dip2px(getContext(),7));
         gd.setStroke(1, Color.BLACK, 0, 0);
         // 20% opacity
-        this.getBackground().setAlpha(51);
+        this.background.getBackground().setAlpha(51);
     }
 
     private void initViewAsSelectMode(){
@@ -188,16 +216,16 @@ public class DraggableTimeSlotView extends RelativeLayout {
 
     private void initBackgroundAsSelectMode(){
         this.setBackground(getResources().getDrawable(R.drawable.itime_round_corner_bg));
-        GradientDrawable gd = (GradientDrawable) this.getBackground();
+        GradientDrawable gd = (GradientDrawable) this.background.getBackground();
         gd.mutate();
         gd.setColor(getResources().getColor(R.color.timeslot_select_mode_bg)); //set color
         gd.setCornerRadius(DensityUtil.dip2px(getContext(),7));
         gd.setStroke(1, Color.BLACK, 0, 0);
-        this.getBackground().setAlpha(217);
+        this.background.getBackground().setAlpha(217);
     }
 
     private void updateViewBorder(int color){
-        GradientDrawable gd = (GradientDrawable) this.getBackground();
+        GradientDrawable gd = (GradientDrawable) this.background.getBackground();
         gd.mutate();
         gd.setStroke(1, color, 0, 0);
     }

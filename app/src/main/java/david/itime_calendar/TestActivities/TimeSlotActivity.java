@@ -39,7 +39,7 @@ public class TimeSlotActivity extends AppCompatActivity {
 
     private void doTest(){
         ArrayList<TimeSlot> slots = new ArrayList<>();
-        initSlots(slots);
+//        initSlots(slots);
 
         final TimeSlotView timeslotView = (TimeSlotView) findViewById(R.id.timeslot_view);
         timeslotView.setViewMode(TimeSlotView.ViewMode.NON_ALL_DAY_CREATE);
@@ -94,7 +94,10 @@ public class TimeSlotActivity extends AppCompatActivity {
 
             @Override
             public void onTimeSlotCreate(DraggableTimeSlotView draggableTimeSlotView) {
-
+                TimeSlot newSlot = new TimeSlot();
+                newSlot.setStartTime(draggableTimeSlotView.getNewStartTime());
+                newSlot.setEndTime(draggableTimeSlotView.getNewEndTime());
+                timeslotView.addTimeSlot(newSlot);
             }
 
             @Override

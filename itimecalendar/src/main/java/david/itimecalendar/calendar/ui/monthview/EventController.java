@@ -111,7 +111,7 @@ public class EventController {
 
     private void addRegularEvent(WrapperEvent wrapper) {
         final DayInnerBodyLayout eventLayout = container.eventLayout;
-        final DraggableEventView newDragEventView = this.createDayDraggableEventView(wrapper, false);
+        final DraggableEventView newDragEventView = this.createDayDraggableEventView(wrapper);
         final DayInnerBodyLayout.LayoutParams params = (DayInnerBodyLayout.LayoutParams) newDragEventView.getLayoutParams();
         newDragEventView.setId(View.generateViewId());
         this.regularEventViewMap.put(wrapper, newDragEventView.getId());
@@ -136,13 +136,12 @@ public class EventController {
         this.uidDragViewMap.clear();
     }
 
-    private DraggableEventView createDayDraggableEventView(WrapperEvent wrapper, boolean isAllDayEvent) {
+    private DraggableEventView createDayDraggableEventView(WrapperEvent wrapper) {
         ITimeEventInterface event = wrapper.getEvent();
-        DraggableEventView draggableEventView = new DraggableEventView(context, event, isAllDayEvent);
+        DraggableEventView draggableEventView = new DraggableEventView(context, event);
         draggableEventView.setCalendar(container.getCalendar());
         draggableEventView.setViewType(DraggableEventView.TYPE_NORMAL);
-        int padding = DensityUtil.dip2px(context,1);
-        draggableEventView.setPadding(0,padding,0,padding);
+        draggableEventView.setPadding(0,container.unitViewPaddingTop,0,0);
 
         draggableEventView.setOnClickListener(
                 container.calendarConfig.isEventCreatable ?
@@ -155,25 +154,19 @@ public class EventController {
             }
         } : null);
 
-        if (isAllDayEvent) {
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,1f);
-            draggableEventView.setTag(event);
-            draggableEventView.setLayoutParams(params);
-        } else {
-            long duration = event.getEndTime() - event.getStartTime();
-            int eventHeight =(int) (duration * container.heightPerMillisd);
-            int height = getDayCrossHeight(wrapper);
-            DayInnerBodyLayout.LayoutParams params = new DayInnerBodyLayout.LayoutParams(eventHeight, height);
-            params.relativeMarginLeft = container.unitViewLeftMargin;
-            params.relativeMarginRight = container.unitViewRightMargin;
+        long duration = event.getEndTime() - event.getStartTime();
+        int eventHeight =(int) (duration * container.heightPerMillisd);
+        int height = getDayCrossHeight(wrapper);
+        DayInnerBodyLayout.LayoutParams params = new DayInnerBodyLayout.LayoutParams(eventHeight, height);
+        params.relativeMarginLeft = container.unitViewLeftMargin;
+        params.relativeMarginRight = container.unitViewRightMargin;
 
-            draggableEventView.setOnLongClickListener(
-                    container.calendarConfig.isEventDraggable && getRegularEventType(wrapper) != DAY_CROSS_ALL_DAY ?
-                    new EventLongClickListener() : null);
+        draggableEventView.setOnLongClickListener(
+                container.calendarConfig.isEventDraggable && getRegularEventType(wrapper) != DAY_CROSS_ALL_DAY ?
+                new EventLongClickListener() : null);
 
-            draggableEventView.setTag(event);
-            draggableEventView.setLayoutParams(params);
-        }
+        draggableEventView.setTag(event);
+        draggableEventView.setLayoutParams(params);
 
         //add it to map
         uidDragViewMap.put(event, draggableEventView);
@@ -218,22 +211,21 @@ public class EventController {
     private DraggableEventView createTempDayDraggableEventView(float tapX, float tapY) {
         ITimeEventInterface event = this.initializeEvent();
         if (event == null) {
-            throw new RuntimeException("need Class name in 'setEventClassName()'");
+            throw new RuntimeException("Need Class name in 'setEventClassName()'");
         }
 
-        DraggableEventView event_view = new DraggableEventView(context, event, false);
-        event_view.setDuration(defaultEventDuration);
-        event_view.setViewType(DraggableEventView.TYPE_TEMP);
-        int padding = DensityUtil.dip2px(context,1);
-        event_view.setPadding(0,padding,0,0);
+        DraggableEventView dgEventView = new DraggableEventView(context, event);
+        dgEventView.setDuration(defaultEventDuration);
+        dgEventView.setViewType(DraggableEventView.TYPE_TEMP);
+        dgEventView.setPadding(0,container.unitViewPaddingTop,0,0);
 
         int eventHeight = 1 * container.hourHeight;//one hour
         DayInnerBodyLayout.LayoutParams params = new DayInnerBodyLayout.LayoutParams(200, eventHeight);
-        event_view.setY(tapY - eventHeight / 2);
-        event_view.setOnLongClickListener(new EventLongClickListener());
-        event_view.setLayoutParams(params);
+        dgEventView.setY(tapY - eventHeight / 2);
+        dgEventView.setOnLongClickListener(new EventLongClickListener());
+        dgEventView.setLayoutParams(params);
 
-        return event_view;
+        return dgEventView;
     }
 
     /**
@@ -318,15 +310,12 @@ public class EventController {
                 }
                 view.startDrag(data, shadowBuilder, view, 0);
             }
-
+            view.getBackground().setAlpha(128);
             return true;
         }
     }
 
     class EventDragListener implements View.OnDragListener {
-        int currentEventNewHour = -1;
-        int currentEventNewMinutes = -1;
-
         @Override
         public boolean onDrag(View v, DragEvent event) {
             DraggableEventView dgView = (DraggableEventView) event.getLocalState();
@@ -346,7 +335,6 @@ public class EventController {
                     }
                     break;
                 case DragEvent.ACTION_DRAG_ENTERED:
-//                    container.msgWindow.setVisibility(View.VISIBLE);
                     if (dgView.getViewType() == DraggableEventView.TYPE_TEMP){
                         container.tempDragView = dgView;
                     }else{
@@ -363,41 +351,9 @@ public class EventController {
 
                     float actionStopX = event.getX();
                     float actionStopY = event.getY();
-                    // Dropped, reassign View to ViewGroup
-                    int newX = (int) actionStopX - dgView.getWidth() / 2;
-                    int newY = (int) actionStopY;
-                    int[] reComputeResult = container.reComputePositionToSet(newX, newY, dgView, v);
+                    //handle drop action
+                    onDropHandler(actionStopX - dgView.getWidth()/2, actionStopY, dgView, v);
 
-                    //update the item time
-                    String new_time = container.pstHelper.positionToTimeQuarterTreeMap.get(reComputeResult[1]);
-                    //important! update item time after drag
-                    String[] time_parts = new_time.split(":");
-                    currentEventNewHour = Integer.valueOf(time_parts[0]);
-                    currentEventNewMinutes = Integer.valueOf(time_parts[1]);
-
-                    dgView.setCalendar(container.getCalendar());
-                    dgView.getCalendar().setHour(currentEventNewHour);
-                    dgView.getCalendar().setMinute(currentEventNewMinutes);
-                    //set dropped container index
-
-                    if (container.tempDragView == null && onEventListener != null) {
-                        onEventListener.onEventDragDrop(dgView);
-                    } else {
-                        Log.i(TAG, "onDrop Not Called");
-                    }
-
-                    if (dgView.getViewType() == DraggableEventView.TYPE_TEMP) {
-                        ViewGroup parent = (ViewGroup) dgView.getParent();
-                        if(parent != null){
-                            parent.removeView(dgView);
-                        }
-                        //important! update item time after drag via listener
-                        if (onEventListener != null) {
-                            onEventListener.onEventCreate(dgView);
-                        }
-                        //finally reset tempDragView to NULL.
-                        container.tempDragView = null;
-                    }
                     break;
                 case DragEvent.ACTION_DRAG_ENDED:
                     if (onEventListener != null) {
@@ -407,44 +363,6 @@ public class EventController {
             }
 
             return true;
-        }
-    }
-
-    private void onDrop(float actionStopX, float actionStopY, DraggableEventView dgView, View droppedContainer){
-        // Dropped, reassign View to ViewGroup
-        int newX = (int) actionStopX - dgView.getWidth() / 2;
-        int newY = (int) actionStopY;
-        int[] reComputeResult = container.reComputePositionToSet(newX, newY, dgView, droppedContainer);
-
-        //update the item time
-        String new_time = container.pstHelper.positionToTimeQuarterTreeMap.get(reComputeResult[1]);
-        //important! update item time after drag
-        String[] time_parts = new_time.split(":");
-        int currentEventNewHour = Integer.valueOf(time_parts[0]);
-        int currentEventNewMinutes = Integer.valueOf(time_parts[1]);
-
-        dgView.setCalendar(container.getCalendar());
-        dgView.getCalendar().setHour(currentEventNewHour);
-        dgView.getCalendar().setMinute(currentEventNewMinutes);
-        //set dropped container index
-
-        if (container.tempDragView == null && onEventListener != null) {
-            onEventListener.onEventDragDrop(dgView);
-        } else {
-            Log.i(TAG, "onDrop Not Called");
-        }
-
-        if (dgView.getViewType() == DraggableEventView.TYPE_TEMP) {
-            ViewGroup parent = (ViewGroup) dgView.getParent();
-            if(parent != null){
-                parent.removeView(dgView);
-            }
-            //important! update item time after drag via listener
-            if (onEventListener != null) {
-                onEventListener.onEventCreate(dgView);
-            }
-            //finally reset tempDragView to NULL.
-            container.tempDragView = null;
         }
     }
 
@@ -509,7 +427,7 @@ public class EventController {
 
         @Override
         public void onClick(View v) {
-            DayInnerBodyLayout container = (DayInnerBodyLayout) v;
+            final DayInnerBodyLayout container = (DayInnerBodyLayout) v;
             EventController.this.container.tempDragView = createTempDayDraggableEventView(EventController.this.container.nowTapX, EventController.this.container.nowTapY);
             container.addView(EventController.this.container.tempDragView);
 
@@ -540,7 +458,8 @@ public class EventController {
                 public void onAnimationEnd(Animator animation) {
                     if (EventController.this.container.tempDragView != null
                             && EventController.this.container.tempDragView.getParent() != null){
-                        EventController.this.container.tempDragView.performLongClick();
+                        View tempView = EventController.this.container.tempDragView;
+                        onDropHandler(tempView.getX() - tempView.getWidth()/2,tempView.getY(), (DraggableEventView) tempView,container);
                     }
                 }
 
@@ -650,6 +569,44 @@ public class EventController {
             return t;
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    private void onDropHandler(float dropValueX, float dropValueY, DraggableEventView dgView, View droppedContainer){
+        // Dropped, reassign View to ViewGroup
+        int newX = (int) dropValueX;
+        int newY = (int) dropValueY;
+        int[] reComputeResult = container.reComputePositionToSet(newX, newY, dgView, droppedContainer);
+
+        //update the item time
+        String new_time = container.pstHelper.positionToTimeQuarterTreeMap.get(reComputeResult[1]);
+        //important! update item time after drag
+        String[] time_parts = new_time.split(":");
+        int currentEventNewHour = Integer.valueOf(time_parts[0]);
+        int currentEventNewMinutes = Integer.valueOf(time_parts[1]);
+
+        dgView.setCalendar(container.getCalendar());
+        dgView.getCalendar().setHour(currentEventNewHour);
+        dgView.getCalendar().setMinute(currentEventNewMinutes);
+        //set dropped container index
+
+        if (container.tempDragView == null && onEventListener != null) {
+            onEventListener.onEventDragDrop(dgView);
+        } else {
+            Log.i(TAG, "onDropHandler Not Called");
+        }
+
+        if (dgView.getViewType() == DraggableEventView.TYPE_TEMP) {
+            ViewGroup parent = (ViewGroup) dgView.getParent();
+            if(parent != null){
+                parent.removeView(dgView);
+            }
+            //important! update item time after drag via listener
+            if (onEventListener != null) {
+                onEventListener.onEventCreate(dgView);
+            }
+            //finally reset tempDragView to NULL.
+            container.tempDragView = null;
         }
     }
 

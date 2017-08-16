@@ -97,10 +97,10 @@ public class DayViewBodyCell extends FrameLayout{
     //dp
     protected int unitViewLeftMargin = 1;
     protected int unitViewRightMargin = 0;
+    protected int unitViewPaddingTop = 1;
 
     private int timeTextSize = 20;
     private int timelineHeight = 10;
-    protected int topAllDayHeight;
 
     protected int layoutWidthPerDay;
     protected int layoutHeightPerDay;
@@ -122,13 +122,11 @@ public class DayViewBodyCell extends FrameLayout{
     public DayViewBodyCell(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         this.loadAttributes(attrs,context);
-//        init();
     }
 
     public DayViewBodyCell(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.loadAttributes(attrs,context);
-//        init();
     }
 
     private void loadAttributes(AttributeSet attrs, Context context) {
@@ -154,6 +152,7 @@ public class DayViewBodyCell extends FrameLayout{
         this.heightPerMillisd = (float) hourHeight /(3600*1000);
         this.unitViewLeftMargin = DensityUtil.dip2px(context,this.unitViewLeftMargin);
         this.unitViewRightMargin = DensityUtil.dip2px(context,this.unitViewRightMargin);
+        this.unitViewPaddingTop = DensityUtil.dip2px(context,this.unitViewPaddingTop);
         this.timelineHeight = DensityUtil.dip2px(context,this.timelineHeight);
     }
 
@@ -412,16 +411,6 @@ public class DayViewBodyCell extends FrameLayout{
         timeSlotController.updateTimeSlotsDuration(duration, animate);
     }
 
-    public void enableTimeSlot(boolean draggable){
-        eventController.enableBgMode();
-        timeSlotController.enableTimeSlot(draggable);
-    }
-
-    public void disableTimeslot(){
-        eventController.enableBgMode();
-        timeSlotController.disableTimeSlot();
-    }
-
     public void setOnTimeSlotListener(TimeSlotController.OnTimeSlotListener onTimeSlotListener) {
         timeSlotController.setOnTimeSlotListener(onTimeSlotListener);
     }
@@ -446,7 +435,7 @@ public class DayViewBodyCell extends FrameLayout{
 
         eventLayout.setOnClickListener(
                 calendarConfig.isTimeSlotCreatable ?
-                        (calendarConfig.isTimeSlotClickable ? null : null)
+                        (calendarConfig.isTimeSlotClickable ? timeSlotController.new CreateTimeSlotClickListener() : null)
                         :
                         (calendarConfig.isEventClickCreatable ? eventController.new CreateEventClickListener() : null)
         );
@@ -455,15 +444,13 @@ public class DayViewBodyCell extends FrameLayout{
                 calendarConfig.isTimeSlotDraggable ?
                         timeSlotController.new TimeSlotDragListener()
                         :
-                        (calendarConfig.isEventClickable ?
-                                eventController.new EventDragListener() : null));
+                        (calendarConfig.isEventClickable ? eventController.new EventDragListener() : null));
 
         eventLayout.setOnLongClickListener(
                 calendarConfig.isTimeSlotCreatable ?
-                        timeSlotController.new CreateTimeSlotListener()
+                        timeSlotController.new CreateTimeSlotLongClickListener()
                         :
-                        (calendarConfig.isEventCreatable ?
-                                eventController.new CreateEventLongClickListener() : null));
+                        (calendarConfig.isEventCreatable ? eventController.new CreateEventLongClickListener() : null));
     }
 
     public List<WrapperEvent> getTodayEvents(){

@@ -274,7 +274,7 @@ public class DayViewAllDay extends FrameLayout {
 
         private void addAllDayEvent(WrapperEvent wrapper) {
             int paddingLeft = DensityUtil.dip2px(getContext(),1);
-            DraggableEventView new_dgEvent = new DraggableEventView(getContext(),wrapper.getEvent(),true);
+            DraggableEventView new_dgEvent = new DraggableEventView(getContext(),wrapper.getEvent());
             new_dgEvent.setOnClickListener(new OnAllDayEventClick());
             LinearLayout.LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1f);
             new_dgEvent.setPadding(paddingLeft,0,0,0);

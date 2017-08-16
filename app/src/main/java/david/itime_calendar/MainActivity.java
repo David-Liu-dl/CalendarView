@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         dbManager = DBManager.getInstance(this);
         eventManager = EventManager.getInstance();
         initData();
-        loadData();
+//        loadData();
     }
 
     private void initData() {

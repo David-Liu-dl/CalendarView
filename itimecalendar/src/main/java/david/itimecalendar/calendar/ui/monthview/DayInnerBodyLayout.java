@@ -17,7 +17,6 @@ import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
  * Created by yuhaoliu on 21/09/16.
  */
 public class DayInnerBodyLayout extends ViewGroup {
-    private static final String TAG = "DayInnerBodyEventLayout";
     ArrayList<WrapperEvent> events = new ArrayList<>();
     ArrayList<DraggableEventView> dgEvents = new ArrayList<>();
     ArrayList<WrapperTimeSlot> slots = new ArrayList<>();

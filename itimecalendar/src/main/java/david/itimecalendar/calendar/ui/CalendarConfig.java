@@ -21,6 +21,7 @@ public class CalendarConfig {
     public boolean isEventDraggable = true;
     public boolean isEventClickable = true;
     public boolean isEventAsBgMode = false;
+    public boolean isEventClickCreatable = true;
 
     public boolean isAllDayRcdEnable = false;
 
@@ -30,6 +31,7 @@ public class CalendarConfig {
     public boolean isTimeSlotCreatable = true;
     public boolean isTimeSlotDraggable = true;
     public boolean isTimeSlotClickable = true;
+    public boolean isTimeSlotClickCreatable = true;
 
     public void disableEvent(){
         disableEventHeader();
@@ -46,6 +48,7 @@ public class CalendarConfig {
         this.isEventDraggable = false;
         this.isEventClickable = false;
         this.isEventCreatable = false;
+        this.isEventClickCreatable = false;
     }
 
     public void enableEvent(){
@@ -59,6 +62,7 @@ public class CalendarConfig {
         this.isEventDraggable = true;
         this.isEventClickable = true;
         this.isEventAsBgMode = false;
+        isEventClickCreatable = true;
     }
 
     public void disableTimeslot(){

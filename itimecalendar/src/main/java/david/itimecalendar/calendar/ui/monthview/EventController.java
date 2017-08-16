@@ -215,7 +215,6 @@ public class EventController {
         return height;
     }
 
-
     private DraggableEventView createTempDayDraggableEventView(float tapX, float tapY) {
         ITimeEventInterface event = this.initializeEvent();
         if (event == null) {
@@ -361,7 +360,6 @@ public class EventController {
                     //handler ended things in here, because ended some time is not triggered
                     View finalView = (View) event.getLocalState();
                     finalView.setVisibility(View.VISIBLE);
-//                    container.msgWindow.setVisibility(View.INVISIBLE);
 
                     float actionStopX = event.getX();
                     float actionStopY = event.getY();
@@ -412,7 +410,45 @@ public class EventController {
         }
     }
 
-    class CreateEventListener implements View.OnLongClickListener {
+    private void onDrop(float actionStopX, float actionStopY, DraggableEventView dgView, View droppedContainer){
+        // Dropped, reassign View to ViewGroup
+        int newX = (int) actionStopX - dgView.getWidth() / 2;
+        int newY = (int) actionStopY;
+        int[] reComputeResult = container.reComputePositionToSet(newX, newY, dgView, droppedContainer);
+
+        //update the item time
+        String new_time = container.pstHelper.positionToTimeQuarterTreeMap.get(reComputeResult[1]);
+        //important! update item time after drag
+        String[] time_parts = new_time.split(":");
+        int currentEventNewHour = Integer.valueOf(time_parts[0]);
+        int currentEventNewMinutes = Integer.valueOf(time_parts[1]);
+
+        dgView.setCalendar(container.getCalendar());
+        dgView.getCalendar().setHour(currentEventNewHour);
+        dgView.getCalendar().setMinute(currentEventNewMinutes);
+        //set dropped container index
+
+        if (container.tempDragView == null && onEventListener != null) {
+            onEventListener.onEventDragDrop(dgView);
+        } else {
+            Log.i(TAG, "onDrop Not Called");
+        }
+
+        if (dgView.getViewType() == DraggableEventView.TYPE_TEMP) {
+            ViewGroup parent = (ViewGroup) dgView.getParent();
+            if(parent != null){
+                parent.removeView(dgView);
+            }
+            //important! update item time after drag via listener
+            if (onEventListener != null) {
+                onEventListener.onEventCreate(dgView);
+            }
+            //finally reset tempDragView to NULL.
+            container.tempDragView = null;
+        }
+    }
+
+    class CreateEventLongClickListener implements View.OnLongClickListener {
 
         @Override
         public boolean onLongClick(View v) {
@@ -466,6 +502,60 @@ public class EventController {
             createAnim.start();
 
             return true;
+        }
+    }
+
+    class CreateEventClickListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            DayInnerBodyLayout container = (DayInnerBodyLayout) v;
+            EventController.this.container.tempDragView = createTempDayDraggableEventView(EventController.this.container.nowTapX, EventController.this.container.nowTapY);
+            container.addView(EventController.this.container.tempDragView);
+
+            ObjectAnimator scaleX = ObjectAnimator.ofFloat(EventController.this.container.tempDragView, "scaleX", 0f,1f);
+            ObjectAnimator scaleY = ObjectAnimator.ofFloat(EventController.this.container.tempDragView, "scaleY", 0f,1f);
+            ObjectAnimator alpha = ObjectAnimator.ofFloat(EventController.this.container.tempDragView, "alpha", 0f,1f);
+            alpha.setDuration(180);
+            scaleX.setDuration(120);
+            scaleY.setDuration(120);
+
+            AnimatorSet createAnim = new AnimatorSet();
+            createAnim.play(alpha).with(scaleY).with(scaleX);
+            scaleX.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    View p= (View) EventController.this.container.tempDragView.getParent();
+                    if (p != null){
+                        p.invalidate();
+                    }
+                }
+            });
+            createAnim.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    if (EventController.this.container.tempDragView != null
+                            && EventController.this.container.tempDragView.getParent() != null){
+                        EventController.this.container.tempDragView.performLongClick();
+                    }
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+
+            createAnim.start();
         }
     }
 

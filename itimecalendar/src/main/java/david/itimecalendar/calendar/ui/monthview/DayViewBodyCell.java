@@ -444,6 +444,13 @@ public class DayViewBodyCell extends FrameLayout{
             return;
         }
 
+        eventLayout.setOnClickListener(
+                calendarConfig.isTimeSlotCreatable ?
+                        (calendarConfig.isTimeSlotClickable ? null : null)
+                        :
+                        (calendarConfig.isEventClickCreatable ? eventController.new CreateEventClickListener() : null)
+        );
+
         eventLayout.setOnDragListener(
                 calendarConfig.isTimeSlotDraggable ?
                         timeSlotController.new TimeSlotDragListener()
@@ -456,7 +463,7 @@ public class DayViewBodyCell extends FrameLayout{
                         timeSlotController.new CreateTimeSlotListener()
                         :
                         (calendarConfig.isEventCreatable ?
-                                eventController.new CreateEventListener() : null));
+                                eventController.new CreateEventLongClickListener() : null));
     }
 
     public List<WrapperEvent> getTodayEvents(){

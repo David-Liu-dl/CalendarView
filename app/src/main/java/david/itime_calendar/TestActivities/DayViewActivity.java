@@ -38,9 +38,9 @@ public class DayViewActivity extends AppCompatActivity {
     }
 
     private void doTest(){
-        CalendarConfig config = new CalendarConfig();
-        config.enableEvent();
+
         final MonthView monthView = (MonthView) findViewById(R.id.day_view);
+        monthView.getCalendarConfig().enableEvent();
         TextView todayBtn = (TextView) findViewById(R.id.today);
         todayBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,8 +68,6 @@ public class DayViewActivity extends AppCompatActivity {
                 String sStr = cal.getTime().toString();
                 cal.setTimeInMillis(eventView.getEndTimeM());
                 String eStr = cal.getTime().toString();
-                Log.i("timetest", "start: " + sStr);
-                Log.i("timetest", "end: " + eStr);
                 event.setStartTime(eventView.getStartTimeM());
                 event.setEndTime(eventView.getEndTimeM());
                 eventManager.addEvent(event);

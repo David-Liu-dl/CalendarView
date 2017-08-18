@@ -65,7 +65,7 @@ public class WeekViewHeaderCell extends FrameLayout {
         dayOfWeekTv = new TextView(getContext());
         dayOfWeekTv.setTextSize(dayOfWeekTextSize);
         dayOfWeekTv.setTextColor(getResources().getColor(text_calendar_weekdate));
-        dayOfWeekTv.setText("WED");
+        dayOfWeekTv.setText("MON");
         dayOfWeekTv.measure(0, 0);
         dayOfWeekTv.setGravity(Gravity.CENTER);
         final int dayOfWeekTvMeasuredHeight = dayOfWeekTv.getMeasuredHeight(); //get height

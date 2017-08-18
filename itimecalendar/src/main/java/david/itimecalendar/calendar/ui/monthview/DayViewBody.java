@@ -479,8 +479,7 @@ public class DayViewBody extends RelativeLayout {
             String[] components = time.split(":");
             float trickTime = Integer.valueOf(components[0]) + Integer.valueOf(components[1]) / (float) 100;
             int targetY = calendarPositionHelper.nearestTimeSlotValue(trickTime);
-            // TODO: 15/8/17 Paul fix: the position of scroll y can't get
-            int diffY = targetY - bodyRecyclerView.getScrollY();
+            int diffY = targetY - (int)bodyRecyclerView.getAwesomeScrollY();
             bodyRecyclerView.scrollByY(-diffY);
         }
 
@@ -495,50 +494,6 @@ public class DayViewBody extends RelativeLayout {
     public TimeSlotView.TimeSlotPackage getTimeSlotPackage(){
         return timeSlotPackage;
     }
-
-//    public void enableTimeSlot(boolean draggable){
-//        enableHeaderSlot();
-//        enableBodyTimeSlot(draggable);
-//    }
-//
-//    public void disableTimeSlot(){
-//        disableHeaderSlot();
-//        disableBodyTimeSlot();
-//    }
-
-//    public void disableHeaderSlot(){
-//        allDayView.setTimeslotEnable(false);
-//    }
-//
-//    public void disableBodyTimeSlot(){
-////        if (dayViewBodyAdapter != null){
-////            List<View> items = dayViewBodyAdapter.getViewItems();
-////            for (View view:items
-////                    ) {
-////                DayViewBodyCell cell = (DayViewBodyCell) view;
-////                cell.disableTimeslot();
-////            }
-////        }
-//
-//
-//    }
-
-//    public void enableHeaderSlot(){
-//        allDayView.setTimeslotEnable(true);
-//        allDayView.notifyDataSetChanged();
-//    }
-
-//    public void enableBodyTimeSlot(boolean draggable){
-//        if (dayViewBodyAdapter != null){
-//            List<View> items = dayViewBodyAdapter.getViewItems();
-//            for (View view:items
-//                    ) {
-//                DayViewBodyCell cell = (DayViewBodyCell) view;
-//                cell.enableTimeSlot(draggable);
-//            }
-//            dayViewBodyAdapter.notifyDataSetChanged();
-//        }
-//    }
 
     public void addTimeSlot(ITimeTimeSlotInterface slotInfo){
         WrapperTimeSlot wrapper = new WrapperTimeSlot(slotInfo);

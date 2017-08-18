@@ -186,6 +186,7 @@ class CompactCalendarController {
                 currentDayIndicatorStyle = typedArray.getInt(R.styleable.ITimeTimeslotCalendar_compactCalendarCurrentDayIndicatorStyle, FILL_LARGE_INDICATOR);
                 currentSelectedDayIndicatorStyle = typedArray.getInt(R.styleable.ITimeTimeslotCalendar_compactCalendarCurrentSelectedDayIndicatorStyle, FILL_LARGE_INDICATOR);
                 displayOtherMonthDays = typedArray.getBoolean(R.styleable.ITimeTimeslotCalendar_compactCalendarDisplayOtherMonthDays, displayOtherMonthDays);
+                useThreeLetterAbbreviation = typedArray.getBoolean(R.styleable.ITimeTimeslotCalendar_compactUseThreeLetterAbbreviation, useThreeLetterAbbreviation);
                 shouldSelectFirstDayOfMonthOnScroll = typedArray.getBoolean(R.styleable.ITimeTimeslotCalendar_compactCalendarShouldSelectFirstDayOfMonthOnScroll, shouldSelectFirstDayOfMonthOnScroll);
 
             } finally {

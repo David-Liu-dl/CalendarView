@@ -211,7 +211,6 @@ class CompactCalendarController {
 
         setFirstDayOfWeek(firstDayOfWeekToDraw);
 
-        setUseWeekDayAbbreviation(false);
         dayPaint.setTextAlign(Paint.Align.CENTER);
         dayPaint.setStyle(Paint.Style.STROKE);
         dayPaint.setFlags(Paint.ANTI_ALIAS_FLAG);

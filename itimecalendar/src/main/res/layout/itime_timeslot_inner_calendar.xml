@@ -7,6 +7,7 @@
     android:layout_height="wrap_content"
     app:itimeTimeslotCircleColor="#1677FB"
     app:itimeTimeslotTextColor="#FFFFFF"
+    app:itimeTitleTextSize="12sp"
     app:compactCalendarTargetHeight="220dp"
     app:compactCalendarTextSize="12sp"
     app:compactCalendarShouldSelectFirstDayOfMonthOnScroll="false"

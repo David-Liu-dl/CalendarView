@@ -16,6 +16,8 @@
     <declare-styleable name="ITimeTimeslotCalendar">
         <attr name="itimeTimeslotCircleColor" format="color"/>
         <attr name="itimeTimeslotTextColor" format="color"/>
+        <attr name="itimeTitleTextSize" format="dimension"/>
+
         <attr name="compactCalendarTextSize" format="dimension"/>
         <attr name="compactUseThreeLetterAbbreviation" format="boolean"/>
         <attr name="compactCalendarBackgroundColor" format="color"/>

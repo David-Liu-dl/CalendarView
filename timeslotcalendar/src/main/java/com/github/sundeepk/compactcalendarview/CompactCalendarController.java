@@ -124,6 +124,7 @@ class CompactCalendarController {
      * Only used in onDrawCurrentMonth to temporarily calculate previous month days
      */
     private Calendar tempPreviousMonthCalendar;
+    private float titleTextSize;
 
     private enum Direction {
         NONE, HORIZONTAL, VERTICAL
@@ -180,6 +181,10 @@ class CompactCalendarController {
                 calenderTitleColor = typedArray.getColor(R.styleable.ITimeTimeslotCalendar_compactCalenderTitleColor, calenderTitleColor);
                 textSize = typedArray.getDimensionPixelSize(R.styleable.ITimeTimeslotCalendar_compactCalendarTextSize,
                         (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, textSize, context.getResources().getDisplayMetrics()));
+
+                titleTextSize = typedArray.getDimensionPixelSize(R.styleable.ITimeTimeslotCalendar_itimeTitleTextSize,
+                        (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, titleTextSize, context.getResources().getDisplayMetrics()));
+
                 targetHeight = typedArray.getDimensionPixelSize(R.styleable.ITimeTimeslotCalendar_compactCalendarTargetHeight,
                         (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, targetHeight, context.getResources().getDisplayMetrics()));
                 eventIndicatorStyle = typedArray.getInt(R.styleable.ITimeTimeslotCalendar_compactCalendarEventIndicatorStyle, SMALL_INDICATOR);
@@ -918,7 +923,7 @@ class CompactCalendarController {
                 // first row, so draw the title of the day
                 if (shouldDrawDaysHeader) {
                     dayPaint.setColor(calenderTitleColor);
-                    dayPaint.setTextSize(18);
+                    dayPaint.setTextSize(titleTextSize);
                     dayPaint.setStyle(Paint.Style.FILL);
                     canvas.drawText(dayColumnNames[dayColumn].toUpperCase(), xPosition, paddingHeight, dayPaint);
                     dayPaint.setTextSize(textSize);

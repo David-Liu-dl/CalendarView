@@ -24,6 +24,7 @@ import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
 import david.itimecalendar.calendar.ui.weekview.TimeSlotView;
 import david.itimecalendar.calendar.util.BaseUtil;
 import david.itimecalendar.calendar.util.DensityUtil;
+import david.itimecalendar.calendar.util.MyCalendar;
 import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
 
 /**
@@ -50,6 +51,8 @@ public class DraggableTimeSlotView extends RelativeLayout {
     private PosParam posParam;
     private TimeSlotView.ViewMode mode = TimeSlotView.mode;
     private View background;
+
+    private MyCalendar calendar = new MyCalendar(Calendar.getInstance());
 
     public DraggableTimeSlotView(Context context, WrapperTimeSlot wrapper, boolean isAllday) {
         super(context);
@@ -354,6 +357,14 @@ public class DraggableTimeSlotView extends RelativeLayout {
     public boolean onTouchEvent(MotionEvent event) {
         return super.onTouchEvent(event);
 //        return false;
+    }
+
+    public MyCalendar getCalendar() {
+        return calendar;
+    }
+
+    public void setCalendar(MyCalendar calendar) {
+        this.calendar = calendar;
     }
 
     /**

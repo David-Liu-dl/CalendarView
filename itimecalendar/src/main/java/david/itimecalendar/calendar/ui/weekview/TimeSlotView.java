@@ -275,9 +275,9 @@ public class TimeSlotView extends WeekView {
         }
 
         @Override
-        public void onTimeSlotDragging(DraggableTimeSlotView draggableTimeSlotView, MyCalendar curAreaCal, int x, int y, String locationTime) {
+        public void onTimeSlotDragging(DraggableTimeSlotView draggableTimeSlotView, MyCalendar curAreaCal, int touchX, int touchY, int viewX, int viewY,String locationTime) {
             if (iTimeCalendarListener != null){
-                iTimeCalendarListener.onTimeSlotDragging(draggableTimeSlotView, curAreaCal, x, y, locationTime);
+                iTimeCalendarListener.onTimeSlotDragging(draggableTimeSlotView, curAreaCal, touchX, touchY, viewX,viewY,locationTime);
             }
         }
 

@@ -47,6 +47,8 @@ public class TimeSlotController {
 
     private ArrayList<DraggableTimeSlotView> slotViews = new ArrayList<>();
     private ArrayList<RcdRegularTimeSlotView> rcdSlotViews = new ArrayList<>();
+    private int shadowPointDiffX = 0;
+    private int shadowPointDiffY = 0;
 
     TimeSlotController(DayViewBodyCell container) {
         this.container = container;
@@ -69,10 +71,10 @@ public class TimeSlotController {
         /**
          * On dragging
          * @param draggableTimeSlotView : The view on dragging
-         * @param x : current X position of View
-         * @param y : current Y position of View
+         * @param touchX : current X position of View
+         * @param touchY : current Y position of View
          */
-        void onTimeSlotDragging(DraggableTimeSlotView draggableTimeSlotView, MyCalendar curAreaCal, int x, int y, String locationTime);
+        void onTimeSlotDragging(DraggableTimeSlotView draggableTimeSlotView, MyCalendar curAreaCal, int touchX, int touchY, int viewX, int viewY, String locationTime);
 
         /**
          * When dragging ended
@@ -106,9 +108,8 @@ public class TimeSlotController {
         public boolean onLongClick(View v) {
             DayInnerBodyLayout container = (DayInnerBodyLayout) v;
             TimeSlotController.this.container.tempDragView = createTimeSlotView(new WrapperTimeSlot(null));
-            DayInnerBodyLayout.LayoutParams params = (DayInnerBodyLayout.LayoutParams)TimeSlotController.this.container.tempDragView.getLayoutParams();
-            params.top = (int) TimeSlotController.this.container.nowTapY;
-            TimeSlotController.this.container.tempDragView.setLayoutParams(params);
+
+//            TimeSlotController.this.container.tempDragView.setLayoutParams(params);
             container.addView(TimeSlotController.this.container.tempDragView);
             TimeSlotController.this.container.tempDragView.postDelayed(new Runnable() {
                 @Override
@@ -126,8 +127,8 @@ public class TimeSlotController {
         public void onClick(View v) {
             final DayInnerBodyLayout container = (DayInnerBodyLayout) v;
             TimeSlotController.this.container.tempDragView = createTimeSlotView(new WrapperTimeSlot(null));
-            DayInnerBodyLayout.LayoutParams params = (DayInnerBodyLayout.LayoutParams)TimeSlotController.this.container.tempDragView.getLayoutParams();
-            params.top = (int) TimeSlotController.this.container.nowTapY;
+//            DayInnerBodyLayout.LayoutParams params = (DayInnerBodyLayout.LayoutParams)TimeSlotController.this.container.tempDragView.getLayoutParams();
+//            params.top = (int) TimeSlotController.this.container.nowTapY;
             container.addView(TimeSlotController.this.container.tempDragView);
 
             TimeSlotController.this.container.tempDragView.postDelayed(new Runnable() {
@@ -146,18 +147,23 @@ public class TimeSlotController {
         @Override
         public boolean onDrag(View v, DragEvent event) {
             DraggableTimeSlotView tsView = (DraggableTimeSlotView) event.getLocalState();
+            int touchX = (int) event.getX();
+            int touchY = (int) event.getY();
+            int viewX = touchX - shadowPointDiffX;
+            int viewY = touchY - shadowPointDiffY;
 
             switch (event.getAction()) {
                 case DragEvent.ACTION_DRAG_STARTED:
+                    if (onTimeSlotListener != null){
+                        onTimeSlotListener.onTimeSlotDragStart(tsView);
+                    }
                     break;
                 case DragEvent.ACTION_DRAG_LOCATION:
-                    int rawX = (int) (container.layoutWidthPerDay + event.getX());
-                    int rawY = (int) event.getY();
 
                     if (onTimeSlotListener != null) {
-                        int nearestProperPosition = container.pstHelper.nearestQuarterTimeSlotKey(rawY);
+                        int nearestProperPosition = container.pstHelper.nearestQuarterTimeSlotKey(viewY);
                         String locationTime = (container.pstHelper.positionToTimeQuarterTreeMap.get(nearestProperPosition));
-                        onTimeSlotListener.onTimeSlotDragging(tsView, container.getCalendar(),rawX, (int) event.getY(), locationTime);
+                        onTimeSlotListener.onTimeSlotDragging(tsView, container.getCalendar(),touchX, touchY, viewX, viewY, locationTime);
                     } else {
                         Log.i(TAG, "onDrag: null onEventDragListener");
                     }
@@ -207,8 +213,14 @@ public class TimeSlotController {
                 public void onProvideShadowMetrics(Point outShadowSize, Point outShadowTouchPoint) {
                     final View view = getView();
                     if (view != null) {
+                        float viewX = view.getX();
+                        float viewY = view.getY();
+                        float touchX = container.nowTapX;
+                        float touchY = container.nowTapY;
+                        shadowPointDiffX = touchX < 0 ? 0 : (int)touchX;
+                        shadowPointDiffY = (touchY - viewY) < 0 ? 0 : (int)(touchY - viewY);
                         outShadowSize.set(view.getWidth(), view.getHeight());
-                        outShadowTouchPoint.set(outShadowSize.x/2, outShadowSize.y/2);
+                        outShadowTouchPoint.set(shadowPointDiffX, shadowPointDiffY);
                     } else {
 //                            Log.e(View.VIEW_LOG_TAG, "Asked for drag thumb metrics but no view");
                     }
@@ -268,6 +280,7 @@ public class TimeSlotController {
 
     private DraggableTimeSlotView createTimeSlotView(WrapperTimeSlot wrapper){
         DraggableTimeSlotView draggableTimeSlotView = new DraggableTimeSlotView(container.context, wrapper, false);
+        draggableTimeSlotView.setCalendar(container.getCalendar());
         draggableTimeSlotView.setPadding(0,container.unitViewPaddingTop,0,0);
 
         if (wrapper.getTimeSlot() != null){
@@ -275,7 +288,7 @@ public class TimeSlotController {
             draggableTimeSlotView.setType(DraggableTimeSlotView.TYPE_NORMAL);
             draggableTimeSlotView.setTimes(timeslot.getStartTime(), timeslot.getEndTime());
             draggableTimeSlotView.setIsSelected(wrapper.isSelected());
-            DayInnerBodyLayout.LayoutParams params = new DayInnerBodyLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, container.layoutWidthPerDay);
+            DayInnerBodyLayout.LayoutParams params = new DayInnerBodyLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0);
             params.relativeMarginLeft = container.unitViewLeftMargin;
             draggableTimeSlotView.setLayoutParams(params);
         }else {
@@ -284,6 +297,7 @@ public class TimeSlotController {
             int tempViewHeight = (int)(duration/((float)(3600*1000)) * container.hourHeight);
             draggableTimeSlotView.setType(DraggableTimeSlotView.TYPE_TEMP);
             DayInnerBodyLayout.LayoutParams params = new DayInnerBodyLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, tempViewHeight);
+            params.top = (int) container.nowTapY - tempViewHeight/2;
             params.relativeMarginLeft = container.unitViewLeftMargin;
             draggableTimeSlotView.setLayoutParams(params);
         }
@@ -315,7 +329,7 @@ public class TimeSlotController {
         RcdRegularTimeSlotView recommendedSlotView = new RcdRegularTimeSlotView(container.context, wrapper, false);
         recommendedSlotView.setOnClickListener(new OnRcdClickListener());
         if (wrapper.getTimeSlot() != null){
-            DayInnerBodyLayout.LayoutParams params = new DayInnerBodyLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, container.layoutWidthPerDay);
+            DayInnerBodyLayout.LayoutParams params = new DayInnerBodyLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0);
             params.relativeMarginLeft = container.unitViewLeftMargin;
             params.relativeMarginRight = container.unitViewLeftMargin;
             recommendedSlotView.setLayoutParams(params);

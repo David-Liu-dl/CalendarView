@@ -84,7 +84,7 @@ public class DayViewActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onEventDragging(DraggableEventView eventView, MyCalendar curAreaCal, int x, int y, String locationTime) {
+            public void onEventDragging(DraggableEventView eventView, MyCalendar curAreaCal, int touchX, int touchY, int a, int b, String locationTime) {
 
             }
 

@@ -102,10 +102,6 @@ public class DayViewBodyCell extends FrameLayout{
     private int timeTextSize = 20;
     private int timelineHeight = 10;
 
-    protected int layoutWidthPerDay;
-    protected int layoutHeightPerDay;
-
-
     protected float nowTapX = 0;
     protected float nowTapY = 0;
 
@@ -168,19 +164,28 @@ public class DayViewBodyCell extends FrameLayout{
     }
 
     private void initContentView(){
-        eventLayout = new DayInnerBodyLayout(context);
+        eventLayout = new DayInnerBodyLayout(context){
+            @Override
+            public boolean onInterceptTouchEvent(MotionEvent ev) {
+                nowTapX = ev.getX();
+                nowTapY = ev.getY();
+
+                return super.onInterceptTouchEvent(ev);
+            }
+        };
+
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         eventLayout.setLayoutParams(params);
         this.addView(eventLayout);
 
-        eventLayout.setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                nowTapX = event.getX();
-                nowTapY = event.getY();
-                return false;
-            }
-        });
+//        eventLayout.setOnTouchListener(new OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                nowTapX = event.getX();
+//                nowTapY = event.getY();
+//                return false;
+//            }
+//        });
 
         refreshLayoutListener();
     }

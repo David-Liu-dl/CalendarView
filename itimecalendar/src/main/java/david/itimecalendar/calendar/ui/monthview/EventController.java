@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 
 import java.util.ArrayList;
@@ -27,7 +26,6 @@ import david.itimecalendar.calendar.listeners.ITimeInviteeInterface;
 import david.itimecalendar.calendar.ui.unitviews.DraggableEventView;
 import david.itimecalendar.calendar.util.BaseUtil;
 import david.itimecalendar.calendar.util.OverlapHelper;
-import david.itimecalendar.calendar.util.DensityUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
 import david.itimecalendar.calendar.wrapper.WrapperEvent;
 
@@ -53,6 +51,9 @@ public class EventController {
     private ArrayList<DraggableEventView> allDayDgEventViews = new ArrayList<>();
 
     private long defaultEventDuration = 3600 * 1000;
+    private int shadowPointDiffX = 0;
+    private int shadowPointDiffY = 0;
+
 
     EventController(DayViewBodyCell container) {
         this.container = container;
@@ -295,8 +296,14 @@ public class EventController {
                     public void onProvideShadowMetrics(Point outShadowSize, Point outShadowTouchPoint) {
                         final View view = getView();
                         if (view != null) {
+                            float viewX = view.getX();
+                            float viewY = view.getY();
+                            float touchX = container.nowTapX;
+                            float touchY = container.nowTapY;
+                            shadowPointDiffX = touchX < 0 ? 0 : (int)touchX;
+                            shadowPointDiffY = (touchY - viewY) < 0 ? 0 : (int)(touchY - viewY);
                             outShadowSize.set(view.getWidth(), view.getHeight());
-                            outShadowTouchPoint.set(outShadowSize.x / 2, 0);
+                            outShadowTouchPoint.set(shadowPointDiffX, shadowPointDiffY);
                         } else {
 //                            Log.e(View.VIEW_LOG_TAG, "Asked for drag thumb metrics but no view");
                         }
@@ -311,6 +318,7 @@ public class EventController {
                 view.startDrag(data, shadowBuilder, view, 0);
             }
             view.getBackground().setAlpha(128);
+
             return true;
         }
     }
@@ -319,17 +327,22 @@ public class EventController {
         @Override
         public boolean onDrag(View v, DragEvent event) {
             DraggableEventView dgView = (DraggableEventView) event.getLocalState();
+            int touchX = (int) event.getX();
+            int touchY = (int) event.getY();
+            int viewX = touchX - shadowPointDiffX;
+            int viewY = touchY - shadowPointDiffY;
+
             switch (event.getAction()) {
                 case DragEvent.ACTION_DRAG_STARTED:
+                    if (onEventListener != null){
+                        onEventListener.onEventDragStart(dgView);
+                    }
                     break;
                 case DragEvent.ACTION_DRAG_LOCATION:
-                    int rawX = (int) event.getX();
-                    int rawY = (int) event.getY();
-
                     if (onEventListener != null) {
-                        int nearestProperPosition = container.pstHelper.nearestQuarterTimeSlotKey(rawY);
+                        int nearestProperPosition = container.pstHelper.nearestQuarterTimeSlotKey(viewY);
                         String locationTime = (container.pstHelper.positionToTimeQuarterTreeMap.get(nearestProperPosition));
-                        onEventListener.onEventDragging(dgView, container.getCalendar(), rawX, (int) event.getY(), locationTime);
+                        onEventListener.onEventDragging(dgView, container.getCalendar(), touchX, touchY,viewX, viewY, locationTime);
                     } else {
                         Log.i(TAG, "onDrag: null onEventDragListener");
                     }
@@ -349,10 +362,8 @@ public class EventController {
                     View finalView = (View) event.getLocalState();
                     finalView.setVisibility(View.VISIBLE);
 
-                    float actionStopX = event.getX();
-                    float actionStopY = event.getY();
                     //handle drop action
-                    onDropHandler(actionStopX - dgView.getWidth()/2, actionStopY, dgView, v);
+                    onDropHandler(viewX - dgView.getWidth()/2, viewY, dgView, v);
 
                     break;
                 case DragEvent.ACTION_DRAG_ENDED:
@@ -370,7 +381,7 @@ public class EventController {
 
         @Override
         public boolean onLongClick(View v) {
-            DayInnerBodyLayout container = (DayInnerBodyLayout) v;
+            final DayInnerBodyLayout container = (DayInnerBodyLayout) v;
             EventController.this.container.tempDragView = createTempDayDraggableEventView(EventController.this.container.nowTapX, EventController.this.container.nowTapY);
             container.addView(EventController.this.container.tempDragView);
 
@@ -443,9 +454,12 @@ public class EventController {
             scaleX.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                    View p= (View) EventController.this.container.tempDragView.getParent();
-                    if (p != null){
-                        p.invalidate();
+                    if (EventController.this.container.tempDragView != null
+                            && EventController.this.container.tempDragView.getParent() != null){
+                        View p= (View) EventController.this.container.tempDragView.getParent();
+                        if (p != null){
+                            p.invalidate();
+                        }
                     }
                 }
             });
@@ -623,7 +637,7 @@ public class EventController {
         //When start dragging
         void onEventDragStart(DraggableEventView eventView);
         //On dragging
-        void onEventDragging(DraggableEventView eventView, MyCalendar curAreaCal, int x, int y, String locationTime);
+        void onEventDragging(DraggableEventView eventView, MyCalendar curAreaCal, int touchX, int touchY, int viewX, int viewY, String locationTime);
         //When dragging finished
         void onEventDragDrop(DraggableEventView eventView);
         //When dragging discard

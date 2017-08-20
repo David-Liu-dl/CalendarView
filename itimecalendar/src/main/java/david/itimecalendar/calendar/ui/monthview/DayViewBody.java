@@ -8,11 +8,14 @@ import android.os.Build;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
@@ -20,6 +23,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.developer.paul.itimerecycleviewgroup.ITimeRecycleViewGroup;
+import com.developer.paul.itimerecycleviewgroup.LogUtil;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -92,6 +96,35 @@ public class DayViewBody extends RelativeLayout {
         init();
     }
 
+    private VelocityTracker mVelocityTracker;
+    private int mMaxVelocity;
+    private float mVelocityX;
+    private float mVelocityY;
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        int action = MotionEventCompat.getActionMasked(ev);
+        switch (ev.getAction()){
+            case MotionEvent.ACTION_DOWN:{
+                if (mVelocityTracker == null) {
+                    mVelocityTracker = VelocityTracker.obtain();
+                } else {
+                    mVelocityTracker.clear();
+                }
+                break;
+            }
+            case MotionEvent.ACTION_MOVE:{
+                mVelocityTracker.addMovement(ev);
+                mVelocityTracker.computeCurrentVelocity(1000, mMaxVelocity);
+                mVelocityX = mVelocityTracker.getXVelocity();
+                mVelocityY = mVelocityTracker.getYVelocity();
+                break;
+            }
+        }
+
+        return super.onInterceptTouchEvent(ev);
+    }
+
     private void loadAttributes(AttributeSet attrs, Context context) {
         if (attrs != null && context != null) {
             TypedArray typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.viewBody, 0, 0);
@@ -112,6 +145,7 @@ public class DayViewBody extends RelativeLayout {
     }
 
     private void init(){
+        this.mMaxVelocity = ViewConfiguration.get(getContext()).getScaledMaximumFlingVelocity();
         this.context = getContext();
         this.setLayoutTransition(new LayoutTransition());
         setUpAllDay();
@@ -224,6 +258,8 @@ public class DayViewBody extends RelativeLayout {
                     ) {
                 DayViewBodyCell cell = (DayViewBodyCell) view;
                 cell.setOnBodyListener(new EventController.OnEventListener() {
+                    int draggingStartPoint = 0;
+
                     @Override
                     public boolean isDraggable(DraggableEventView eventView) {
                         return onEventListener != null && onEventListener.isDraggable(eventView);
@@ -250,30 +286,33 @@ public class DayViewBody extends RelativeLayout {
 
                     @Override
                     public void onEventDragStart(DraggableEventView eventView) {
+                        draggingStartPoint = swipeHelper.getRawX((int) eventView.getX(), eventView.getCalendar());
+                        Log.i(TAG, "bodyAutoSwipe: draggingStartPoint: " + draggingStartPoint);
                         if (onEventListener != null){
                             onEventListener.onEventDragStart(eventView);
                         }
                     }
 
                     @Override
-                    public void onEventDragging(DraggableEventView eventView, MyCalendar curAreaCal, int x, int y, String locationTime) {
+                    public void onEventDragging(DraggableEventView eventView, MyCalendar curAreaCal, int touchX, int touchY, int viewX, int viewY, String locationTime) {
                         if (msgWindow.getVisibility() != View.VISIBLE){
                             msgWindow.setVisibility(View.VISIBLE);
                         }
 
-                        msgWindowFollow(x,y,locationTime);
+                        msgWindowFollow(viewX, viewY,locationTime);
 
-                        scrollViewAutoScrollY(y);
+                        scrollViewAutoScrollY(touchY);
 
                         if (!isSwiping){
-                            int rawX = swipeHelper.getRawX(x, curAreaCal);
-                            swipeHelper.bodyAutoSwipe(rawX);
+                            int rawX = swipeHelper.getRawX(touchX, curAreaCal);
+                            int diff = rawX - draggingStartPoint;
+                            swipeHelper.bodyAutoSwipe(rawX, diff);
                         }else {
                             Log.i(TAG, "onEventDragging: isSwiping , discard");
                         }
 
                         if (onEventListener != null){
-                            onEventListener.onEventDragging(eventView,curAreaCal, x, y, locationTime);
+                            onEventListener.onEventDragging(eventView,curAreaCal, touchX, touchY, viewX, viewY, locationTime);
                         }
                     }
 
@@ -479,8 +518,8 @@ public class DayViewBody extends RelativeLayout {
             String[] components = time.split(":");
             float trickTime = Integer.valueOf(components[0]) + Integer.valueOf(components[1]) / (float) 100;
             int targetY = calendarPositionHelper.nearestTimeSlotValue(trickTime);
-            int diffY = targetY - (int)bodyRecyclerView.getAwesomeScrollY();
-            bodyRecyclerView.scrollByY(-diffY);
+            int diffY = -targetY - (int)bodyRecyclerView.getAwesomeScrollY();
+            bodyRecyclerView.scrollByY(diffY);
         }
 
     }
@@ -564,6 +603,8 @@ public class DayViewBody extends RelativeLayout {
     }
 
     private class OnTimeSlotInnerListener implements TimeSlotController.OnTimeSlotListener{
+        int draggingStartPoint = 0;
+
         @Override
         public void onTimeSlotCreate(DraggableTimeSlotView draggableTimeSlotView) {
             if (msgWindow.getVisibility() == View.VISIBLE){
@@ -596,6 +637,8 @@ public class DayViewBody extends RelativeLayout {
 
         @Override
         public void onTimeSlotDragStart(DraggableTimeSlotView draggableTimeSlotView) {
+            draggingStartPoint = swipeHelper.getRawX((int) draggableTimeSlotView.getX(), draggableTimeSlotView.getCalendar());
+
             if (onTimeSlotOuterListener != null){
                 onTimeSlotOuterListener.onTimeSlotDragStart(draggableTimeSlotView);
             }
@@ -603,24 +646,25 @@ public class DayViewBody extends RelativeLayout {
         }
 
         @Override
-        public void onTimeSlotDragging(DraggableTimeSlotView draggableTimeSlotView, MyCalendar curAreaCal,int x, int y, String locationTime) {
+        public void onTimeSlotDragging(DraggableTimeSlotView draggableTimeSlotView, MyCalendar curAreaCal, int touchX, int touchY, int viewX, int viewY, String locationTime) {
             if (msgWindow.getVisibility() != View.VISIBLE){
                 msgWindow.setVisibility(View.VISIBLE);
             }
 
-            msgWindowFollow(x,y,locationTime);
+            msgWindowFollow(viewX, viewY,locationTime);
 
-            scrollViewAutoScrollY(y);
+            scrollViewAutoScrollY(touchY);
 
             if (!isSwiping){
-                int rawX = swipeHelper.getRawX(x, curAreaCal);
-                swipeHelper.bodyAutoSwipe(rawX);
+                int rawX = swipeHelper.getRawX(touchX, curAreaCal);
+                int diff = rawX - draggingStartPoint;
+                swipeHelper.bodyAutoSwipe(rawX, diff);
             }else {
                 Log.i(TAG, "onEventDragging: isSwiping , discard");
             }
 
             if (onTimeSlotOuterListener != null){
-                onTimeSlotOuterListener.onTimeSlotDragging(draggableTimeSlotView, curAreaCal, x, y, locationTime);
+                onTimeSlotOuterListener.onTimeSlotDragging(draggableTimeSlotView, curAreaCal, touchX, touchY, viewX, viewY,locationTime);
             }
         }
 
@@ -690,21 +734,29 @@ public class DayViewBody extends RelativeLayout {
             }
         };
 
-        void bodyAutoSwipe(int x){
+        void bodyAutoSwipe(int x, int diff){
             int direction = x > (bodyRecyclerView.getWidth()/2) ? DIRECTION_RIGHT:DIRECTION_LEFT;
-            float threshold = getSwipeThreshHold(0.85f, direction);
+            float swipeDistanceThreshold = bodyRecyclerView.getWidth()/3;
+            float locationThreshold = getSwipeThreshHold(0.7f, direction);
+            Log.i(TAG, "bodyAutoSwipe: diff: " + diff
+                    + " direction:" + direction
+                    + " locationThreshold:" + locationThreshold );
+
+           if (Math.abs(diff) < swipeDistanceThreshold){
+                return;
+            }
 
             switch (direction){
                 case DIRECTION_LEFT:
-                    if (x < threshold){
+                    if (x < locationThreshold){
                         isSwiping = true;
-                        bodyRecyclerView.smoothMoveWithOffsetX(-1, animatorListener);
+//                        bodyRecyclerView.smoothMoveWithOffsetX(-1, animatorListener);
                     }
                     break;
                 case DIRECTION_RIGHT:
-                    if (x > threshold){
+                    if (x > locationThreshold){
                         isSwiping = true;
-                        bodyRecyclerView.smoothMoveWithOffsetX(1, animatorListener);
+//                        bodyRecyclerView.smoothMoveWithOffsetX(1, animatorListener);
                     }
                     break;
                 default:

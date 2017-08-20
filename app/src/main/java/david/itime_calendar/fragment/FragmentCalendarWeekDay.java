@@ -68,7 +68,7 @@ public class FragmentCalendarWeekDay extends Fragment {
         }
 
         @Override
-        public void onEventDragging(DraggableEventView eventView, MyCalendar curAreaCal, int x, int y, String locationTime) {
+        public void onEventDragging(DraggableEventView eventView, MyCalendar curAreaCal, int touchX, int touchY, int viewX, int viewY, String locationTime) {
 
         }
 

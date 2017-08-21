@@ -102,13 +102,16 @@ public class DayInnerBodyLayout extends ViewGroup {
                         measureChild(getChildAt(i), childWidthSpec, childHeightSpec);
                         continue;
                     }
+
                     int timeslotConsumedWidth = width/pos.widthFactor;
+                    int viewContentWidth = timeslotConsumedWidth - (params.relativeMarginLeft + params.relativeMarginRight);
                     int leftMargin = timeslotConsumedWidth * pos.startX;
+
                     params.width = timeslotConsumedWidth;
                     params.left = leftMargin + 1 * pos.startX;
                     params.top = pos.topMargin;
                     // measure child with correct spec
-                    int childWidthSpec = MeasureSpec.makeMeasureSpec(timeslotConsumedWidth,MeasureSpec.EXACTLY);
+                    int childWidthSpec = MeasureSpec.makeMeasureSpec(viewContentWidth,MeasureSpec.EXACTLY);
                     int childHeightSpec = heightMeasureSpec;
                     measureChild(getChildAt(i), childWidthSpec, childHeightSpec);
                 }
@@ -163,6 +166,7 @@ public class DayInnerBodyLayout extends ViewGroup {
                 child.layout(
                         paddingLeft + params.left + params.relativeMarginLeft,
                         params.top + paddingTop,
+//                        paddingLeft + params.left + child.getLayoutParams().width - (params.relativeMarginLeft + params.relativeMarginRight),
                         paddingLeft + params.left + child.getLayoutParams().width - (params.relativeMarginLeft + params.relativeMarginRight),
                         params.top + child.getLayoutParams().height + paddingTop);
             }

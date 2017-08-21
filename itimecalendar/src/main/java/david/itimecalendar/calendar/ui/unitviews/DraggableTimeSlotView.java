@@ -153,7 +153,6 @@ public class DraggableTimeSlotView extends RelativeLayout {
         GradientDrawable gd = (GradientDrawable) this.background.getBackground();
         gd.mutate();
         gd.setColor(Color.parseColor("#0073FF")); //set color
-        gd.setCornerRadius(DensityUtil.dip2px(getContext(),7));
         gd.setStroke(1, Color.parseColor("#0073FF"), 0, 0);
     }
 
@@ -183,7 +182,6 @@ public class DraggableTimeSlotView extends RelativeLayout {
         GradientDrawable gd = (GradientDrawable) this.background.getBackground();
         gd.mutate();
         gd.setColor(getResources().getColor(R.color.timeslot_select_mode_bg)); //set color
-        gd.setCornerRadius(DensityUtil.dip2px(getContext(),7));
         gd.setStroke(1, Color.BLACK, 0, 0);
         // 20% opacity
         this.background.getBackground().setAlpha(51);
@@ -215,7 +213,6 @@ public class DraggableTimeSlotView extends RelativeLayout {
         GradientDrawable gd = (GradientDrawable) this.background.getBackground();
         gd.mutate();
         gd.setColor(getResources().getColor(R.color.timeslot_select_mode_bg)); //set color
-        gd.setCornerRadius(DensityUtil.dip2px(getContext(),7));
         gd.setStroke(1, Color.BLACK, 0, 0);
         this.background.getBackground().setAlpha(217);
     }
@@ -351,12 +348,6 @@ public class DraggableTimeSlotView extends RelativeLayout {
 
     public ITimeTimeSlotInterface getTimeslot() {
         return timeslot;
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return super.onTouchEvent(event);
-//        return false;
     }
 
     public MyCalendar getCalendar() {

@@ -57,9 +57,6 @@ public class DayInnerBodyLayout extends ViewGroup {
         public int left = 0;
         public int top = 0;
 
-        public int relativeMarginLeft = 0;
-        public int relativeMarginRight = 0;
-
         public LayoutParams(Context arg0, AttributeSet arg1) {
             super(arg0, arg1);
         }
@@ -104,14 +101,14 @@ public class DayInnerBodyLayout extends ViewGroup {
                     }
 
                     int timeslotConsumedWidth = width/pos.widthFactor;
-                    int viewContentWidth = timeslotConsumedWidth - (params.relativeMarginLeft + params.relativeMarginRight);
+//                    int viewContentWidth = timeslotConsumedWidth - (params.relativeMarginLeft + params.relativeMarginRight);
                     int leftMargin = timeslotConsumedWidth * pos.startX;
 
                     params.width = timeslotConsumedWidth;
                     params.left = leftMargin + 1 * pos.startX;
                     params.top = pos.topMargin;
                     // measure child with correct spec
-                    int childWidthSpec = MeasureSpec.makeMeasureSpec(viewContentWidth,MeasureSpec.EXACTLY);
+                    int childWidthSpec = MeasureSpec.makeMeasureSpec(timeslotConsumedWidth,MeasureSpec.EXACTLY);
                     int childHeightSpec = heightMeasureSpec;
                     measureChild(getChildAt(i), childWidthSpec, childHeightSpec);
                 }
@@ -164,10 +161,10 @@ public class DayInnerBodyLayout extends ViewGroup {
             if (child instanceof DraggableEventView || child instanceof DraggableTimeSlotView || child instanceof RcdRegularTimeSlotView){
                 DayInnerBodyLayout.LayoutParams params = (DayInnerBodyLayout.LayoutParams) child.getLayoutParams();
                 child.layout(
-                        paddingLeft + params.left + params.relativeMarginLeft,
+                        paddingLeft + params.left,
                         params.top + paddingTop,
 //                        paddingLeft + params.left + child.getLayoutParams().width - (params.relativeMarginLeft + params.relativeMarginRight),
-                        paddingLeft + params.left + child.getLayoutParams().width - (params.relativeMarginLeft + params.relativeMarginRight),
+                        paddingLeft + params.left + child.getLayoutParams().width,
                         params.top + child.getLayoutParams().height + paddingTop);
             }
         }

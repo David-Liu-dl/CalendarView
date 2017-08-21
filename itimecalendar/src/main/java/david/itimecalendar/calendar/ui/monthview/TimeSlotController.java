@@ -289,7 +289,7 @@ public class TimeSlotController {
             draggableTimeSlotView.setTimes(timeslot.getStartTime(), timeslot.getEndTime());
             draggableTimeSlotView.setIsSelected(wrapper.isSelected());
             DayInnerBodyLayout.LayoutParams params = new DayInnerBodyLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0);
-            params.relativeMarginLeft = container.unitViewLeftMargin;
+//            params.relativeMarginLeft = container.unitViewLeftMargin;
             draggableTimeSlotView.setLayoutParams(params);
         }else {
             long duration = this.slotViews.size() == 0 ? defaultTsDuration : this.slotViews.get(0).getShownDuration();
@@ -298,7 +298,7 @@ public class TimeSlotController {
             draggableTimeSlotView.setType(DraggableTimeSlotView.TYPE_TEMP);
             DayInnerBodyLayout.LayoutParams params = new DayInnerBodyLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, tempViewHeight);
             params.top = (int) container.nowTapY - tempViewHeight/2;
-            params.relativeMarginLeft = container.unitViewLeftMargin;
+//            params.relativeMarginLeft = container.unitViewLeftMargin;
             draggableTimeSlotView.setLayoutParams(params);
         }
 
@@ -330,8 +330,8 @@ public class TimeSlotController {
         recommendedSlotView.setOnClickListener(new OnRcdClickListener());
         if (wrapper.getTimeSlot() != null){
             DayInnerBodyLayout.LayoutParams params = new DayInnerBodyLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0);
-            params.relativeMarginLeft = container.unitViewLeftMargin;
-            params.relativeMarginRight = container.unitViewLeftMargin;
+//            params.relativeMarginLeft = container.unitViewLeftMargin;
+//            params.relativeMarginRight = container.unitViewLeftMargin;
             recommendedSlotView.setLayoutParams(params);
         }
 

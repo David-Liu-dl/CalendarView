@@ -142,7 +142,7 @@ public class EventController {
         DraggableEventView draggableEventView = new DraggableEventView(context, event);
         draggableEventView.setCalendar(container.getCalendar());
         draggableEventView.setViewType(DraggableEventView.TYPE_NORMAL);
-        draggableEventView.setPadding(0,container.unitViewPaddingTop,0,0);
+        draggableEventView.setPadding(container.unitViewLeftMargin,container.unitViewPaddingTop,0,0);
 
         draggableEventView.setOnClickListener(
                 container.calendarConfig.isEventCreatable ?
@@ -159,8 +159,8 @@ public class EventController {
         int eventHeight =(int) (duration * container.heightPerMillisd);
         int height = getDayCrossHeight(wrapper);
         DayInnerBodyLayout.LayoutParams params = new DayInnerBodyLayout.LayoutParams(eventHeight, height);
-        params.relativeMarginLeft = container.unitViewLeftMargin;
-        params.relativeMarginRight = container.unitViewRightMargin;
+//        params.relativeMarginLeft = container.unitViewLeftMargin;
+//        params.relativeMarginRight = container.unitViewRightMargin;
 
         draggableEventView.setOnLongClickListener(
                 container.calendarConfig.isEventDraggable && getRegularEventType(wrapper) != DAY_CROSS_ALL_DAY ?

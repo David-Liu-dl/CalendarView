@@ -106,6 +106,10 @@ public class MonthView extends LinearLayout{
                 if (dayViewBody != null){
                     dayViewBody.scrollToDate(date,false);
                 }
+
+                if (iTimeCalendarInterface != null){
+                    iTimeCalendarInterface.onDateChanged(date);
+                }
             }
 
             @Override
@@ -116,6 +120,18 @@ public class MonthView extends LinearLayout{
             }
         });
         headerRecyclerView.setHasFixedSize(true);
+        headerRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                int index = headerLinearLayoutManager.findFirstCompletelyVisibleItemPosition();
+                DayViewHeader fstVisibleHeader = (DayViewHeader) headerLinearLayoutManager.findViewByPosition(index);
+                if (iTimeCalendarInterface != null){
+                    iTimeCalendarInterface.onDateChanged(fstVisibleHeader.getCalendar().getCalendar().getTime());
+                }
+
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
         headerRecyclerView.setAdapter(headerRecyclerAdapter);
         headerLinearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
         headerRecyclerView.setLayoutManager(headerLinearLayoutManager);

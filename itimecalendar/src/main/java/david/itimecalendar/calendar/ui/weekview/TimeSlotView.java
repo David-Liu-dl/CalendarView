@@ -3,6 +3,7 @@ package david.itimecalendar.calendar.ui.weekview;
 import android.animation.LayoutTransition;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
@@ -16,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -95,8 +97,6 @@ public class TimeSlotView extends WeekView {
         });
         setUpStaticLayer();
         setUpTimeslotDurationWidget();
-
-//        enableTimeSlot(false);
     }
 
     private void setUpTimeslotDurationWidget(){
@@ -127,6 +127,8 @@ public class TimeSlotView extends WeekView {
         durationBarPlaceholder.setLayoutParams(blankVieWParams);
         durationBarPlaceholder.setId(View.generateViewId());
         this.addView(durationBarPlaceholder);
+
+        ((RelativeLayout.LayoutParams)container.getLayoutParams()).addRule(ABOVE,durationBarPlaceholder.getId());
     }
 
     private void setUpStaticLayer(){

@@ -42,7 +42,7 @@ public class TimeSlotActivity extends AppCompatActivity {
 //        initSlots(slots);
 
         final TimeSlotView timeslotView = (TimeSlotView) findViewById(R.id.timeslot_view);
-        timeslotView.setViewMode(TimeSlotView.ViewMode.NON_ALL_DAY_CREATE);
+        timeslotView.setViewMode(TimeSlotView.ViewMode.NON_ALL_DAY_SELECT);
 
         timeslotView.setEventPackage(eventManager.getEventsMap());
 //        timeslotView.setOnTimeSlotInnerCalendar(new TimeSlotInnerCalendarView.OnTimeSlotInnerCalendar() {

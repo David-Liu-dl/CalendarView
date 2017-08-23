@@ -281,7 +281,7 @@ public class TimeSlotController {
     private DraggableTimeSlotView createTimeSlotView(WrapperTimeSlot wrapper){
         DraggableTimeSlotView draggableTimeSlotView = new DraggableTimeSlotView(container.context, wrapper, false);
         draggableTimeSlotView.setCalendar(container.getCalendar());
-        draggableTimeSlotView.setPadding(0,container.unitViewPaddingTop,0,0);
+        draggableTimeSlotView.setPadding(container.unitViewLeftMargin,container.unitViewPaddingTop,0,0);
 
         if (wrapper.getTimeSlot() != null){
             ITimeTimeSlotInterface timeslot = wrapper.getTimeSlot();

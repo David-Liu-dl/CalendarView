@@ -50,9 +50,7 @@ import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
 public class DayViewBody extends RelativeLayout {
     private static final String TAG = "DayViewBody";
 
-    private CalendarConfig calendarConfig;
     private CalendarPositionHelper calendarPositionHelper = new CalendarPositionHelper();
-
 
     public DayViewAllDay allDayView;
     private FrameLayout leftTimeBarLayout;
@@ -738,9 +736,6 @@ public class DayViewBody extends RelativeLayout {
             int direction = x > (bodyRecyclerView.getWidth()/2) ? DIRECTION_RIGHT:DIRECTION_LEFT;
             float swipeDistanceThreshold = bodyRecyclerView.getWidth()/3;
             float locationThreshold = getSwipeThreshHold(0.7f, direction);
-            Log.i(TAG, "bodyAutoSwipe: diff: " + diff
-                    + " direction:" + direction
-                    + " locationThreshold:" + locationThreshold );
 
            if (Math.abs(diff) < swipeDistanceThreshold){
                 return;
@@ -802,7 +797,6 @@ public class DayViewBody extends RelativeLayout {
     }
 
     public void setCalendarConfig(CalendarConfig calendarConfig) {
-        this.calendarConfig = calendarConfig;
         this.allDayView.setCalendarConfig(calendarConfig);
         this.dayViewBodyAdapter.setCalendarConfig(calendarConfig);
         this.dayViewBodyAdapter.notifyDataSetChanged();

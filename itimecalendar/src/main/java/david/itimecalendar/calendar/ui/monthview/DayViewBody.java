@@ -802,6 +802,10 @@ public class DayViewBody extends RelativeLayout {
         this.dayViewBodyAdapter.notifyDataSetChanged();
     }
 
+//    public void isScrolling(){
+//        bodyRecyclerView.isscro
+//    }
+
     public interface OnViewBodyTimeSlotListener extends TimeSlotController.OnTimeSlotListener,DayViewAllDay.AllDayTimeslotListener {
     }
 

@@ -57,7 +57,6 @@ public class TimeslotDurationEditView<T> extends FrameLayout{
     int fakeBgColor = R.color.calendar_timeslot_duration_bg;
 
     private WheelPicker wheelPicker;
-    private int CurrentSelectedPosition;
 
     //dp
     private int btnBlockWidth = 50;
@@ -196,29 +195,34 @@ public class TimeslotDurationEditView<T> extends FrameLayout{
         nowValue.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                bgView.setVisibility(VISIBLE);
-                wheelPicker.setSelectedItemPosition(currentSelectedPosition);
-                performShowAnimation();
+                if (onDurationBar != null){
+                    onDurationBar.onDurationBarClick();
+                }
             }
         });
 
         doneBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (onItemSelectedListener != null){
-                    currentSelectedPosition = wheelPicker.getSelectedItemPosition();
+                if (onDurationBar != null){
+                    onDurationBar.onItemSelected(currentSelectedPosition = wheelPicker.getSelectedItemPosition());
                     updateValueText(currentSelectedPosition);
+                    bgView.setVisibility(GONE);
+                    performHideAnimation();
                 }
-                bgView.setVisibility(GONE);
-                performHideAnimation();
             }
         });
     }
 
-    public void setDate(List<T> data){
-        wheelPicker.setData(data);
+    public void expandDurationBar(){
+        bgView.setVisibility(VISIBLE);
+        wheelPicker.setSelectedItemPosition(currentSelectedPosition);
+        performShowAnimation();
+    }
 
-        currentSelectedPosition = 0;
+    public void setData(List<T> data, int defaultPst){
+        wheelPicker.setData(data);
+        currentSelectedPosition = defaultPst;
         wheelPicker.setSelectedItemPosition(currentSelectedPosition);
         updateValueText(currentSelectedPosition);
     }
@@ -227,10 +231,14 @@ public class TimeslotDurationEditView<T> extends FrameLayout{
         wheelPicker.setSelectedItemPosition(index);
     }
 
+    public int getCurrentSelectedPosition() {
+        return currentSelectedPosition;
+    }
+
     private void updateValueText(int indexInData){
         String value = String.format("%s", wheelPicker.getData().get(indexInData));
         nowValue.setText(value);
-        onItemSelectedListener.onItemSelected(indexInData);
+        onDurationBar.onItemSelected(indexInData);
     }
 
     private void performShowAnimation(){
@@ -324,14 +332,14 @@ public class TimeslotDurationEditView<T> extends FrameLayout{
     }
 
 
-    public void setOnItemSelectedListener(OnItemSelectedListener onItemSelectedListener){
-        this.onItemSelectedListener = onItemSelectedListener;
+    public void setOnDurationBar(OnDurationBarListener onDurationBar){
+        this.onDurationBar = onDurationBar;
     }
 
-    private OnItemSelectedListener onItemSelectedListener;
+    private OnDurationBarListener onDurationBar;
 
-    public interface OnItemSelectedListener<T>{
+    public interface OnDurationBarListener{
         void onItemSelected(int position);
+        void onDurationBarClick();
     }
-
 }

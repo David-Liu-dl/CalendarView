@@ -21,7 +21,7 @@ public class CalendarConfig {
     public boolean isEventDraggable = true;
     public boolean isEventClickable = true;
     public boolean isEventAsBgMode = false;
-    public boolean isEventClickCreatable = true;
+    public boolean isEventClickCreatable = false;
 
     public boolean isAllDayRcdEnable = false;
 
@@ -62,7 +62,7 @@ public class CalendarConfig {
         this.isEventDraggable = true;
         this.isEventClickable = true;
         this.isEventAsBgMode = false;
-        isEventClickCreatable = true;
+        isEventClickCreatable = false;
     }
 
     public void disableTimeslot(){

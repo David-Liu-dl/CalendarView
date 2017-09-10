@@ -38,11 +38,11 @@ public class TimeSlotActivity extends AppCompatActivity {
     }
 
     private void doTest(){
-        ArrayList<TimeSlot> slots = new ArrayList<>();
-//        initSlots(slots);
+        final ArrayList<TimeSlot> slots = new ArrayList<>();
+        initSlots(slots);
 
         final TimeSlotView timeslotView = (TimeSlotView) findViewById(R.id.timeslot_view);
-        timeslotView.setViewMode(TimeSlotView.ViewMode.NON_ALL_DAY_SELECT);
+        timeslotView.setViewMode(TimeSlotView.ViewMode.ALL_DAY_CREATE);
 
         timeslotView.setEventPackage(eventManager.getEventsMap());
 //        timeslotView.setOnTimeSlotInnerCalendar(new TimeSlotInnerCalendarView.OnTimeSlotInnerCalendar() {
@@ -61,16 +61,21 @@ public class TimeSlotActivity extends AppCompatActivity {
 //            }
 //        });
 
-        timeslotView.setOnTimeslotDurationChangedListener(new TimeSlotView.OnTimeslotDurationChangedListener() {
+        timeslotView.setOnTimeslotDurationChangedListener(new TimeSlotView.OnTimeslotDurationListener() {
             @Override
             public void onTimeslotDurationChanged(long duration) {
                 if (duration == -1){
                     //means all day
 //                    timeslotView.setViewMode(TimeSlotView.ViewMode.ALL_DAY_CREATE);
                 }else{
-//                    timeslotView.setViewMode(TimeSlotView.ViewMode.NON_ALL_DAY_CREATE);
-//                    timeslotView.setTimeslotDuration(duration,false);
+                    timeslotView.setViewMode(TimeSlotView.ViewMode.NON_ALL_DAY_CREATE);
+                    timeslotView.setTimeslotDuration(duration,false);
                 }
+            }
+
+            @Override
+            public void onTimeslotDurationBarClick() {
+
             }
         });
         timeslotView.setITimeCalendarTimeslotViewListener(new ITimeCalendarTimeslotViewListener()  {
@@ -155,12 +160,18 @@ public class TimeSlotActivity extends AppCompatActivity {
             }
         });
         //Note: ensure calling setTimeslotDurationItems after setting listeners
-        timeslotView.setTimeslotDurationItems(initList());
+        timeslotView.setTimeslotDurationItems(initList(),0);
 
-        for (TimeSlot slot:slots
-                ) {
-            timeslotView.addTimeSlot(slot);
-        }
+        timeslotView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                for (TimeSlot slot:slots
+                        ) {
+                    timeslotView.addTimeSlot(slot);
+                }
+            }
+        },2000);
+
 
         switcher.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -179,13 +190,13 @@ public class TimeSlotActivity extends AppCompatActivity {
     private void initSlots(ArrayList<TimeSlot> slots){
         Calendar cal = Calendar.getInstance();
         long startTime = cal.getTimeInMillis();
-        long duration = 3*3600*1000;
+        long duration = 4*3600*1000;
         long dayInterval = 24 * 3600 * 1000;
         for (int i = 0; i < 10; i++) {
             TimeSlot slot = new TimeSlot();
             slot.setStartTime(startTime);
             slot.setEndTime(startTime+duration);
-            slot.setRecommended(false);
+            slot.setRecommended(true);
             slot.setIsAllDay(false);
             slots.add(slot);
 

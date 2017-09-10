@@ -82,14 +82,18 @@ public class RcdRegularTimeSlotView extends RelativeLayout {
         this.addView(frameLayout,frameLayoutPrams);
 
         icon = new ImageView(getContext());
+        int padding = DensityUtil.dip2px(getContext(),10);
+        icon.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         icon.setImageDrawable(getResources().getDrawable(R.drawable.icon_timeslot_plus));
+        icon.setPadding(0,padding,0,padding);
 
-        int size = getPlusIconSize(isAllday ?
-                BaseUtil.getAllDayLong(Calendar.getInstance().getTimeInMillis())
-                : wrapper.getTimeSlot().getEndTime() - wrapper.getTimeSlot().getStartTime());
-        FrameLayout.LayoutParams iconPrams = new FrameLayout.LayoutParams(size, size);
+//        int size = getPlusIconSize(isAllday ?
+//                BaseUtil.getAllDayLong(Calendar.getInstance().getTimeInMillis())
+//                : wrapper.getTimeSlot().getEndTime() - wrapper.getTimeSlot().getStartTime());
+        FrameLayout.LayoutParams iconPrams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         iconPrams.gravity = Gravity.CENTER;
-        frameLayout.addView(icon, iconPrams);
+        icon.setLayoutParams(iconPrams);
+        frameLayout.addView(icon);
     }
 
     private int getPlusIconSize(long duration){

@@ -111,7 +111,7 @@ public class TimeSlotInnerCalendarView extends LinearLayout {
         LayoutParams leftBtnParams = new LayoutParams(leftBarWidth, ViewGroup.LayoutParams.MATCH_PARENT);
         titleBlock.addView(btnBlock, leftBtnParams);
 
-        int leftBarWidgetPadding = DensityUtil.dip2px(getContext(),10);
+        int leftBarWidgetPadding = DensityUtil.dip2px(getContext(),2);
         int monthTitleWidth = DensityUtil.dip2px(getContext(),35);
         monthTitle = new TextView(getContext());
         monthTitle.setAllCaps(true);
@@ -120,7 +120,7 @@ public class TimeSlotInnerCalendarView extends LinearLayout {
         LayoutParams monthTitleParams = new LayoutParams(monthTitleWidth, ViewGroup.LayoutParams.MATCH_PARENT);
         monthTitle.setGravity(Gravity.CENTER);
         monthTitleParams.leftMargin = leftBarWidgetPadding;
-        monthTitleParams.rightMargin = leftBarWidgetPadding;
+        monthTitleParams.rightMargin = 0;
         btnBlock.addView(monthTitle,monthTitleParams);
 
         indicator = new ImageView(getContext());

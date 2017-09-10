@@ -3,7 +3,6 @@ package david.itimecalendar.calendar.ui.weekview;
 import android.animation.LayoutTransition;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
@@ -17,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -83,6 +81,11 @@ public class TimeSlotView extends WeekView {
             @Override
             public void onPageSelected(DayViewBodyCell view) {
                 innerCalView.setCurrentDate(view.getCalendar().getCalendar().getTime());
+
+                //calling date changed
+                if (iTimeCalendarListener != null){
+                    iTimeCalendarListener.onDateChanged(view.getCalendar().getCalendar().getTime());
+                }
             }
 
             @Override
@@ -107,7 +110,7 @@ public class TimeSlotView extends WeekView {
         RelativeLayout.LayoutParams durationBarParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         durationBarParams.addRule(ALIGN_PARENT_BOTTOM);
         durationBar.setLayoutParams(durationBarParams);
-        durationBar.setOnItemSelectedListener(new TimeslotDurationEditView.OnItemSelectedListener() {
+        durationBar.setOnDurationBar(new TimeslotDurationEditView.OnDurationBarListener() {
             @Override
             public void onItemSelected(int position) {
                 DurationItem selectedItem = durationData.get(position);
@@ -115,6 +118,13 @@ public class TimeSlotView extends WeekView {
 
                 if (onTimeslotDurationChangedListener != null){
                     onTimeslotDurationChangedListener.onTimeslotDurationChanged(toDuration);
+                }
+            }
+
+            @Override
+            public void onDurationBarClick() {
+                if (onTimeslotDurationChangedListener != null){
+                    onTimeslotDurationChangedListener.onTimeslotDurationBarClick();
                 }
             }
         });
@@ -373,24 +383,29 @@ public class TimeSlotView extends WeekView {
 
     private List<DurationItem> durationData;
 
-    public void setTimeslotDurationItems(List<DurationItem> data){
-        this.durationData = data;
-        durationBar.setDate(getDurationItemNames());
-    }
-
-    private OnTimeslotDurationChangedListener onTimeslotDurationChangedListener;
-
-    public void setOnTimeslotDurationChangedListener(OnTimeslotDurationChangedListener onTimeslotDurationChangedListener) {
-        this.onTimeslotDurationChangedListener = onTimeslotDurationChangedListener;
-    }
-
-    public interface OnTimeslotDurationChangedListener {
-        void onTimeslotDurationChanged(long duration);
-    }
-
     public void setTimeslotDuration(long duration, boolean animate){
         dayViewBody.updateTimeSlotsDuration(duration,false);
     }
+
+    public void setTimeslotDurationItems(List<DurationItem> data, int defaultPst){
+        this.durationData = data;
+        durationBar.setData(getDurationItemNames(),defaultPst);
+    }
+
+    private OnTimeslotDurationListener onTimeslotDurationChangedListener;
+
+    public void setOnTimeslotDurationChangedListener(OnTimeslotDurationListener onTimeslotDurationChangedListener) {
+        this.onTimeslotDurationChangedListener = onTimeslotDurationChangedListener;
+    }
+
+    public interface OnTimeslotDurationListener {
+        void onTimeslotDurationChanged(long duration);
+        void onTimeslotDurationBarClick();
+    }
+
+//    public void setTimeslotDuration(long duration, boolean animate){
+//        dayViewBody.updateTimeSlotsDuration(duration,false);
+//    }
 
     public static class TimeSlotPackage{
         public ArrayList<WrapperTimeSlot> rcdSlots = new ArrayList<>();
@@ -421,7 +436,7 @@ public class TimeSlotView extends WeekView {
             for (WrapperTimeSlot wrapper:realSlots
                     ) {
                 if (wrapper.getTimeSlot() != null && wrapper.getTimeSlot() == itimeTimeSlotInterface){
-                    rcdSlots.remove(wrapper);
+                    realSlots.remove(wrapper);
                     return;
                 }
             }
@@ -493,4 +508,7 @@ public class TimeSlotView extends WeekView {
     }
 
 
+    public TimeslotDurationEditView<String> getDurationBar() {
+        return durationBar;
+    }
 }

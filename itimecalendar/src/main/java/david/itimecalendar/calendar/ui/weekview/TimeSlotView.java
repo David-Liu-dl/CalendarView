@@ -202,6 +202,11 @@ public class TimeSlotView extends WeekView {
         updateInnerCalendarPackage();
     }
 
+    public void addTimeSlotList(List<? extends ITimeTimeSlotInterface> slotsInfo){
+        super.dayViewBody.addTimeSlots(slotsInfo);
+        updateInnerCalendarPackage();
+    }
+
     public void addTimeSlot(WrapperTimeSlot wrapperTimeSlot){
         super.dayViewBody.addTimeSlot(wrapperTimeSlot);
         updateInnerCalendarPackage();

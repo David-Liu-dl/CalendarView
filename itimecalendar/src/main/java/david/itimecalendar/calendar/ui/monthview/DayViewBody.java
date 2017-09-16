@@ -17,6 +17,7 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -497,11 +498,26 @@ public class DayViewBody extends RelativeLayout {
         bodyRecyclerView.smoothMoveWithOffsetX(moveOffset, null);
     }
 
-    public void scrollToDate(Date date, boolean toTime){
+    public void scrollToDate(final Date date, final boolean toTime){
         if (bodyRecyclerView.getFirstShowItem() == null){
             return;
         }
 
+        if (!bodyRecyclerView.isShown()){
+            final ViewTreeObserver vto = getViewTreeObserver();
+            vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    vto.removeOnGlobalLayoutListener(this);
+                    acutalScroll(date, toTime);
+                }
+            });
+        }else {
+            acutalScroll(date, toTime);
+        }
+    }
+
+    private void acutalScroll(Date date, boolean toTime){
         MyCalendar currentFstShowDay = ((DayViewBodyCell) bodyRecyclerView.getFirstShowItem()).getCalendar();
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
@@ -519,7 +535,6 @@ public class DayViewBody extends RelativeLayout {
             int diffY = -targetY - (int)bodyRecyclerView.getAwesomeScrollY();
             bodyRecyclerView.scrollByY(diffY);
         }
-
     }
 
     public void refresh(){
@@ -537,6 +552,24 @@ public class DayViewBody extends RelativeLayout {
         addSlotToPackage(wrapper);
 
         if (slotInfo.isAllDay()){
+            allDayView.notifyDataSetChanged();
+        }else if (dayViewBodyAdapter != null){
+            dayViewBodyAdapter.notifyDataSetChanged();
+        }
+    }
+
+    public void addTimeSlots(List<? extends ITimeTimeSlotInterface> slotsInfo){
+        if (slotsInfo == null || slotsInfo.size() == 0){
+            return;
+        }
+
+        for (ITimeTimeSlotInterface slotInfo:slotsInfo
+             ) {
+            WrapperTimeSlot wrapper = new WrapperTimeSlot(slotInfo);
+            addSlotToPackage(wrapper);
+        }
+
+        if (slotsInfo.get(0).isAllDay()){
             allDayView.notifyDataSetChanged();
         }else if (dayViewBodyAdapter != null){
             dayViewBodyAdapter.notifyDataSetChanged();

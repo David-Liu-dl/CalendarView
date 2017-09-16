@@ -24,7 +24,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.developer.paul.itimerecycleviewgroup.ITimeRecycleViewGroup;
-import com.developer.paul.itimerecycleviewgroup.LogUtil;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -509,15 +508,15 @@ public class DayViewBody extends RelativeLayout {
                 @Override
                 public void onGlobalLayout() {
                     vto.removeOnGlobalLayoutListener(this);
-                    acutalScroll(date, toTime);
+                    actuallScroll(date, toTime);
                 }
             });
         }else {
-            acutalScroll(date, toTime);
+            actuallScroll(date, toTime);
         }
     }
 
-    private void acutalScroll(Date date, boolean toTime){
+    private void actuallScroll(Date date, boolean toTime){
         MyCalendar currentFstShowDay = ((DayViewBodyCell) bodyRecyclerView.getFirstShowItem()).getCalendar();
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);

@@ -502,21 +502,21 @@ public class DayViewBody extends RelativeLayout {
             return;
         }
 
-        if (!bodyRecyclerView.isShown()){
+        if (bodyRecyclerView.getHeight() == 0){
             final ViewTreeObserver vto = getViewTreeObserver();
             vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
                     vto.removeOnGlobalLayoutListener(this);
-                    actuallScroll(date, toTime);
+                    actualScroll(date, toTime);
                 }
             });
         }else {
-            actuallScroll(date, toTime);
+            actualScroll(date, toTime);
         }
     }
 
-    private void actuallScroll(Date date, boolean toTime){
+    private void actualScroll(Date date, boolean toTime){
         MyCalendar currentFstShowDay = ((DayViewBodyCell) bodyRecyclerView.getFirstShowItem()).getCalendar();
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);

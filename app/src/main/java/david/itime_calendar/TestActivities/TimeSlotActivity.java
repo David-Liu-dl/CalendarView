@@ -156,7 +156,9 @@ public class TimeSlotActivity extends AppCompatActivity {
 
             @Override
             public void onDateChanged(Date date) {
-
+                final ArrayList<TimeSlot> slots = new ArrayList<>();
+                initSlots(slots, date);
+                timeslotView.addTimeSlotList(slots);
             }
         });
         //Note: ensure calling setTimeslotDurationItems after setting listeners
@@ -173,6 +175,8 @@ public class TimeSlotActivity extends AppCompatActivity {
         },2000);
 
 
+
+
         switcher.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -186,13 +190,28 @@ public class TimeSlotActivity extends AppCompatActivity {
             }
         });
     }
+    private void initSlots(ArrayList<TimeSlot> slots, Date date){
+        long startTime = date.getTime();
+        long duration = 3600*1000;
+        long dayInterval = 3600 * 1000;
+        for (int i = 0; i < 5; i++) {
+            TimeSlot slot = new TimeSlot();
+            slot.setStartTime(startTime);
+            slot.setEndTime(startTime+duration);
+            slot.setRecommended(true);
+            slot.setIsAllDay(false);
+            slots.add(slot);
+
+            startTime += dayInterval;
+        }
+    }
 
     private void initSlots(ArrayList<TimeSlot> slots){
         Calendar cal = Calendar.getInstance();
         long startTime = cal.getTimeInMillis();
-        long duration = 4*3600*1000;
-        long dayInterval = 24 * 3600 * 1000;
-        for (int i = 0; i < 10; i++) {
+        long duration = 3600*1000;
+        long dayInterval = 3 * 3600 * 1000;
+        for (int i = 0; i < 30; i++) {
             TimeSlot slot = new TimeSlot();
             slot.setStartTime(startTime);
             slot.setEndTime(startTime+duration);

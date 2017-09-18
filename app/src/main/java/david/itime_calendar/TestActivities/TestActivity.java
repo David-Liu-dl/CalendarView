@@ -21,6 +21,7 @@ public class TestActivity extends AppCompatActivity {
 
     ITimeRecycleViewGroup recycleViewGroup;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,11 +44,11 @@ public class TestActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(View item, int index) {
-            Log.i("testac", "onBindViewHolder: ");
+            Log.i("testac", "onBindViewHolder: " + index);
             LinearLayout linearLayout = (LinearLayout) item;
             linearLayout.setBackgroundColor(index%2 == 0 ? Color.RED : Color.BLUE);
             linearLayout.removeAllViews();
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < index; i++) {
                 TextView a = new TextView(getApplicationContext());
                 a.setText("---" + i);
                 a.setTextColor(Color.WHITE);

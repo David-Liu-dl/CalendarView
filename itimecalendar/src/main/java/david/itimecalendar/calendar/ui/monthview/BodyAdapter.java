@@ -3,6 +3,7 @@ package david.itimecalendar.calendar.ui.monthview;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.text.LoginFilter;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.view.View;
 
 import com.developer.paul.itimerecycleviewgroup.ITimeAdapter;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -18,6 +20,7 @@ import david.itimecalendar.R;
 import david.itimecalendar.calendar.ui.CalendarConfig;
 import david.itimecalendar.calendar.ui.weekview.TimeSlotView;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
+import david.itimecalendar.calendar.util.BaseUtil;
 import david.itimecalendar.calendar.util.CalendarPositionHelper;
 import david.itimecalendar.calendar.util.MyCalendar;
 import david.itimecalendar.calendar.util.OverlapHelper;
@@ -105,34 +108,38 @@ public class BodyAdapter extends ITimeAdapter<DayViewBodyCell> {
         if (calendarConfig.mode != CalendarConfig.Mode.EVENT && this.slotsInfo != null){
             MyCalendar calendar = body.getCalendar();
             //add rcd first
-            for (WrapperTimeSlot struct : slotsInfo.rcdSlots
-                    ) {
-                if (struct.getTimeSlot().isAllDay()){
-                    continue;
-                }
-                if (calendar.contains(struct.getTimeSlot().getStartTime())){
+            List<WrapperTimeSlot> rcds = slotsInfo.rcdSlots.get(calendar.getBeginOfDayMilliseconds());
+
+            if (rcds != null){
+                for (WrapperTimeSlot struct : rcds
+                        ) {
+                    if (struct.getTimeSlot().isAllDay()){
+                        continue;
+                    }
+
                     body.addRcdSlot(struct);
                 }
             }
+
             //add timeslot on top index
-            for (WrapperTimeSlot wrapper : slotsInfo.realSlots
-                    ) {
-                if (wrapper.getTimeSlot().isAllDay()){
-                    continue;
-                }
-                if (calendar.contains(wrapper.getTimeSlot().getStartTime())){
+            List<WrapperTimeSlot> reals = slotsInfo.realSlots.get(calendar.getBeginOfDayMilliseconds());
+            if (reals != null){
+                for (WrapperTimeSlot struct : reals
+                        ) {
+                    if (struct.getTimeSlot().isAllDay()){
+                        continue;
+                    }
+
                     //need to check out if conflict with event
                     if (TimeSlotView.mode == TimeSlotView.ViewMode.NON_ALL_DAY_SELECT){
                         List<WrapperEvent> todayEvents = body.getTodayEvents();
-                        wrapper.setConflict(overlapHelper.isConflicted(todayEvents,wrapper));
+                        struct.setConflict(overlapHelper.isConflicted(todayEvents,struct));
                     }
 
-                    body.addSlot(wrapper,false);
+                    body.addSlot(struct,false);
                 }
             }
         }
-
-        body.requestLayout();
     }
 
     public void setCalendarConfig(CalendarConfig calendarConfig) {

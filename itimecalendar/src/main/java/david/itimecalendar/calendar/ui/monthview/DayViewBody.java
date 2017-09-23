@@ -586,9 +586,9 @@ public class DayViewBody extends RelativeLayout {
 
     private void addSlotToPackage(WrapperTimeSlot wrapperSlot){
         if (wrapperSlot.isRecommended() && !wrapperSlot.isSelected()){
-            timeSlotPackage.rcdSlots.add(wrapperSlot);
+            timeSlotPackage.addRcdTimesSlot(wrapperSlot);
         }else {
-            timeSlotPackage.realSlots.add(wrapperSlot);
+            timeSlotPackage.addRealTimesSlot(wrapperSlot);
         }
     }
 

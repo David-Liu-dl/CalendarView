@@ -154,25 +154,31 @@ public class TimeSlotActivity extends AppCompatActivity {
                 timeslotView.removeTimeslot(draggableTimeSlotView.getWrapper());
             }
 
+            int a = 0;
+
             @Override
             public void onDateChanged(Date date) {
+                if (a > 10){
+                    return;
+                }
                 final ArrayList<TimeSlot> slots = new ArrayList<>();
                 initSlots(slots, date);
                 timeslotView.addTimeSlotList(slots);
+                a ++ ;
             }
         });
         //Note: ensure calling setTimeslotDurationItems after setting listeners
         timeslotView.setTimeslotDurationItems(initList(),0);
 
-        timeslotView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                for (TimeSlot slot:slots
-                        ) {
-                    timeslotView.addTimeSlot(slot);
-                }
-            }
-        },2000);
+//        timeslotView.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                for (TimeSlot slot:slots
+//                        ) {
+//                    timeslotView.addTimeSlot(slot);
+//                }
+//            }
+//        },2000);
 
 
 
@@ -193,8 +199,8 @@ public class TimeSlotActivity extends AppCompatActivity {
     private void initSlots(ArrayList<TimeSlot> slots, Date date){
         long startTime = date.getTime();
         long duration = 3600*1000;
-        long dayInterval = 3600 * 1000;
-        for (int i = 0; i < 5; i++) {
+        long dayInterval = 2* 3600 * 1000;
+        for (int i = 0; i < 3; i++) {
             TimeSlot slot = new TimeSlot();
             slot.setStartTime(startTime);
             slot.setEndTime(startTime+duration);
@@ -211,7 +217,7 @@ public class TimeSlotActivity extends AppCompatActivity {
         long startTime = cal.getTimeInMillis();
         long duration = 3600*1000;
         long dayInterval = 3 * 3600 * 1000;
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 3; i++) {
             TimeSlot slot = new TimeSlot();
             slot.setStartTime(startTime);
             slot.setEndTime(startTime+duration);

@@ -31,7 +31,7 @@ import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
 /**
  * Created by yuhaoliu on 26/08/2016.
  */
-public class DraggableTimeSlotView extends FrameLayout {
+public class DraggableTimeSlotView extends RelativeLayout {
     public static int TYPE_NORMAL = 0;
     public static int TYPE_TEMP = 1;
 
@@ -139,16 +139,24 @@ public class DraggableTimeSlotView extends FrameLayout {
                 }
             }
         });
+        int iconSize = DensityUtil.dip2px(getContext(),25);
+        icon = new ImageView(getContext());
+        LayoutParams iconLayoutParams = new LayoutParams(iconSize, iconSize);
+        iconLayoutParams.topMargin = DensityUtil.dip2px(getContext(),5);
+        iconLayoutParams.leftMargin = DensityUtil.dip2px(getContext(),5);
+        iconLayoutParams.rightMargin = DensityUtil.dip2px(getContext(),5);
+        this.addView(icon, iconLayoutParams);
+
         title = new TextView(getContext());
-//       icon.setId(View.generateViewId());
+        icon.setId(View.generateViewId());
         title.setText(isAllday?getResources().getString(R.string.label_allday):getTimeText(true));
-//        title.setGravity(Gravity.CENTER);
-//        title.setTextColor(getResources().getColor(R.color.event_as_bg_title));
-//        title.setTextSize(12);
-//        LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//        layoutParams.topMargin = DensityUtil.dip2px(getContext(),5);
-//        layoutParams.addRule(CENTER_HORIZONTAL);
-//        this.addView(title,layoutParams);
+        title.setGravity(Gravity.CENTER);
+        title.setTextColor(getResources().getColor(R.color.event_as_bg_title));
+        title.setTextSize(12);
+        LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams.topMargin = DensityUtil.dip2px(getContext(),5);
+        layoutParams.addRule(CENTER_HORIZONTAL);
+        this.addView(title,layoutParams);
     }
 
     private void initBackgroundAsCreateMode(){
@@ -161,21 +169,21 @@ public class DraggableTimeSlotView extends FrameLayout {
     private void initViewAsExpiredMode(){
         int iconSize = DensityUtil.dip2px(getContext(),25);
         icon = new ImageView(getContext());
-//        LayoutParams iconLayoutParams = new LayoutParams(iconSize, iconSize);
-//        iconLayoutParams.topMargin = DensityUtil.dip2px(getContext(),5);
-//        iconLayoutParams.leftMargin = DensityUtil.dip2px(getContext(),5);
-//        iconLayoutParams.rightMargin = DensityUtil.dip2px(getContext(),5);
-//        this.addView(icon, iconLayoutParams);
+        LayoutParams iconLayoutParams = new LayoutParams(iconSize, iconSize);
+        iconLayoutParams.topMargin = DensityUtil.dip2px(getContext(),5);
+        iconLayoutParams.leftMargin = DensityUtil.dip2px(getContext(),5);
+        iconLayoutParams.rightMargin = DensityUtil.dip2px(getContext(),5);
+        this.addView(icon, iconLayoutParams);
 
         title = new TextView(getContext());
-//        title.setText(isAllday?getResources().getString(R.string.label_allday):getTimeText(false));
-//        title.setGravity(Gravity.LEFT);
-//        title.setTextColor(getResources().getColor(R.color.timeslot_expired_mode_text));
-//        title.setTextSize(12);
-//        LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//        layoutParams.topMargin = DensityUtil.dip2px(getContext(),5);
-//        layoutParams.addRule(END_OF,icon.getId());
-//        this.addView(title,layoutParams);
+        title.setText(isAllday?getResources().getString(R.string.label_allday):getTimeText(false));
+        title.setGravity(Gravity.LEFT);
+        title.setTextColor(getResources().getColor(R.color.timeslot_expired_mode_text));
+        title.setTextSize(12);
+        LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams.topMargin = DensityUtil.dip2px(getContext(),5);
+        layoutParams.addRule(END_OF,icon.getId());
+        this.addView(title,layoutParams);
     }
 
     private void initBackgroundAsExpiredMode(){
@@ -196,17 +204,17 @@ public class DraggableTimeSlotView extends FrameLayout {
         iconLayoutParams.topMargin = DensityUtil.dip2px(getContext(),5);
         iconLayoutParams.leftMargin = DensityUtil.dip2px(getContext(),5);
         iconLayoutParams.rightMargin = DensityUtil.dip2px(getContext(),5);
-//        this.addView(icon,iconLayoutParams);
+        this.addView(icon,iconLayoutParams);
 
         title = new TextView(getContext());
-//        title.setText(isAllday?getResources().getString(R.string.label_allday):getTimeText(false));
-//        title.setGravity(Gravity.LEFT);
-//        title.setTextColor(getResources().getColor(R.color.timeslot_select_mode_text));
-//        title.setTextSize(12);
-//        LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//        layoutParams.topMargin = DensityUtil.dip2px(getContext(),5);
-//        layoutParams.addRule(END_OF,icon.getId());
-//        this.addView(title,layoutParams);
+        title.setText(isAllday?getResources().getString(R.string.label_allday):getTimeText(false));
+        title.setGravity(Gravity.LEFT);
+        title.setTextColor(getResources().getColor(R.color.timeslot_select_mode_text));
+        title.setTextSize(12);
+        LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams.topMargin = DensityUtil.dip2px(getContext(),5);
+        layoutParams.addRule(END_OF,icon.getId());
+        this.addView(title,layoutParams);
     }
 
     private void initBackgroundAsSelectMode(){

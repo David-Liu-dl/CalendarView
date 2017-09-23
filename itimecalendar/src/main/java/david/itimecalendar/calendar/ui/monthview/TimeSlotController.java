@@ -364,7 +364,7 @@ public class TimeSlotController {
         resizeTimeSlot(draggableTimeSlotView,animate);
         slotViews.add(draggableTimeSlotView);
         container.eventLayout.getSlots().add(wrapper);
-        draggableTimeSlotView.requestLayout();
+//        draggableTimeSlotView.requestLayout();
         //re-calculate overlapped timeslots
         calculateTimeSlotLayout(container.eventLayout);
     }
@@ -376,7 +376,7 @@ public class TimeSlotController {
         rcdSlotView.setVisibility(VISIBLE);
         resizeRcdTimeSlot(rcdSlotView);
         rcdSlotViews.add(rcdSlotView);
-        rcdSlotView.requestLayout();
+//        rcdSlotView.requestLayout();
     }
 
     void updateTimeSlotsDuration(long duration, boolean animate){

@@ -145,12 +145,17 @@ public class DayViewAllDay extends FrameLayout {
                 }
 
                 //add timeslot on top index
-                for (WrapperTimeSlot struct : slotsInfo.realSlots
-                        ) {
-                    if (struct.getTimeSlot().isAllDay() && calendar.contains(struct.getTimeSlot().getStartTime())){
-                        item.addAllDayTimeslot(struct);
+                List<WrapperTimeSlot> reals = slotsInfo.realSlots.get(calendar.getBeginOfDayMilliseconds());
+
+                if (reals != null){
+                    for (WrapperTimeSlot struct : reals
+                            ) {
+                        if (struct.getTimeSlot().isAllDay()){
+                            item.addAllDayTimeslot(struct);
+                        }
                     }
                 }
+
             }
         }
 

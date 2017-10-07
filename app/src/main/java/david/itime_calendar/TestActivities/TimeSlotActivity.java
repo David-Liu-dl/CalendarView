@@ -216,8 +216,8 @@ public class TimeSlotActivity extends AppCompatActivity {
         Calendar cal = Calendar.getInstance();
         long startTime = cal.getTimeInMillis();
         long duration = 3600*1000;
-        long dayInterval = 3 * 3600 * 1000;
-        for (int i = 0; i < 3; i++) {
+        long dayInterval = 1 * 3600 * 1000;
+        for (int i = 0; i < 6; i++) {
             TimeSlot slot = new TimeSlot();
             slot.setStartTime(startTime);
             slot.setEndTime(startTime+duration);

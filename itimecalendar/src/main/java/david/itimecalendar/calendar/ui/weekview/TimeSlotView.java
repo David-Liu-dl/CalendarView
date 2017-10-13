@@ -8,6 +8,7 @@ import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.util.LongSparseArray;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
 import android.util.AttributeSet;
@@ -23,8 +24,11 @@ import com.developer.paul.itimerecycleviewgroup.ITimeRecycleViewGroup;
 import com.github.sundeepk.compactcalendarview.ITimeTimeslotCalendar.InnerCalendarTimeslotPackage;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import david.itimecalendar.R;
 import david.itimecalendar.calendar.listeners.ITimeCalendarTimeslotViewListener;
@@ -36,6 +40,7 @@ import david.itimecalendar.calendar.ui.unitviews.TimeslotDurationEditView;
 import david.itimecalendar.calendar.ui.unitviews.RcdRegularTimeSlotView;
 import david.itimecalendar.calendar.ui.unitviews.TimeSlotInnerCalendarView;
 import david.itimecalendar.calendar.ui.unitviews.TimeslotEditView;
+import david.itimecalendar.calendar.util.BaseUtil;
 import david.itimecalendar.calendar.util.DensityUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
 import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
@@ -174,12 +179,19 @@ public class TimeSlotView extends WeekView {
     private void updateInnerCalendarPackage(){
         TimeSlotPackage slotsInfo = dayViewBody.getTimeSlotPackage();
         innerSlotPackage.clear();
+        Map<Long, List<WrapperTimeSlot>> realMap = slotsInfo.realSlots;
 
-        for (WrapperTimeSlot wrapper:slotsInfo.realSlots
-                ) {
-            String strDate = innerSlotPackage.slotFmt.format(new Date(wrapper.getTimeSlot().getStartTime()));
-            innerSlotPackage.add(strDate);
+        for (Map.Entry<Long, List<WrapperTimeSlot>> entry : realMap.entrySet())
+        {
+            List<WrapperTimeSlot> values = entry.getValue();
+            String strDate = innerSlotPackage.slotFmt.format(new Date(entry.getKey()));
+            int total = values.size();
+
+            for (int i = 0; i < total; i++) {
+                innerSlotPackage.add(strDate);
+            }
         }
+
         innerCalView.refreshSlotNum();
     }
 
@@ -413,36 +425,64 @@ public class TimeSlotView extends WeekView {
 //    }
 
     public static class TimeSlotPackage{
-        public ArrayList<WrapperTimeSlot> rcdSlots = new ArrayList<>();
-        public ArrayList<WrapperTimeSlot> realSlots = new ArrayList<>();
+//        public ArrayList<WrapperTimeSlot> rcdSlots = new ArrayList<>();
+//        public ArrayList<WrapperTimeSlot> realSlots = new ArrayList<>();
+        public Map<Long, List<WrapperTimeSlot>> rcdSlots = new HashMap<>();
+        public Map<Long, List<WrapperTimeSlot>> realSlots = new HashMap<>();
 
         public void clear(){
             rcdSlots.clear();
             realSlots.clear();
         }
 
-        void removeTimeSlot(WrapperTimeSlot wrapperTimeSlot){
-            if (wrapperTimeSlot.isRecommended() && !wrapperTimeSlot.isSelected()){
-                rcdSlots.remove(wrapperTimeSlot);
+        public void addRcdTimesSlot(WrapperTimeSlot wrapperTimeSlot){
+            long startRcd = BaseUtil.getDayBeginMilliseconds(wrapperTimeSlot.getStartTime());
+            if (rcdSlots.containsKey(startRcd)){
+                rcdSlots.get(startRcd).add(wrapperTimeSlot);
             }else {
-                realSlots.remove(wrapperTimeSlot);
+                List<WrapperTimeSlot> container = new ArrayList<>();
+                container.add(wrapperTimeSlot);
+                rcdSlots.put(startRcd, container);
             }
         }
 
-        void removeTimeSlot(ITimeTimeSlotInterface itimeTimeSlotInterface){
-            for (WrapperTimeSlot wrapper:rcdSlots
-                 ) {
-                if (wrapper.getTimeSlot() != null && wrapper.getTimeSlot() == itimeTimeSlotInterface){
-                    rcdSlots.remove(wrapper);
-                    return;
+        public void addRealTimesSlot(WrapperTimeSlot wrapperTimeSlot){
+            long startRcd = BaseUtil.getDayBeginMilliseconds(wrapperTimeSlot.getStartTime());
+            if (realSlots.containsKey(startRcd)){
+                realSlots.get(startRcd).add(wrapperTimeSlot);
+            }else {
+                List<WrapperTimeSlot> container = new ArrayList<>();
+                container.add(wrapperTimeSlot);
+                realSlots.put(startRcd, container);
+            }
+        }
+
+
+        public void removeTimeSlot(WrapperTimeSlot wrapperTimeSlot){
+            long startRcd = BaseUtil.getDayBeginMilliseconds(wrapperTimeSlot.getStartTime());
+            if (wrapperTimeSlot.isRecommended() && !wrapperTimeSlot.isSelected()){
+                if (rcdSlots.containsKey(startRcd)){
+                    rcdSlots.get(startRcd).remove(wrapperTimeSlot);
+                }
+            }else {
+                if (realSlots.containsKey(startRcd)){
+                    realSlots.get(startRcd).remove(wrapperTimeSlot);
                 }
             }
+        }
 
-            for (WrapperTimeSlot wrapper:realSlots
-                    ) {
-                if (wrapper.getTimeSlot() != null && wrapper.getTimeSlot() == itimeTimeSlotInterface){
-                    realSlots.remove(wrapper);
-                    return;
+        public void removeTimeSlot(ITimeTimeSlotInterface itimeTimeSlotInterface){
+            long startRcd = BaseUtil.getDayBeginMilliseconds(itimeTimeSlotInterface.getStartTime());
+            Map<Long, List<WrapperTimeSlot>> target = itimeTimeSlotInterface.isRecommended() ? rcdSlots : realSlots;
+
+            if (target.containsKey(startRcd)){
+                List<WrapperTimeSlot> lists = target.get(startRcd);
+                for (WrapperTimeSlot wrapper:lists
+                        ) {
+                    if (wrapper.getTimeSlot() != null && wrapper.getTimeSlot() == itimeTimeSlotInterface){
+                        lists.remove(wrapper);
+                        break;
+                    }
                 }
             }
         }

@@ -4,8 +4,15 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <david.itime_calendar.TestView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"></david.itime_calendar.TestView>
+    <!--<david.itime_calendar.TestView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"></david.itime_calendar.TestView>-->
 
+
+    <com.developer.paul.itimerecycleviewgroup.ITimeRecycleViewGroup
+        android:id="@+id/awesome_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </com.developer.paul.itimerecycleviewgroup.ITimeRecycleViewGroup>
 </LinearLayout>

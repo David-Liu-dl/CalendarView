@@ -63,7 +63,7 @@ public class RcdRegularTimeSlotView extends RelativeLayout {
         labelPrams.topMargin = isAllday?DensityUtil.dip2px(getContext(),10):0;
         labelPrams.addRule(ALIGN_PARENT_TOP);
         labelPrams.addRule(CENTER_HORIZONTAL);
-        this.addView(label,labelPrams);
+//        this.addView(label,labelPrams);
 
         title = new TextView(getContext());
         title.setText(isAllday ? "":getTimeText());
@@ -87,9 +87,9 @@ public class RcdRegularTimeSlotView extends RelativeLayout {
         icon.setImageDrawable(getResources().getDrawable(R.drawable.icon_timeslot_plus));
         icon.setPadding(0,padding,0,padding);
 
-//        int size = getPlusIconSize(isAllday ?
-//                BaseUtil.getAllDayLong(Calendar.getInstance().getTimeInMillis())
-//                : wrapper.getTimeSlot().getEndTime() - wrapper.getTimeSlot().getStartTime());
+        int size = getPlusIconSize(isAllday ?
+                BaseUtil.getAllDayLong(Calendar.getInstance().getTimeInMillis())
+                : wrapper.getTimeSlot().getEndTime() - wrapper.getTimeSlot().getStartTime());
         FrameLayout.LayoutParams iconPrams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         iconPrams.gravity = Gravity.CENTER;
         icon.setLayoutParams(iconPrams);

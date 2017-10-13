@@ -13,6 +13,7 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -138,7 +139,16 @@ public class DraggableTimeSlotView extends RelativeLayout {
                 }
             }
         });
+        int iconSize = DensityUtil.dip2px(getContext(),25);
+        icon = new ImageView(getContext());
+        LayoutParams iconLayoutParams = new LayoutParams(iconSize, iconSize);
+        iconLayoutParams.topMargin = DensityUtil.dip2px(getContext(),5);
+        iconLayoutParams.leftMargin = DensityUtil.dip2px(getContext(),5);
+        iconLayoutParams.rightMargin = DensityUtil.dip2px(getContext(),5);
+        this.addView(icon, iconLayoutParams);
+
         title = new TextView(getContext());
+        icon.setId(View.generateViewId());
         title.setText(isAllday?getResources().getString(R.string.label_allday):getTimeText(true));
         title.setGravity(Gravity.CENTER);
         title.setTextColor(getResources().getColor(R.color.event_as_bg_title));
@@ -159,7 +169,6 @@ public class DraggableTimeSlotView extends RelativeLayout {
     private void initViewAsExpiredMode(){
         int iconSize = DensityUtil.dip2px(getContext(),25);
         icon = new ImageView(getContext());
-        icon.setId(View.generateViewId());
         LayoutParams iconLayoutParams = new LayoutParams(iconSize, iconSize);
         iconLayoutParams.topMargin = DensityUtil.dip2px(getContext(),5);
         iconLayoutParams.leftMargin = DensityUtil.dip2px(getContext(),5);

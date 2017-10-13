@@ -503,11 +503,11 @@ public class DayViewBody extends RelativeLayout {
         }
 
         if (!bodyRecyclerView.isShown()){
-            final ViewTreeObserver vto = getViewTreeObserver();
+            ViewTreeObserver vto = getViewTreeObserver();
             vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
-                    vto.removeOnGlobalLayoutListener(this);
+                    DayViewBody.this.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     actuallScroll(date, toTime);
                 }
             });
@@ -586,9 +586,9 @@ public class DayViewBody extends RelativeLayout {
 
     private void addSlotToPackage(WrapperTimeSlot wrapperSlot){
         if (wrapperSlot.isRecommended() && !wrapperSlot.isSelected()){
-            timeSlotPackage.rcdSlots.add(wrapperSlot);
+            timeSlotPackage.addRcdTimesSlot(wrapperSlot);
         }else {
-            timeSlotPackage.realSlots.add(wrapperSlot);
+            timeSlotPackage.addRealTimesSlot(wrapperSlot);
         }
     }
 

@@ -154,23 +154,33 @@ public class TimeSlotActivity extends AppCompatActivity {
                 timeslotView.removeTimeslot(draggableTimeSlotView.getWrapper());
             }
 
+            int a = 0;
+
             @Override
             public void onDateChanged(Date date) {
-
+                if (a > 10){
+                    return;
+                }
+                final ArrayList<TimeSlot> slots = new ArrayList<>();
+                initSlots(slots, date);
+                timeslotView.addTimeSlotList(slots);
+                a ++ ;
             }
         });
         //Note: ensure calling setTimeslotDurationItems after setting listeners
         timeslotView.setTimeslotDurationItems(initList(),0);
 
-        timeslotView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                for (TimeSlot slot:slots
-                        ) {
-                    timeslotView.addTimeSlot(slot);
-                }
-            }
-        },2000);
+//        timeslotView.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                for (TimeSlot slot:slots
+//                        ) {
+//                    timeslotView.addTimeSlot(slot);
+//                }
+//            }
+//        },2000);
+
+
 
 
         switcher.setOnClickListener(new View.OnClickListener() {
@@ -186,13 +196,28 @@ public class TimeSlotActivity extends AppCompatActivity {
             }
         });
     }
+    private void initSlots(ArrayList<TimeSlot> slots, Date date){
+        long startTime = date.getTime();
+        long duration = 3600*1000;
+        long dayInterval = 2* 3600 * 1000;
+        for (int i = 0; i < 3; i++) {
+            TimeSlot slot = new TimeSlot();
+            slot.setStartTime(startTime);
+            slot.setEndTime(startTime+duration);
+            slot.setRecommended(true);
+            slot.setIsAllDay(false);
+            slots.add(slot);
+
+            startTime += dayInterval;
+        }
+    }
 
     private void initSlots(ArrayList<TimeSlot> slots){
         Calendar cal = Calendar.getInstance();
         long startTime = cal.getTimeInMillis();
-        long duration = 4*3600*1000;
-        long dayInterval = 24 * 3600 * 1000;
-        for (int i = 0; i < 10; i++) {
+        long duration = 3600*1000;
+        long dayInterval = 1 * 3600 * 1000;
+        for (int i = 0; i < 6; i++) {
             TimeSlot slot = new TimeSlot();
             slot.setStartTime(startTime);
             slot.setEndTime(startTime+duration);

@@ -183,9 +183,9 @@ public class TimeslotEditView extends LinearLayout {
     private String getDateText(long time){
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(time);
-        String monthTh =  cal.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault());
+        String monthTh =  cal.getDisplayName(Calendar.MONTH, Calendar.SHORT, getResources().getConfiguration().locale);
         String dayOfMonth = cal.get(Calendar.DAY_OF_MONTH) + "";
-        String dayOfWeek = cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault());
+        String dayOfWeek = cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, getResources().getConfiguration().locale);
 
         return dayOfWeek + ", " + dayOfMonth + " " + monthTh;
     }

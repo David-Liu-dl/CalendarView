@@ -26,5 +26,8 @@
     <string name="no_event">No Event</string>
     <string name="duration">Duration</string>
 
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+
 
 </resources>

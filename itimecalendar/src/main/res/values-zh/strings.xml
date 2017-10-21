@@ -26,4 +26,7 @@
     <string name="yesterday">昨天</string>
     <string name="no_event">无事件</string>
     <string name="duration">持续时间</string>
+
+    <string name="delete">删除</string>
+    <string name="edit">编辑</string>
 </resources>

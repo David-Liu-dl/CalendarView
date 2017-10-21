@@ -508,15 +508,15 @@ public class DayViewBody extends RelativeLayout {
                 @Override
                 public void onGlobalLayout() {
                     DayViewBody.this.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    actuallScroll(date, toTime);
+                    actualScroll(date, toTime);
                 }
             });
         }else {
-            actuallScroll(date, toTime);
+            actualScroll(date, toTime);
         }
     }
 
-    private void actuallScroll(Date date, boolean toTime){
+    private void actualScroll(Date date, boolean toTime){
         MyCalendar currentFstShowDay = ((DayViewBodyCell) bodyRecyclerView.getFirstShowItem()).getCalendar();
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);

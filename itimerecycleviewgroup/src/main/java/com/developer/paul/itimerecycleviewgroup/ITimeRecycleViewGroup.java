@@ -102,6 +102,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
         mTouchSlop = vc.getScaledTouchSlop();
         mMaxVelocity = ViewConfiguration.get(getContext()).getScaledMaximumFlingVelocity();
         mScroller = new Scroller(getContext());
+
     }
 
 
@@ -207,14 +208,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
     }
 
     private AwesomeViewGroup getFirstShownAwesomeViewGroup(List<AwesomeViewGroup> awesomeViewgroups) {
-//        for (AwesomeViewGroup awesomeViewgroup : awesomeViewgroups){
-//            AwesomeViewGroup.AwesomeLayoutParams lp = (AwesomeViewGroup.AwesomeLayoutParams) awesomeViewgroup.getLayoutParams();
-//            if (lp.left<=0 && lp.right > 0){
-//                return awesomeViewgroup;
-//            }
         return awesomeViewgroups.get(1);
-//        }
-//        return null;
     }
 
     private void scrollToClosestPosition(List<AwesomeViewGroup> awesomeViewGroups) {
@@ -285,9 +279,6 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-//        if (this.getVisibility() == GONE){
-//            return;
-//        }
         viewWidth = MeasureSpec.getSize(widthMeasureSpec);
         viewHeight = MeasureSpec.getSize(heightMeasureSpec);
 
@@ -367,6 +358,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
         }
         switch (action) {
             case MotionEvent.ACTION_DOWN:
+                LogUtil.log("paul", "onInterceptTouchEvent Down");
                 if (status == HORIZONTAL_FLING) {
                     scrollOverTouchSlop = true;
                     scrollModel = SCROLL_HORIZONTAL;
@@ -382,7 +374,6 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
                     mVelocityTracker = VelocityTracker.obtain();
                 } else {
                     mVelocityTracker.clear();
-                    LogUtil.log("clear", "clear");
                 }
                 mVelocityX = 0;
                 mVelocityY = 0;
@@ -437,7 +428,7 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
                     mVelocityTracker.computeCurrentVelocity(1000, mMaxVelocity);
                     mVelocityX = mVelocityTracker.getXVelocity();
                     mVelocityY = mVelocityTracker.getYVelocity();
-
+                    LogUtil.log("paul","OnInterceptEvent Move  true");
                     return true;
                 }
                 break;
@@ -445,13 +436,10 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
             case MotionEvent.ACTION_UP:
                 // when fling, and touch on this, child might consume this event
                 // so also need to action up on the Intercepted event.
-                LogUtil.log("upup", "onInter");
                 newX = getEventXFilterOutside(ev);
                 newY = ev.getY();
 
-                LogUtil.log("upup", scrollDir + "");
                 if (scrollOverTouchSlop) {
-                    LogUtil.log("velocityX", " : " + mVelocityX);
                     touchUpPostCheck();
                 }
                 scrollOverTouchSlop = false;
@@ -547,8 +535,9 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
                     mVelocityY = mVelocityTracker.getYVelocity();
 
                 }
-                return super.onTouchEvent(event);
-
+                LogUtil.log("paul", "onTouchEvent Move true");
+//                return super.onTouchEvent(event);
+                return true; /// paul add
             case MotionEvent.ACTION_UP:
                 newX = getEventXFilterOutside(event);
                 newY = event.getY();

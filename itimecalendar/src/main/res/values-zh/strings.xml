@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Vendor</string>
+    <!--for contacts-->
+    <string name="cancel">取消</string>
+    <string name="done">完成</string>
+    <string name="search">搜索</string>
+    <!--for head day of week-->
+    <string name="_1th_of_week">周日</string>
+    <string name="_2th_of_week">周一</string>
+    <string name="_3th_of_week">周二</string>
+    <string name="_4th_of_week">周三</string>
+    <string name="_5th_of_week">周四</string>
+    <string name="_6th_of_week">周五</string>
+    <string name="_7th_of_week">周六</string>
+    <string name="saveStr">保存</string>
+    <string name="cancelStr">取消</string>
+    <string name="edit_timeslot_title">编辑时间</string>
+
+    <string name="label_allday">全天</string>
+    <string name="label_hours">小时</string>
+    <string name="label_min">分钟</string>
+
+    <string name="tomorrow">明天</string>
+    <string name="today">今天</string>
+    <string name="yesterday">昨天</string>
+    <string name="no_event">无事件</string>
+    <string name="duration">持续时间</string>
+</resources>

@@ -137,8 +137,8 @@ public class AgendaBodyHeader extends LinearLayout {
         Calendar calendar = this.myCalendar.getCalendar();
         int day_of_month = calendar.get(Calendar.DAY_OF_MONTH);
         nth =  day_of_month + "";
-        month = calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
-        dayOfWeek = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()) + ",";
+        month = calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, getResources().getConfiguration().locale);
+        dayOfWeek = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, getResources().getConfiguration().locale) + ",";
 
         mentionTv.setPadding(0,0,textPadding,0);
         titleColor = getResources().getColor(color_title);
@@ -152,15 +152,15 @@ public class AgendaBodyHeader extends LinearLayout {
 
         switch (currentDayType){
             case 1:
-                mention = "Tomorrow";
+                mention = getContext().getString(R.string.tomorrow);
                 break;
             case 0:
-                mention = "Today";
+                mention = getContext().getString(R.string.today);
                 titleColor = getResources().getColor(color_title_today);
                 titleBgColor = getResources().getColor(color_title_bg_today);
                 break;
             case -1:
-                mention = "Yesterday";
+                mention = getContext().getString(R.string.yesterday);
                 break;
             default:
                 mention = "";

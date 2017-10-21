@@ -2,8 +2,7 @@
     <string name="app_name">Vendor</string>
     <!--for contacts-->
     <string name="cancel">Cancel</string>
-    <string name="new_event">New Event</string>
-    <string name="done">Send</string>
+    <string name="done">done</string>
     <string name="search">Search</string>
     <!--for head day of week-->
     <string name="_1th_of_week">SUN</string>
@@ -18,6 +17,14 @@
     <string name="edit_timeslot_title">Edit TimeSlot</string>
 
     <string name="label_allday">All Day</string>
+    <string name="label_hours">hrs</string>
+    <string name="label_min">min</string>
+
+    <string name="tomorrow">Tomorrow</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="no_event">No Event</string>
+    <string name="duration">Duration</string>
 
 
 </resources>

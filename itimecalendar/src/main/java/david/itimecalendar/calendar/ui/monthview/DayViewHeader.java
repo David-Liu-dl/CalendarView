@@ -236,7 +236,7 @@ public class DayViewHeader extends LinearLayout {
 
                 //add title if equals "1", means there is start of month, add the short-month title
                 if (date.equals("1")){
-                    String monthTitle = calendar.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault());
+                    String monthTitle = calendar.getDisplayName(Calendar.MONTH, Calendar.SHORT, getResources().getConfiguration().locale);
                     cell.getTitleView().setText(monthTitle);
                 }
                 //add dot

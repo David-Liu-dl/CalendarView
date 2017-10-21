@@ -117,6 +117,8 @@ class CompactCalendarController {
     private int calenderBackgroundColor = Color.WHITE;
     private int otherMonthDaysTextColor;
     private TimeZone timeZone;
+    private Context context;
+
 
     private ITimeTimeslotCalendar.InnerCalendarTimeslotPackage innerSlotPackage;
 
@@ -148,6 +150,7 @@ class CompactCalendarController {
         this.locale = locale;
         this.timeZone = timeZone;
         this.displayOtherMonthDays = false;
+        this.context = context;
         loadAttributes(attrs, context);
         init(context);
     }
@@ -414,7 +417,7 @@ class CompactCalendarController {
 
     void setUseWeekDayAbbreviation(boolean useThreeLetterAbbreviation) {
         this.useThreeLetterAbbreviation = useThreeLetterAbbreviation;
-        this.dayColumnNames = WeekUtils.getWeekdayNames(locale, firstDayOfWeekToDraw, this.useThreeLetterAbbreviation);
+        this.dayColumnNames = WeekUtils.getWeekdayNames(context.getResources().getConfiguration().locale, firstDayOfWeekToDraw, this.useThreeLetterAbbreviation);
     }
 
     void setDayColumnNames(String[] dayColumnNames) {

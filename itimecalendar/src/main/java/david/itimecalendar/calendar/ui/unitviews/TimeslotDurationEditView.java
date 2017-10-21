@@ -9,6 +9,7 @@ import android.graphics.Rect;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -50,7 +51,7 @@ public class TimeslotDurationEditView<T> extends FrameLayout{
     View highlighter;
 
     //sp
-    float textSizeSp = 15;
+    float textSizeSp = 16;
     float labelTextSizeSp = 13;
     int textNormalColor = Color.BLACK;
     int textHighlightColor = Color.BLUE;
@@ -110,7 +111,7 @@ public class TimeslotDurationEditView<T> extends FrameLayout{
 
 
         label = new TextView(context);
-        label.setText("Duration");
+        label.setText(R.string.duration);
         label.setTextSize(labelTextSizeSp);
         RelativeLayout.LayoutParams labelParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         labelParams.leftMargin = DensityUtil.dip2px(context,15);
@@ -121,6 +122,7 @@ public class TimeslotDurationEditView<T> extends FrameLayout{
 
         nowValue = new TextView(context);
         nowValue.setText("20");
+        nowValue.setTextColor(ContextCompat.getColor(context, R.color.black));
         nowValue.setTextSize(textSizeSp);
         nowValue.setGravity(Gravity.CENTER);
         RelativeLayout.LayoutParams nowValueParams = new RelativeLayout.LayoutParams(btnBlockWidth, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -131,7 +133,8 @@ public class TimeslotDurationEditView<T> extends FrameLayout{
 
         doneBtn = new TextView(context);
 
-        doneBtn.setText("Done");
+        doneBtn.setText(getResources().getString(R.string.done));
+        doneBtn.setTextColor(ContextCompat.getColor(context, R.color.brand_main));
         doneBtn.setTextSize(textSizeSp);
         doneBtn.setGravity(Gravity.CENTER);
         RelativeLayout.LayoutParams buttonParams = new RelativeLayout.LayoutParams(btnBlockWidth, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -150,6 +153,7 @@ public class TimeslotDurationEditView<T> extends FrameLayout{
         optBlock.addView(highlighter,highlighterParams);
 
         wheelPicker = new WheelPicker(context);
+        wheelPicker.setItemSpace(30);
         wheelPicker.setBackgroundColor(getResources().getColor(fakeBgColor));
         wheelPicker.setSelectedItemTextColor(getResources().getColor(R.color.calendar_timeslot_duration_highlighter));
         wheelPicker.setItemTextSize(DensityUtil.sp2px(context,textSizeSp));
@@ -192,7 +196,11 @@ public class TimeslotDurationEditView<T> extends FrameLayout{
             }
         });
 
-        nowValue.setOnClickListener(new OnClickListener() {
+
+//        nowValue.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+        optBlock.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (onDurationBar != null){
@@ -205,9 +213,13 @@ public class TimeslotDurationEditView<T> extends FrameLayout{
             @Override
             public void onClick(View v) {
                 if (onDurationBar != null){
+                    if (bgView.getVisibility() == GONE){
+                        return;
+                    }
                     onDurationBar.onItemSelected(currentSelectedPosition = wheelPicker.getSelectedItemPosition());
                     updateValueText(currentSelectedPosition);
                     bgView.setVisibility(GONE);
+                    highlighter.setVisibility(VISIBLE);
                     performHideAnimation();
                 }
             }
@@ -215,7 +227,11 @@ public class TimeslotDurationEditView<T> extends FrameLayout{
     }
 
     public void expandDurationBar(){
+        if (bgView.getVisibility() == VISIBLE){
+            return;
+        }
         bgView.setVisibility(VISIBLE);
+        highlighter.setVisibility(INVISIBLE);
         wheelPicker.setSelectedItemPosition(currentSelectedPosition);
         performShowAnimation();
     }

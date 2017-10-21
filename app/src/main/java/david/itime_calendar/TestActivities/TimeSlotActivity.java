@@ -75,7 +75,7 @@ public class TimeSlotActivity extends AppCompatActivity {
 
             @Override
             public void onTimeslotDurationBarClick() {
-
+                timeslotView.getDurationBar().expandDurationBar();
             }
         });
         timeslotView.setITimeCalendarTimeslotViewListener(new ITimeCalendarTimeslotViewListener()  {

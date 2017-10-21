@@ -132,7 +132,7 @@ public class AgendaViewBody extends LinearLayout{
         }else{
             noEvent = new TextView(context);
             LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DensityUtil.dip2px(context,25));
-            noEvent.setText("(No Event)");
+            noEvent.setText("(" + getResources().getString(R.string.no_event) + ")");
             noEvent.setPadding(DensityUtil.dip2px(context,10),0,0,0);
             noEvent.setGravity(Gravity.CENTER_VERTICAL);
             noEvent.setTextSize(titleSize);

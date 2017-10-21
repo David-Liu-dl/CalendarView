@@ -139,14 +139,14 @@ public class AgendaViewInnerBody extends RelativeLayout {
         this.addView(leftInfo, leftInfoParams);
 
         leftTime1 = new TextView(context);
-        leftTime1.setText(duration.equals("All Day") ? "All Day" : timeStr1);
+        leftTime1.setText(duration.equals(getContext().getString(R.string.label_allday)) ? getContext().getString(R.string.label_allday) : timeStr1);
         leftTime1.setGravity(Gravity.RIGHT);
         leftTime1.setTextSize(textSmallSize);
         leftTime1.setId(View.generateViewId());
         leftInfo.addView(leftTime1);
 
         leftTime2 = new TextView(context);
-        leftTime2.setText(duration.equals("All Day") ? "" : timeStr2);
+        leftTime2.setText(duration.equals(getContext().getString(R.string.label_allday)) ? "" : timeStr2);
         leftTime2.setGravity(Gravity.RIGHT);
         leftTime2.setTextSize(textSmallSize);
         LayoutParams params2 = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -280,10 +280,10 @@ public class AgendaViewInnerBody extends RelativeLayout {
         int hours = (int) duration_m / (3600 * 1000);
         int minutes = (int) ((duration_m / (60 * 1000)) % 60);
         duration =
-                event.isAllDay() ? "All Day" :
-                        hours == 0 ? minutes + "min" :
-                                minutes == 0 ? hours + "hrs " :
-                                        hours + "hrs " + minutes + "min";
+                event.isAllDay() ? getResources().getString(R.string.label_allday) :
+                        hours == 0 ? minutes + getResources().getString(R.string.label_hours) :
+                                minutes == 0 ? hours + getResources().getString(R.string.label_min) + " " :
+                                        hours + getResources().getString(R.string.label_hours) + " " + minutes + getResources().getString(R.string.label_min);
         eventName = event.getSummary();
         location = event.getLocationName();
 

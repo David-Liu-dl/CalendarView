@@ -273,7 +273,7 @@ public class TimeSlotInnerCalendarView extends LinearLayout {
         String targetYearName = String.valueOf(cal.get(Calendar.YEAR));
         String dateStr = currentYearName.equals(targetYearName) ? "" : targetYearName;
 
-        String monthName = cal.getDisplayName(Calendar.MONTH,Calendar.SHORT,Locale.getDefault());
+        String monthName = cal.getDisplayName(Calendar.MONTH,Calendar.SHORT, getResources().getConfiguration().locale);
         monthTitle.setText(monthName);
         titleTv.setText(dateStr);
     }

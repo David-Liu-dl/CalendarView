@@ -101,7 +101,7 @@ public class WeekViewHeaderCell extends FrameLayout {
         boolean isToday = BaseUtil.isToday(cal);
 
         String dayOfWeekStr = cal.getDisplayName(
-                Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()).toUpperCase();
+                Calendar.DAY_OF_WEEK, Calendar.SHORT, getResources().getConfiguration().locale).toUpperCase();
         dayOfWeekTv.setText(dayOfWeekStr);
         dayOfMonthTv.setText("" + cal.get(Calendar.DAY_OF_MONTH));
 

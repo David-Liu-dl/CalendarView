@@ -9,17 +9,53 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import david.itimecalendar.calendar.listeners.ITimeEventInterface;
 import david.itimecalendar.calendar.listeners.ITimeComparable;
+import david.itimecalendar.calendar.ui.CalendarConfig;
 
 /**
  * Created by yuhaoliu on 14/03/2017.
  */
 
 public class BaseUtil {
+    public static String WEEK_DAY_MONTH_EN = "EEE, dd MMM";
+    public static String WEEK_DAY_MONTH_ZH = "MM月dd日 EEE";
+
+    public static String HOUR_MIN = "HH:mm";
+    public static String HOUR = "HH";
+    public static String HOUR_MIN_A = "hh:mm a";
+
+
+    public static String getUnitTimePattern(CalendarConfig calendarConfig){
+        switch (calendarConfig.time){
+            case HH:
+                return HOUR_MIN;
+            case HH_A:
+                return HOUR_MIN_A;
+            default:
+                return HOUR_MIN;
+        }
+    }
+
+    public static String getWeekDayMonthPattern(Locale locale){
+        if (locale == Locale.CHINESE){
+            return WEEK_DAY_MONTH_ZH;
+        }else {
+            return WEEK_DAY_MONTH_EN;
+        }
+    }
+
+    public static String getFormatTimeString(long time, String format, Locale locale){
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(time);
+        SimpleDateFormat fmt = new SimpleDateFormat(format, locale);
+        return fmt.format(c.getTime());
+    }
 
     public static long getAllDayLong(long withInDayTime){
         Calendar cal = Calendar.getInstance();

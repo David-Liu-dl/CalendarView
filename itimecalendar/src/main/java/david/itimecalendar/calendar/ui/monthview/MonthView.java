@@ -174,7 +174,7 @@ public class MonthView extends LinearLayout{
         });
         this.addView(dayViewBodyContainer, new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
-        dayViewBody = new DayViewBody(context, viewAttrs);
+        dayViewBody = new DayViewBody(context, viewAttrs, calendarConfig);
         dayViewBody.setOnScrollListener(new ITimeRecycleViewGroup.OnScroll<DayViewBodyCell>() {
             @Override
             public void onPageSelected(DayViewBodyCell v) {

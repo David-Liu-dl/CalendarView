@@ -9,7 +9,12 @@ public class CalendarConfig {
         EVENT, TIMESLOT_REVIEW, TIMESLOT_CREATE
     }
 
+    public enum TimePattern {
+        HH,HH_A
+    }
+
     public Mode mode = Mode.EVENT;
+    public TimePattern time = TimePattern.HH_A;
 
     public boolean unconfirmedIncluded = true;
     public boolean isHeaderVisible = true;

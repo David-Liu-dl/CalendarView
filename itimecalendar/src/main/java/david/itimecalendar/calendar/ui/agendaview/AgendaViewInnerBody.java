@@ -25,6 +25,7 @@ import java.util.List;
 import david.itimecalendar.R;
 import david.itimecalendar.calendar.listeners.ITimeEventInterface;
 import david.itimecalendar.calendar.listeners.ITimeInviteeInterface;
+import david.itimecalendar.calendar.ui.CalendarConfig;
 import david.itimecalendar.calendar.util.BaseUtil;
 import david.itimecalendar.calendar.util.DensityUtil;
 import david.itimecalendar.calendar.util.LoadImgHelper;
@@ -111,12 +112,13 @@ public class AgendaViewInnerBody extends RelativeLayout {
 
     private List<String> urls = new ArrayList<>();
 
-    private DateFormat date = new SimpleDateFormat("HH:mm a");
+    private DateFormat date;
 
     private boolean isEnded = false;
     private boolean isHappening = false;
-    public AgendaViewInnerBody(Context context, ITimeEventInterface event, int currentDayType) {
+    public AgendaViewInnerBody(Context context, ITimeEventInterface event, int currentDayType, CalendarConfig calendarConfig) {
         super(context);
+        this.date = new SimpleDateFormat(BaseUtil.getUnitTimePattern(calendarConfig), context.getResources().getConfiguration().locale);
         this.context = context;
         this.currentDayType = currentDayType;
         this.event = event;

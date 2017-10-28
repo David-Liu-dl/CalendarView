@@ -5,7 +5,6 @@ import android.animation.LayoutTransition;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
-import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.MotionEventCompat;
@@ -28,6 +27,7 @@ import com.developer.paul.itimerecycleviewgroup.ITimeRecycleViewGroup;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import david.itimecalendar.R;
 import david.itimecalendar.calendar.ui.CalendarConfig;
@@ -42,6 +42,7 @@ import david.itimecalendar.calendar.util.CalendarPositionHelper;
 import david.itimecalendar.calendar.util.DensityUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
 import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
+
 
 /**
  * Created by yuhaoliu on 11/05/2017.
@@ -75,20 +76,9 @@ public class DayViewBody extends RelativeLayout {
 
     private AttributeSet attrs;
 
-    public DayViewBody(@NonNull Context context) {
-        super(context);
-        init();
-    }
-
-    public DayViewBody(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public DayViewBody(@NonNull Context context, @Nullable AttributeSet attrs, CalendarConfig calendarConfig) {
         super(context, attrs);
-        this.loadAttributes(attrs,context);
-        this.attrs = attrs;
-        init();
-    }
-
-    public DayViewBody(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+        this.calendarConfig = calendarConfig;
         this.loadAttributes(attrs,context);
         this.attrs = attrs;
         init();
@@ -362,7 +352,7 @@ public class DayViewBody extends RelativeLayout {
         this.addView(leftTimeBarLayoutContainer);
 
         this.leftTimeBarLayout = new FrameLayout(getContext());
-        int leftBarHeight = this.initTimeText(getHours());
+        int leftBarHeight = this.setLeftBarTimeText(getHours(calendarConfig, context.getResources().getConfiguration().locale));
         //add right side decoration
         FrameLayout.LayoutParams dctParams = new FrameLayout.LayoutParams(DensityUtil.dip2px(context,1), leftBarHeight);
         dctParams.gravity = Gravity.END;
@@ -374,7 +364,9 @@ public class DayViewBody extends RelativeLayout {
         this.leftTimeBarLayoutContainer.addView(leftTimeBarLayout);
     }
 
-    private int initTimeText(String[] HOURS) {
+    private int setLeftBarTimeText(String[] HOURS) {
+        leftTimeBarLayout.removeAllViews();
+
         int height = DensityUtil.dip2px(context,20);
         int leftBarHeight = 0;
         for (int time = 0; time < HOURS.length; time++) {
@@ -401,15 +393,20 @@ public class DayViewBody extends RelativeLayout {
         return leftBarHeight;
     }
 
-    private String[] getHours() {
-        String[] HOURS = new String[]{
-                "00", "01", "02", "03", "04", "05", "06", "07",
-                "08", "09", "10", "11", "12", "13", "14", "15",
-                "16", "17", "18", "19", "20", "21", "22", "23",
-                "24"
-        };
+    private String[] getHours(CalendarConfig config, Locale locale) {
+        String[] hours = new String[25];
+        Date date = new Date();
+        date.setHours(0);
+        date.setMinutes(0);
+        date.setSeconds(0);
 
-        return HOURS;
+        for (int i = 0; i < 25; i++) {
+            date.setHours(i);
+            String hour = BaseUtil.getFormatTimeString(date.getTime(), BaseUtil.HOUR, locale);
+            hours[i] = hour;
+        }
+
+        return hours;
     }
 
     private void msgWindowFollow(int tapX, int tapY, String locationTime) {
@@ -828,10 +825,16 @@ public class DayViewBody extends RelativeLayout {
         allDayView.notifyDataSetChanged();
     }
 
+    private CalendarConfig calendarConfig;
+
     public void setCalendarConfig(CalendarConfig calendarConfig) {
+        this.calendarConfig = calendarConfig;
         this.allDayView.setCalendarConfig(calendarConfig);
         this.dayViewBodyAdapter.setCalendarConfig(calendarConfig);
         this.dayViewBodyAdapter.notifyDataSetChanged();
+
+        //refresh time text
+        this.setLeftBarTimeText(getHours(calendarConfig, context.getResources().getConfiguration().locale));
     }
 
 //    public void isScrolling(){

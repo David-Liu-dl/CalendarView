@@ -13,6 +13,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import david.itimecalendar.R;
+import david.itimecalendar.calendar.util.BaseUtil;
 import david.itimecalendar.calendar.util.DensityUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
 
@@ -41,9 +42,10 @@ public class AgendaBodyHeader extends LinearLayout {
     private LinearLayout contentLayout;
 
     private TextView mentionTv;
-    private TextView nthTv;
-    private TextView monthTv;
-    private TextView dayOfWeekTv;
+    private TextView timeTv;
+//    private TextView nthTv;
+//    private TextView monthTv;
+//    private TextView dayOfWeekTv;
 
     private String mention = "";
     private String nth;
@@ -90,17 +92,9 @@ public class AgendaBodyHeader extends LinearLayout {
         mentionTv.setText(mention.toUpperCase());
         mentionTv.setTextColor(titleColor);
         mentionTv.setTextSize(titleSize);
-        nthTv.setText(nth);
-        nthTv.setTextColor(titleColor);
-        nthTv.setTextSize(titleSize);
 
-        monthTv.setText(month);
-        monthTv.setTextColor(titleColor);
-        monthTv.setTextSize(titleSize);
-
-        dayOfWeekTv.setText(dayOfWeek);
-        dayOfWeekTv.setTextColor(titleColor);
-        dayOfWeekTv.setTextSize(titleSize);
+        timeTv.setTextColor(titleColor);
+        timeTv.setTextSize(titleSize);
 
         this.invalidate();
     }
@@ -115,30 +109,20 @@ public class AgendaBodyHeader extends LinearLayout {
         mentionTv.setPadding(0,0,textPadding,0);
         contentLayout.addView(mentionTv);
 
-        dayOfWeekTv = new TextView(context);
-        dayOfWeekTv.setAllCaps(true);
-        dayOfWeekTv.setTextSize(14);
-        dayOfWeekTv.setPadding(0,0,textPadding,0);
-        contentLayout.addView(dayOfWeekTv);
-
-        nthTv = new TextView(context);
-        nthTv.setPadding(0,0,textPadding,0);
-        nthTv.setTextSize(14);
-        contentLayout.addView(nthTv);
-
-        monthTv = new TextView(context);
-        monthTv.setTextSize(14);
-        monthTv.setAllCaps(true);
-        monthTv.setPadding(0,0,textPadding,0);
-        contentLayout.addView(monthTv);
+        timeTv = new TextView(context);
+        timeTv.setAllCaps(true);
+        timeTv.setTextSize(14);
+        timeTv.setPadding(0,0,textPadding,0);
+        contentLayout.addView(timeTv);
     }
 
     private void initHeaderShowAttrs(){
-        Calendar calendar = this.myCalendar.getCalendar();
-        int day_of_month = calendar.get(Calendar.DAY_OF_MONTH);
-        nth =  day_of_month + "";
-        month = calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, getResources().getConfiguration().locale);
-        dayOfWeek = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, getResources().getConfiguration().locale) + ",";
+        Locale locale = context.getResources().getConfiguration().locale;
+        timeTv.setText(BaseUtil.getFormatTimeString(myCalendar
+                .getCalendar()
+                .getTimeInMillis()
+                , BaseUtil.getWeekDayMonthPattern(locale)
+                ,locale));
 
         mentionTv.setPadding(0,0,textPadding,0);
         titleColor = getResources().getColor(color_title);

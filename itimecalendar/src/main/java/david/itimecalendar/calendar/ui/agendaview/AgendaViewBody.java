@@ -107,7 +107,7 @@ public class AgendaViewBody extends LinearLayout{
             for (int i = 0; i < events.size(); i++) {
                 final ITimeEventInterface currentEvent = events.get(i);
 
-                AgendaViewInnerBody rowBody = new AgendaViewInnerBody(context, currentEvent, this.currentDayType);
+                AgendaViewInnerBody rowBody = new AgendaViewInnerBody(context, currentEvent, this.currentDayType, this.calendarConfig);
                 rowBody.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {

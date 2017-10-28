@@ -160,6 +160,9 @@ public class TimeSlotView extends WeekView {
             @Override
             public void onDayClick(Date dateClicked) {
                 TimeSlotView.this.scrollToDate(dateClicked,true);
+                if (iTimeCalendarListener != null){
+                    iTimeCalendarListener.onDateChanged(dateClicked);
+                }
             }
 
             @Override

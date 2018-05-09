@@ -2,13 +2,15 @@ package david.itimecalendar.calendar.wrapper;
 
 
 import david.itimecalendar.calendar.listeners.ITimeEventInterface;
-import david.itimecalendar.calendar.util.OverlapHelper;
+import david.itimecalendar.calendar.listeners.ITimeComparable;
 
 /**
- * Created by yuhaoliu on 4/01/2017.
+ * Created by David Liu on 4/01/2017.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 
-public class WrapperEvent implements OverlapHelper.OverlapInput<WrapperEvent> {
+public class WrapperEvent implements ITimeComparable<WrapperEvent> {
     private ITimeEventInterface event;
     private long fromDayBegin;
     private String vendorEventUid;

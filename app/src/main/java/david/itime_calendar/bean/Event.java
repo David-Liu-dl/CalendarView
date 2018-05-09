@@ -8,46 +8,52 @@ import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Keep;
 import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.Property;
 import org.greenrobot.greendao.annotation.ToMany;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import david.itime_calendar.RuleFactory.RuleInterface;
-import david.itime_calendar.RuleFactory.RuleModel;
+import david.itime_calendar.rulefactory.RuleInterface;
+import david.itime_calendar.rulefactory.RuleModel;
 import david.itimecalendar.calendar.listeners.ITimeEventInterface;
 import david.itimecalendar.calendar.listeners.ITimeInviteeInterface;
 
 /**
- * Created by yinchuandong on 22/08/2016.
+ * Created by David Liu on 22/08/2016.
+ * lyhmelbourne@gmail.com
  */
 
+
 @Entity
-public class Event implements ITimeEventInterface<Event>, Serializable, Cloneable,RuleInterface {
+public class Event implements ITimeEventInterface<Event>, Serializable, Cloneable, RuleInterface {
     @Id
-    private String eventUid;
+    private String eventUid = "";
     // for other calendars
-    private String eventId;
-    private String recurringEventUid;
+    private String eventId = "";
+    private String recurringEventUid = "";
     // for other calendars
-    private String recurringEventId;
-    private String calendarUid;
-    private String iCalUID;
-    private String hostUserUid; // add by paul
-    private String summary;
-    private String url;
-    private String location = "";
-    private String locationNote;
+    private String recurringEventId = "";
+    private String calendarUid = "";
+    private String iCalUID = "";
+    private String hostUserUid = ""; // add by paul
+    private String summary = "";
+    private String url = "";
+    private String location = "this is location";
+    private String locationNote = "";
     private double locationLatitude;
     private double locationLongitude;
-    private String note;
+    private String note = "";
+    private boolean isAllDay;
+    private String eventStatus = "";
 
 
-    private transient List<PhotoUrl> photoList = null;
+    private transient List<PhotoUrl> photoList = new ArrayList<>();
     private transient String[] recurrence = {};
 
     private String photo = "[]";
@@ -90,10 +96,7 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
     private long endTime;
     @Property
     @NotNull
-    private int eventType;
-    @Property
-    @NotNull
-    private String display;
+    private String eventType = "";
 
     @ToMany(referencedJoinProperty = "eventUid")
     private List<Invitee> invitee = null;
@@ -107,12 +110,12 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
     public Event() {
     }
 
-    @Generated(hash = 217815341)
+    @Generated(hash = 1624900520)
     public Event(String eventUid, String eventId, String recurringEventUid, String recurringEventId,
             String calendarUid, String iCalUID, String hostUserUid, String summary, String url,
             String location, String locationNote, double locationLatitude, double locationLongitude,
-            String note, String photo, long startTime, long endTime, int eventType,
-            @NotNull String display) {
+            String note, boolean isAllDay, String eventStatus, String photo, long startTime,
+            long endTime, @NotNull String eventType) {
         this.eventUid = eventUid;
         this.eventId = eventId;
         this.recurringEventUid = recurringEventUid;
@@ -127,28 +130,27 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
         this.locationLatitude = locationLatitude;
         this.locationLongitude = locationLongitude;
         this.note = note;
+        this.isAllDay = isAllDay;
+        this.eventStatus = eventStatus;
         this.photo = photo;
         this.startTime = startTime;
         this.endTime = endTime;
         this.eventType = eventType;
-        this.display = display;
     }
 
-
-
     @Override
-    public void setTitle(String summary) {
+    public void setSummary(String summary) {
         this.summary = summary;
     }
 
     @Override
-    public String getTitle() {
+    public String getSummary() {
         return this.summary;
     }
 
     @Override
     public List<? extends ITimeInviteeInterface> getDisplayInvitee() {
-        if (this.invitee==null){
+        if (this.invitee == null){
             this.invitee = this.getInvitee();
         }
         return this.invitee;
@@ -162,6 +164,14 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
     @Override
     public boolean isHighlighted() {
         return this.highlighted;
+    }
+
+    public boolean isAllDay() {
+        return isAllDay;
+    }
+
+    public void setAllDay(boolean allDay) {
+        isAllDay = allDay;
     }
 
     @Override
@@ -180,22 +190,6 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
     public long getStartTime(){return startTime;}
 
     public long getEndTime(){return endTime;}
-
-    public void setDisplayEventType(int eventType) {
-        this.eventType = eventType;
-    }
-
-    public int getDisplayEventType() {
-        return eventType;
-    }
-
-    public String getDisplayStatus() {
-        return display;
-    }
-
-    public void setDisplayStatus(String display) {
-        this.display = display;
-    }
 
     public int getDuration(){
         return (int)((endTime - startTime) /(1000*60));
@@ -222,14 +216,28 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
         this.eventUid = eventUid;
     }
 
-    @Override
-    public String getLocation() {
+    public String getLocationName() {
         return location;
     }
 
-
+    @Override
+    public String getEventType() {
+        return this.eventType;
+    }
 
     @Override
+    public boolean isConfirmed() {
+        return eventStatus.equals("Confirmed");
+    }
+
+    public String getEventStatus() {
+        return eventStatus;
+    }
+
+    public void setEventStatus(String eventStatus) {
+        this.eventStatus = eventStatus;
+    }
+
     public void setLocation(String location) {
         this.location = location;
     }
@@ -288,10 +296,13 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
      * To-many relationship, resolved on first access (and after reset).
      * Changes to to-many relations are not persisted, make changes to the target entity.
      */
-    @Generated(hash = 1368951675)
+    @Keep()
     public List<Invitee> getInvitee() {
-        if (invitee == null) {
+        if (invitee == null ) {
             final DaoSession daoSession = this.daoSession;
+            if (daoSession == null){
+                return null;
+            }
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
             }
@@ -303,6 +314,7 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
                 }
             }
         }
+
         return invitee;
     }
 
@@ -323,17 +335,6 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
     public void setUrl(String url) {
         this.url = url;
     }
-
-
-    public String getSummary() {
-        return this.summary;
-    }
-
-
-    public void setSummary(String summary) {
-        this.summary = summary;
-    }
-
 
     public String[] getRecurrence() {
         return this.recurrence;
@@ -523,21 +524,20 @@ public class Event implements ITimeEventInterface<Event>, Serializable, Cloneabl
         this.photo = photo;
     }
 
-
-    public int getEventType() {
-        return this.eventType;
-    }
-
-    public void setEventType(int eventType) {
+    public void setEventType(String eventType) {
         this.eventType = eventType;
     }
 
-    public String getDisplay() {
-        return this.display;
+    public String getLocation() {
+        return this.location;
     }
 
-    public void setDisplay(String display) {
-        this.display = display;
+    public boolean getIsAllDay() {
+        return this.isAllDay;
+    }
+
+    public void setIsAllDay(boolean isAllDay) {
+        this.isAllDay = isAllDay;
     }
 
 }

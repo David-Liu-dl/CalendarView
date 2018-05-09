@@ -6,8 +6,10 @@ import org.greenrobot.greendao.annotation.Generated;
 import java.io.Serializable;
 
 /**
- * Created by Paul on 10/09/2016.
+ * Created by David Liu on 10/09/2016.
+ * lyhmelbourne@gmail.com
  */
+
 @Entity
 public class EventPhoto implements Serializable {
     private int photoUid;

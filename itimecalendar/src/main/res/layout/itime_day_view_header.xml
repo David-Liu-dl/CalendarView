@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<david.itimecalendar.calendar.calendar.mudules.monthview.DayViewHeader
+<david.itimecalendar.calendar.ui.monthview.DayViewHeader
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/calendarDayViewHeader"
-    app:headerTodayTextColor="@color/color_F45B69"
+    app:headerTodayTextColor="@color/brand_main"
     app:headerNormalTextColorOdd="@color/text_normal_color_even"
     app:headerNormalTextColorEven="@color/text_normal_color_even"
     app:headerSelectedTextColor="@color/text_in_circle_color"
-    app:todaySelectedCircleBgColor="@color/color_F45B69"
-    app:otherSelectedCircleBgColor="@color/group_et"
+    app:todaySelectedCircleBgColor="@color/brand_main"
+    app:otherSelectedCircleBgColor="@color/calendar_selected"
     xmlns:android="http://schemas.android.com/apk/res/android">
-</david.itimecalendar.calendar.calendar.mudules.monthview.DayViewHeader>
+</david.itimecalendar.calendar.ui.monthview.DayViewHeader>

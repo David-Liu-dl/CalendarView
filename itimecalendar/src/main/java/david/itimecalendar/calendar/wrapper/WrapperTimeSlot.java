@@ -1,18 +1,26 @@
 package david.itimecalendar.calendar.wrapper;
 
 
+import android.support.annotation.NonNull;
+
+import david.itimecalendar.calendar.listeners.ITimeComparable;
 import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
+import david.itimecalendar.calendar.ui.unitviews.DraggableTimeSlotView;
 
 /**
- * Created by yuhaoliu on 4/01/2017.
+ * Created by David Liu on 4/01/2017.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 
-public class WrapperTimeSlot {
+public class WrapperTimeSlot implements ITimeComparable<WrapperTimeSlot> {
+    private DraggableTimeSlotView draggableTimeSlotView;
     private ITimeTimeSlotInterface timeSlot = null;
     private boolean isSelected = false;
     private boolean isAnimated = false;
     private boolean isRead = false;
     private boolean isRecommended = false;
+    private boolean isConflict = false;
 
     public WrapperTimeSlot(ITimeTimeSlotInterface timeSlot) {
         this.timeSlot = timeSlot;
@@ -69,4 +77,34 @@ public class WrapperTimeSlot {
         isRecommended = recommended;
     }
 
+    public DraggableTimeSlotView getDraggableTimeSlotView() {
+        return draggableTimeSlotView;
+    }
+
+    public void setDraggableTimeSlotView(DraggableTimeSlotView draggableTimeSlotView) {
+        this.draggableTimeSlotView = draggableTimeSlotView;
+    }
+
+    public boolean isConflict() {
+        return isConflict;
+    }
+
+    public void setConflict(boolean conflict) {
+        isConflict = conflict;
+    }
+
+    @Override
+    public long getStartTime() {
+        return this.getTimeSlot().getStartTime();
+    }
+
+    @Override
+    public long getEndTime() {
+        return this.getTimeSlot().getEndTime();
+    }
+
+    @Override
+    public int compareTo(@NonNull WrapperTimeSlot o) {
+        return this.getTimeSlot().compareTo(o.getTimeSlot());
+    }
 }

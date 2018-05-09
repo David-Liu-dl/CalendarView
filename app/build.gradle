@@ -12,6 +12,9 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    dataBinding{
+        enabled true
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -20,20 +23,19 @@ android {
     }
 }
 
+greendao {
+    schemaVersion 10
+    daoPackage "david.itime_calendar.bean"
+}
+
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    testCompile 'junit:junit:4.12'
     compile project(':itimecalendar')
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:design:25.3.1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.google.code.gson:gson:2.6.1'
-    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
     compile 'org.greenrobot:greendao:3.1.0'
-    compile 'org.greenrobot:greendao-generator:3.0.0'
-    compile 'net.zetetic:android-database-sqlcipher:3.5.2'
-    compile 'com.google.android.gms:play-services-appindexing:8.1.0'
+    compile 'org.greenrobot:greendao-generator:3.1.0'
 }
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.github.sundeepk.compactcalendarview.ITimeInnerCalendar xmlns:app="http://schemas.android.com/apk/res-auto"
+<com.github.sundeepk.compactcalendarview.ITimeTimeslotCalendar xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@drawable/itime_shadow_bg"
     android:id="@+id/compactcalendar_view"
@@ -7,11 +7,16 @@
     android:layout_height="wrap_content"
     app:itimeTimeslotCircleColor="#1677FB"
     app:itimeTimeslotTextColor="#FFFFFF"
+    app:itimeTitleTextSize="12sp"
     app:compactCalendarTargetHeight="220dp"
     app:compactCalendarTextSize="12sp"
     app:compactCalendarShouldSelectFirstDayOfMonthOnScroll="false"
     app:compactCalendarBackgroundColor="#FFFFFF"
     app:compactCalendarTextColor="#000000"
-    app:compactCalendarCurrentSelectedDayBackgroundColor="#95BEEC"
-    app:compactCalendarCurrentDayBackgroundColor="#E57373"
-    app:compactCalendarMultiEventIndicatorColor="#fff" />
+    app:compactCalendarCurrentSelectedDayBackgroundColor="#9e9e9e"
+    app:compactCalendarCurrentSelectedTodayBackgroundColor="@color/calendar_today"
+    app:compactCalendarCurrentDayUnselectedTextColor="@color/calendar_today"
+    app:compactCalendarCurrentDayBackgroundColor="@android:color/transparent"
+    app:compactCalendarMultiEventIndicatorColor="#fff"
+    app:compactCalenderTitleColor="#757575"
+    />

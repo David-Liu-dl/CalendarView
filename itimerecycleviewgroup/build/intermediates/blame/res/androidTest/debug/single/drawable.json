@@ -8,12 +8,12 @@
         "source": "/Users/yuhaoliu/.android/build-cache/5be05451bc1a27e18cebfbd8ecf78a16d18c3c49/output/res/drawable/abc_list_selector_background_transition_holo_light.xml"
     },
     {
-        "merged": "/Users/yuhaoliu/Documents/ITIME/vendor/iTime-Calendar/itimerecycleviewgroup/build/intermediates/res/merged/androidTest/debug/drawable/abc_btn_borderless_material.xml",
-        "source": "/Users/yuhaoliu/.android/build-cache/5be05451bc1a27e18cebfbd8ecf78a16d18c3c49/output/res/drawable/abc_btn_borderless_material.xml"
-    },
-    {
         "merged": "/Users/yuhaoliu/Documents/ITIME/vendor/iTime-Calendar/itimerecycleviewgroup/build/intermediates/res/merged/androidTest/debug/drawable/abc_seekbar_thumb_material.xml",
         "source": "/Users/yuhaoliu/.android/build-cache/5be05451bc1a27e18cebfbd8ecf78a16d18c3c49/output/res/drawable/abc_seekbar_thumb_material.xml"
+    },
+    {
+        "merged": "/Users/yuhaoliu/Documents/ITIME/vendor/iTime-Calendar/itimerecycleviewgroup/build/intermediates/res/merged/androidTest/debug/drawable/abc_btn_borderless_material.xml",
+        "source": "/Users/yuhaoliu/.android/build-cache/5be05451bc1a27e18cebfbd8ecf78a16d18c3c49/output/res/drawable/abc_btn_borderless_material.xml"
     },
     {
         "merged": "/Users/yuhaoliu/Documents/ITIME/vendor/iTime-Calendar/itimerecycleviewgroup/build/intermediates/res/merged/androidTest/debug/drawable/abc_tab_indicator_material.xml",

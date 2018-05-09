@@ -20,12 +20,12 @@
         "source": "/Users/yuhaoliu/.android/build-cache/fc2384dbafb7074a4a2b9641b93d500fca599f95/output/res/layout/abc_action_bar_title_item.xml"
     },
     {
-        "merged": "/Users/yuhaoliu/Documents/ITIME/vendor/iTime-Calendar/timeslotcalendar/build/intermediates/res/merged/debug/layout/abc_action_mode_close_item_material.xml",
-        "source": "/Users/yuhaoliu/.android/build-cache/fc2384dbafb7074a4a2b9641b93d500fca599f95/output/res/layout/abc_action_mode_close_item_material.xml"
-    },
-    {
         "merged": "/Users/yuhaoliu/Documents/ITIME/vendor/iTime-Calendar/timeslotcalendar/build/intermediates/res/merged/debug/layout/abc_screen_simple_overlay_action_mode.xml",
         "source": "/Users/yuhaoliu/.android/build-cache/fc2384dbafb7074a4a2b9641b93d500fca599f95/output/res/layout/abc_screen_simple_overlay_action_mode.xml"
+    },
+    {
+        "merged": "/Users/yuhaoliu/Documents/ITIME/vendor/iTime-Calendar/timeslotcalendar/build/intermediates/res/merged/debug/layout/abc_action_mode_close_item_material.xml",
+        "source": "/Users/yuhaoliu/.android/build-cache/fc2384dbafb7074a4a2b9641b93d500fca599f95/output/res/layout/abc_action_mode_close_item_material.xml"
     },
     {
         "merged": "/Users/yuhaoliu/Documents/ITIME/vendor/iTime-Calendar/timeslotcalendar/build/intermediates/res/merged/debug/layout/notification_template_big_media.xml",

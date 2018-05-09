@@ -67,7 +67,6 @@
     <color name="orchid">#DA70D6</color><!--淡紫色 -->
     <color name="thistle">#D8BFD8</color><!--蓟色 -->
     <color name="lightgray">#D3D3D3</color><!--亮灰色 -->
-    <color name="lightgrey">#D3D3D3</color><!--亮灰色 -->
     <color name="tan">#D2B48C</color><!--茶色 -->
     <color name="chocolate">#D2691E</color><!--巧可力色 -->
     <color name="peru">#CD853F</color><!--秘鲁色 -->
@@ -302,6 +301,7 @@
     <color name="color_FAFAFB">#99fafafb</color>
     <color name="color_f2f2f5">#73f2f2f5</color>
     <color name="color_75white">#73FFFFFF</color>
+
     <!--for dayView-->
     <color name="private_et">#05447e</color>
     <color name="group_et">#63ADF2</color>
@@ -312,28 +312,28 @@
     <color name="text_normal_color_even">#6D6D6D</color>
     <color name="today_circle_color">#f53331</color>
     <color name="other_circle_color">#6692d1</color>
-    <color name="divider_color">#d7d7d7</color>
+
     <color name="divider_light_color">#e0e0e0</color>
     <color name="allday_container_bg">#929090</color>
     <!--for contact-->
     <color name="sidebar_text_color">#000000</color>
-
     <color name="whites">#ffffff</color>
     <color name="gray_color">#AFAFAF</color>
     <color name="bg_sort_color">#EDEDED</color>
     <color name="page_bg_color">#efeef5</color>
 
     <!-- for agenda-->e0e0e0
-    <color name="image_number_white">#e0e0e0</color>
-    <color name="image_number_grey">#b2b2b2</color>
+    <color name="image_number_white">#f8f8fb</color>
+    <color name="image_number_grey">#757575</color>
     <color name="title_text_enable">#000000</color>
     <color name="title_text_disable">#8e8e93</color>
-    <color name="title_text_color">#8e8e93</color>
-    <color name="title_bg_color">#DFDFE1</color>
-    <color name="title_today_bg_color">#FABDC2</color>
+    <color name="title_text_color">#000000</color>
+    <color name="title_bg_color">#f5f5f5</color>
+    <color name="title_today_bg_color">#f2f9ff</color>
     <color name="sub_title_text_color">#9b9b9b</color>
     <color name="time_red">#f56572</color>
-
+    <color name="now_end_time">#67b9ff</color>
+    67b9ff
     <!--for new iTime-->
     <color name="event_as_bg_bg">#CFD6DC</color>
     <color name="event_as_bg_title">#FFFFFF</color>
@@ -344,4 +344,29 @@
     <color name="timeslot_selected">#0073FF</color>
     <color name="timeslot_bubble_bg">#262728</color>
 
+    <!-- new color set-->
+    <color name="brand_highlight">#FFBA00</color>
+    <color name="text_calendar_weekdate">#757575</color>
+    <color name="divider_calbg">#f5f5f5</color>
+    <color name="divider_nav">#eeeeee</color>
+    <color name="calendar_today">#0089FF</color>
+    <color name="calendar_timeslot_duration_bg">#f5f5f5</color>
+    <color name="calendar_timeslot_duration_highlighter">#0089ff</color>
+    <color name="brand_main">#0089ff</color>
+    <color name="calendar_selected">#9E9E9E</color>
+    <!-- event color -->
+    <color name="confirmed_event_bg">#EEF7FF</color>
+    <color name="confirmed_event_bar">#71C8FF</color>
+    <color name="unconfirmed_event_bg">#FFF4D6</color>
+    <color name="unconfirmed_event_bar">#FFC529</color>
+    <!-- timeslot -->
+    <color name="allday_timeslot_text">#757575</color>
+    <color name="allday_timeslot_bg">#fafafa</color>
+    <color name="timeslot_edit_menu_grey">#bdbdbd</color>
+    <color name="timeslot_select_mode_bg">#EDF5FF</color>
+    <color name="timeslot_select_mode_text">#0089ff</color>
+    <color name="timeslot_expired_mode_text">#330089ff</color>
+    <color name="timeslot_select_mode_border_selected">#0089ff</color>
+    <color name="timeslot_select_mode_border_non_selected">#400089ff</color>
+    <color name="timeslot_expired_mode_border">#0089ff</color>
 </resources>

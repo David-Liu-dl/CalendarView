@@ -136,10 +136,6 @@
         "source": "/Users/yuhaoliu/.android/build-cache/fc2384dbafb7074a4a2b9641b93d500fca599f95/output/res/drawable/abc_text_cursor_material.xml"
     },
     {
-        "merged": "/Users/yuhaoliu/Documents/ITIME/vendor/iTime-Calendar/timeslotcalendar/build/intermediates/res/merged/release/drawable/alpha_grad_bg.xml",
-        "source": "/Users/yuhaoliu/Documents/ITIME/vendor/iTime-Calendar/timeslotcalendar/src/main/res/drawable/alpha_grad_bg.xml"
-    },
-    {
         "merged": "/Users/yuhaoliu/Documents/ITIME/vendor/iTime-Calendar/timeslotcalendar/build/intermediates/res/merged/release/drawable/abc_btn_radio_material.xml",
         "source": "/Users/yuhaoliu/.android/build-cache/fc2384dbafb7074a4a2b9641b93d500fca599f95/output/res/drawable/abc_btn_radio_material.xml"
     },

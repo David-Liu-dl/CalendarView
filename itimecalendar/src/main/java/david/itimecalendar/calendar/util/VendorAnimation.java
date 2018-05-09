@@ -6,7 +6,9 @@ import android.view.View;
 import android.view.animation.AlphaAnimation;
 
 /**
- * Created by yuhaoliu on 26/12/2016.
+ * Created by David Liu on 26/12/2016.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 public class VendorAnimation {
     private static VendorAnimation ourInstance = new VendorAnimation();

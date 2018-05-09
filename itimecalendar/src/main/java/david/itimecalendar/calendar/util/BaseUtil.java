@@ -3,30 +3,60 @@ package david.itimecalendar.calendar.util;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
-import android.view.View;
+import android.text.format.DateUtils;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 import david.itimecalendar.calendar.listeners.ITimeEventInterface;
+import david.itimecalendar.calendar.listeners.ITimeComparable;
+import david.itimecalendar.calendar.ui.CalendarConfig;
 
 /**
- * Created by yuhaoliu on 14/03/2017.
+ * Created by David Liu on 14/03/2017.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 
 public class BaseUtil {
+    public static String WEEK_DAY_MONTH_EN = "EEE, dd MMM";
+    public static String WEEK_DAY_MONTH_ZH = "MM月dd日 EEE";
 
-    private static final String TAG = "test";
+    public static String HOUR_MIN = "HH:mm";
+    public static String HOUR = "HH";
+    public static String HOUR_MIN_A = "hh:mm a";
 
-    public static void relayoutChildren(View view) {
-        view.measure(
-                View.MeasureSpec.makeMeasureSpec(view.getMeasuredWidth(), View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec(view.getMeasuredHeight(), View.MeasureSpec.EXACTLY));
-        view.layout(view.getLeft(), view.getTop(), view.getRight(), view.getBottom());
+
+    public static String getUnitTimePattern(CalendarConfig calendarConfig){
+        switch (calendarConfig.time){
+            case HH:
+                return HOUR_MIN;
+            case HH_A:
+                return HOUR_MIN_A;
+            default:
+                return HOUR_MIN;
+        }
+    }
+
+    public static String getWeekDayMonthPattern(Locale locale){
+        if (locale == Locale.CHINESE){
+            return WEEK_DAY_MONTH_ZH;
+        }else {
+            return WEEK_DAY_MONTH_EN;
+        }
+    }
+
+    public static String getFormatTimeString(long time, String format, Locale locale){
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(time);
+        SimpleDateFormat fmt = new SimpleDateFormat(format, locale);
+        return fmt.format(c.getTime());
     }
 
     public static long getAllDayLong(long withInDayTime){
@@ -34,19 +64,6 @@ public class BaseUtil {
         cal.setTimeInMillis(withInDayTime);
         MyCalendar myCal = new MyCalendar(cal);
         return myCal.getEndOfDayMilliseconds() - myCal.getBeginOfDayMilliseconds();
-    }
-
-    public static boolean isAllDayEvent(ITimeEventInterface event) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(event.getStartTime());
-        int hour = cal.get(Calendar.HOUR);
-        int minutes = cal.get(Calendar.MINUTE);
-        long duration = event.getEndTime() - event.getStartTime();
-        boolean isAllDay = hour == 0
-                && minutes == 0
-                && duration >= (getAllDayLong(event.getStartTime()) * 0.9);
-
-        return isAllDay;
     }
 
     public static Drawable scaleDrawable(Drawable drawable, int width, int height){
@@ -67,8 +84,6 @@ public class BaseUtil {
         String sT = cal.getTime().toString();
         cal.setTimeInMillis(eventInterface.getEndTime());
         String eT = cal.getTime().toString();
-
-        Log.i(TAG, "printEventTime: " + "|" +preTag +"|" + "start at: " + sT + " end at: " + eT);
     }
 
     public static int getDatesDifference(long from, long to){
@@ -81,9 +96,9 @@ public class BaseUtil {
         MyCalendar myCal2 = new MyCalendar(cal);
         long beginTo = myCal2.getBeginOfDayMilliseconds();
 
-        int offset = (int)((beginTo - beginFrom) / (1000*60*60*24));
+        int dateDiff = (int)((beginTo - beginFrom) / (1000*60*60*24));
 
-        return offset;
+        return dateDiff;
     }
 
     public static ImageView getDivider(Context context, int resourceId) {
@@ -94,5 +109,39 @@ public class BaseUtil {
         dividerImgV.setLayoutParams(params);
         dividerImgV.setImageDrawable(context.getResources().getDrawable(resourceId));
         return dividerImgV;
+    }
+
+    public static boolean isToday(Calendar calendar){
+        return DateUtils.isToday(calendar.getTimeInMillis());
+    }
+
+    public static Date getDate(long time){
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(time);
+        return cal.getTime();
+    }
+
+    public static <O extends ITimeComparable> boolean isExpired(O o){
+        long nowTime = Calendar.getInstance().getTimeInMillis();
+        //check if timeslot expired
+        return  o != null && nowTime >= o.getStartTime();
+    }
+
+    public static boolean isExpired(long time){
+        long nowTime = Calendar.getInstance().getTimeInMillis();
+        //check if time expired
+        return nowTime >= time;
+    }
+
+    public static long getDayBeginMilliseconds(long startTime){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(startTime);
+
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE,0);
+        calendar.set(Calendar.SECOND,0);
+        calendar.set(Calendar.MILLISECOND,0);
+
+        return calendar.getTimeInMillis();
     }
 }

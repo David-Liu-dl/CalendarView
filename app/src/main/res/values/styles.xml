@@ -8,4 +8,8 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="ITime" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name = "android:windowBackground">@color/white</item>
+    </style>
+
 </resources>

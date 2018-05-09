@@ -4,12 +4,12 @@
         "source": "/Users/yuhaoliu/.android/build-cache/fc2384dbafb7074a4a2b9641b93d500fca599f95/output/res/drawable-xxhdpi-v4/abc_list_focused_holo.9.png"
     },
     {
-        "merged": "/Users/yuhaoliu/Documents/ITIME/vendor/iTime-Calendar/timeslotcalendar/build/intermediates/res/merged/androidTest/debug/drawable-xxhdpi-v4/abc_menu_hardkey_panel_mtrl_mult.9.png",
-        "source": "/Users/yuhaoliu/.android/build-cache/fc2384dbafb7074a4a2b9641b93d500fca599f95/output/res/drawable-xxhdpi-v4/abc_menu_hardkey_panel_mtrl_mult.9.png"
-    },
-    {
         "merged": "/Users/yuhaoliu/Documents/ITIME/vendor/iTime-Calendar/timeslotcalendar/build/intermediates/res/merged/androidTest/debug/drawable-xxhdpi-v4/abc_list_pressed_holo_light.9.png",
         "source": "/Users/yuhaoliu/.android/build-cache/fc2384dbafb7074a4a2b9641b93d500fca599f95/output/res/drawable-xxhdpi-v4/abc_list_pressed_holo_light.9.png"
+    },
+    {
+        "merged": "/Users/yuhaoliu/Documents/ITIME/vendor/iTime-Calendar/timeslotcalendar/build/intermediates/res/merged/androidTest/debug/drawable-xxhdpi-v4/abc_menu_hardkey_panel_mtrl_mult.9.png",
+        "source": "/Users/yuhaoliu/.android/build-cache/fc2384dbafb7074a4a2b9641b93d500fca599f95/output/res/drawable-xxhdpi-v4/abc_menu_hardkey_panel_mtrl_mult.9.png"
     },
     {
         "merged": "/Users/yuhaoliu/Documents/ITIME/vendor/iTime-Calendar/timeslotcalendar/build/intermediates/res/merged/androidTest/debug/drawable-xxhdpi-v4/abc_list_divider_mtrl_alpha.9.png",

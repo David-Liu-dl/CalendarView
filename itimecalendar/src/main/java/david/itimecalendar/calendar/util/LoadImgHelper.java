@@ -10,7 +10,9 @@ import david.itimecalendar.R;
 import david.itimecalendar.calendar.listeners.ITimeContactInterface;
 
 /**
- * Created by yuhaoliu on 17/08/16.
+ * Created by David Liu on 17/08/16.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 public class LoadImgHelper {
     private static LoadImgHelper loadImgHelper;

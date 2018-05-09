@@ -3,7 +3,9 @@ package david.itimecalendar.calendar.util;
 import java.util.Calendar;
 
 /**
- * Created by yuhaoliu on 6/08/16.
+ * Created by David Liu on 6/08/16.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 public class MyCalendar {
     private int year;
@@ -65,7 +67,6 @@ public class MyCalendar {
     public void setMillisecond(int millisecond) {
         this.millisecond = millisecond;
     }
-
 
     public int getDayOfWeek(){
         Calendar calendar = Calendar.getInstance();

@@ -3,7 +3,9 @@ package david.itimecalendar.calendar.listeners;
 import android.support.annotation.Nullable;
 
 /**
- * Created by yuhaoliu on 9/09/2016.
+ * Created by David Liu on 9/09/2016.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 public interface ITimeContactInterface {
 

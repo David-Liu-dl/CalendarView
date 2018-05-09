@@ -1,9 +1,15 @@
 package david.itimecalendar.calendar.listeners;
 
 /**
- * Created by yuhaoliu on 10/09/2016.
+ * Created by David Liu on 10/09/2016.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
-public interface ITimeTimeSlotInterface {
+public interface ITimeTimeSlotInterface<T> extends ITimeComparable<T> {
+    enum Status{
+        CONFLICT, UNSELECTED, SELECTED
+    }
+
     void setStartTime(long startTime);
     long getStartTime();
     void setEndTime(long endTime);
@@ -21,4 +27,7 @@ public interface ITimeTimeSlotInterface {
     String getTimeslotUid();
 
     boolean isRecommended();
+
+    void setIsAllDay(boolean isAllDay);
+    boolean isAllDay();
 }

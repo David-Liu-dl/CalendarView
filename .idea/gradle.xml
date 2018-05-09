@@ -9,9 +9,9 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/innerCalLibrary" />
             <option value="$PROJECT_DIR$/itimecalendar" />
-            <option value="$PROJECT_DIR$/itimerecycler" />
+            <option value="$PROJECT_DIR$/itimerecycleviewgroup" />
+            <option value="$PROJECT_DIR$/timeslotcalendar" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

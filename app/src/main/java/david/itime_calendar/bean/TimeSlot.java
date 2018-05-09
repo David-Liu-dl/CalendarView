@@ -1,5 +1,7 @@
 package david.itime_calendar.bean;
 
+import android.support.annotation.NonNull;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 
@@ -8,10 +10,12 @@ import java.io.Serializable;
 import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
 
 /**
- * Created by Paul on 10/09/2016.
+ * Created by David Liu on 10/09/2016.
+ * lyhmelbourne@gmail.com
  */
+
 @Entity
-public class TimeSlot implements ITimeTimeSlotInterface,Serializable {
+public class TimeSlot implements ITimeTimeSlotInterface<TimeSlot>,Serializable {
     private String timeSlotUid;
     private String eventUid;
     private long startTime;
@@ -20,11 +24,12 @@ public class TimeSlot implements ITimeTimeSlotInterface,Serializable {
     private int accetpedNum;
     private int totalNum;
     private boolean isRecommended;
+    private boolean isAllDay;
 
-    @Generated(hash = 1976353352)
+    @Generated(hash = 1384600152)
     public TimeSlot(String timeSlotUid, String eventUid, long startTime,
             long endTime, String status, int accetpedNum, int totalNum,
-            boolean isRecommended) {
+            boolean isRecommended, boolean isAllDay) {
         this.timeSlotUid = timeSlotUid;
         this.eventUid = eventUid;
         this.startTime = startTime;
@@ -33,6 +38,7 @@ public class TimeSlot implements ITimeTimeSlotInterface,Serializable {
         this.accetpedNum = accetpedNum;
         this.totalNum = totalNum;
         this.isRecommended = isRecommended;
+        this.isAllDay = isAllDay;
     }
 
     @Generated(hash = 1337764006)
@@ -135,5 +141,32 @@ public class TimeSlot implements ITimeTimeSlotInterface,Serializable {
 
     public void setIsRecommended(boolean isRecommended) {
         this.isRecommended = isRecommended;
+    }
+
+    @Override
+    public void setIsAllDay(boolean isAllDay) {
+        this.isAllDay = isAllDay;
+    }
+
+    @Override
+    public boolean isAllDay() {
+        return this.isAllDay;
+    }
+
+    @Override
+    public int compareTo(@NonNull TimeSlot timeSlot) {
+        long selfStartTime = this.getStartTime();
+        long cmpTgtStartTime = timeSlot.getStartTime();
+        int result = selfStartTime < cmpTgtStartTime ? -1 : 1;
+
+        if (result == -1){
+            return result;
+        }else {
+            return selfStartTime == cmpTgtStartTime ? 0 : 1;
+        }
+    }
+
+    public boolean getIsAllDay() {
+        return this.isAllDay;
     }
 }

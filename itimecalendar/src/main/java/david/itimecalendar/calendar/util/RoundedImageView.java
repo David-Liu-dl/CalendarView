@@ -5,24 +5,26 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.widget.ImageView;
 
 import david.itimecalendar.R;
 
 
 /**
- * Created by yuhaoliu on 15/03/2017.
+ * Created by David Liu on 15/03/2017.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 
 public class RoundedImageView extends android.support.v7.widget.AppCompatImageView{
-
+    private PaintFlagsDrawFilter filter = new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
     //px
-    public final int numberSize = 100;
+    public  int numberSize = 10;
     private int number;
     private Rect bounds = new Rect();
     private String str;
@@ -43,40 +45,32 @@ public class RoundedImageView extends android.support.v7.widget.AppCompatImageVi
     }
 
     private void init(){
-        numberPaint.setColor(Color.WHITE);
         numberPaint.setStyle(Paint.Style.FILL);
         numberPaint.setColor(getResources().getColor(R.color.image_number_grey));
-        numberPaint.setTextSize(DensityUtil.px2sp(getContext(),numberSize));
+        numberPaint.setTextSize(DensityUtil.dip2px(getContext(),numberSize));
+        numberPaint.setAntiAlias(true);
         str = "+ " + String.valueOf(number);
         numberPaint.getTextBounds(str, 0, str.length(), bounds);
 
         borderPaint.setStyle(Paint.Style.STROKE);
+        borderPaint.setTextSize(DensityUtil.dip2px(getContext(),0.5f));
         borderPaint.setAntiAlias(true);
-        borderPaint.setFilterBitmap(true);
-        borderPaint.setDither(true);
+//        borderPaint.setFilterBitmap(true);
+//        borderPaint.setDither(true);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        Drawable drawable = getDrawable();
         int pdLeft = getPaddingLeft();
         int pdTop = getPaddingTop();
-//        if (drawable == null) {
-//            return;
-//        }
-//
         if (getWidth() == 0 || getHeight() == 0) {
             return;
         }
         int w = getWidth() - pdLeft*2, h = getHeight() - pdTop*2;
 
-//        Bitmap b;
-//        Bitmap bitmap;
-////
-//        b = ((BitmapDrawable) drawable).getBitmap();
-//        bitmap = b.copy(Bitmap.Config.ARGB_8888, true);
 
         Bitmap roundBitmap = getRoundedCroppedBitmap(getBitmap(),w);
+        canvas.setDrawFilter(filter);
         canvas.drawBitmap(roundBitmap, pdLeft, pdTop, null);
 
         int canvasRealW = canvas.getWidth() - pdLeft*2;
@@ -102,7 +96,6 @@ public class RoundedImageView extends android.support.v7.widget.AppCompatImageVi
         Bitmap output = Bitmap.createBitmap(finalBitmap.getWidth(),
                 finalBitmap.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
-
         final Paint paint = new Paint();
         final Rect rect = new Rect(0, 0, finalBitmap.getWidth(),
                 finalBitmap.getHeight());

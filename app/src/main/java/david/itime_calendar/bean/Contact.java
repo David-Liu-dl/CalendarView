@@ -9,8 +9,10 @@ import java.io.Serializable;
 import david.itimecalendar.calendar.listeners.ITimeContactInterface;
 
 /**
- * Created by yuhaoliu on 17/08/16.
+ * Created by David Liu on 17/08/16.
+ * lyhmelbourne@gmail.com
  */
+
 @Entity
 public class Contact implements ITimeContactInterface, Serializable {
     @Id()

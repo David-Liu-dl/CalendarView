@@ -3,25 +3,24 @@ package david.itimecalendar.calendar.listeners;
 import java.util.List;
 
 /**
- * Created by yinchuandong on 22/08/2016.
+ * Created by David Liu on 22/08/2016.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
-public interface ITimeEventInterface<T> extends Comparable<T> {
+public interface ITimeEventInterface<T> extends ITimeComparable<T> {
+    String EVENT_TYPE_SOLO = "solo";
+    String EVENT_TYPE_GROUP = "group";
+
     String getEventUid();
 
-    void setTitle(String title);
-    String getTitle();
+    void setSummary(String summary);
+    String getSummary();
 
     void setStartTime(long startTime);
     long getStartTime();
 
     void setEndTime(long endTime);
     long getEndTime();
-
-    int getDisplayEventType();
-    String getDisplayStatus();
-
-    void setLocation(String location);
-    String getLocation();
 
     List<? extends ITimeInviteeInterface> getDisplayInvitee();
 
@@ -30,7 +29,17 @@ public interface ITimeEventInterface<T> extends Comparable<T> {
 
     /**
      *
+     * @param allday
+     */
+    void setAllDay(boolean allday);
+    boolean isAllDay();
+    /**
+     *
      * @return View.VISIBILITY
      */
     int isShownInCalendar();
+
+    String getLocationName();
+    String getEventType();
+    boolean isConfirmed();
 }

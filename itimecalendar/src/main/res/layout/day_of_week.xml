@@ -1,71 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    >
 
-    <TextView
-        android:layout_width="0dp"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/_1th_of_week"
-        android:textSize="11sp"
-        android:gravity="center"
-        android:id="@+id/dayOfWeek_1"
-        android:layout_weight="1"/>
+        android:paddingTop="4.5dp"
+        android:paddingBottom="4.5dp">
 
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/_2th_of_week"
-        android:textSize="11sp"
-        android:gravity="center"
-        android:id="@+id/dayOfWeek_2"
-        android:layout_weight="1"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/_1th_of_week"
+            android:textSize="11sp"
+            android:gravity="center"
+            android:id="@+id/dayOfWeek_1"
+            android:textColor="@color/text_calendar_weekdate"
+            android:layout_weight="1"/>
 
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/_3th_of_week"
-        android:textSize="11sp"
-        android:gravity="center"
-        android:id="@+id/dayOfWeek_3"
-        android:layout_weight="1"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/_2th_of_week"
+            android:textSize="11sp"
+            android:gravity="center"
+            android:textColor="@color/text_calendar_weekdate"
+            android:id="@+id/dayOfWeek_2"
+            android:layout_weight="1"/>
 
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/_4th_of_week"
-        android:textSize="11sp"
-        android:gravity="center"
-        android:id="@+id/dayOfWeek_4"
-        android:layout_weight="1"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/_3th_of_week"
+            android:textSize="11sp"
+            android:gravity="center"
+            android:id="@+id/dayOfWeek_3"
+            android:textColor="@color/text_calendar_weekdate"
+            android:layout_weight="1"/>
 
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/_5th_of_week"
-        android:gravity="center"
-        android:textSize="11sp"
-        android:id="@+id/dayOfWeek_5"
-        android:layout_weight="1"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/_4th_of_week"
+            android:textSize="11sp"
+            android:gravity="center"
+            android:id="@+id/dayOfWeek_4"
+            android:textColor="@color/text_calendar_weekdate"
+            android:layout_weight="1"/>
 
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/_6th_of_week"
-        android:textSize="11sp"
-        android:gravity="center"
-        android:id="@+id/dayOfWeek_6"
-        android:layout_weight="1"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/_5th_of_week"
+            android:gravity="center"
+            android:textSize="11sp"
+            android:id="@+id/dayOfWeek_5"
+            android:textColor="@color/text_calendar_weekdate"
+            android:layout_weight="1"/>
 
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/_7th_of_week"
-        android:textSize="11sp"
-        android:gravity="center"
-        android:id="@+id/dayOfWeek_7"
-        android:layout_weight="1"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/_6th_of_week"
+            android:textSize="11sp"
+            android:gravity="center"
+            android:id="@+id/dayOfWeek_6"
+            android:textColor="@color/text_calendar_weekdate"
+            android:layout_weight="1"/>
 
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/_7th_of_week"
+            android:textSize="11sp"
+            android:gravity="center"
+            android:id="@+id/dayOfWeek_7"
+            android:textColor="@color/text_calendar_weekdate"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:src="@drawable/itime_light_divider_line"/>
 </LinearLayout>

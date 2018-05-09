@@ -7,8 +7,10 @@ import org.greenrobot.greendao.annotation.Generated;
 import java.io.Serializable;
 
 /**
- * Created by yinchuandong on 20/06/2016.
+ * Created by David Liu on 20/06/2016.
+ * lyhmelbourne@gmail.com
  */
+
 
 @Entity(
         active = false

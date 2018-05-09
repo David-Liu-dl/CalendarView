@@ -348,8 +348,6 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
         return realY;
     }
 
-
-
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if(!isAllowScroll){

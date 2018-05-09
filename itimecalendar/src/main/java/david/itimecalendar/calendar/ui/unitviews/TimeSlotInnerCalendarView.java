@@ -35,7 +35,9 @@ import david.itimecalendar.R;
 import david.itimecalendar.calendar.util.DensityUtil;
 
 /**
- * Created by yuhaoliu on 2/05/2017.
+ * Created by David Liu on 2/05/2017.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 
 public class TimeSlotInnerCalendarView extends LinearLayout {

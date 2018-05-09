@@ -4,7 +4,9 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * Created by yuhaoliu on 15/8/17.
+ * Created by David Liu on 15/8/17.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 
 public class CalendarPositionHelper {

@@ -31,8 +31,11 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyFloat;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -57,6 +60,9 @@ public class CompactCalendarControllerTest {
 
     @Before
     public void setUp(){
+        List mockList = mock(List.class);
+        when(mockList.get(0)).thenReturn("123");
+
         Locale.setDefault(Locale.ENGLISH);
         TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
 
@@ -132,7 +138,6 @@ public class CompactCalendarControllerTest {
         underTest.setGrowProgress(1000); //set grow progress so that it simulates the calendar being open
         underTest.setDayColumnNames(dayNames);
         underTest.drawMonth(canvas, calendar, 0);
-
         InOrder inOrder = inOrder(canvas);
         inOrder.verify(canvas).drawText(eq("Mon"), anyInt(), anyInt(), eq(paint));
         inOrder.verify(canvas).drawText(eq("Tue"), anyInt(), anyInt(), eq(paint));

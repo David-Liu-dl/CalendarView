@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 
 import java.util.Date;
 
-import david.itime_calendar.EventManager;
 import david.itime_calendar.R;
+import david.itime_calendar.manager.EventManager;
 import david.itimecalendar.calendar.listeners.ITimeCalendarTimeslotViewListener;
 import david.itimecalendar.calendar.ui.weekview.TimeSlotView;
 import david.itimecalendar.calendar.ui.unitviews.DraggableTimeSlotView;
@@ -19,7 +19,8 @@ import david.itimecalendar.calendar.ui.unitviews.RcdRegularTimeSlotView;
 import david.itimecalendar.calendar.util.MyCalendar;
 
 /**
- * Created by yuhaoliu on 8/06/2017.
+ * Created by David Liu on 8/06/2017.
+ * lyhmelbourne@gmail.com
  */
 
 public class FragmentCalendarTimeslot extends Fragment {

@@ -3,7 +3,9 @@ package com.github.sundeepk.compactcalendarview;
 import android.content.Context;
 
 /**
- * Created by yuhaoliu on 23/08/16.
+ * Created by David Liu on 23/08/16.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 public class DensityUtil {
 

@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by yuhaoliu on 22/11/16.
+ * Created by David Liu on 22/11/16.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 public interface ITimeEventPackageInterface {
     Map<Long, List<ITimeEventInterface>> getRegularEventDayMap();

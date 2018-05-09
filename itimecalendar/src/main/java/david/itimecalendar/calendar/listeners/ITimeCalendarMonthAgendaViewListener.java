@@ -5,7 +5,9 @@ import java.util.Date;
 import david.itimecalendar.calendar.ui.agendaview.AgendaViewBody;
 
 /**
- * Created by yuhaoliu on 28/06/2017.
+ * Created by David Liu on 28/06/2017.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 
 public interface ITimeCalendarMonthAgendaViewListener extends AgendaViewBody.OnEventClickListener{

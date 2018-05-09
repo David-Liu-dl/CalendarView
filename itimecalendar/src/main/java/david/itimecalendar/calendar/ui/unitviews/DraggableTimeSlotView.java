@@ -29,7 +29,9 @@ import david.itimecalendar.calendar.util.MyCalendar;
 import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
 
 /**
- * Created by yuhaoliu on 26/08/2016.
+ * Created by David Liu on 26/08/2016.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 public class DraggableTimeSlotView extends RelativeLayout {
     public static int TYPE_NORMAL = 0;

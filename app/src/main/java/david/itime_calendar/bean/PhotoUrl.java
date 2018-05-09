@@ -1,8 +1,10 @@
 package david.itime_calendar.bean;
 
 /**
- * Created by Paul on 16/09/2016.
+ * Created by David Liu on 16/09/2016.
+ * lyhmelbourne@gmail.com
  */
+
 public class PhotoUrl {
 
     private String url;

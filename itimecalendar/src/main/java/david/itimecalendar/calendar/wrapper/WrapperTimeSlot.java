@@ -8,7 +8,9 @@ import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
 import david.itimecalendar.calendar.ui.unitviews.DraggableTimeSlotView;
 
 /**
- * Created by yuhaoliu on 4/01/2017.
+ * Created by David Liu on 4/01/2017.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 
 public class WrapperTimeSlot implements ITimeComparable<WrapperTimeSlot> {

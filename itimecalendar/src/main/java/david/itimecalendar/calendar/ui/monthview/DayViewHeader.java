@@ -27,7 +27,9 @@ import david.itimecalendar.calendar.util.DensityUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
 
 /**
- * Created by yuhaoliu on 5/08/16.
+ * Created by David Liu on 5/08/16.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 
 public class DayViewHeader extends LinearLayout {

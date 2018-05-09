@@ -1,7 +1,9 @@
 package david.itimecalendar.calendar.listeners;
 
 /**
- * Created by yuhaoliu on 12/8/17.
+ * Created by David Liu on 12/8/17.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 
 public interface ITimeComparable<T> extends Comparable<T> {

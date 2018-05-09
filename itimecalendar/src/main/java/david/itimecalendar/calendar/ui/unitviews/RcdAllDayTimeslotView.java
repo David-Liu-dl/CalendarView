@@ -23,7 +23,9 @@ import david.itimecalendar.calendar.util.MyCalendar;
 import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
 
 /**
- * Created by yuhaoliu on 1/05/2017.
+ * Created by David Liu on 1/05/2017.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 
 public class RcdAllDayTimeslotView extends RelativeLayout {

@@ -36,7 +36,9 @@ import static david.itimecalendar.calendar.ui.monthview.DayViewBodyCell.REGULAR;
 import static david.itimecalendar.calendar.ui.monthview.DayViewBodyCell.UNDEFINED;
 
 /**
- * Created by yuhaoliu on 9/01/2017.
+ * Created by David Liu on 9/01/2017.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 
 public class EventController {

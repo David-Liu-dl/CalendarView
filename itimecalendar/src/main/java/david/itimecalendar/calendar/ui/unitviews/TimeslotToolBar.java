@@ -17,7 +17,9 @@ import david.itimecalendar.R;
 import david.itimecalendar.calendar.util.DensityUtil;
 
 /**
- * Created by yuhaoliu on 7/06/2017.
+ * Created by David Liu on 7/06/2017.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 
 public class TimeslotToolBar extends BubbleLayout {

@@ -18,7 +18,9 @@ import david.itimecalendar.calendar.util.DensityUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
 
 /**
- * Created by yuhaoliu on 6/09/16.
+ * Created by David Liu on 6/09/16.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 public class AgendaBodyHeader extends LinearLayout {
 

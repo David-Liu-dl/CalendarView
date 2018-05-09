@@ -1,4 +1,4 @@
-package david.itime_calendar.RuleFactory;
+package david.itime_calendar.rulefactory;
 
 import android.util.Log;
 
@@ -10,8 +10,10 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by yuhaoliu on 21/11/16.
+ * Created by David Liu on 21/11/16.
+ * lyhmelbourne@gmail.com
  */
+
 public class RuleFactory {
     private static final String TAG = "Rule";
     private static RuleFactory ourInstance = new RuleFactory();

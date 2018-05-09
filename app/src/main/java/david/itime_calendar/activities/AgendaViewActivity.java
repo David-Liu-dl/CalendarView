@@ -1,4 +1,4 @@
-package david.itime_calendar.TestActivities;
+package david.itime_calendar.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -10,10 +10,11 @@ import java.util.Date;
 import david.itime_calendar.R;
 import david.itimecalendar.calendar.ui.agendaview.MonthAgendaView;
 
-import static david.itime_calendar.MainActivity.eventManager;
+import static david.itime_calendar.activities.MainActivity.eventManager;
 
 /**
- * Created by yuhaoliu on 30/05/2017.
+ * Created by David Liu on 30/05/2017.
+ * lyhmelbourne@gmail.com
  */
 
 public class AgendaViewActivity extends AppCompatActivity {

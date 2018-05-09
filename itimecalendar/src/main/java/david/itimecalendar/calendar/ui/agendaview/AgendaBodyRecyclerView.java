@@ -6,7 +6,9 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 
 /**
- * Created by yuhaoliu on 1/09/16.
+ * Created by David Liu on 1/09/16.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 public class AgendaBodyRecyclerView extends RecyclerView {
     private double scale;

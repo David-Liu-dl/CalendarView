@@ -1,4 +1,4 @@
-package david.itime_calendar;
+package david.itime_calendar.manager;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -18,8 +18,10 @@ import david.itime_calendar.bean.Invitee;
 import david.itime_calendar.bean.InviteeDao;
 
 /**
- * Created by yuhaoliu on 28/08/16.
+ * Created by David Liu on 28/08/16.
+ * lyhmelbourne@gmail.com
  */
+
 public class DBManager {
     private final static String dbName = "test_db";
     private static DBManager mInstance;

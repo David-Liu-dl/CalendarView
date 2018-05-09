@@ -1,4 +1,4 @@
-package david.itime_calendar;
+package david.itime_calendar.manager;
 
 import android.util.Log;
 
@@ -8,15 +8,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import david.itime_calendar.RuleFactory.RuleFactory;
-import david.itime_calendar.RuleFactory.RuleModel;
+import david.itime_calendar.rulefactory.RuleFactory;
+import david.itime_calendar.rulefactory.RuleModel;
 import david.itime_calendar.bean.Event;
 import david.itimecalendar.calendar.listeners.ITimeEventInterface;
 import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
 
 /**
- * Created by yuhaoliu on 29/08/16.
+ * Created by David Liu on 29/08/16.
+ * lyhmelbourne@gmail.com
  */
+
 public class EventManager {
     private final String TAG = "MyAPP";
     private static EventManager ourInstance = new EventManager();

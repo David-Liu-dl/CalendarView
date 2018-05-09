@@ -38,7 +38,9 @@ import david.itimecalendar.calendar.wrapper.WrapperEvent;
 import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
 
 /**
- * Created by yuhaoliu on 5/06/2017.
+ * Created by David Liu on 5/06/2017.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 
 public class DayViewAllDay extends FrameLayout {

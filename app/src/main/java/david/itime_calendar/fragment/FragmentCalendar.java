@@ -7,19 +7,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import david.itime_calendar.EventManager;
 import david.itime_calendar.R;
+import david.itime_calendar.manager.EventManager;
 
 /**
- * Created by yuhaoliu on 8/06/2017.
+ * Created by David Liu on 8/06/2017.
+ * lyhmelbourne@gmail.com
  */
+
 
 public class FragmentCalendar extends Fragment {
     private EventManager eventManager;
 
     private FragmentCalendarMonthDay monthDayFragment;
-    private FragmentCalendarAgenda agendaFragment;
     private FragmentCalendarWeekDay weekFragment;
+    private FragmentCalendarTimeslot timeslotFragment;
+    private FragmentCalendarAgenda agendaFragment;
 
     @Nullable
     @Override
@@ -36,19 +39,22 @@ public class FragmentCalendar extends Fragment {
 
     public void initCalendars(){
         monthDayFragment = new FragmentCalendarMonthDay();
-        getFragmentManager().beginTransaction().add(R.id.fragment_container, monthDayFragment).commit();
+        this.getChildFragmentManager().beginTransaction().add(R.id.child_fragment_container, monthDayFragment).commit();
     }
 
     public void toView(String name){
         if (name.equals(FragmentCalendarMonthDay.class.getSimpleName())){
-            monthDayFragment = new FragmentCalendarMonthDay();
-            getFragmentManager().beginTransaction().replace(R.id.fragment_container, monthDayFragment).commit();
+            monthDayFragment = monthDayFragment == null ? new FragmentCalendarMonthDay() : monthDayFragment;
+            this.getChildFragmentManager().beginTransaction().replace(R.id.child_fragment_container, monthDayFragment).commit();
+        }else if (name.equals(FragmentCalendarTimeslot.class.getSimpleName())){
+            timeslotFragment = timeslotFragment == null ? new FragmentCalendarTimeslot() : timeslotFragment;
+            this.getChildFragmentManager().beginTransaction().replace(R.id.child_fragment_container, timeslotFragment).commit();
         }else if (name.equals(FragmentCalendarWeekDay.class.getSimpleName())){
-            weekFragment = new FragmentCalendarWeekDay();
-            getFragmentManager().beginTransaction().replace(R.id.fragment_container, weekFragment).commit();
+            weekFragment = weekFragment == null ? new FragmentCalendarWeekDay() : weekFragment;
+            this.getChildFragmentManager().beginTransaction().replace(R.id.child_fragment_container, weekFragment).commit();
         }else if (name.equals(FragmentCalendarAgenda.class.getSimpleName())){
-            agendaFragment = new FragmentCalendarAgenda();
-            getFragmentManager().beginTransaction().replace(R.id.fragment_container, agendaFragment).commit();
+            agendaFragment = agendaFragment == null ? new FragmentCalendarAgenda() : agendaFragment;
+            this.getChildFragmentManager().beginTransaction().replace(R.id.child_fragment_container, agendaFragment).commit();
         }
     }
 }

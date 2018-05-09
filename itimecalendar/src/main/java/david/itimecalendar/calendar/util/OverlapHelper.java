@@ -7,7 +7,9 @@ import java.util.List;
 import david.itimecalendar.calendar.listeners.ITimeComparable;
 
 /**
- * Created by yuhaoliu on 18/08/16.
+ * Created by David Liu on 18/08/16.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 public class OverlapHelper <I extends ITimeComparable<I>> {
     private final long overlapTolerance = (15/2) * 60 * 1000;

@@ -3,7 +3,9 @@ package com.developer.paul.itimerecycleviewgroup;
 import android.view.ViewGroup;
 
 /**
- * Created by Paul on 30/5/17.
+ * Created by David Liu on 30/5/17.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 
 public interface RecycleInterface{

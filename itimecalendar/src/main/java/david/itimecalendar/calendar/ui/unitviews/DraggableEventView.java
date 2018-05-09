@@ -22,7 +22,9 @@ import david.itimecalendar.calendar.util.MyCalendar;
 import david.itimecalendar.calendar.util.VendorAnimation;
 
 /**
- * Created by yuhaoliu on 3/08/16.
+ * Created by David Liu on 3/08/16.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 public class DraggableEventView extends RelativeLayout {
     public static int TYPE_NORMAL = 0;

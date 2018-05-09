@@ -23,7 +23,9 @@ import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
 import david.itimecalendar.calendar.util.DensityUtil;
 
 /**
- * Created by yuhaoliu on 1/06/2017.
+ * Created by David Liu on 1/06/2017.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 
 public class TimeslotEditView extends LinearLayout {

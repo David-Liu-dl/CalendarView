@@ -26,7 +26,9 @@ import david.itimecalendar.calendar.listeners.ITimeEventPackageInterface;
 import david.itimecalendar.calendar.util.MyCalendar;
 
 /**
- * Created by yuhaoliu on 31/08/16.
+ * Created by David Liu on 31/08/16.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 
 public class MonthAgendaView extends RelativeLayout{

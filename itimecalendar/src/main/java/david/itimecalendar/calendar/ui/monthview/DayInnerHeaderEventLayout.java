@@ -10,7 +10,9 @@ import david.itimecalendar.calendar.listeners.ITimeEventInterface;
 import david.itimecalendar.calendar.ui.unitviews.DraggableEventView;
 
 /**
- * Created by yuhaoliu on 22/09/16.
+ * Created by David Liu on 22/09/16.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 public class DayInnerHeaderEventLayout extends LinearLayout {
     ArrayList<ITimeEventInterface> events = new ArrayList<>();

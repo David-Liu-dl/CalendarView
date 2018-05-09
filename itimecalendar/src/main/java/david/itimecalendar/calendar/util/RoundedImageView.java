@@ -16,7 +16,9 @@ import david.itimecalendar.R;
 
 
 /**
- * Created by yuhaoliu on 15/03/2017.
+ * Created by David Liu on 15/03/2017.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 
 public class RoundedImageView extends android.support.v7.widget.AppCompatImageView{

@@ -29,7 +29,9 @@ import david.itimecalendar.calendar.util.BaseUtil;
 import david.itimecalendar.calendar.util.MyCalendar;
 
 /**
- * Created by yuhaoliu on 10/05/2017.
+ * Created by David Liu on 10/05/2017.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 
 public class MonthView extends LinearLayout{

@@ -45,7 +45,9 @@ import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
 
 
 /**
- * Created by yuhaoliu on 11/05/2017.
+ * Created by David Liu on 11/05/2017.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 
 public class DayViewBody extends RelativeLayout {

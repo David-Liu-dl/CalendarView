@@ -12,7 +12,9 @@ import david.itimecalendar.calendar.util.DensityUtil;
 
 
 /**
- * Created by yuhaoliu on 18/02/2017.
+ * Created by David Liu on 18/02/2017.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 
 public class DayViewHeaderCell extends RelativeLayout {

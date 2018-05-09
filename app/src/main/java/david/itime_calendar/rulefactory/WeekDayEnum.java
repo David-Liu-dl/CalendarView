@@ -1,8 +1,5 @@
-package david.itime_calendar.RuleFactory;
+package david.itime_calendar.rulefactory;
 
-/**
- * Created by yuhaoliu on 20/11/16.
- */
 public enum WeekDayEnum {
     MO(2),
     TU(3),
@@ -12,6 +9,10 @@ public enum WeekDayEnum {
     SA(7),
     SU(1);
 
+    /**
+     * Created by David Liu on 20/11/16.
+     * lyhmelbourne@gmail.com
+     */
     private int index;
 
     WeekDayEnum(){};

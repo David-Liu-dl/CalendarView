@@ -33,8 +33,10 @@ import david.itimecalendar.calendar.util.RoundedImageView;
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 
 /**
- * Created by yuhaoliu on 31/08/16.
+ * Created by David Liu on 31/08/16.
+ * lyhmelbourne@gmail.com
  */
+
 public class AgendaViewInnerBody extends RelativeLayout {
     private final String TAG = "MyAPP";
 

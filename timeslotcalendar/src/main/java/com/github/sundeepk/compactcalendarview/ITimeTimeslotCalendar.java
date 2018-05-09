@@ -24,7 +24,9 @@ import java.util.HashMap;
 import java.util.Locale;
 
 /**
- * Created by yuhaoliu on 3/05/2017.
+ * Created by David Liu on 3/05/2017.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 
 public class ITimeTimeslotCalendar extends RelativeLayout {

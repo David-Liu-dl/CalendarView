@@ -17,6 +17,7 @@
             app:leftBarWidth="45dp"
             app:topSpace="5dp"
             app:hourHeight="40dp"
+            app:headerHeight="45dp"
             app:allDayEventHeight="40dp"
             app:allDayTimeslotHeight="100dp"/>
     </LinearLayout>

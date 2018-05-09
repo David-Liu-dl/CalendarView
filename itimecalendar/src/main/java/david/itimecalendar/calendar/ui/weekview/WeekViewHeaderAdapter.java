@@ -11,7 +11,9 @@ import java.util.Calendar;
 import david.itimecalendar.calendar.util.MyCalendar;
 
 /**
- * Created by yuhaoliu on 29/05/2017.
+ * Created by David Liu on 29/05/2017.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 
 public class WeekViewHeaderAdapter extends ITimeAdapter<WeekViewHeaderCell> {

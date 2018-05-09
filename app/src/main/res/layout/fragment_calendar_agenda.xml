@@ -1,18 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:bind="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <data>
-    </data>
-
-    <LinearLayout
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <david.itimecalendar.calendar.ui.agendaview.MonthAgendaView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-        <david.itimecalendar.calendar.ui.agendaview.MonthAgendaView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/agenda_view"
-            />
-    </LinearLayout>
-</layout>
+        android:id="@+id/agenda_view"
+        />
+</FrameLayout>

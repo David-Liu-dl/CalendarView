@@ -35,7 +35,9 @@ import david.itimecalendar.calendar.wrapper.WrapperEvent;
 import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
 
 /**
- * Created by yuhaoliu on 10/05/2017.
+ * Created by David Liu on 10/05/2017.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 
 public class DayViewBodyCell extends FrameLayout{
@@ -69,7 +71,7 @@ public class DayViewBodyCell extends FrameLayout{
     private int rs_nowtime_line = R.drawable.itime_now_time_full_line;
     /*************************** End of Resources Setting ****************************/
 
-    public static SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+    public static SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
 
     protected CalendarConfig calendarConfig;
     protected OverlapHelper xHelper = new OverlapHelper();
@@ -140,7 +142,7 @@ public class DayViewBodyCell extends FrameLayout{
     private void init(){
         this.context = getContext();
         initLayoutParams();
-        initTimeSlot();
+        initTimeBlock();
         initView();
     }
 
@@ -194,7 +196,7 @@ public class DayViewBodyCell extends FrameLayout{
         initDividerLine(getHours());
     }
 
-    private void initTimeSlot() {
+    private void initTimeBlock() {
         double startPoint = spaceTop;
         double minuteHeight = hourHeight / 60;
         String[] hours = getHours();

@@ -24,7 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Paul on 30/5/17.
+ * Created by David Liu on 30/5/17.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 
 public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface {
@@ -298,7 +300,6 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
 
             AwesomeViewGroup awesomeViewGroup = awesomeViewGroupList.get(i);
             AwesomeViewGroup.AwesomeLayoutParams lp = (AwesomeViewGroup.AwesomeLayoutParams) awesomeViewGroup.getLayoutParams();
-
             lp.parentHeight = viewHeight;
             lp.width = childWidth;
             lp.height = childHeight;
@@ -346,6 +347,8 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
         }
         return realY;
     }
+
+
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
@@ -862,6 +865,11 @@ public class ITimeRecycleViewGroup extends ViewGroup implements RecycleInterface
         this.adapter = adapter;
         adapter.setAwesomeViewGroups(awesomeViewGroupList);
         adapter.onCreateViewHolders();
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        return super.dispatchTouchEvent(ev);
     }
 
     public void smoothMoveWithOffsetX(int moveOffset, @Nullable Animator.AnimatorListener animatorListener) {

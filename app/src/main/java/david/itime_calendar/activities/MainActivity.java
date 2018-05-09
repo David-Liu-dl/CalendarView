@@ -1,4 +1,4 @@
-package david.itime_calendar;
+package david.itime_calendar.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,15 +11,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import david.itime_calendar.TestActivities.AgendaViewActivity;
-import david.itime_calendar.TestActivities.DayViewActivity;
-import david.itime_calendar.TestActivities.FragmentActivity;
-import david.itime_calendar.TestActivities.TestActivity;
-import david.itime_calendar.TestActivities.TimeSlotActivity;
-import david.itime_calendar.TestActivities.WeekViewActivity;
+import david.itime_calendar.R;
 import david.itime_calendar.bean.Contact;
 import david.itime_calendar.bean.Event;
 import david.itime_calendar.bean.Invitee;
+import david.itime_calendar.manager.DBManager;
+import david.itime_calendar.manager.EventManager;
 import david.itimecalendar.calendar.listeners.ITimeEventInterface;
 
 public class MainActivity extends AppCompatActivity {
@@ -33,8 +30,6 @@ public class MainActivity extends AppCompatActivity {
 
         this.initView();
         this.initTest();
-
-        ViewServer.get(this).addWindow(this);
     }
 
 
@@ -46,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initData() {
-        this.dbManager.clearDB();
+        dbManager.clearDB();
         this.initDB();
     }
 
@@ -105,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
             event.setEndTime(endTime);
             events.add(event);
 
-            startTime = startTime;
         }
 
         dbManager.insertEventList(events);
@@ -120,16 +114,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return contacts;
-    }
-
-    public void onDestroy() {
-        super.onDestroy();
-        ViewServer.get(this).removeWindow(this);
-    }
-
-    public void onResume() {
-        super.onResume();
-        ViewServer.get(this).setFocusedWindow(this);
     }
 
     void initView() {
@@ -169,24 +153,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button tstBtn = (Button) findViewById(R.id.btn_testview);
-        tstBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, TestActivity.class);
-                startActivity(intent);
-            }
-        });
-
         Button fragBtn = (Button) findViewById(R.id.btn_frag);
         fragBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, FragmentActivity.class);
+                Intent intent = new Intent(MainActivity.this, OverviewActivity.class);
                 startActivity(intent);
             }
         });
 
-//        timeslotBtn.performClick();
     }
 }

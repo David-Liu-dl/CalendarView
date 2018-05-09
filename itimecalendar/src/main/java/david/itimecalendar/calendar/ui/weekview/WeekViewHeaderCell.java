@@ -20,7 +20,9 @@ import david.itimecalendar.calendar.util.MyCalendar;
 import static android.widget.LinearLayout.VERTICAL;
 
 /**
- * Created by yuhaoliu on 29/05/2017.
+ * Created by David Liu on 29/05/2017.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 
 public class WeekViewHeaderCell extends FrameLayout {

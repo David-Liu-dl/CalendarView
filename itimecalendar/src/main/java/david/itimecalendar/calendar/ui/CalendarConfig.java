@@ -1,7 +1,9 @@
 package david.itimecalendar.calendar.ui;
 
 /**
- * Created by yuhaoliu on 14/8/17.
+ * Created by David Liu on 14/8/17.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 
 public class CalendarConfig {

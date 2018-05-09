@@ -46,7 +46,9 @@ import david.itimecalendar.calendar.util.MyCalendar;
 import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
 
 /**
- * Created by yuhaoliu on 30/05/2017.
+ * Created by David Liu on 30/05/2017.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 
 public class TimeSlotView extends WeekView {
@@ -513,10 +515,12 @@ public class TimeSlotView extends WeekView {
     }
 
     public void showTimeslot(){
+        this.isTimeslotEnable = !isTimeslotEnable;
         dayViewBody.showBodyTimeslot();
     }
 
     public void hideTimeslot(){
+        this.isTimeslotEnable = !isTimeslotEnable;
         dayViewBody.hideBodyTimeslot();
     }
 

@@ -11,8 +11,10 @@ import java.io.Serializable;
 import david.itimecalendar.calendar.listeners.ITimeInviteeInterface;
 
 /**
- * Created by yuhaoliu on 10/09/2016.
+ * Created by David Liu on 10/09/2016.
+ * lyhmelbourne@gmail.com
  */
+
 @Entity
 public class Invitee implements ITimeInviteeInterface, Serializable {
     @ToOne(joinProperty = "inviteeUid")

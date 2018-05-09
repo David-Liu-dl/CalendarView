@@ -26,7 +26,7 @@ public class MyApplication extends Application{
         DisplayMetrics dm = resources.getDisplayMetrics();
         Configuration config = resources.getConfiguration();
         // 应用用户选择语言
-        config.locale = Locale.CHINESE;
+        config.locale = Locale.ENGLISH;
         resources.updateConfiguration(config, dm);
     }
 }

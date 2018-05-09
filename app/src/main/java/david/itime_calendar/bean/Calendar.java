@@ -1,8 +1,10 @@
 package david.itime_calendar.bean;
 
 /**
- * Created by Paul on 24/09/2016.
+ * Created by David Liu on 24/09/2016.
+ * lyhmelbourne@gmail.com
  */
+
 public class Calendar {
     private String iCalUID;
     private String summary;

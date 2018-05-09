@@ -9,17 +9,18 @@ import android.view.ViewGroup;
 
 import java.util.Date;
 
-import david.itime_calendar.EventManager;
 import david.itime_calendar.R;
+import david.itime_calendar.manager.EventManager;
 import david.itimecalendar.calendar.listeners.ITimeCalendarMonthDayViewListener;
 import david.itimecalendar.calendar.listeners.ITimeEventInterface;
-import david.itimecalendar.calendar.ui.monthview.DayViewBody;
 import david.itimecalendar.calendar.ui.monthview.MonthView;
 import david.itimecalendar.calendar.ui.unitviews.DraggableEventView;
 import david.itimecalendar.calendar.util.MyCalendar;
 
 /**
- * Created by yuhaoliu on 8/06/2017.
+ * Created by David Liu on 8/06/2017.
+ * NowBoarding Ltd
+ * lyhmelbourne@gmail.com
  */
 
 public class FragmentCalendarMonthDay extends Fragment {
@@ -38,6 +39,7 @@ public class FragmentCalendarMonthDay extends Fragment {
 
     private void initView(){
         monthDayView = (MonthView) root.findViewById(R.id.month_view);
+        monthDayView.getCalendarConfig().enableEvent();
         //Set the data source with format of ITimeEventPackageInterface
         //ITimeEventPackageInterface is composed by two parts:
         //  1: regular events. 2: repeated events.

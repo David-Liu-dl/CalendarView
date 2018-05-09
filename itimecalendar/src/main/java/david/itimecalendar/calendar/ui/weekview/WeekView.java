@@ -33,7 +33,9 @@ import david.itimecalendar.calendar.util.MyCalendar;
 import static android.widget.LinearLayout.VERTICAL;
 
 /**
- * Created by yuhaoliu on 10/05/2017.
+ * Created by David Liu on 10/05/2017.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 
 public class WeekView extends RelativeLayout{
@@ -218,8 +220,4 @@ public class WeekView extends RelativeLayout{
         return calendarConfig;
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    }
 }

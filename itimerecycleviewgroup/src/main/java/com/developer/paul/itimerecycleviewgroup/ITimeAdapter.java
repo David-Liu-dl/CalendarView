@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Paul on 31/5/17.
+ * Created by David Liu on 31/5/17.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 
 public abstract class ITimeAdapter<T extends View> {

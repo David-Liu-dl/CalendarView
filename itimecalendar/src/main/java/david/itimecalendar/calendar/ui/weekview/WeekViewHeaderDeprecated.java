@@ -23,7 +23,9 @@ import java.util.Locale;
 import david.itimecalendar.R;
 
 /**
- * Created by yuhaoliu on 23/05/2017.
+ * Created by David Liu on 23/05/2017.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 
 public class WeekViewHeaderDeprecated extends FrameLayout {

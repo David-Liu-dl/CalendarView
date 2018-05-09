@@ -5,7 +5,9 @@ import android.view.animation.Animation;
 import android.view.animation.Transformation;
 
 /**
- * Created by yuhaoliu on 25/09/16.
+ * Created by David Liu on 25/09/16.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 public class ResizeAnimation extends Animation{
     // Used to define the type of animation upon construction

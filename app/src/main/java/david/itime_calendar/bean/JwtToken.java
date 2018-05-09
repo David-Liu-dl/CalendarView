@@ -3,8 +3,10 @@ package david.itime_calendar.bean;
 import java.io.Serializable;
 
 /**
- * Created by yinchuandong on 12/08/2016.
+ * Created by David Liu on 12/08/2016.
+ * lyhmelbourne@gmail.com
  */
+
 public class JwtToken implements Serializable {
     private String token;
     private String error;

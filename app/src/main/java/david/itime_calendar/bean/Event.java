@@ -18,14 +18,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import david.itime_calendar.RuleFactory.RuleInterface;
-import david.itime_calendar.RuleFactory.RuleModel;
+import david.itime_calendar.rulefactory.RuleInterface;
+import david.itime_calendar.rulefactory.RuleModel;
 import david.itimecalendar.calendar.listeners.ITimeEventInterface;
 import david.itimecalendar.calendar.listeners.ITimeInviteeInterface;
 
 /**
- * Created by yinchuandong on 22/08/2016.
+ * Created by David Liu on 22/08/2016.
+ * lyhmelbourne@gmail.com
  */
+
 
 @Entity
 public class Event implements ITimeEventInterface<Event>, Serializable, Cloneable,RuleInterface {

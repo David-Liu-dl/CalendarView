@@ -19,7 +19,9 @@ import david.itimecalendar.calendar.listeners.ITimeComparable;
 import david.itimecalendar.calendar.ui.CalendarConfig;
 
 /**
- * Created by yuhaoliu on 14/03/2017.
+ * Created by David Liu on 14/03/2017.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 
 public class BaseUtil {

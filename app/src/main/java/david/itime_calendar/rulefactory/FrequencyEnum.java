@@ -1,14 +1,15 @@
-package david.itime_calendar.RuleFactory;
+package david.itime_calendar.rulefactory;
 
-/**
- * Created by yuhaoliu on 20/11/16.
- */
 public enum FrequencyEnum {
     DAILY("DAILY"),
     WEEKLY("WEEKLY"),
     MONTHLY("MONTHLY"),
     YEARLY("YEARLY");
 
+    /**
+     * Created by David Liu on 20/11/16.
+     * lyhmelbourne@gmail.com
+     */
     private String value;
 
     FrequencyEnum() {

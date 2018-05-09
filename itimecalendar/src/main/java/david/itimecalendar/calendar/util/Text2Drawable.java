@@ -8,7 +8,9 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
 /**
- * Created by yuhaoliu on 29/08/16.
+ * Created by David Liu on 29/08/16.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 public class Text2Drawable extends Drawable {
     private final String text;

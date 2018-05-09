@@ -10,8 +10,10 @@ import java.io.Serializable;
 import david.itimecalendar.calendar.listeners.ITimeTimeSlotInterface;
 
 /**
- * Created by Paul on 10/09/2016.
+ * Created by David Liu on 10/09/2016.
+ * lyhmelbourne@gmail.com
  */
+
 @Entity
 public class TimeSlot implements ITimeTimeSlotInterface<TimeSlot>,Serializable {
     private String timeSlotUid;

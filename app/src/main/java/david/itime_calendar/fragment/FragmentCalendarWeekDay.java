@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 
 import java.util.Date;
 
-import david.itime_calendar.EventManager;
 import david.itime_calendar.R;
+import david.itime_calendar.manager.EventManager;
 import david.itimecalendar.calendar.listeners.ITimeCalendarWeekDayViewListener;
 import david.itimecalendar.calendar.listeners.ITimeEventInterface;
 import david.itimecalendar.calendar.ui.weekview.WeekView;
@@ -19,8 +19,10 @@ import david.itimecalendar.calendar.ui.unitviews.DraggableEventView;
 import david.itimecalendar.calendar.util.MyCalendar;
 
 /**
- * Created by yuhaoliu on 8/06/2017.
+ * Created by David Liu on 8/06/2017.
+ * lyhmelbourne@gmail.com
  */
+
 
 public class FragmentCalendarWeekDay extends Fragment {
     private View root;
@@ -38,6 +40,7 @@ public class FragmentCalendarWeekDay extends Fragment {
 
     private void initView(){
         weekView = (WeekView) root.findViewById(R.id.week_view);
+        weekView.getCalendarConfig().enableEvent();
         //Set the data source with format of ITimeEventPackageInterface
         //ITimeEventPackageInterface is composed by two parts:
         //  1: regular events. 2: repeated events.

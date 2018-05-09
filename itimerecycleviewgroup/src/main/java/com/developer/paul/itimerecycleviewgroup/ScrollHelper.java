@@ -4,14 +4,15 @@ import android.util.Log;
 import android.widget.Scroller;
 
 /**
- * Created by Paul on 30/5/17.
+ * Created by David Liu on 30/5/17.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 
 public class ScrollHelper {
     public static int[] calculateScrollDistance(Scroller scroller, int velocityX, int velocityY,
                                                 int maxDis, int alreadyMoveDis, int unitLength){
         int[] outDist = new int[2];
-
         scroller.fling(0, 0, velocityX, velocityY,
                 Integer.MIN_VALUE, Integer.MAX_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE);
         int disX = scroller.getFinalX()/2;

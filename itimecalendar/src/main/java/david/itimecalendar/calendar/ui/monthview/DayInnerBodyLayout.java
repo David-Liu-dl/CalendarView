@@ -14,7 +14,9 @@ import david.itimecalendar.calendar.wrapper.WrapperEvent;
 import david.itimecalendar.calendar.wrapper.WrapperTimeSlot;
 
 /**
- * Created by yuhaoliu on 21/09/16.
+ * Created by David Liu on 21/09/16.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 public class DayInnerBodyLayout extends ViewGroup {
     ArrayList<WrapperEvent> events = new ArrayList<>();

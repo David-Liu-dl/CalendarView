@@ -35,7 +35,9 @@ import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
 /**
- * Created by yuhaoliu on 9/01/2017.
+ * Created by David Liu on 9/01/2017.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 
 public class TimeSlotController {

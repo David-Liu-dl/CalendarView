@@ -37,7 +37,9 @@ import static android.widget.RelativeLayout.ALIGN_PARENT_RIGHT;
 import static android.widget.RelativeLayout.CENTER_VERTICAL;
 
 /**
- * Created by yuhaoliu on 31/05/2017.
+ * Created by David Liu on 31/05/2017.
+ * ${COMPANY}
+ * lyhmelbourne@gmail.com
  */
 
 public class TimeslotDurationEditView<T> extends FrameLayout{

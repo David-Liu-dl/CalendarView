@@ -1,4 +1,4 @@
-package david.itime_calendar.TestActivities;
+package david.itime_calendar.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -10,10 +10,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import david.itime_calendar.EventManager;
-import david.itime_calendar.MainActivity;
 import david.itime_calendar.R;
 import david.itime_calendar.bean.TimeSlot;
+import david.itime_calendar.manager.EventManager;
 import david.itimecalendar.calendar.listeners.ITimeCalendarTimeslotViewListener;
 import david.itimecalendar.calendar.ui.weekview.TimeSlotView;
 import david.itimecalendar.calendar.ui.unitviews.DraggableTimeSlotView;
@@ -21,7 +20,9 @@ import david.itimecalendar.calendar.ui.unitviews.RcdRegularTimeSlotView;
 import david.itimecalendar.calendar.util.MyCalendar;
 
 /**
- * Created by yuhaoliu on 30/05/2017.
+ * Created by David Liu on 30/05/2017.
+ * NowBoarding Ltd
+ * lyhmelbourne@gmail.com
  */
 
 public class TimeSlotActivity extends AppCompatActivity {
@@ -42,31 +43,14 @@ public class TimeSlotActivity extends AppCompatActivity {
         initSlots(slots);
 
         final TimeSlotView timeslotView = (TimeSlotView) findViewById(R.id.timeslot_view);
-        timeslotView.setViewMode(TimeSlotView.ViewMode.ALL_DAY_CREATE);
-
+//        timeslotView.setViewMode(TimeSlotView.ViewMode.ALL_DAY_CREATE);
         timeslotView.setEventPackage(eventManager.getEventsMap());
-//        timeslotView.setOnTimeSlotInnerCalendar(new TimeSlotInnerCalendarView.OnTimeSlotInnerCalendar() {
-//            @Override
-//            public void onCalendarBtnClick(View v, boolean result) {
-//
-//            }
-//
-//            @Override
-//            public void onDayClick(Date dateClicked) {
-//                timeslotView.scrollToDate(dateClicked);
-//            }
-//
-//            @Override
-//            public void onMonthScroll(Date firstDayOfNewMonth) {
-//            }
-//        });
-
         timeslotView.setOnTimeslotDurationChangedListener(new TimeSlotView.OnTimeslotDurationListener() {
             @Override
             public void onTimeslotDurationChanged(long duration) {
                 if (duration == -1){
                     //means all day
-//                    timeslotView.setViewMode(TimeSlotView.ViewMode.ALL_DAY_CREATE);
+
                 }else{
                     timeslotView.setViewMode(TimeSlotView.ViewMode.NON_ALL_DAY_CREATE);
                     timeslotView.setTimeslotDuration(duration,false);
@@ -90,11 +74,7 @@ public class TimeSlotActivity extends AppCompatActivity {
 
             @Override
             public void onAllDayTimeslotClick(DraggableTimeSlotView timeSlotView) {
-//                TimeSlot newSlot = new TimeSlot();
-//                newSlot.setIsAllDay(true);
-//                //ensure set the start time correctly, otherwise it cannot be shown
-//                newSlot.setStartTime(dayBeginMilliseconds);
-//                timeSlotView.addTimeSlot(newSlot);
+
             }
 
             @Override
@@ -107,7 +87,7 @@ public class TimeSlotActivity extends AppCompatActivity {
 
             @Override
             public void onTimeSlotClick(DraggableTimeSlotView draggableTimeSlotView) {
-//                timeslotView.reloadTimeSlots(false);
+
             }
 
 
@@ -170,26 +150,13 @@ public class TimeSlotActivity extends AppCompatActivity {
         //Note: ensure calling setTimeslotDurationItems after setting listeners
         timeslotView.setTimeslotDurationItems(initList(),0);
 
-//        timeslotView.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                for (TimeSlot slot:slots
-//                        ) {
-//                    timeslotView.addTimeSlot(slot);
-//                }
-//            }
-//        },2000);
-
-
-
-
         switcher.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (timeslotView.isTimeslotEnable){
-//                    timeslotView.disableTimeSlot();
+                    timeslotView.hideTimeslot();
                 }else {
-//                    timeslotView.enableTimeSlot(false);
+                    timeslotView.showTimeslot();
                 }
 
 

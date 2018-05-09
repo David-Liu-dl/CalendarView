@@ -1,0 +1,26 @@
+[
+    {
+        "merged": "/Users/yuhaoliu/Documents/ITIME/vendor/iTime-Calendar/recycleviewgroup/build/intermediates/res/merged/androidTest/debug/layout-v11/notification_template_big_media.xml",
+        "source": "/Users/yuhaoliu/.android/build-cache/5be05451bc1a27e18cebfbd8ecf78a16d18c3c49/output/res/layout-v11/notification_template_big_media.xml"
+    },
+    {
+        "merged": "/Users/yuhaoliu/Documents/ITIME/vendor/iTime-Calendar/recycleviewgroup/build/intermediates/res/merged/androidTest/debug/layout-v11/notification_media_cancel_action.xml",
+        "source": "/Users/yuhaoliu/.android/build-cache/5be05451bc1a27e18cebfbd8ecf78a16d18c3c49/output/res/layout-v11/notification_media_cancel_action.xml"
+    },
+    {
+        "merged": "/Users/yuhaoliu/Documents/ITIME/vendor/iTime-Calendar/recycleviewgroup/build/intermediates/res/merged/androidTest/debug/layout-v11/notification_template_big_media_custom.xml",
+        "source": "/Users/yuhaoliu/.android/build-cache/5be05451bc1a27e18cebfbd8ecf78a16d18c3c49/output/res/layout-v11/notification_template_big_media_custom.xml"
+    },
+    {
+        "merged": "/Users/yuhaoliu/Documents/ITIME/vendor/iTime-Calendar/recycleviewgroup/build/intermediates/res/merged/androidTest/debug/layout-v11/notification_template_big_media_narrow.xml",
+        "source": "/Users/yuhaoliu/.android/build-cache/5be05451bc1a27e18cebfbd8ecf78a16d18c3c49/output/res/layout-v11/notification_template_big_media_narrow.xml"
+    },
+    {
+        "merged": "/Users/yuhaoliu/Documents/ITIME/vendor/iTime-Calendar/recycleviewgroup/build/intermediates/res/merged/androidTest/debug/layout-v11/notification_template_big_media_narrow_custom.xml",
+        "source": "/Users/yuhaoliu/.android/build-cache/5be05451bc1a27e18cebfbd8ecf78a16d18c3c49/output/res/layout-v11/notification_template_big_media_narrow_custom.xml"
+    },
+    {
+        "merged": "/Users/yuhaoliu/Documents/ITIME/vendor/iTime-Calendar/recycleviewgroup/build/intermediates/res/merged/androidTest/debug/layout-v11/notification_media_action.xml",
+        "source": "/Users/yuhaoliu/.android/build-cache/5be05451bc1a27e18cebfbd8ecf78a16d18c3c49/output/res/layout-v11/notification_media_action.xml"
+    }
+]
